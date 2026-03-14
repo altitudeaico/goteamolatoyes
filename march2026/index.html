@@ -931,6 +931,11 @@
     <!-- SCREEN: Home -->
     <div class="screen active" id="screen-home">
       <div class="screen-content flex flex-col items-center justify-center text-center gap-lg">
+        <!-- Sound toggle -->
+        <button class="btn btn-icon" onclick="toggleSound()" id="soundToggle" style="position: absolute; top: 20px; right: 20px; background: var(--bg-card);">
+          🔊
+        </button>
+        
         <div class="fade-up stagger-1">
           <div style="font-size: 4rem; margin-bottom: 16px;">✝️</div>
           <h1 class="title-xl text-gradient">GoTeam<br>Olatoyes</h1>
@@ -1199,7 +1204,9 @@
     // QUESTIONS DATABASE
     // ==========================================
     const ALL_QUESTIONS = [
-      // EASTER / RESURRECTION
+      // ==========================================
+      // EASTER / RESURRECTION (15 questions)
+      // ==========================================
       { category: 'Easter', question: 'On what day did Jesus rise from the dead?', answers: ['Friday', 'Saturday', 'Sunday', 'Monday'], correct: 2 },
       { category: 'Easter', question: 'Who was the first person to see Jesus after His resurrection?', answers: ['Peter', 'Mary Magdalene', 'John', 'Thomas'], correct: 1 },
       { category: 'Easter', question: 'How many days after His resurrection did Jesus ascend to heaven?', answers: ['3 days', '7 days', '40 days', '50 days'], correct: 2 },
@@ -1207,40 +1214,243 @@
       { category: 'Easter', question: 'Who rolled away the stone from Jesus\' tomb?', answers: ['The disciples', 'Roman soldiers', 'An angel', 'Mary Magdalene'], correct: 2 },
       { category: 'Easter', question: 'What did Jesus show Thomas to prove He had risen?', answers: ['His face', 'His hands and side', 'A miracle', 'Scripture'], correct: 1 },
       { category: 'Easter', question: 'Where did Jesus appear to His disciples after the resurrection?', answers: ['Only in Jerusalem', 'Only in Galilee', 'Multiple locations', 'Rome'], correct: 2 },
-      { category: 'Easter', question: 'What meal did Jesus share with disciples at Emmaus after rising?', answers: ['Breakfast', 'Lunch', 'Dinner', 'Supper'], correct: 2 },
+      { category: 'Easter', question: 'What meal did Jesus share with disciples at Emmaus after rising?', answers: ['Breakfast', 'Lunch', 'Dinner/Supper', 'They fasted'], correct: 2 },
+      { category: 'Easter', question: 'How many women went to the tomb on Easter morning?', answers: ['1', '2', '3', 'Varies by Gospel'], correct: 3 },
+      { category: 'Easter', question: 'What did the soldiers guarding the tomb claim happened?', answers: ['They saw angels', 'Disciples stole the body', 'Earthquake destroyed it', 'They ran away'], correct: 1 },
+      { category: 'Easter', question: 'Who provided the tomb where Jesus was buried?', answers: ['Peter', 'Joseph of Arimathea', 'Nicodemus', 'Pilate'], correct: 1 },
+      { category: 'Easter', question: 'What did Jesus cook for His disciples by the Sea of Galilee after rising?', answers: ['Lamb', 'Bread only', 'Fish and bread', 'Nothing'], correct: 2 },
+      { category: 'Easter', question: 'How many times did Jesus appear to His disciples after resurrection?', answers: ['3', '5', '10+', 'Once'], correct: 2 },
+      { category: 'Easter', question: 'What did Jesus tell Mary Magdalene not to do when she saw Him risen?', answers: ['Cry', 'Cling to Him', 'Tell anyone', 'Follow Him'], correct: 1 },
+      { category: 'Easter', question: 'On the road to Emmaus, what did Jesus explain to the two disciples?', answers: ['How to pray', 'The Scriptures about Himself', 'The future', 'Fishing techniques'], correct: 1 },
       
-      // MOTHER'S DAY / WOMEN OF THE BIBLE
+      // ==========================================
+      // MOTHER'S DAY / WOMEN OF THE BIBLE (12 questions)
+      // ==========================================
       { category: "Mother's Day", question: 'Who was the mother of Jesus?', answers: ['Elizabeth', 'Mary', 'Martha', 'Sarah'], correct: 1 },
       { category: "Mother's Day", question: 'Hannah prayed for a son. What was his name?', answers: ['David', 'Solomon', 'Samuel', 'Elijah'], correct: 2 },
       { category: "Mother's Day", question: 'Who was the mother of Isaac?', answers: ['Hagar', 'Rebekah', 'Sarah', 'Leah'], correct: 2 },
       { category: "Mother's Day", question: 'Which book of the Bible is named after a devoted daughter-in-law?', answers: ['Esther', 'Ruth', 'Judith', 'Naomi'], correct: 1 },
       { category: "Mother's Day", question: 'Who hid baby Moses to save his life?', answers: ['Pharaoh\'s daughter', 'His mother Jochebed', 'Miriam', 'A servant'], correct: 1 },
       { category: "Mother's Day", question: 'Elizabeth was the mother of which prophet?', answers: ['Elijah', 'Isaiah', 'John the Baptist', 'Jeremiah'], correct: 2 },
+      { category: "Mother's Day", question: 'Who was the mother of twins Jacob and Esau?', answers: ['Rachel', 'Leah', 'Rebekah', 'Sarah'], correct: 2 },
+      { category: "Mother's Day", question: 'Which woman was a judge and leader of Israel?', answers: ['Ruth', 'Esther', 'Deborah', 'Miriam'], correct: 2 },
+      { category: "Mother's Day", question: 'Who risked her life to save her people from genocide?', answers: ['Ruth', 'Esther', 'Rahab', 'Deborah'], correct: 1 },
+      { category: "Mother's Day", question: 'Which woman helped hide Israelite spies in Jericho?', answers: ['Deborah', 'Rahab', 'Miriam', 'Delilah'], correct: 1 },
+      { category: "Mother's Day", question: 'Naomi had two daughters-in-law. Ruth was one. Who was the other?', answers: ['Orpah', 'Rachel', 'Leah', 'Esther'], correct: 0 },
+      { category: "Mother's Day", question: 'Who sang a song of praise after Jesus was born, starting "My soul magnifies the Lord"?', answers: ['Elizabeth', 'Anna', 'Mary', 'Martha'], correct: 2 },
       
-      // BIBLE GENERAL
+      // ==========================================
+      // BIBLE GENERAL (15 questions)
+      // ==========================================
       { category: 'Bible', question: 'How many books are in the Bible?', answers: ['27', '39', '66', '73'], correct: 2 },
       { category: 'Bible', question: 'What is the shortest verse in the Bible?', answers: ['God is love', 'Jesus wept', 'Pray always', 'Be still'], correct: 1 },
       { category: 'Bible', question: 'Who built the ark?', answers: ['Moses', 'Abraham', 'Noah', 'David'], correct: 2 },
       { category: 'Bible', question: 'What was the first miracle Jesus performed?', answers: ['Healing a blind man', 'Walking on water', 'Turning water into wine', 'Feeding 5000'], correct: 2 },
       { category: 'Bible', question: 'How many disciples did Jesus have?', answers: ['7', '10', '12', '15'], correct: 2 },
       { category: 'Bible', question: 'Who denied Jesus three times?', answers: ['Judas', 'Peter', 'Thomas', 'John'], correct: 1 },
+      { category: 'Bible', question: 'What is the first book of the Bible?', answers: ['Exodus', 'Genesis', 'Psalms', 'Matthew'], correct: 1 },
+      { category: 'Bible', question: 'Who was swallowed by a big fish?', answers: ['Moses', 'Elijah', 'Jonah', 'Daniel'], correct: 2 },
+      { category: 'Bible', question: 'How many days and nights did it rain during the flood?', answers: ['7', '40', '100', '365'], correct: 1 },
+      { category: 'Bible', question: 'What did God create on the first day?', answers: ['Animals', 'Light', 'Man', 'Water'], correct: 1 },
+      { category: 'Bible', question: 'Who killed Goliath?', answers: ['Saul', 'David', 'Jonathan', 'Samuel'], correct: 1 },
+      { category: 'Bible', question: 'What are the names of the first two humans?', answers: ['Cain and Abel', 'Adam and Eve', 'Noah and Wife', 'Abraham and Sarah'], correct: 1 },
+      { category: 'Bible', question: 'Who led the Israelites out of Egypt?', answers: ['Abraham', 'Moses', 'Joshua', 'David'], correct: 1 },
+      { category: 'Bible', question: 'What is the last book of the Bible?', answers: ['Jude', 'Revelation', 'Malachi', 'Acts'], correct: 1 },
+      { category: 'Bible', question: 'Jesus was born in which town?', answers: ['Nazareth', 'Jerusalem', 'Bethlehem', 'Galilee'], correct: 2 },
       
-      // NIGERIA
+      // ==========================================
+      // NIGERIA (12 questions)
+      // ==========================================
       { category: 'Nigeria', question: 'What is the capital city of Nigeria?', answers: ['Lagos', 'Abuja', 'Kano', 'Ibadan'], correct: 1 },
       { category: 'Nigeria', question: 'How many states are in Nigeria?', answers: ['30', '36', '42', '48'], correct: 1 },
       { category: 'Nigeria', question: 'What colours are on the Nigerian flag?', answers: ['Red and white', 'Green and white', 'Blue and yellow', 'Green and red'], correct: 1 },
       { category: 'Nigeria', question: 'Which Nigerian city is known as the "Centre of Excellence"?', answers: ['Abuja', 'Kano', 'Lagos', 'Port Harcourt'], correct: 2 },
+      { category: 'Nigeria', question: 'What is the largest ethnic group in Nigeria?', answers: ['Yoruba', 'Igbo', 'Hausa', 'Fulani'], correct: 2 },
+      { category: 'Nigeria', question: 'Which river is the longest in Nigeria?', answers: ['Benue', 'Niger', 'Cross River', 'Kaduna'], correct: 1 },
+      { category: 'Nigeria', question: 'In what year did Nigeria gain independence?', answers: ['1955', '1960', '1963', '1970'], correct: 1 },
+      { category: 'Nigeria', question: 'What is the currency of Nigeria?', answers: ['Dollar', 'Cedi', 'Naira', 'Shilling'], correct: 2 },
+      { category: 'Nigeria', question: 'Which Nigerian won the Nobel Prize for Literature?', answers: ['Chinua Achebe', 'Wole Soyinka', 'Chimamanda Adichie', 'Ben Okri'], correct: 1 },
+      { category: 'Nigeria', question: 'What is Nigeria\'s most popular sport?', answers: ['Cricket', 'Basketball', 'Football', 'Athletics'], correct: 2 },
+      { category: 'Nigeria', question: 'Which Nigerian dish is made from cassava?', answers: ['Jollof rice', 'Garri/Eba', 'Suya', 'Puff puff'], correct: 1 },
+      { category: 'Nigeria', question: 'The Super Eagles is the nickname for which Nigerian team?', answers: ['Basketball', 'Football', 'Rugby', 'Athletics'], correct: 1 },
       
-      // FAMILY
+      // ==========================================
+      // FAMILY (10 questions)
+      // ==========================================
       { category: 'Family', question: 'What year did Team Middleton win the Christmas Quiz?', answers: ['2023', '2024', '2025', '2026'], correct: 2 },
       { category: 'Family', question: 'How many Olatoye family team locations are there?', answers: ['2', '3', '4', '5'], correct: 2 },
       { category: 'Family', question: 'Which team has the crown emoji?', answers: ['New York', 'Middleton', 'Gravesend', 'Radlett'], correct: 3 },
+      { category: 'Family', question: 'Which team has the anchor emoji?', answers: ['New York', 'Middleton', 'Gravesend', 'Radlett'], correct: 2 },
+      { category: 'Family', question: 'Which team has the Statue of Liberty emoji?', answers: ['New York', 'Middleton', 'Gravesend', 'Radlett'], correct: 0 },
+      { category: 'Family', question: 'Which team has the castle emoji?', answers: ['New York', 'Middleton', 'Gravesend', 'Radlett'], correct: 1 },
+      { category: 'Family', question: 'What is the name of our family quiz series?', answers: ['Quiz Night', 'GoTeamOlatoyes', 'Family Feud', 'Brain Battle'], correct: 1 },
+      { category: 'Family', question: 'How many questions were in the Christmas 2025 quiz bank?', answers: ['50', '75', '104', '150'], correct: 2 },
+      { category: 'Family', question: 'What technology syncs our multiplayer quiz across devices?', answers: ['Bluetooth', 'WiFi Direct', 'Firebase', 'Magic'], correct: 2 },
+      { category: 'Family', question: 'Who usually hosts the family quiz?', answers: ['The youngest', 'The oldest', 'Quiz Master', 'Random selection'], correct: 2 },
       
-      // POP CULTURE / FUN
-      { category: 'Fun', question: 'What is the most popular video game of all time?', answers: ['Fortnite', 'Minecraft', 'GTA V', 'Tetris'], correct: 1 },
-      { category: 'Fun', question: 'What planet is known as the Red Planet?', answers: ['Venus', 'Mars', 'Jupiter', 'Saturn'], correct: 1 },
-      { category: 'Fun', question: 'How many continents are there?', answers: ['5', '6', '7', '8'], correct: 2 },
+      // ==========================================
+      // MARVEL (10 questions)
+      // ==========================================
+      { category: 'Marvel', question: 'What is Iron Man\'s real name?', answers: ['Bruce Banner', 'Tony Stark', 'Steve Rogers', 'Peter Parker'], correct: 1 },
+      { category: 'Marvel', question: 'What metal is Captain America\'s shield made of?', answers: ['Iron', 'Titanium', 'Vibranium', 'Adamantium'], correct: 2 },
+      { category: 'Marvel', question: 'What is the name of Thor\'s hammer?', answers: ['Stormbreaker', 'Mjolnir', 'Gungnir', 'Hofund'], correct: 1 },
+      { category: 'Marvel', question: 'Who is the God of Mischief?', answers: ['Thor', 'Odin', 'Loki', 'Heimdall'], correct: 2 },
+      { category: 'Marvel', question: 'What colour does Hulk turn when angry?', answers: ['Red', 'Blue', 'Green', 'Purple'], correct: 2 },
+      { category: 'Marvel', question: 'Which stone gives Thanos power over time?', answers: ['Space Stone', 'Mind Stone', 'Time Stone', 'Power Stone'], correct: 2 },
+      { category: 'Marvel', question: 'Where is Wakanda located?', answers: ['Asia', 'Africa', 'South America', 'Europe'], correct: 1 },
+      { category: 'Marvel', question: 'Who said "I am Groot"?', answers: ['Rocket', 'Drax', 'Groot', 'Star-Lord'], correct: 2 },
+      { category: 'Marvel', question: 'What is Spider-Man\'s real name?', answers: ['Peter Parker', 'Miles Morales', 'Both are correct', 'Neither'], correct: 2 },
+      { category: 'Marvel', question: 'Who wields the Mind Stone in their forehead?', answers: ['Thanos', 'Vision', 'Scarlet Witch', 'Ultron'], correct: 1 },
+      
+      // ==========================================
+      // FOOTBALL/PREMIER LEAGUE (10 questions)
+      // ==========================================
+      { category: 'Football', question: 'Which team has won the most Premier League titles?', answers: ['Liverpool', 'Chelsea', 'Manchester United', 'Arsenal'], correct: 2 },
+      { category: 'Football', question: 'What is the nickname of Arsenal FC?', answers: ['The Blues', 'The Gunners', 'The Red Devils', 'The Hammers'], correct: 1 },
+      { category: 'Football', question: 'How many players are on a football team on the pitch?', answers: ['9', '10', '11', '12'], correct: 2 },
+      { category: 'Football', question: 'What colour card sends a player off?', answers: ['Yellow', 'Red', 'Blue', 'Green'], correct: 1 },
+      { category: 'Football', question: 'Which country won the 2022 FIFA World Cup?', answers: ['France', 'Brazil', 'Argentina', 'Germany'], correct: 2 },
+      { category: 'Football', question: 'What is the name of Manchester United\'s stadium?', answers: ['Anfield', 'Emirates', 'Old Trafford', 'Stamford Bridge'], correct: 2 },
+      { category: 'Football', question: 'Who is known as "The Egyptian King"?', answers: ['Sadio Mane', 'Mohamed Salah', 'Riyad Mahrez', 'Pierre-Emerick Aubameyang'], correct: 1 },
+      { category: 'Football', question: 'How long is a standard football match?', answers: ['60 minutes', '80 minutes', '90 minutes', '120 minutes'], correct: 2 },
+      { category: 'Football', question: 'Which Premier League team plays at Anfield?', answers: ['Everton', 'Liverpool', 'Manchester City', 'Tottenham'], correct: 1 },
+      { category: 'Football', question: 'What does VAR stand for?', answers: ['Video Assisted Review', 'Video Assistant Referee', 'Visual Analysis Report', 'Verified Action Replay'], correct: 1 },
+      
+      // ==========================================
+      // SCIENCE & NATURE (8 questions)
+      // ==========================================
+      { category: 'Science', question: 'What planet is known as the Red Planet?', answers: ['Venus', 'Mars', 'Jupiter', 'Saturn'], correct: 1 },
+      { category: 'Science', question: 'How many continents are there?', answers: ['5', '6', '7', '8'], correct: 2 },
+      { category: 'Science', question: 'What is the largest planet in our solar system?', answers: ['Saturn', 'Neptune', 'Jupiter', 'Uranus'], correct: 2 },
+      { category: 'Science', question: 'What is H2O commonly known as?', answers: ['Salt', 'Sugar', 'Water', 'Air'], correct: 2 },
+      { category: 'Science', question: 'How many bones are in the adult human body?', answers: ['106', '206', '306', '406'], correct: 1 },
+      { category: 'Science', question: 'What is the fastest land animal?', answers: ['Lion', 'Cheetah', 'Horse', 'Gazelle'], correct: 1 },
+      { category: 'Science', question: 'What gas do plants absorb from the air?', answers: ['Oxygen', 'Nitrogen', 'Carbon Dioxide', 'Hydrogen'], correct: 2 },
+      { category: 'Science', question: 'What is the largest ocean on Earth?', answers: ['Atlantic', 'Indian', 'Arctic', 'Pacific'], correct: 3 },
+      
+      // ==========================================
+      // MUSIC & POP CULTURE (8 questions)
+      // ==========================================
+      { category: 'Music', question: 'What is the best-selling video game of all time?', answers: ['Fortnite', 'Minecraft', 'GTA V', 'Tetris'], correct: 1 },
+      { category: 'Music', question: 'Who sang "Shape of You"?', answers: ['Justin Bieber', 'Ed Sheeran', 'Bruno Mars', 'The Weeknd'], correct: 1 },
+      { category: 'Music', question: 'What instrument has 88 keys?', answers: ['Guitar', 'Violin', 'Piano', 'Flute'], correct: 2 },
+      { category: 'Music', question: 'Which Nigerian artist sang "Essence"?', answers: ['Burna Boy', 'Davido', 'Wizkid', 'Olamide'], correct: 2 },
+      { category: 'Music', question: 'What social media app is known for short videos and dances?', answers: ['Instagram', 'Facebook', 'TikTok', 'Twitter'], correct: 2 },
+      { category: 'Music', question: 'Who is the "King of Pop"?', answers: ['Elvis Presley', 'Michael Jackson', 'Prince', 'Stevie Wonder'], correct: 1 },
+      { category: 'Music', question: 'What streaming service has a green logo?', answers: ['Apple Music', 'Spotify', 'Tidal', 'YouTube Music'], correct: 1 },
+      { category: 'Music', question: 'How many strings does a standard guitar have?', answers: ['4', '5', '6', '8'], correct: 2 },
     ];
+    
+    // ==========================================
+    // SOUND EFFECTS
+    // ==========================================
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+    
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new AudioContext();
+      }
+    }
+    
+    function playSound(type) {
+      if (!audioCtx) return;
+      
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      switch(type) {
+        case 'correct':
+          // Happy ascending chime
+          oscillator.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+          oscillator.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+          oscillator.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // G5
+          gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+          oscillator.start(audioCtx.currentTime);
+          oscillator.stop(audioCtx.currentTime + 0.4);
+          break;
+          
+        case 'incorrect':
+          // Descending buzz
+          oscillator.type = 'sawtooth';
+          oscillator.frequency.setValueAtTime(300, audioCtx.currentTime);
+          oscillator.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.3);
+          gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+          oscillator.start(audioCtx.currentTime);
+          oscillator.stop(audioCtx.currentTime + 0.3);
+          break;
+          
+        case 'tick':
+          // Quick tick
+          oscillator.frequency.setValueAtTime(800, audioCtx.currentTime);
+          gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+          oscillator.start(audioCtx.currentTime);
+          oscillator.stop(audioCtx.currentTime + 0.05);
+          break;
+          
+        case 'warning':
+          // Urgent beep
+          oscillator.frequency.setValueAtTime(600, audioCtx.currentTime);
+          gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+          oscillator.start(audioCtx.currentTime);
+          oscillator.stop(audioCtx.currentTime + 0.15);
+          break;
+          
+        case 'select':
+          // Soft pop
+          oscillator.frequency.setValueAtTime(400, audioCtx.currentTime);
+          oscillator.frequency.setValueAtTime(600, audioCtx.currentTime + 0.05);
+          gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+          oscillator.start(audioCtx.currentTime);
+          oscillator.stop(audioCtx.currentTime + 0.1);
+          break;
+          
+        case 'reveal':
+          // Dramatic reveal
+          oscillator.type = 'triangle';
+          oscillator.frequency.setValueAtTime(200, audioCtx.currentTime);
+          oscillator.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.3);
+          gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+          gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime + 0.2);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+          oscillator.start(audioCtx.currentTime);
+          oscillator.stop(audioCtx.currentTime + 0.5);
+          break;
+          
+        case 'victory':
+          // Fanfare
+          const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+          notes.forEach((freq, i) => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.15);
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime + i * 0.15);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.15 + 0.3);
+            osc.start(audioCtx.currentTime + i * 0.15);
+            osc.stop(audioCtx.currentTime + i * 0.15 + 0.3);
+          });
+          break;
+          
+        case 'countdown':
+          // Final countdown beeps
+          oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
+          gainNode.gain.setValueAtTime(0.25, audioCtx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+          oscillator.start(audioCtx.currentTime);
+          oscillator.stop(audioCtx.currentTime + 0.2);
+          break;
+      }
+    }
     
     // ==========================================
     // STATE
@@ -1256,7 +1466,8 @@
       answered: false,
       timerInterval: null,
       pollInterval: null,
-      lastState: null
+      lastState: null,
+      soundEnabled: true
     };
     
     // ==========================================
@@ -1485,6 +1696,9 @@
     function selectAnswer(index, element) {
       if (state.answered) return;
       
+      initAudio(); // Initialize audio on first interaction
+      playSound('select');
+      
       document.querySelectorAll('.answer-btn').forEach(b => b.classList.remove('selected'));
       element.classList.add('selected');
       state.selectedAnswer = index;
@@ -1538,6 +1752,18 @@
       const q = state.questions[state.currentQuestion];
       const buttons = document.querySelectorAll('.answer-btn');
       
+      playSound('reveal');
+      
+      // Determine if player got it right
+      const gotItRight = state.selectedAnswer === q.correct;
+      
+      // Play appropriate sound after reveal
+      setTimeout(() => {
+        if (state.selectedAnswer !== null) {
+          playSound(gotItRight ? 'correct' : 'incorrect');
+        }
+      }, 300);
+      
       buttons.forEach((btn, i) => {
         btn.disabled = true;
         if (i === q.correct) {
@@ -1550,7 +1776,7 @@
       });
       
       // Update score if player got it right
-      if (state.selectedAnswer === q.correct && state.selectedTeam) {
+      if (gotItRight && state.selectedTeam) {
         updateScore(state.selectedTeam, 100);
       }
     }
@@ -1613,6 +1839,7 @@
       }
       
       showScreen('winner');
+      playSound('victory'); // Victory fanfare!
       launchConfetti();
     }
     
@@ -1640,8 +1867,15 @@
         
         if (seconds <= 5) {
           progress.classList.add('danger');
+          playSound('countdown'); // Urgent beeps in last 5 seconds
         } else if (seconds <= 10) {
           progress.classList.add('warning');
+          if (seconds === 10) playSound('warning'); // Warning at 10 seconds
+        }
+        
+        // Tick sound every second above 5
+        if (seconds > 5 && seconds <= 10) {
+          playSound('tick');
         }
         
         if (seconds <= 0) {
@@ -1778,6 +2012,25 @@
     document.getElementById('joinCodeInput').addEventListener('input', function(e) {
       this.value = this.value.toUpperCase().replace(/[^A-Z]/g, '');
     });
+    
+    function toggleSound() {
+      state.soundEnabled = !state.soundEnabled;
+      const btn = document.getElementById('soundToggle');
+      btn.textContent = state.soundEnabled ? '🔊' : '🔇';
+      
+      // Initialize audio context on first toggle (requires user interaction)
+      if (state.soundEnabled) {
+        initAudio();
+        playSound('select'); // Play a test sound
+      }
+    }
+    
+    // Update playSound to check if enabled
+    const originalPlaySound = playSound;
+    playSound = function(type) {
+      if (!state.soundEnabled) return;
+      originalPlaySound(type);
+    };
   </script>
 </body>
 </html>
