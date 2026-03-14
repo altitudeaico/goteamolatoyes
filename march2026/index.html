@@ -2563,54 +2563,87 @@
     function playMangaPowerUp() {
       if (!audioCtx) return;
       
-      // Epic rising sweep
-      const sweep = audioCtx.createOscillator();
-      const sweepGain = audioCtx.createGain();
-      sweep.connect(sweepGain);
-      sweepGain.connect(audioCtx.destination);
-      sweep.type = 'sawtooth';
-      sweep.frequency.setValueAtTime(100, audioCtx.currentTime);
-      sweep.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.4);
-      sweepGain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-      sweepGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-      sweep.start(audioCtx.currentTime);
-      sweep.stop(audioCtx.currentTime + 0.5);
+      // Triumphant rising arpeggio (C major scale up!)
+      const triumphNotes = [523, 587, 659, 698, 784, 880, 988, 1047]; // C5 to C6
+      triumphNotes.forEach((freq, i) => {
+        setTimeout(() => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+          osc.start(audioCtx.currentTime);
+          osc.stop(audioCtx.currentTime + 0.15);
+        }, i * 50);
+      });
       
-      // Impact hit
+      // Victory fanfare chord at the peak
       setTimeout(() => {
-        const hit = audioCtx.createOscillator();
-        const hitGain = audioCtx.createGain();
-        const hitFilter = audioCtx.createBiquadFilter();
-        hit.connect(hitFilter);
-        hitFilter.connect(hitGain);
-        hitGain.connect(audioCtx.destination);
-        hit.type = 'square';
-        hitFilter.type = 'lowpass';
-        hitFilter.frequency.setValueAtTime(1000, audioCtx.currentTime);
-        hit.frequency.setValueAtTime(150, audioCtx.currentTime);
-        hit.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.3);
-        hitGain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-        hitGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-        hit.start(audioCtx.currentTime);
-        hit.stop(audioCtx.currentTime + 0.3);
+        // Play a major chord (C-E-G-C)
+        const chordFreqs = [523, 659, 784, 1047];
+        chordFreqs.forEach((freq) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+          osc.start(audioCtx.currentTime);
+          osc.stop(audioCtx.currentTime + 0.6);
+        });
       }, 400);
       
-      // Dramatic chord stabs for each team reveal
+      // Celebratory chimes for each team reveal (ascending = more exciting!)
       [500, 700, 900, 1100].forEach((delay, i) => {
         setTimeout(() => {
-          const stab = audioCtx.createOscillator();
-          const stabGain = audioCtx.createGain();
-          stab.connect(stabGain);
-          stabGain.connect(audioCtx.destination);
-          stab.type = 'square';
-          const baseFreq = 200 + (3 - i) * 50; // Higher pitch for higher rank
-          stab.frequency.setValueAtTime(baseFreq, audioCtx.currentTime);
-          stabGain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-          stabGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
-          stab.start(audioCtx.currentTime);
-          stab.stop(audioCtx.currentTime + 0.15);
+          // Play ascending notes for each reveal (builds excitement!)
+          const noteFreqs = [659, 784, 988, 1319]; // E5, G5, B5, E6 - ascending!
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(noteFreqs[i], audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+          osc.start(audioCtx.currentTime);
+          osc.stop(audioCtx.currentTime + 0.2);
+          
+          // Add sparkle on top
+          const sparkle = audioCtx.createOscillator();
+          const sparkleGain = audioCtx.createGain();
+          sparkle.connect(sparkleGain);
+          sparkleGain.connect(audioCtx.destination);
+          sparkle.type = 'sine';
+          sparkle.frequency.setValueAtTime(noteFreqs[i] * 2, audioCtx.currentTime);
+          sparkleGain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+          sparkleGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+          sparkle.start(audioCtx.currentTime);
+          sparkle.stop(audioCtx.currentTime + 0.15);
         }, delay);
       });
+      
+      // Final triumphant hit for #1 reveal
+      setTimeout(() => {
+        const finalChord = [1047, 1319, 1568, 2093]; // C6-E6-G6-C7
+        finalChord.forEach((freq) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.8);
+          osc.start(audioCtx.currentTime);
+          osc.stop(audioCtx.currentTime + 0.8);
+        });
+      }, 1300);
     }
     
     async function continueFromLeaderboard() {
