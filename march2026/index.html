@@ -687,6 +687,60 @@
       margin-bottom: 32px;
     }
     
+    /* Toggle Switch */
+    .toggle-setting {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      padding: 12px 16px;
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      transition: all 0.2s ease;
+    }
+    
+    .toggle-setting:hover {
+      background: var(--bg-elevated);
+    }
+    
+    .toggle-switch {
+      width: 48px;
+      height: 28px;
+      background: var(--bg-secondary);
+      border-radius: 14px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    
+    .toggle-switch.active {
+      background: var(--purple);
+    }
+    
+    .toggle-knob {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    
+    .toggle-switch.active .toggle-knob {
+      left: 24px;
+    }
+    
+    .toggle-label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    
+    .qm-settings {
+      width: 100%;
+      max-width: 300px;
+    }
+    
     /* Winner Screen */
     .winner-trophy {
       font-size: 6rem;
@@ -1164,6 +1218,14 @@
       
       <!-- QM Controls -->
       <div class="qm-controls" id="qmLobbyControls" style="display: none;">
+        <div class="qm-settings" style="margin-bottom: 16px;">
+          <label class="toggle-setting" onclick="toggleAutoAdvance()">
+            <span class="toggle-switch" id="autoAdvanceToggle">
+              <span class="toggle-knob"></span>
+            </span>
+            <span class="toggle-label">Auto-advance when timer ends</span>
+          </label>
+        </div>
         <div class="qm-btn-group">
           <button class="btn btn-primary" onclick="startGame()">
             Start Quiz 🚀
@@ -1621,7 +1683,8 @@
       timerInterval: null,
       pollInterval: null,
       lastState: null,
-      soundEnabled: true
+      soundEnabled: true,
+      autoAdvance: false
     };
     
     // ==========================================
@@ -2353,8 +2416,54 @@
         
         if (seconds <= 0) {
           clearInterval(state.timerInterval);
+          
+          // Auto-advance if enabled (host only)
+          if (state.isHost && state.autoAdvance) {
+            autoAdvanceQuestion();
+          }
         }
       }, 1000);
+    }
+    
+    async function autoAdvanceQuestion() {
+      // First reveal the answer
+      await dbUpdateGame({ revealed: true });
+      showCorrectAnswer();
+      
+      // Wait 3 seconds to show the answer, then move on
+      setTimeout(async () => {
+        state.currentQuestion++;
+        
+        if (state.currentQuestion >= state.questions.length) {
+          await dbUpdateGame({ status: 'finished' });
+          showWinnerScreen();
+          return;
+        }
+        
+        // Show leaderboard every 5 questions
+        if (state.currentQuestion % 5 === 0) {
+          await dbUpdateGame({ status: 'leaderboard' });
+          showLeaderboardScreen();
+          
+          // Auto-continue from leaderboard after 5 seconds
+          setTimeout(async () => {
+            await dbUpdateGame({ 
+              current_question: state.currentQuestion, 
+              revealed: false,
+              status: 'playing'
+            });
+            showQuestionScreen();
+          }, 5000);
+          return;
+        }
+        
+        await dbUpdateGame({ 
+          current_question: state.currentQuestion, 
+          revealed: false,
+          status: 'playing'
+        });
+        showQuestionScreen();
+      }, 3000);
     }
     
     // ==========================================
@@ -2503,6 +2612,17 @@
       } else {
         input.type = 'password';
         btn.textContent = '👁️';
+      }
+    }
+    
+    // Auto-advance toggle
+    function toggleAutoAdvance() {
+      state.autoAdvance = !state.autoAdvance;
+      const toggle = document.getElementById('autoAdvanceToggle');
+      if (state.autoAdvance) {
+        toggle.classList.add('active');
+      } else {
+        toggle.classList.remove('active');
       }
     }
   </script>
