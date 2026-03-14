@@ -658,6 +658,198 @@
       100% { opacity: 0; }
     }
     
+    /* ==========================================
+       MANGA POWER-UP LEADERBOARD
+       ========================================== */
+    #screen-leaderboard {
+      overflow: hidden;
+    }
+    
+    .manga-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(ellipse at center, rgba(157, 78, 221, 0.3) 0%, transparent 70%),
+        radial-gradient(ellipse at 20% 80%, rgba(255, 107, 157, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(244, 197, 66, 0.2) 0%, transparent 50%);
+      animation: mangaBgPulse 2s ease-in-out infinite;
+      z-index: 0;
+    }
+    
+    @keyframes mangaBgPulse {
+      0%, 100% { opacity: 0.8; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+    
+    .speed-lines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        90deg,
+        transparent 0px,
+        transparent 50px,
+        rgba(255, 255, 255, 0.03) 50px,
+        rgba(255, 255, 255, 0.03) 51px
+      );
+      animation: speedLinesMove 0.5s linear infinite;
+      z-index: 1;
+      pointer-events: none;
+    }
+    
+    @keyframes speedLinesMove {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(51px); }
+    }
+    
+    .manga-title-container {
+      position: relative;
+      z-index: 10;
+    }
+    
+    .manga-flash {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 300%;
+      height: 300%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.8) 0%, transparent 60%);
+      animation: mangaFlash 0.8s ease-out forwards;
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    @keyframes mangaFlash {
+      0% { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); }
+    }
+    
+    .manga-title {
+      font-family: 'Press Start 2P', 'Inter', sans-serif;
+      font-size: clamp(2rem, 8vw, 4rem);
+      font-weight: 900;
+      color: white;
+      text-shadow: 
+        4px 4px 0 #ff6b9d,
+        8px 8px 0 #9d4edd,
+        0 0 40px rgba(255, 107, 157, 0.8),
+        0 0 80px rgba(157, 78, 221, 0.6);
+      animation: mangaTitleSlam 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      letter-spacing: 0.1em;
+    }
+    
+    @keyframes mangaTitleSlam {
+      0% { transform: scale(3) rotate(-5deg); opacity: 0; }
+      60% { transform: scale(0.9) rotate(2deg); }
+      80% { transform: scale(1.1) rotate(-1deg); }
+      100% { transform: scale(1) rotate(0); opacity: 1; }
+    }
+    
+    .manga-subtitle {
+      font-size: 1.2rem;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      margin-top: 16px;
+      animation: mangaSubtitleFade 0.8s ease-out 0.3s both;
+    }
+    
+    @keyframes mangaSubtitleFade {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    .manga-leaderboard {
+      position: relative;
+      z-index: 10;
+    }
+    
+    .manga-leaderboard .leaderboard-item {
+      animation: mangaItemSlide 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .manga-leaderboard .leaderboard-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      animation: mangaShine 1.5s ease-in-out infinite;
+      animation-delay: inherit;
+    }
+    
+    @keyframes mangaItemSlide {
+      0% { transform: translateX(-100%) scale(0.8); opacity: 0; }
+      60% { transform: translateX(10%) scale(1.05); }
+      100% { transform: translateX(0) scale(1); opacity: 1; }
+    }
+    
+    @keyframes mangaShine {
+      0%, 100% { left: -100%; }
+      50% { left: 100%; }
+    }
+    
+    .manga-leaderboard .leaderboard-item:nth-child(1) { animation-delay: 0.5s; }
+    .manga-leaderboard .leaderboard-item:nth-child(2) { animation-delay: 0.7s; }
+    .manga-leaderboard .leaderboard-item:nth-child(3) { animation-delay: 0.9s; }
+    .manga-leaderboard .leaderboard-item:nth-child(4) { animation-delay: 1.1s; }
+    
+    .manga-leaderboard .leaderboard-item:nth-child(1)::before { animation-delay: 1s; }
+    .manga-leaderboard .leaderboard-item:nth-child(2)::before { animation-delay: 1.2s; }
+    .manga-leaderboard .leaderboard-item:nth-child(3)::before { animation-delay: 1.4s; }
+    .manga-leaderboard .leaderboard-item:nth-child(4)::before { animation-delay: 1.6s; }
+    
+    /* First place special effect */
+    .manga-leaderboard .leaderboard-item:nth-child(1) {
+      transform-origin: center;
+      box-shadow: 0 0 30px rgba(244, 197, 66, 0.5);
+    }
+    
+    .manga-leaderboard .leaderboard-item:nth-child(1)::after {
+      content: '👑';
+      position: absolute;
+      top: -15px;
+      right: 10px;
+      font-size: 1.5rem;
+      animation: crownBounce 1s ease-in-out infinite;
+      animation-delay: 1.5s;
+    }
+    
+    @keyframes crownBounce {
+      0%, 100% { transform: translateY(0) rotate(-10deg); }
+      50% { transform: translateY(-5px) rotate(10deg); }
+    }
+    
+    /* Power level indicator */
+    .power-level {
+      position: absolute;
+      right: -10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.6rem;
+      color: var(--gold);
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      letter-spacing: 0.2em;
+      animation: powerFlicker 0.1s infinite;
+    }
+    
+    @keyframes powerFlicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    
     /* Question Display */
     .question-header {
       display: flex;
@@ -1316,13 +1508,16 @@
 
     <!-- SCREEN: Leaderboard (between questions) -->
     <div class="screen" id="screen-leaderboard">
+      <div class="manga-bg"></div>
+      <div class="speed-lines"></div>
       <div class="screen-content flex flex-col">
-        <div class="text-center mb-xl">
-          <h2 class="title-lg mb-md">Leaderboard</h2>
-          <p class="text-secondary">After Question <span id="leaderboardRound">1</span></p>
+        <div class="text-center mb-xl manga-title-container">
+          <div class="manga-flash"></div>
+          <h2 class="manga-title" id="leaderboardTitle">STANDINGS!</h2>
+          <p class="manga-subtitle">After Round <span id="leaderboardRound">1</span></p>
         </div>
         
-        <div class="leaderboard" id="leaderboardList">
+        <div class="leaderboard manga-leaderboard" id="leaderboardList">
           <!-- Leaderboard items -->
         </div>
       </div>
@@ -1330,8 +1525,8 @@
       <!-- QM Controls -->
       <div class="qm-controls" id="qmLeaderboardControls" style="display: none;">
         <div class="qm-btn-group">
-          <button class="btn btn-primary" onclick="nextQuestion()">
-            Next Question →
+          <button class="btn btn-primary" onclick="continueFromLeaderboard()">
+            Continue →
           </button>
         </div>
       </div>
@@ -2325,6 +2520,9 @@
     function showLeaderboardScreen() {
       document.getElementById('leaderboardRound').textContent = state.currentQuestion;
       
+      // Play epic power-up sound
+      playMangaPowerUp();
+      
       const sortedTeams = Object.entries(state.scores)
         .sort((a, b) => b[1] - a[1])
         .map(([teamId, score], index) => ({
@@ -2334,9 +2532,13 @@
           ...TEAMS[teamId]
         }));
       
+      // Determine title based on standings
+      const titles = ['STANDINGS!', 'POWER LEVELS!', 'WHO LEADS?!', 'THE RANKINGS!'];
+      document.getElementById('leaderboardTitle').textContent = titles[Math.floor(Math.random() * titles.length)];
+      
       const list = document.getElementById('leaderboardList');
       list.innerHTML = sortedTeams.map((team, i) => `
-        <div class="leaderboard-item ${team.teamId === state.selectedTeam ? 'highlight' : ''} fade-up stagger-${i + 1}">
+        <div class="leaderboard-item ${team.teamId === state.selectedTeam ? 'highlight' : ''}">
           <div class="leaderboard-rank ${i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : ''}">
             ${team.rank}
           </div>
@@ -2345,14 +2547,79 @@
             <span class="leaderboard-name">${team.name}</span>
           </div>
           <span class="leaderboard-score">${team.score}</span>
+          ${i === 0 ? '<span class="power-level">MAX</span>' : ''}
         </div>
       `).join('');
       
       if (state.isHost) {
         document.getElementById('qmLeaderboardControls').style.display = 'block';
+      } else {
+        document.getElementById('qmLeaderboardControls').style.display = 'none';
       }
       
       showScreen('leaderboard');
+    }
+    
+    function playMangaPowerUp() {
+      if (!audioCtx) return;
+      
+      // Epic rising sweep
+      const sweep = audioCtx.createOscillator();
+      const sweepGain = audioCtx.createGain();
+      sweep.connect(sweepGain);
+      sweepGain.connect(audioCtx.destination);
+      sweep.type = 'sawtooth';
+      sweep.frequency.setValueAtTime(100, audioCtx.currentTime);
+      sweep.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.4);
+      sweepGain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      sweepGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+      sweep.start(audioCtx.currentTime);
+      sweep.stop(audioCtx.currentTime + 0.5);
+      
+      // Impact hit
+      setTimeout(() => {
+        const hit = audioCtx.createOscillator();
+        const hitGain = audioCtx.createGain();
+        const hitFilter = audioCtx.createBiquadFilter();
+        hit.connect(hitFilter);
+        hitFilter.connect(hitGain);
+        hitGain.connect(audioCtx.destination);
+        hit.type = 'square';
+        hitFilter.type = 'lowpass';
+        hitFilter.frequency.setValueAtTime(1000, audioCtx.currentTime);
+        hit.frequency.setValueAtTime(150, audioCtx.currentTime);
+        hit.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.3);
+        hitGain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        hitGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        hit.start(audioCtx.currentTime);
+        hit.stop(audioCtx.currentTime + 0.3);
+      }, 400);
+      
+      // Dramatic chord stabs for each team reveal
+      [500, 700, 900, 1100].forEach((delay, i) => {
+        setTimeout(() => {
+          const stab = audioCtx.createOscillator();
+          const stabGain = audioCtx.createGain();
+          stab.connect(stabGain);
+          stabGain.connect(audioCtx.destination);
+          stab.type = 'square';
+          const baseFreq = 200 + (3 - i) * 50; // Higher pitch for higher rank
+          stab.frequency.setValueAtTime(baseFreq, audioCtx.currentTime);
+          stabGain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+          stabGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+          stab.start(audioCtx.currentTime);
+          stab.stop(audioCtx.currentTime + 0.15);
+        }, delay);
+      });
+    }
+    
+    async function continueFromLeaderboard() {
+      await dbUpdateGame({ 
+        current_question: state.currentQuestion, 
+        revealed: false,
+        status: 'playing'
+      });
+      showQuestionScreen();
     }
     
     function showWinnerScreen() {
@@ -2445,15 +2712,10 @@
           await dbUpdateGame({ status: 'leaderboard' });
           showLeaderboardScreen();
           
-          // Auto-continue from leaderboard after 5 seconds
-          setTimeout(async () => {
-            await dbUpdateGame({ 
-              current_question: state.currentQuestion, 
-              revealed: false,
-              status: 'playing'
-            });
-            showQuestionScreen();
-          }, 5000);
+          // Auto-continue from leaderboard after 7 seconds (more time for manga effect)
+          setTimeout(() => {
+            continueFromLeaderboard();
+          }, 7000);
           return;
         }
         
