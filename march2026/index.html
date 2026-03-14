@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>#GoTeamOlatoyes - Easter 2026</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Press+Start+2P&display=swap');
     
     :root {
       --bg-primary: #0c0a15;
@@ -713,6 +713,128 @@
       50% { box-shadow: 0 0 100px rgba(244, 197, 66, 0.8); }
     }
     
+    /* Countdown Screen */
+    .countdown-container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .countdown-text {
+      font-family: 'Press Start 2P', 'Courier New', monospace;
+      font-size: 12rem;
+      font-weight: 900;
+      background: linear-gradient(180deg, #ff6b9d 0%, #ff8c42 50%, #f4c542 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 80px rgba(255, 107, 157, 0.8);
+      animation: countdownPulse 0.5s ease-in-out;
+      position: relative;
+      z-index: 10;
+    }
+    
+    .countdown-text.shake {
+      animation: countdownShake 0.1s ease-in-out;
+    }
+    
+    .countdown-text.go {
+      font-size: 8rem;
+      animation: countdownGo 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    .countdown-subtitle {
+      font-family: 'Press Start 2P', 'Courier New', monospace;
+      font-size: 1.5rem;
+      color: var(--text-secondary);
+      letter-spacing: 0.3em;
+      margin-top: 20px;
+      animation: subtitleBlink 0.5s ease-in-out infinite;
+    }
+    
+    @keyframes countdownPulse {
+      0% { transform: scale(0.5); opacity: 0; }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    
+    @keyframes countdownShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px) rotate(-2deg); }
+      75% { transform: translateX(10px) rotate(2deg); }
+    }
+    
+    @keyframes countdownGo {
+      0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+      50% { transform: scale(1.3) rotate(5deg); }
+      100% { transform: scale(1) rotate(0); opacity: 1; }
+    }
+    
+    @keyframes subtitleBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    /* Pixel Particles */
+    .pixel-particles {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      pointer-events: none;
+      z-index: 5;
+    }
+    
+    .pixel {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: var(--gold);
+      animation: pixelFloat 1s ease-out forwards;
+    }
+    
+    @keyframes pixelFloat {
+      0% { transform: translate(0, 0) scale(1); opacity: 1; }
+      100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+    }
+    
+    /* Scanlines effect */
+    .countdown-container::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.1) 0px,
+        rgba(0, 0, 0, 0.1) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      pointer-events: none;
+      z-index: 20;
+      animation: scanlines 0.1s linear infinite;
+    }
+    
+    @keyframes scanlines {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(3px); }
+    }
+    
+    /* CRT flicker */
+    #screen-countdown {
+      animation: crtFlicker 0.15s infinite;
+    }
+    
+    @keyframes crtFlicker {
+      0% { opacity: 0.97; }
+      50% { opacity: 1; }
+      100% { opacity: 0.98; }
+    }
+    
     /* Confetti Canvas */
     #confetti-canvas {
       position: fixed;
@@ -1046,6 +1168,17 @@
           <button class="btn btn-primary" onclick="startGame()">
             Start Quiz 🚀
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN: Countdown -->
+    <div class="screen" id="screen-countdown">
+      <div class="screen-content flex flex-col items-center justify-center">
+        <div class="countdown-container">
+          <div class="countdown-text" id="countdownText">3</div>
+          <div class="countdown-subtitle" id="countdownSubtitle">GET READY</div>
+          <div class="pixel-particles" id="pixelParticles"></div>
         </div>
       </div>
     </div>
@@ -1661,6 +1794,11 @@
           state.questions = data.questions;
         }
         
+        // Show countdown for players too!
+        if (data.status === 'countdown' && state.lastState !== 'countdown') {
+          showCountdown();
+        }
+        
         if (data.status === 'playing' && state.lastState !== 'playing') {
           showQuestionScreen();
         }
@@ -1767,8 +1905,145 @@
     }
     
     async function startGame() {
-      await dbUpdateGame({ status: 'playing', current_question: 0, revealed: false });
-      showQuestionScreen();
+      await dbUpdateGame({ status: 'countdown', current_question: 0, revealed: false });
+      showCountdown();
+    }
+    
+    function showCountdown() {
+      showScreen('countdown');
+      initAudio();
+      
+      const countdownText = document.getElementById('countdownText');
+      const countdownSubtitle = document.getElementById('countdownSubtitle');
+      const particlesContainer = document.getElementById('pixelParticles');
+      
+      let count = 3;
+      countdownText.textContent = count;
+      countdownSubtitle.textContent = 'GET READY';
+      
+      // Play initial powerup sound
+      playArcadeSound('powerup');
+      spawnPixelParticles(particlesContainer);
+      
+      const countInterval = setInterval(() => {
+        count--;
+        
+        if (count > 0) {
+          countdownText.textContent = count;
+          countdownText.style.animation = 'none';
+          countdownText.offsetHeight; // Trigger reflow
+          countdownText.style.animation = 'countdownPulse 0.5s ease-in-out';
+          
+          playArcadeSound('beep');
+          spawnPixelParticles(particlesContainer);
+          
+        } else if (count === 0) {
+          countdownText.textContent = 'GO!';
+          countdownText.classList.add('go');
+          countdownSubtitle.textContent = "LET'S QUIZ!";
+          
+          playArcadeSound('go');
+          spawnPixelParticles(particlesContainer, 30);
+          
+        } else {
+          clearInterval(countInterval);
+          
+          // Update database and show first question
+          dbUpdateGame({ status: 'playing' });
+          showQuestionScreen();
+        }
+      }, 1000);
+    }
+    
+    function spawnPixelParticles(container, count = 15) {
+      if (!container) return;
+      
+      const colors = ['#ff6b9d', '#ff8c42', '#f4c542', '#9d4edd', '#4ecdc4'];
+      
+      for (let i = 0; i < count; i++) {
+        const pixel = document.createElement('div');
+        pixel.className = 'pixel';
+        pixel.style.background = colors[Math.floor(Math.random() * colors.length)];
+        pixel.style.left = '50%';
+        pixel.style.top = '50%';
+        
+        const angle = (Math.random() * 360) * (Math.PI / 180);
+        const distance = 100 + Math.random() * 150;
+        pixel.style.setProperty('--tx', `${Math.cos(angle) * distance}px`);
+        pixel.style.setProperty('--ty', `${Math.sin(angle) * distance}px`);
+        
+        container.appendChild(pixel);
+        
+        setTimeout(() => pixel.remove(), 1000);
+      }
+    }
+    
+    function playArcadeSound(type) {
+      if (!audioCtx) return;
+      
+      switch(type) {
+        case 'powerup':
+          // Rising arpeggio powerup sound
+          const powerupNotes = [262, 330, 392, 523, 659, 784];
+          powerupNotes.forEach((freq, i) => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.08);
+            gain.gain.setValueAtTime(0.15, audioCtx.currentTime + i * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.08 + 0.15);
+            osc.start(audioCtx.currentTime + i * 0.08);
+            osc.stop(audioCtx.currentTime + i * 0.08 + 0.15);
+          });
+          break;
+          
+        case 'beep':
+          // Retro beep
+          const beepOsc = audioCtx.createOscillator();
+          const beepGain = audioCtx.createGain();
+          beepOsc.connect(beepGain);
+          beepGain.connect(audioCtx.destination);
+          beepOsc.type = 'square';
+          beepOsc.frequency.setValueAtTime(440, audioCtx.currentTime);
+          beepOsc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.1);
+          beepGain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+          beepGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+          beepOsc.start(audioCtx.currentTime);
+          beepOsc.stop(audioCtx.currentTime + 0.2);
+          break;
+          
+        case 'go':
+          // Epic GO sound - chord + sweep
+          const goFreqs = [523, 659, 784, 1047];
+          goFreqs.forEach((freq, i) => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+            osc.start(audioCtx.currentTime);
+            osc.stop(audioCtx.currentTime + 0.5);
+          });
+          
+          // Add sweep
+          const sweepOsc = audioCtx.createOscillator();
+          const sweepGain = audioCtx.createGain();
+          sweepOsc.connect(sweepGain);
+          sweepGain.connect(audioCtx.destination);
+          sweepOsc.type = 'sawtooth';
+          sweepOsc.frequency.setValueAtTime(200, audioCtx.currentTime);
+          sweepOsc.frequency.exponentialRampToValueAtTime(1600, audioCtx.currentTime + 0.3);
+          sweepGain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+          sweepGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+          sweepOsc.start(audioCtx.currentTime);
+          sweepOsc.stop(audioCtx.currentTime + 0.4);
+          break;
+      }
     }
     
     async function revealAnswer() {
