@@ -1184,18 +1184,20 @@
     </div>
   </div>
 
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     // ==========================================
     // CONFIGURATION
     // ==========================================
-    const SUPABASE_URL = 'https://pwpxachynrhmkeowxmhg.supabase.co';
+    const SUPABASE_URL = 'https://pwpxachynrhmkeowxmhg.db.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3cHhhY2h5bnJobWtlb3d4bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0ODM4NTMsImV4cCI6MjA4OTA1OTg1M30.vMzH379AZ--rY-YJljDDOwJ5xpNnJcq4dH_WfX8Yy4U';
     const QM_PASSWORD = 'olatoye2026';
     const TIMER_SECONDS = 15;
     
     // Initialize Supabase client
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const { createClient } = supabase;
+    const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.log('Supabase initialized');
     
     // Team configuration
     const TEAMS = {
@@ -1497,7 +1499,7 @@
     // ==========================================
     async function dbCreateGame(gameData) {
       try {
-        const { data, error } = await supabase
+        const { data, error } = await db
           .from('games')
           .insert({
             code: state.gameCode,
@@ -1524,7 +1526,7 @@
     
     async function dbGetGame() {
       try {
-        const { data, error } = await supabase
+        const { data, error } = await db
           .from('games')
           .select('*')
           .eq('code', state.gameCode)
@@ -1543,7 +1545,7 @@
     
     async function dbUpdateGame(updates) {
       try {
-        const { data, error } = await supabase
+        const { data, error } = await db
           .from('games')
           .update(updates)
           .eq('code', state.gameCode)
