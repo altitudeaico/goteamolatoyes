@@ -1714,7 +1714,7 @@
     // ==========================================
     async function createGame() {
       const password = document.getElementById('hostPasswordInput').value;
-      if (password !== QM_PASSWORD) {
+      if (password.toLowerCase() !== QM_PASSWORD.toLowerCase()) {
         alert('Incorrect password');
         return;
       }
