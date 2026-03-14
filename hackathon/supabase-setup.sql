@@ -3,7 +3,18 @@
 -- ==========================================
 -- Run this in your Supabase SQL Editor
 
--- 1. USERS TABLE
+-- 1. TEAMS TABLE (must be created first - referenced by users)
+CREATE TABLE IF NOT EXISTS hackathon_teams (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  icon TEXT DEFAULT '⚡',
+  code TEXT NOT NULL UNIQUE,
+  members JSONB DEFAULT '[]'::jsonb,
+  xp INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 2. USERS TABLE
 CREATE TABLE IF NOT EXISTS hackathon_users (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   name TEXT NOT NULL UNIQUE,
@@ -15,17 +26,6 @@ CREATE TABLE IF NOT EXISTS hackathon_users (
   completed_tasks JSONB DEFAULT '[]'::jsonb,
   current_mission INTEGER DEFAULT 1,
   team_id UUID REFERENCES hackathon_teams(id),
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- 2. TEAMS TABLE
-CREATE TABLE IF NOT EXISTS hackathon_teams (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  name TEXT NOT NULL,
-  icon TEXT DEFAULT '⚡',
-  code TEXT NOT NULL UNIQUE,
-  members JSONB DEFAULT '[]'::jsonb,
-  xp INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
