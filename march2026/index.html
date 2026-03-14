@@ -1184,13 +1184,18 @@
     </div>
   </div>
 
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script>
     // ==========================================
     // CONFIGURATION
     // ==========================================
-    const FIREBASE_URL = 'https://olatoye-academy-default-rtdb.europe-west1.firebasedatabase.app';
+    const SUPABASE_URL = 'https://pwpxachynrhmkeowxmhg.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3cHhhY2h5bnJobWtlb3d4bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0ODM4NTMsImV4cCI6MjA4OTA1OTg1M30.vMzH379AZ--rY-YJljDDOwJ5xpNnJcq4dH_WfX8Yy4U';
     const QM_PASSWORD = 'olatoye2026';
     const TIMER_SECONDS = 15;
+    
+    // Initialize Supabase client
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     
     // Team configuration
     const TEAMS = {
@@ -1285,7 +1290,7 @@
       { category: 'Family', question: 'Which team has the castle emoji?', answers: ['New York', 'Middleton', 'Gravesend', 'Radlett'], correct: 1 },
       { category: 'Family', question: 'What is the name of our family quiz series?', answers: ['Quiz Night', 'GoTeamOlatoyes', 'Family Feud', 'Brain Battle'], correct: 1 },
       { category: 'Family', question: 'How many questions were in the Christmas 2025 quiz bank?', answers: ['50', '75', '104', '150'], correct: 2 },
-      { category: 'Family', question: 'What technology syncs our multiplayer quiz across devices?', answers: ['Bluetooth', 'WiFi Direct', 'Firebase', 'Magic'], correct: 2 },
+      { category: 'Family', question: 'What technology syncs our multiplayer quiz across devices?', answers: ['Bluetooth', 'WiFi Direct', 'Supabase', 'Magic'], correct: 2 },
       { category: 'Family', question: 'Who usually hosts the family quiz?', answers: ['The youngest', 'The oldest', 'Quiz Master', 'Random selection'], correct: 2 },
       
       // ==========================================
@@ -1488,56 +1493,179 @@
     }
     
     // ==========================================
-    // FIREBASE HELPERS
+    // SUPABASE HELPERS
     // ==========================================
-    async function firebaseSet(path, data) {
+    async function dbCreateGame(gameData) {
       try {
-        const url = path 
-          ? `${FIREBASE_URL}/games/${state.gameCode}/${path}.json`
-          : `${FIREBASE_URL}/games/${state.gameCode}.json`;
-        console.log('Firebase SET:', url, data);
-        const response = await fetch(url, {
-          method: 'PUT',
-          body: JSON.stringify(data)
-        });
-        const result = await response.json();
-        console.log('Firebase SET result:', result);
-        showConnectionStatus(false);
-      } catch (e) {
-        showConnectionStatus(true);
-        console.error('Firebase set error:', e);
-      }
-    }
-    
-    async function firebaseGet(path) {
-      try {
-        const url = path
-          ? `${FIREBASE_URL}/games/${state.gameCode}/${path}.json`
-          : `${FIREBASE_URL}/games/${state.gameCode}.json`;
-        const res = await fetch(url);
-        const data = await res.json();
-        console.log('Firebase GET:', url, '→', data);
+        const { data, error } = await supabase
+          .from('games')
+          .insert({
+            code: state.gameCode,
+            status: gameData.status,
+            current_question: gameData.currentQuestion,
+            questions: gameData.questions,
+            scores: gameData.scores,
+            players: gameData.players,
+            revealed: gameData.revealed
+          })
+          .select()
+          .single();
+        
+        if (error) throw error;
+        console.log('Game created:', data);
         showConnectionStatus(false);
         return data;
       } catch (e) {
         showConnectionStatus(true);
-        console.error('Firebase get error:', e);
+        console.error('Create game error:', e);
         return null;
       }
     }
     
-    async function firebaseUpdate(path, data) {
+    async function dbGetGame() {
       try {
-        const url = `${FIREBASE_URL}/games/${state.gameCode}/${path}.json`;
-        console.log('Firebase UPDATE:', url, data);
-        await fetch(url, {
-          method: 'PATCH',
-          body: JSON.stringify(data)
-        });
+        const { data, error } = await supabase
+          .from('games')
+          .select('*')
+          .eq('code', state.gameCode)
+          .single();
+        
+        if (error) throw error;
+        console.log('Game data:', data);
         showConnectionStatus(false);
+        return data;
       } catch (e) {
         showConnectionStatus(true);
-        console.error('Firebase update error:', e);
+        console.error('Get game error:', e);
+        return null;
+      }
+    }
+    
+    async function dbUpdateGame(updates) {
+      try {
+        const { data, error } = await supabase
+          .from('games')
+          .update(updates)
+          .eq('code', state.gameCode)
+          .select()
+          .single();
+        
+        if (error) throw error;
+        console.log('Game updated:', data);
+        showConnectionStatus(false);
+        return data;
+      } catch (e) {
+        showConnectionStatus(true);
+        console.error('Update game error:', e);
+        return null;
+      }
+    }
+    
+    async function dbAddPlayer(playerId, playerData) {
+      try {
+        // Get current players first
+        const game = await dbGetGame();
+        if (!game) return null;
+        
+        const players = game.players || {};
+        players[playerId] = playerData;
+        
+        return await dbUpdateGame({ players });
+      } catch (e) {
+        console.error('Add player error:', e);
+        return null;
+      }
+    }
+    
+    async function dbUpdateScore(team, score) {
+      try {
+        const game = await dbGetGame();
+        if (!game) return null;
+        
+        const scores = game.scores || {};
+        scores[team] = score;
+        
+        return await dbUpdateGame({ scores });
+      } catch (e) {
+        console.error('Update score error:', e);
+        return null;
+      }
+    }
+    
+    // Real-time subscription
+    let gameSubscription = null;
+    
+    function subscribeToGame() {
+      if (gameSubscription) {
+        gameSubscription.unsubscribe();
+      }
+      
+      gameSubscription = supabase
+        .channel('game-' + state.gameCode)
+        .on('postgres_changes', 
+          { event: '*', schema: 'public', table: 'games', filter: `code=eq.${state.gameCode}` },
+          (payload) => {
+            console.log('Real-time update:', payload);
+            handleGameUpdate(payload.new);
+          }
+        )
+        .subscribe((status) => {
+          console.log('Subscription status:', status);
+          if (status === 'SUBSCRIBED') {
+            showConnectionStatus(false);
+          }
+        });
+    }
+    
+    function handleGameUpdate(data) {
+      if (!data) return;
+      
+      // Update players in lobby
+      if (data.players) {
+        updateLobbyPlayers(data.players);
+      }
+      
+      // Update scores
+      if (data.scores) {
+        state.scores = data.scores;
+      }
+      
+      // Handle status changes (for players only - host controls the flow)
+      if (!state.isHost) {
+        // Sync current question
+        if (data.current_question !== undefined) {
+          state.currentQuestion = data.current_question;
+        }
+        
+        // Sync questions
+        if (data.questions) {
+          state.questions = data.questions;
+        }
+        
+        if (data.status === 'playing' && state.lastState !== 'playing') {
+          showQuestionScreen();
+        }
+        
+        if (data.revealed && state.lastState !== 'revealed') {
+          showCorrectAnswer();
+        }
+        
+        if (data.status === 'leaderboard' && state.lastState !== 'leaderboard') {
+          showLeaderboardScreen();
+        }
+        
+        if (data.status === 'finished' && state.lastState !== 'finished') {
+          showWinnerScreen();
+        }
+        
+        state.lastState = data.revealed ? 'revealed' : data.status;
+      }
+    }
+    
+    function unsubscribeFromGame() {
+      if (gameSubscription) {
+        gameSubscription.unsubscribe();
+        gameSubscription = null;
       }
     }
     
@@ -1602,26 +1730,29 @@
         questions: state.questions,
         scores: state.scores,
         players: {},
-        revealed: false,
-        createdAt: Date.now()
+        revealed: false
       };
       
-      await firebaseSet(null, gameData);
+      const result = await dbCreateGame(gameData);
+      if (!result) {
+        alert('Failed to create game. Please try again.');
+        return;
+      }
       
       document.getElementById('lobbyGameCode').textContent = state.gameCode;
       document.getElementById('qmLobbyControls').style.display = 'block';
       
       showScreen('lobby');
-      startPolling();
+      subscribeToGame(); // Real-time updates!
     }
     
     async function startGame() {
-      await firebaseUpdate('', { status: 'playing', currentQuestion: 0, revealed: false });
+      await dbUpdateGame({ status: 'playing', current_question: 0, revealed: false });
       showQuestionScreen();
     }
     
     async function revealAnswer() {
-      await firebaseUpdate('', { revealed: true });
+      await dbUpdateGame({ revealed: true });
       document.getElementById('revealBtn').disabled = true;
       document.getElementById('nextBtn').disabled = false;
       showCorrectAnswer();
@@ -1631,20 +1762,20 @@
       state.currentQuestion++;
       
       if (state.currentQuestion >= state.questions.length) {
-        await firebaseUpdate('', { status: 'finished' });
+        await dbUpdateGame({ status: 'finished' });
         showWinnerScreen();
         return;
       }
       
       // Show leaderboard every 5 questions
       if (state.currentQuestion % 5 === 0) {
-        await firebaseUpdate('', { status: 'leaderboard' });
+        await dbUpdateGame({ status: 'leaderboard' });
         showLeaderboardScreen();
         return;
       }
       
-      await firebaseUpdate('', { 
-        currentQuestion: state.currentQuestion, 
+      await dbUpdateGame({ 
+        current_question: state.currentQuestion, 
         revealed: false,
         status: 'playing'
       });
@@ -1663,7 +1794,7 @@
       }
       
       state.gameCode = code;
-      const gameData = await firebaseGet('');
+      const gameData = await dbGetGame();
       
       if (!gameData) {
         alert('Game not found');
@@ -1672,7 +1803,7 @@
       
       state.questions = gameData.questions;
       state.scores = gameData.scores;
-      state.currentQuestion = gameData.currentQuestion || 0;
+      state.currentQuestion = gameData.current_question || 0;
       
       showScreen('team-select');
     }
@@ -1688,16 +1819,14 @@
       if (!state.selectedTeam) return;
       
       const playerId = 'player_' + Date.now();
-      await firebaseUpdate('players', {
-        [playerId]: {
-          team: state.selectedTeam,
-          joinedAt: Date.now()
-        }
+      await dbAddPlayer(playerId, {
+        team: state.selectedTeam,
+        joinedAt: Date.now()
       });
       
       document.getElementById('lobbyGameCode').textContent = state.gameCode;
       showScreen('lobby');
-      startPolling();
+      subscribeToGame(); // Real-time updates!
     }
     
     function selectAnswer(index, element) {
@@ -1790,7 +1919,7 @@
     
     async function updateScore(team, points) {
       state.scores[team] = (state.scores[team] || 0) + points;
-      await firebaseUpdate('scores', { [team]: state.scores[team] });
+      await dbUpdateScore(team, state.scores[team]);
     }
     
     function showLeaderboardScreen() {
@@ -1827,7 +1956,7 @@
     }
     
     function showWinnerScreen() {
-      stopPolling();
+      unsubscribeFromGame();
       
       const sortedTeams = Object.entries(state.scores)
         .sort((a, b) => b[1] - a[1]);
@@ -1892,59 +2021,16 @@
     }
     
     // ==========================================
-    // POLLING
+    // POLLING (Fallback - not needed with real-time)
     // ==========================================
     function startPolling() {
-      state.pollInterval = setInterval(async () => {
-        const data = await firebaseGet('');
-        if (!data) return;
-        
-        // Update players in lobby (for BOTH host and players)
-        if (data.players) {
-          updateLobbyPlayers(data.players);
-        }
-        
-        // Update scores
-        if (data.scores) {
-          state.scores = data.scores;
-        }
-        
-        // Update questions if not already set (for players joining mid-game)
-        if (data.questions && !state.questions.length) {
-          state.questions = data.questions;
-        }
-        
-        // Handle status changes (for players only - host controls the flow)
-        if (!state.isHost) {
-          // Sync current question
-          if (data.currentQuestion !== undefined) {
-            state.currentQuestion = data.currentQuestion;
-          }
-          
-          if (data.status === 'playing' && state.lastState !== 'playing') {
-            state.questions = data.questions;
-            showQuestionScreen();
-          }
-          
-          if (data.revealed && state.lastState !== 'revealed') {
-            showCorrectAnswer();
-          }
-          
-          if (data.status === 'leaderboard' && state.lastState !== 'leaderboard') {
-            showLeaderboardScreen();
-          }
-          
-          if (data.status === 'finished' && state.lastState !== 'finished') {
-            showWinnerScreen();
-          }
-          
-          state.lastState = data.revealed ? 'revealed' : data.status;
-        }
-      }, 1500);
+      // With Supabase real-time, we don't need polling
+      // But keep this as a fallback that does nothing
+      console.log('Real-time sync active - polling disabled');
     }
     
     function stopPolling() {
-      clearInterval(state.pollInterval);
+      // No-op since we use real-time
     }
     
     function updateLobbyPlayers(players) {
