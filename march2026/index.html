@@ -1507,6 +1507,9 @@
     // ==========================================
     async function dbCreateGame(gameData) {
       try {
+        console.log('Creating game with code:', state.gameCode);
+        console.log('Game data:', gameData);
+        
         const { data, error } = await db
           .from('games')
           .insert({
@@ -1521,13 +1524,17 @@
           .select()
           .single();
         
-        if (error) throw error;
-        console.log('Game created:', data);
+        if (error) {
+          console.error('Supabase error:', error.message, error.details, error.hint);
+          throw error;
+        }
+        console.log('Game created successfully:', data);
         showConnectionStatus(false);
         return data;
       } catch (e) {
         showConnectionStatus(true);
         console.error('Create game error:', e);
+        alert('Database error: ' + (e.message || 'Unknown error'));
         return null;
       }
     }
