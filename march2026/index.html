@@ -1168,6 +1168,9 @@
           <button class="btn btn-primary" onclick="startGame()">
             Start Quiz 🚀
           </button>
+          <button class="btn btn-ghost" onclick="resetGame()" style="color: #ff6b6b;">
+            ✕ End Game
+          </button>
         </div>
       </div>
     </div>
@@ -1241,6 +1244,9 @@
           </button>
           <button class="btn btn-primary" onclick="nextQuestion()" id="nextBtn" disabled>
             Next →
+          </button>
+          <button class="btn btn-ghost" onclick="resetGame()" style="color: #ff6b6b; font-size: 0.85rem;">
+            ✕ End
           </button>
         </div>
       </div>
@@ -2053,6 +2059,41 @@
       showCorrectAnswer();
     }
     
+    async function resetGame() {
+      if (!confirm('Are you sure you want to end this game?')) return;
+      
+      // Delete the game from database
+      try {
+        await db.from('games').delete().eq('code', state.gameCode);
+        console.log('Game deleted');
+      } catch (e) {
+        console.error('Error deleting game:', e);
+      }
+      
+      // Stop polling
+      stopPolling();
+      
+      // Reset local state
+      state.gameCode = null;
+      state.isHost = false;
+      state.selectedTeam = null;
+      state.currentQuestion = 0;
+      state.questions = [];
+      state.scores = {};
+      state.selectedAnswer = null;
+      state.answered = false;
+      state.lastState = null;
+      
+      // Clear timer
+      if (state.timerInterval) {
+        clearInterval(state.timerInterval);
+        state.timerInterval = null;
+      }
+      
+      // Go back to home
+      showScreen('home');
+    }
+    
     async function nextQuestion() {
       state.currentQuestion++;
       
@@ -2327,6 +2368,11 @@
         const data = await dbGetGame();
         if (data) {
           handleGameUpdate(data);
+        } else if (!state.isHost) {
+          // Game was deleted - kick player back to home
+          alert('The game has ended.');
+          stopPolling();
+          showScreen('home');
         }
       }, 2000);
     }
