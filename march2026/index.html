@@ -1495,10 +1495,13 @@
         const url = path 
           ? `${FIREBASE_URL}/games/${state.gameCode}/${path}.json`
           : `${FIREBASE_URL}/games/${state.gameCode}.json`;
-        await fetch(url, {
+        console.log('Firebase SET:', url, data);
+        const response = await fetch(url, {
           method: 'PUT',
           body: JSON.stringify(data)
         });
+        const result = await response.json();
+        console.log('Firebase SET result:', result);
         showConnectionStatus(false);
       } catch (e) {
         showConnectionStatus(true);
@@ -1512,8 +1515,10 @@
           ? `${FIREBASE_URL}/games/${state.gameCode}/${path}.json`
           : `${FIREBASE_URL}/games/${state.gameCode}.json`;
         const res = await fetch(url);
+        const data = await res.json();
+        console.log('Firebase GET:', url, '→', data);
         showConnectionStatus(false);
-        return await res.json();
+        return data;
       } catch (e) {
         showConnectionStatus(true);
         console.error('Firebase get error:', e);
@@ -1523,7 +1528,9 @@
     
     async function firebaseUpdate(path, data) {
       try {
-        await fetch(`${FIREBASE_URL}/games/${state.gameCode}/${path}.json`, {
+        const url = `${FIREBASE_URL}/games/${state.gameCode}/${path}.json`;
+        console.log('Firebase UPDATE:', url, data);
+        await fetch(url, {
           method: 'PATCH',
           body: JSON.stringify(data)
         });
@@ -1892,7 +1899,7 @@
         const data = await firebaseGet('');
         if (!data) return;
         
-        // Update players in lobby
+        // Update players in lobby (for BOTH host and players)
         if (data.players) {
           updateLobbyPlayers(data.players);
         }
@@ -1902,10 +1909,19 @@
           state.scores = data.scores;
         }
         
-        // Handle status changes (for players)
+        // Update questions if not already set (for players joining mid-game)
+        if (data.questions && !state.questions.length) {
+          state.questions = data.questions;
+        }
+        
+        // Handle status changes (for players only - host controls the flow)
         if (!state.isHost) {
-          if (data.status === 'playing' && state.lastState !== 'playing') {
+          // Sync current question
+          if (data.currentQuestion !== undefined) {
             state.currentQuestion = data.currentQuestion;
+          }
+          
+          if (data.status === 'playing' && state.lastState !== 'playing') {
             state.questions = data.questions;
             showQuestionScreen();
           }
@@ -1933,7 +1949,14 @@
     
     function updateLobbyPlayers(players) {
       const container = document.getElementById('lobbyPlayers');
-      const entries = Object.values(players);
+      if (!container) return; // Safety check
+      
+      const entries = Object.values(players || {});
+      
+      if (entries.length === 0) {
+        container.innerHTML = '<p class="text-muted">Waiting for players to join...</p>';
+        return;
+      }
       
       // Group by team
       const byTeam = {};
@@ -1944,6 +1967,7 @@
       
       container.innerHTML = Object.entries(byTeam).map(([teamId, count]) => {
         const team = TEAMS[teamId];
+        if (!team) return ''; // Safety check
         return `
           <div class="lobby-player">
             <span class="lobby-player-emoji">${team.emoji}</span>
