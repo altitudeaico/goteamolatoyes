@@ -2563,6 +2563,12 @@
     }
     
     function showLeaderboardScreen() {
+      // Stop the timer
+      if (state.timerInterval) {
+        clearInterval(state.timerInterval);
+        state.timerInterval = null;
+      }
+      
       document.getElementById('leaderboardRound').textContent = state.currentQuestion;
       
       // Play epic power-up sound
@@ -2701,6 +2707,12 @@
     }
     
     function showWinnerScreen() {
+      // Stop all timers and polling
+      if (state.timerInterval) {
+        clearInterval(state.timerInterval);
+        state.timerInterval = null;
+      }
+      stopPolling();
       unsubscribeFromGame();
       
       const sortedTeams = Object.entries(state.scores)
@@ -2733,7 +2745,11 @@
       const text = document.getElementById('timerText');
       const circumference = 226;
       
-      clearInterval(state.timerInterval);
+      // Clear any existing timer
+      if (state.timerInterval) {
+        clearInterval(state.timerInterval);
+        state.timerInterval = null;
+      }
       
       progress.style.strokeDashoffset = 0;
       progress.classList.remove('warning', 'danger');
@@ -2741,6 +2757,21 @@
       
       state.timerInterval = setInterval(() => {
         seconds--;
+        
+        // Stop at 0 - don't go negative
+        if (seconds <= 0) {
+          clearInterval(state.timerInterval);
+          state.timerInterval = null;
+          text.textContent = 0;
+          progress.style.strokeDashoffset = circumference;
+          
+          // Auto-advance if enabled (host only)
+          if (state.isHost && state.autoAdvance) {
+            autoAdvanceQuestion();
+          }
+          return; // Exit early - no more sounds
+        }
+        
         text.textContent = seconds;
         
         const offset = circumference - (seconds / TIMER_SECONDS) * circumference;
@@ -2752,20 +2783,7 @@
         } else if (seconds <= 10) {
           progress.classList.add('warning');
           if (seconds === 10) playSound('warning'); // Warning at 10 seconds
-        }
-        
-        // Tick sound every second above 5
-        if (seconds > 5 && seconds <= 10) {
           playSound('tick');
-        }
-        
-        if (seconds <= 0) {
-          clearInterval(state.timerInterval);
-          
-          // Auto-advance if enabled (host only)
-          if (state.isHost && state.autoAdvance) {
-            autoAdvanceQuestion();
-          }
         }
       }, 1000);
     }
