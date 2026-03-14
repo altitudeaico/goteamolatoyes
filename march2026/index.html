@@ -1172,8 +1172,11 @@
             <p class="text-secondary">Enter Quiz Master password</p>
           </div>
           
-          <div class="input-group w-full" style="max-width: 280px;">
-            <input type="password" class="input" id="hostPasswordInput" placeholder="Password" style="letter-spacing: 0.05em;">
+          <div class="input-group w-full" style="max-width: 280px; position: relative;">
+            <input type="password" class="input" id="hostPasswordInput" placeholder="Password" style="letter-spacing: 0.05em; padding-right: 50px;">
+            <button type="button" onclick="togglePasswordVisibility()" id="passwordToggleBtn" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 1.25rem; cursor: pointer; padding: 8px;">
+              👁️
+            </button>
           </div>
           
           <button class="btn btn-primary" onclick="createGame()">
@@ -2143,6 +2146,19 @@
       if (!state.soundEnabled) return;
       originalPlaySound(type);
     };
+    
+    // Password visibility toggle
+    function togglePasswordVisibility() {
+      const input = document.getElementById('hostPasswordInput');
+      const btn = document.getElementById('passwordToggleBtn');
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = '🙈';
+      } else {
+        input.type = 'password';
+        btn.textContent = '👁️';
+      }
+    }
   </script>
 </body>
 </html>
