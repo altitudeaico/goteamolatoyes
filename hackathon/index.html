@@ -2,50 +2,55 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CODE QUEST - Olatoye Academy Hackathon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#0a0a1a">
+  <title>CODE QUEST - Olatoye Academy</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --bg-dark: #0a0a1a;
       --bg-darker: #050510;
-      --bg-card: #12122a;
-      --bg-card-hover: #1a1a3a;
+      --bg-card: #151530;
+      --bg-card-hover: #1e1e45;
       --gold: #ffd700;
-      --gold-soft: rgba(255, 215, 0, 0.15);
+      --gold-glow: rgba(255, 215, 0, 0.4);
       --cyan: #00f5ff;
-      --cyan-soft: rgba(0, 245, 255, 0.15);
+      --cyan-glow: rgba(0, 245, 255, 0.4);
       --magenta: #ff00ff;
-      --magenta-soft: rgba(255, 0, 255, 0.15);
       --purple: #9d4edd;
-      --purple-soft: rgba(157, 78, 221, 0.15);
       --green: #00ff88;
-      --green-soft: rgba(0, 255, 136, 0.15);
+      --green-glow: rgba(0, 255, 136, 0.4);
       --red: #ff4757;
       --text: #ffffff;
-      --text-muted: #8888aa;
+      --text-muted: #9999bb;
       --text-dim: #555577;
-      --radius: 16px;
-      --radius-sm: 8px;
+      --radius: 20px;
+      --radius-sm: 12px;
+      --safe-bottom: env(safe-area-inset-bottom, 20px);
     }
     
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
     
-    body {
+    html, body {
       font-family: 'Exo 2', sans-serif;
       background: var(--bg-dark);
       color: var(--text);
       min-height: 100vh;
+      min-height: -webkit-fill-available;
       overflow-x: hidden;
+      overscroll-behavior: none;
     }
     
-    /* Animated background */
-    .bg-animation {
+    /* Game-like animated background */
+    .game-bg {
       position: fixed;
       top: 0;
       left: 0;
@@ -54,28 +59,65 @@
       pointer-events: none;
       z-index: 0;
       background: 
-        radial-gradient(ellipse at 20% 20%, rgba(157, 78, 221, 0.1) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 80%, rgba(0, 245, 255, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 50%, rgba(255, 215, 0, 0.05) 0%, transparent 70%);
+        radial-gradient(ellipse at 30% 20%, rgba(157, 78, 221, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 80%, rgba(0, 245, 255, 0.12) 0%, transparent 50%);
     }
     
     .stars {
       position: absolute;
       width: 100%;
-      height: 100%;
+      height: 200%;
       background-image: 
-        radial-gradient(2px 2px at 20px 30px, white, transparent),
-        radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.7), transparent),
-        radial-gradient(1px 1px at 90px 40px, white, transparent),
-        radial-gradient(2px 2px at 160px 120px, rgba(255,255,255,0.8), transparent),
-        radial-gradient(1px 1px at 230px 80px, white, transparent);
-      background-size: 400px 400px;
-      animation: twinkle 6s ease-in-out infinite;
+        radial-gradient(2px 2px at 100px 50px, white, transparent),
+        radial-gradient(2px 2px at 200px 150px, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1px 1px at 300px 100px, white, transparent),
+        radial-gradient(2px 2px at 400px 200px, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1px 1px at 150px 250px, white, transparent),
+        radial-gradient(2px 2px at 350px 50px, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1px 1px at 50px 180px, white, transparent),
+        radial-gradient(2px 2px at 250px 300px, rgba(255,255,255,0.5), transparent);
+      background-size: 500px 400px;
+      animation: starScroll 60s linear infinite;
     }
     
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.4; }
-      50% { opacity: 0.8; }
+    @keyframes starScroll {
+      from { transform: translateY(0); }
+      to { transform: translateY(-50%); }
+    }
+    
+    /* Floating particles */
+    .particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--cyan);
+      border-radius: 50%;
+      animation: float 20s infinite;
+      opacity: 0.6;
+    }
+    
+    .particle:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 25s; }
+    .particle:nth-child(2) { left: 20%; animation-delay: 2s; animation-duration: 20s; background: var(--gold); }
+    .particle:nth-child(3) { left: 30%; animation-delay: 4s; animation-duration: 28s; }
+    .particle:nth-child(4) { left: 40%; animation-delay: 1s; animation-duration: 22s; background: var(--magenta); }
+    .particle:nth-child(5) { left: 50%; animation-delay: 3s; animation-duration: 24s; }
+    .particle:nth-child(6) { left: 60%; animation-delay: 5s; animation-duration: 26s; background: var(--gold); }
+    .particle:nth-child(7) { left: 70%; animation-delay: 2s; animation-duration: 21s; }
+    .particle:nth-child(8) { left: 80%; animation-delay: 4s; animation-duration: 23s; background: var(--magenta); }
+    .particle:nth-child(9) { left: 90%; animation-delay: 1s; animation-duration: 27s; }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(100vh) scale(0); opacity: 0; }
+      10% { opacity: 0.6; transform: translateY(90vh) scale(1); }
+      90% { opacity: 0.6; transform: translateY(10vh) scale(1); }
+      100% { transform: translateY(0) scale(0); opacity: 0; }
     }
     
     /* Screens */
@@ -84,92 +126,112 @@
       position: relative;
       z-index: 1;
       min-height: 100vh;
+      min-height: -webkit-fill-available;
       padding: 20px;
+      padding-bottom: calc(20px + var(--safe-bottom));
     }
     
     .screen.active {
       display: flex;
       flex-direction: column;
+      animation: screenIn 0.4s ease-out;
     }
     
-    /* Common Elements */
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      width: 100%;
+    @keyframes screenIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
     }
     
-    .card {
-      background: var(--bg-card);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: var(--radius);
-      padding: 25px;
-    }
-    
+    /* Game Button Styles */
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      padding: 14px 28px;
+      gap: 12px;
+      padding: 18px 32px;
       border: none;
-      border-radius: var(--radius-sm);
+      border-radius: var(--radius);
       font-family: 'Orbitron', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 600;
+      font-size: 1rem;
+      font-weight: 700;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
       text-transform: uppercase;
       letter-spacing: 0.1em;
+      position: relative;
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: 0.5s;
+    }
+    
+    .btn:hover::before, .btn:active::before {
+      left: 100%;
     }
     
     .btn-primary {
-      background: linear-gradient(135deg, var(--gold), #ffaa00);
+      background: linear-gradient(135deg, var(--gold), #ff9500);
       color: #000;
+      box-shadow: 0 6px 25px var(--gold-glow), inset 0 1px 0 rgba(255,255,255,0.3);
     }
     
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+    .btn-primary:active {
+      transform: scale(0.96);
+      box-shadow: 0 3px 15px var(--gold-glow);
     }
     
     .btn-secondary {
-      background: var(--bg-card);
+      background: linear-gradient(135deg, var(--bg-card), var(--bg-card-hover));
       border: 2px solid var(--cyan);
       color: var(--cyan);
+      box-shadow: 0 4px 20px rgba(0, 245, 255, 0.2), inset 0 1px 0 rgba(255,255,255,0.1);
     }
     
-    .btn-secondary:hover {
-      background: var(--cyan-soft);
+    .btn-secondary:active {
+      transform: scale(0.96);
+      background: var(--cyan);
+      color: #000;
     }
     
-    .btn-ghost {
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: var(--text-muted);
+    .btn-game {
+      background: linear-gradient(135deg, var(--green), #00cc6a);
+      color: #000;
+      box-shadow: 0 6px 25px var(--green-glow), inset 0 1px 0 rgba(255,255,255,0.3);
+      font-size: 1.1rem;
+      padding: 20px 40px;
     }
     
-    .btn-ghost:hover {
-      border-color: var(--text);
-      color: var(--text);
+    .btn-game:active {
+      transform: scale(0.96);
     }
     
+    /* Input Fields - Mobile Optimized */
     .input-field {
       width: 100%;
-      padding: 14px 18px;
+      padding: 18px 20px;
       background: var(--bg-darker);
-      border: 2px solid rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.15);
       border-radius: var(--radius-sm);
       color: var(--text);
       font-family: 'Exo 2', sans-serif;
-      font-size: 1rem;
+      font-size: 18px; /* Prevents zoom on iOS */
       transition: all 0.3s ease;
+      -webkit-appearance: none;
     }
     
     .input-field:focus {
       outline: none;
       border-color: var(--cyan);
-      box-shadow: 0 0 20px rgba(0, 245, 255, 0.2);
+      box-shadow: 0 0 30px rgba(0, 245, 255, 0.3);
     }
     
     .input-field::placeholder {
@@ -178,12 +240,26 @@
     
     .label {
       display: block;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       font-weight: 600;
       color: var(--text-muted);
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.15em;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    /* Card Styles - Game UI */
+    .card {
+      background: linear-gradient(145deg, var(--bg-card) 0%, rgba(21, 21, 48, 0.8) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius);
+      padding: 24px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
     
     /* ==========================================
@@ -192,83 +268,107 @@
     #screen-login {
       align-items: center;
       justify-content: center;
-    }
-    
-    .login-container {
-      max-width: 450px;
-      width: 100%;
       text-align: center;
     }
     
-    .login-logo {
+    .login-container {
+      max-width: 400px;
+      width: 100%;
+    }
+    
+    .game-logo {
       margin-bottom: 30px;
+      animation: logoFloat 3s ease-in-out infinite;
     }
     
-    .login-logo-icon {
-      font-size: 4rem;
-      margin-bottom: 15px;
+    @keyframes logoFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .game-logo-icon {
+      font-size: 5rem;
       display: block;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 0 30px var(--gold-glow));
     }
     
-    .login-logo h1 {
+    .game-logo h1 {
       font-family: 'Orbitron', sans-serif;
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       font-weight: 900;
-      background: linear-gradient(135deg, var(--gold) 0%, var(--cyan) 50%, var(--magenta) 100%);
+      background: linear-gradient(135deg, var(--gold) 0%, #fff 50%, var(--cyan) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 5px;
+      background-clip: text;
+      text-shadow: 0 0 60px var(--gold-glow);
+      letter-spacing: 0.05em;
     }
     
-    .login-logo p {
+    .game-logo p {
       color: var(--text-muted);
       font-size: 1rem;
+      margin-top: 8px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
     }
     
     .login-card {
-      padding: 40px;
+      padding: 30px 25px;
       margin-bottom: 20px;
     }
     
     .login-tabs {
       display: flex;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
       border-radius: var(--radius-sm);
       overflow: hidden;
       background: var(--bg-darker);
+      padding: 4px;
     }
     
     .login-tab {
       flex: 1;
-      padding: 12px;
+      padding: 14px;
       border: none;
       background: transparent;
       color: var(--text-muted);
       font-family: 'Orbitron', sans-serif;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s;
+      border-radius: var(--radius-sm);
     }
     
     .login-tab.active {
-      background: var(--purple);
+      background: linear-gradient(135deg, var(--purple), #7b2cbf);
       color: white;
+      box-shadow: 0 4px 15px rgba(157, 78, 221, 0.4);
     }
     
     .login-form {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 5px;
     }
     
-    .form-group {
-      text-align: left;
-    }
-    
-    .login-footer {
+    .game-footer {
       color: var(--text-dim);
-      font-size: 0.85rem;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .game-footer span {
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
     
     /* ==========================================
@@ -276,67 +376,71 @@
        ========================================== */
     #screen-profile-setup {
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
+      padding-top: 40px;
     }
     
-    .profile-setup-container {
-      max-width: 500px;
+    .setup-container {
+      max-width: 450px;
       width: 100%;
     }
     
-    .profile-header {
+    .setup-header {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
     }
     
-    .profile-header h2 {
+    .setup-header h2 {
       font-family: 'Orbitron', sans-serif;
-      font-size: 1.8rem;
-      margin-bottom: 10px;
+      font-size: 1.6rem;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, var(--gold), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
     
-    .profile-header p {
+    .setup-header p {
       color: var(--text-muted);
     }
     
+    /* Avatar Selector - Game Style */
     .avatar-selector {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 20px;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
     }
     
     .avatar-preview {
-      width: 120px;
-      height: 120px;
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
-      border: 4px solid var(--purple);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 4rem;
-      background: var(--purple-soft);
-      position: relative;
-      overflow: hidden;
+      font-size: 3.5rem;
+      background: linear-gradient(135deg, var(--purple), #7b2cbf);
+      border: 4px solid var(--gold);
+      box-shadow: 0 0 40px var(--gold-glow), 0 0 60px rgba(157, 78, 221, 0.3);
+      margin-bottom: 20px;
+      animation: avatarGlow 2s ease-in-out infinite alternate;
     }
     
-    .avatar-preview img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    @keyframes avatarGlow {
+      from { box-shadow: 0 0 30px var(--gold-glow), 0 0 50px rgba(157, 78, 221, 0.2); }
+      to { box-shadow: 0 0 50px var(--gold-glow), 0 0 80px rgba(157, 78, 221, 0.4); }
     }
     
-    .avatar-options {
-      display: flex;
+    .avatar-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
       gap: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
+      width: 100%;
+      max-width: 320px;
     }
     
     .avatar-option {
-      width: 50px;
-      height: 50px;
+      aspect-ratio: 1;
       border-radius: 50%;
       border: 2px solid rgba(255, 255, 255, 0.2);
       display: flex;
@@ -344,18 +448,25 @@
       justify-content: center;
       font-size: 1.5rem;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.2s ease;
       background: var(--bg-card);
     }
     
-    .avatar-option:hover, .avatar-option.selected {
+    .avatar-option:active {
+      transform: scale(0.9);
+    }
+    
+    .avatar-option.selected {
       border-color: var(--gold);
+      background: var(--gold-glow);
+      box-shadow: 0 0 20px var(--gold-glow);
       transform: scale(1.1);
     }
     
+    /* Team Section */
     .team-section {
-      margin-top: 30px;
-      padding-top: 30px;
+      margin-top: 25px;
+      padding-top: 25px;
       border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
     
@@ -363,351 +474,389 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 15px;
+      padding: 18px;
       background: var(--bg-darker);
       border-radius: var(--radius-sm);
       margin-bottom: 20px;
+      cursor: pointer;
+    }
+    
+    .team-toggle-info h4 {
+      font-size: 1rem;
+      margin-bottom: 3px;
+    }
+    
+    .team-toggle-info p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
     }
     
     .toggle-switch {
-      width: 50px;
-      height: 26px;
+      width: 56px;
+      height: 30px;
       background: var(--bg-card);
-      border-radius: 13px;
+      border-radius: 15px;
       position: relative;
-      cursor: pointer;
       transition: all 0.3s;
+      border: 2px solid rgba(255, 255, 255, 0.1);
     }
     
     .toggle-switch.active {
       background: var(--green);
+      border-color: var(--green);
     }
     
     .toggle-switch::after {
       content: '';
       position: absolute;
-      width: 22px;
-      height: 22px;
+      width: 24px;
+      height: 24px;
       background: white;
       border-radius: 50%;
-      top: 2px;
-      left: 2px;
+      top: 1px;
+      left: 1px;
       transition: all 0.3s;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
     
     .toggle-switch.active::after {
-      left: 26px;
+      left: 27px;
     }
     
     .team-form {
       display: none;
+      animation: slideDown 0.3s ease;
     }
     
     .team-form.visible {
       display: block;
     }
     
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
     /* ==========================================
        SCREEN: DASHBOARD
        ========================================== */
     #screen-dashboard {
-      padding-top: 0;
+      padding: 0;
+      padding-bottom: calc(80px + var(--safe-bottom));
     }
     
-    /* Top Navigation */
-    .top-nav {
+    /* Game HUD - Top Bar */
+    .game-hud {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 20px;
-      background: var(--bg-darker);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 15px 20px;
+      background: linear-gradient(180deg, var(--bg-darker) 0%, transparent 100%);
       position: sticky;
       top: 0;
       z-index: 100;
     }
     
-    .nav-brand {
+    .hud-left {
       display: flex;
       align-items: center;
       gap: 12px;
     }
     
-    .nav-logo {
-      font-size: 1.8rem;
-    }
-    
-    .nav-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.2rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--gold), var(--cyan));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    
-    .nav-user {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-    
-    .nav-xp {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 15px;
-      background: var(--gold-soft);
-      border-radius: 100px;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--gold);
-    }
-    
-    .nav-avatar {
-      width: 40px;
-      height: 40px;
+    .hud-avatar {
+      width: 45px;
+      height: 45px;
       border-radius: 50%;
-      border: 2px solid var(--purple);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
-      background: var(--purple-soft);
+      font-size: 1.5rem;
+      background: linear-gradient(135deg, var(--purple), #7b2cbf);
+      border: 2px solid var(--gold);
       cursor: pointer;
     }
     
-    /* Dashboard Content */
-    .dashboard-content {
-      padding: 30px 20px;
+    .hud-info {
+      display: flex;
+      flex-direction: column;
     }
     
-    /* Progress Overview */
-    .progress-overview {
+    .hud-name {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+    
+    .hud-rank {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    
+    .hud-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .xp-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 16px;
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 150, 0, 0.1));
+      border: 1px solid var(--gold);
+      border-radius: 100px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--gold);
+      box-shadow: 0 0 20px var(--gold-glow);
+    }
+    
+    .xp-badge span {
+      font-size: 1.1rem;
+    }
+    
+    /* Stats Row - Game Style */
+    .stats-row {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      margin-bottom: 40px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      padding: 15px 20px;
     }
     
-    .stat-card {
-      padding: 20px;
+    .stat-box {
+      background: var(--bg-card);
+      border-radius: var(--radius-sm);
+      padding: 15px 10px;
       text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
     .stat-icon {
-      font-size: 2rem;
-      margin-bottom: 10px;
+      font-size: 1.5rem;
+      margin-bottom: 5px;
     }
     
     .stat-value {
       font-family: 'Orbitron', sans-serif;
-      font-size: 2rem;
+      font-size: 1.3rem;
       font-weight: 800;
-      margin-bottom: 5px;
     }
     
     .stat-label {
-      font-size: 0.85rem;
+      font-size: 0.65rem;
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.1em;
     }
     
-    .stat-card.gold .stat-value { color: var(--gold); }
-    .stat-card.cyan .stat-value { color: var(--cyan); }
-    .stat-card.green .stat-value { color: var(--green); }
-    .stat-card.purple .stat-value { color: var(--purple); }
+    .stat-box.gold .stat-value { color: var(--gold); }
+    .stat-box.cyan .stat-value { color: var(--cyan); }
+    .stat-box.green .stat-value { color: var(--green); }
+    .stat-box.purple .stat-value { color: var(--purple); }
     
-    /* Mission Progress */
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 25px;
+    /* Mission List - Game Cards */
+    .mission-section {
+      padding: 20px;
     }
     
     .section-title {
       font-family: 'Orbitron', sans-serif;
-      font-size: 1.3rem;
+      font-size: 1.1rem;
       font-weight: 700;
+      margin-bottom: 15px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
     
     .section-title span {
-      font-size: 1.5rem;
+      font-size: 1.3rem;
     }
     
-    /* Mission Track */
-    .mission-track {
-      position: relative;
-      padding-left: 40px;
-    }
-    
-    .mission-line {
-      position: absolute;
-      left: 15px;
-      top: 30px;
-      bottom: 30px;
-      width: 3px;
-      background: linear-gradient(to bottom, var(--green), var(--purple), var(--text-dim));
-      border-radius: 2px;
-    }
-    
-    .mission-card {
-      position: relative;
-      margin-bottom: 20px;
-      padding: 25px;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    
-    .mission-card:hover {
-      transform: translateX(5px);
-    }
-    
-    .mission-card::before {
-      content: '';
-      position: absolute;
-      left: -33px;
-      top: 28px;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: var(--bg-dark);
-      border: 3px solid var(--text-dim);
-    }
-    
-    .mission-card.completed::before {
-      background: var(--green);
-      border-color: var(--green);
-    }
-    
-    .mission-card.current::before {
-      background: var(--gold);
-      border-color: var(--gold);
-      box-shadow: 0 0 15px var(--gold);
-      animation: pulse 2s ease-in-out infinite;
-    }
-    
-    .mission-card.locked::before {
-      background: var(--text-dim);
-      border-color: var(--text-dim);
-    }
-    
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 15px var(--gold); }
-      50% { box-shadow: 0 0 30px var(--gold); }
-    }
-    
-    .mission-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
-    
-    .mission-number {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      margin-bottom: 5px;
-    }
-    
-    .mission-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 700;
-    }
-    
-    .mission-xp {
-      padding: 5px 12px;
-      background: var(--gold-soft);
-      border-radius: 100px;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--gold);
-    }
-    
-    .mission-description {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      margin-bottom: 15px;
-    }
-    
-    .mission-tasks {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    
-    .task-tag {
-      padding: 5px 12px;
-      background: var(--bg-darker);
-      border-radius: 100px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-    
-    .task-tag.done {
-      background: var(--green-soft);
-      color: var(--green);
-    }
-    
-    .mission-card.locked {
-      opacity: 0.5;
-      pointer-events: none;
-    }
-    
-    .mission-card.locked .mission-title::after {
-      content: ' 🔒';
-    }
-    
-    /* Leaderboard Preview */
-    .leaderboard-section {
-      margin-top: 40px;
-    }
-    
-    .leaderboard-list {
+    .mission-list {
       display: flex;
       flex-direction: column;
       gap: 12px;
     }
     
-    .leaderboard-item {
+    .mission-card {
       display: flex;
       align-items: center;
       gap: 15px;
-      padding: 15px 20px;
+      padding: 18px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .mission-card:active {
+      transform: scale(0.98);
+    }
+    
+    .mission-card::after {
+      content: '→';
+      position: absolute;
+      right: 18px;
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      transition: all 0.2s;
+    }
+    
+    .mission-card:active::after {
+      right: 12px;
+      color: var(--gold);
+    }
+    
+    .mission-icon {
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+      position: relative;
+    }
+    
+    .mission-card.completed .mission-icon {
+      background: linear-gradient(135deg, var(--green), #00cc6a);
+      box-shadow: 0 0 20px var(--green-glow);
+    }
+    
+    .mission-card.completed .mission-icon::after {
+      content: '✓';
+      position: absolute;
+      bottom: -2px;
+      right: -2px;
+      width: 20px;
+      height: 20px;
+      background: var(--green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: #000;
+      border: 2px solid var(--bg-card);
+    }
+    
+    .mission-card.current .mission-icon {
+      background: linear-gradient(135deg, var(--gold), #ff9500);
+      box-shadow: 0 0 25px var(--gold-glow);
+      animation: currentPulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes currentPulse {
+      0%, 100% { box-shadow: 0 0 20px var(--gold-glow); }
+      50% { box-shadow: 0 0 40px var(--gold-glow); }
+    }
+    
+    .mission-card.locked .mission-icon {
+      background: var(--bg-darker);
+      border: 2px dashed var(--text-dim);
+      color: var(--text-dim);
+    }
+    
+    .mission-info {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .mission-number {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+    
+    .mission-name {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 3px 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .mission-card.locked .mission-name {
+      color: var(--text-dim);
+    }
+    
+    .mission-xp {
+      font-size: 0.8rem;
+      color: var(--gold);
+      font-weight: 600;
+    }
+    
+    .mission-card.completed .mission-xp {
+      color: var(--green);
+    }
+    
+    .mission-card.locked .mission-xp {
+      color: var(--text-dim);
+    }
+    
+    /* Progress Bar */
+    .mission-progress {
+      height: 4px;
+      background: var(--bg-darker);
+      border-radius: 2px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    
+    .mission-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold), var(--cyan));
+      border-radius: 2px;
+      transition: width 0.5s ease;
+    }
+    
+    /* Leaderboard */
+    .leaderboard-section {
+      padding: 20px;
+    }
+    
+    .leaderboard-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .leaderboard-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 15px;
     }
     
     .leaderboard-rank {
-      width: 35px;
-      height: 35px;
+      width: 32px;
+      height: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: 50%;
       font-family: 'Orbitron', sans-serif;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 700;
       background: var(--bg-darker);
     }
     
     .leaderboard-item:nth-child(1) .leaderboard-rank {
-      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      background: linear-gradient(135deg, #ffd700, #ff9500);
       color: #000;
+      box-shadow: 0 0 15px var(--gold-glow);
     }
     
     .leaderboard-item:nth-child(2) .leaderboard-rank {
-      background: linear-gradient(135deg, #c0c0c0, #a0a0a0);
+      background: linear-gradient(135deg, #e0e0e0, #a0a0a0);
       color: #000;
     }
     
@@ -717,15 +866,14 @@
     }
     
     .leaderboard-avatar {
-      width: 40px;
-      height: 40px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.3rem;
-      background: var(--purple-soft);
-      border: 2px solid var(--purple);
+      font-size: 1.2rem;
+      background: linear-gradient(135deg, var(--purple), #7b2cbf);
     }
     
     .leaderboard-info {
@@ -734,36 +882,88 @@
     
     .leaderboard-name {
       font-weight: 600;
-      margin-bottom: 2px;
+      font-size: 0.95rem;
     }
     
     .leaderboard-team {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: var(--text-muted);
     }
     
     .leaderboard-xp {
       font-family: 'Orbitron', sans-serif;
       font-weight: 700;
+      font-size: 0.9rem;
       color: var(--gold);
     }
     
     .leaderboard-item.me {
-      border: 2px solid var(--cyan);
-      background: var(--cyan-soft);
+      background: linear-gradient(135deg, rgba(0, 245, 255, 0.1), rgba(157, 78, 221, 0.1));
+      border: 1px solid var(--cyan);
+    }
+    
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 20px;
+      padding-bottom: calc(12px + var(--safe-bottom));
+      background: linear-gradient(180deg, transparent 0%, var(--bg-darker) 20%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 100;
+    }
+    
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.2s;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+    }
+    
+    .nav-item span {
+      font-size: 1.5rem;
+      transition: all 0.2s;
+    }
+    
+    .nav-item.active {
+      color: var(--gold);
+    }
+    
+    .nav-item.active span {
+      transform: scale(1.2);
+      filter: drop-shadow(0 0 10px var(--gold-glow));
+    }
+    
+    .nav-item:active {
+      transform: scale(0.9);
     }
     
     /* ==========================================
        SCREEN: MISSION DETAIL
        ========================================== */
     #screen-mission {
-      padding-top: 0;
+      padding: 0;
+      padding-bottom: calc(20px + var(--safe-bottom));
     }
     
-    .mission-detail-header {
-      padding: 30px 20px;
-      background: linear-gradient(135deg, var(--purple-soft), var(--cyan-soft));
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    .mission-header {
+      padding: 25px 20px;
+      background: linear-gradient(135deg, rgba(157, 78, 221, 0.2), rgba(0, 245, 255, 0.1));
+      position: relative;
     }
     
     .back-btn {
@@ -773,242 +973,237 @@
       color: var(--text-muted);
       font-size: 0.9rem;
       cursor: pointer;
-      margin-bottom: 20px;
-      transition: all 0.3s;
+      margin-bottom: 15px;
+      padding: 8px 0;
     }
     
-    .back-btn:hover {
-      color: var(--text);
-    }
-    
-    .mission-detail-title {
+    .mission-header-title {
       font-family: 'Orbitron', sans-serif;
-      font-size: 2rem;
+      font-size: 1.6rem;
       font-weight: 800;
       margin-bottom: 10px;
     }
     
-    .mission-detail-meta {
+    .mission-header-meta {
       display: flex;
-      align-items: center;
-      gap: 20px;
       flex-wrap: wrap;
+      gap: 15px;
     }
     
-    .meta-item {
+    .meta-badge {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 0.9rem;
+      gap: 6px;
+      font-size: 0.85rem;
       color: var(--text-muted);
     }
     
-    .meta-item span {
-      font-size: 1.1rem;
+    .meta-badge span {
+      font-size: 1rem;
     }
     
-    .mission-detail-content {
-      padding: 30px 20px;
+    /* Tip Card */
+    .tip-card {
+      margin: 20px;
+      padding: 20px;
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05));
+      border-left: 4px solid var(--gold);
+      display: flex;
+      gap: 15px;
+    }
+    
+    .tip-icon {
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+    
+    .tip-content h4 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.85rem;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+    
+    .tip-content p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-style: italic;
     }
     
     /* Task List */
+    .task-section {
+      padding: 0 20px;
+    }
+    
     .task-list {
       display: flex;
       flex-direction: column;
-      gap: 15px;
-      margin-bottom: 40px;
+      gap: 10px;
+      margin-top: 15px;
     }
     
     .task-item {
       display: flex;
       align-items: flex-start;
       gap: 15px;
-      padding: 20px;
+      padding: 18px;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.2s;
     }
     
-    .task-item:hover {
-      background: var(--bg-card-hover);
+    .task-item:active {
+      transform: scale(0.98);
     }
     
     .task-checkbox {
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       border: 2px solid var(--text-dim);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.9rem;
+      font-size: 1rem;
       flex-shrink: 0;
-      transition: all 0.3s;
+      transition: all 0.2s;
     }
     
     .task-item.completed .task-checkbox {
-      background: var(--green);
+      background: linear-gradient(135deg, var(--green), #00cc6a);
       border-color: var(--green);
       color: #000;
+      box-shadow: 0 0 15px var(--green-glow);
     }
     
-    .task-content {
+    .task-info {
       flex: 1;
     }
     
     .task-title {
       font-weight: 600;
-      margin-bottom: 5px;
+      margin-bottom: 4px;
     }
     
     .task-item.completed .task-title {
       text-decoration: line-through;
-      opacity: 0.7;
+      opacity: 0.6;
     }
     
     .task-desc {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: var(--text-muted);
     }
     
     .task-xp {
-      padding: 4px 10px;
-      background: var(--gold-soft);
+      padding: 6px 12px;
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
+      border: 1px solid var(--gold);
       border-radius: 100px;
       font-family: 'Orbitron', sans-serif;
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       font-weight: 600;
       color: var(--gold);
     }
     
     /* Prompt Section */
     .prompt-section {
-      margin-top: 30px;
+      padding: 20px;
     }
     
     .prompt-box {
-      background: #1a1a2e;
+      background: var(--bg-darker);
       border: 1px solid rgba(0, 245, 255, 0.3);
-      border-radius: 12px;
-      padding: 20px;
-      margin: 15px 0;
-      position: relative;
+      border-radius: var(--radius-sm);
+      padding: 18px;
+      margin-bottom: 15px;
     }
     
-    .prompt-box-header {
+    .prompt-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
     }
     
     .prompt-label {
       font-family: 'Orbitron', sans-serif;
       font-size: 0.75rem;
-      font-weight: 700;
+      font-weight: 600;
       color: var(--cyan);
       text-transform: uppercase;
       letter-spacing: 0.1em;
     }
     
     .copy-btn {
-      padding: 6px 12px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 6px;
+      padding: 8px 14px;
+      background: var(--cyan);
+      border: none;
+      border-radius: var(--radius-sm);
       font-size: 0.75rem;
-      color: var(--text-muted);
+      font-weight: 600;
+      color: #000;
       cursor: pointer;
       transition: all 0.2s;
     }
     
-    .copy-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
-      color: var(--text);
+    .copy-btn:active {
+      transform: scale(0.95);
     }
     
     .prompt-code {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: var(--cyan);
       line-height: 1.6;
       white-space: pre-wrap;
-    }
-    
-    /* Marvel Tip */
-    .marvel-tip {
-      display: flex;
-      gap: 15px;
-      padding: 20px;
-      background: linear-gradient(135deg, var(--gold-soft), transparent);
-      border-left: 4px solid var(--gold);
-      border-radius: 0 12px 12px 0;
-      margin: 25px 0;
-    }
-    
-    .marvel-tip-icon {
-      font-size: 2rem;
-      flex-shrink: 0;
-    }
-    
-    .marvel-tip h4 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.9rem;
-      color: var(--gold);
-      margin-bottom: 5px;
-    }
-    
-    .marvel-tip p {
-      color: var(--text-muted);
-      font-size: 0.95rem;
+      word-break: break-word;
     }
     
     /* Submit Section */
     .submit-section {
-      margin-top: 40px;
-      padding-top: 30px;
+      padding: 20px;
+      margin-top: 20px;
       border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
     
     .submit-section h3 {
       font-family: 'Orbitron', sans-serif;
-      font-size: 1.2rem;
-      margin-bottom: 20px;
+      font-size: 1.1rem;
+      margin-bottom: 15px;
       display: flex;
       align-items: center;
       gap: 10px;
     }
     
-    .submit-form {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-    
-    .submit-form textarea {
-      min-height: 150px;
+    .submit-section textarea {
+      min-height: 120px;
       resize: vertical;
     }
     
     /* ==========================================
        SCREEN: PROFILE
        ========================================== */
-    .profile-card {
-      text-align: center;
-      padding: 40px;
-      margin-bottom: 30px;
+    #screen-profile {
+      padding-bottom: calc(80px + var(--safe-bottom));
     }
     
-    .profile-avatar-large {
+    .profile-header {
+      text-align: center;
+      padding: 30px 20px;
+    }
+    
+    .profile-avatar {
       width: 100px;
       height: 100px;
       border-radius: 50%;
-      border: 4px solid var(--purple);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 3rem;
-      background: var(--purple-soft);
-      margin: 0 auto 20px;
+      font-size: 3.5rem;
+      background: linear-gradient(135deg, var(--purple), #7b2cbf);
+      border: 4px solid var(--gold);
+      box-shadow: 0 0 40px var(--gold-glow);
+      margin: 0 auto 15px;
     }
     
     .profile-name {
@@ -1018,7 +1213,7 @@
       margin-bottom: 5px;
     }
     
-    .profile-team {
+    .profile-tagline {
       color: var(--text-muted);
       font-size: 0.95rem;
     }
@@ -1026,10 +1221,8 @@
     .profile-stats {
       display: flex;
       justify-content: center;
-      gap: 40px;
+      gap: 30px;
       margin-top: 25px;
-      padding-top: 25px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
     
     .profile-stat {
@@ -1038,115 +1231,94 @@
     
     .profile-stat-value {
       font-family: 'Orbitron', sans-serif;
-      font-size: 1.5rem;
-      font-weight: 700;
+      font-size: 1.8rem;
+      font-weight: 800;
       color: var(--gold);
     }
     
     .profile-stat-label {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: var(--text-muted);
       text-transform: uppercase;
     }
     
-    /* Achievements */
+    /* Achievements Grid */
+    .achievements-section {
+      padding: 20px;
+    }
+    
     .achievements-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 15px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
     }
     
     .achievement {
-      padding: 20px;
+      padding: 18px 12px;
       text-align: center;
-      transition: all 0.3s;
-    }
-    
-    .achievement:hover {
-      transform: translateY(-5px);
     }
     
     .achievement-icon {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
+      font-size: 2.2rem;
+      margin-bottom: 8px;
     }
     
     .achievement-name {
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       font-weight: 600;
     }
     
     .achievement.locked {
-      opacity: 0.4;
+      opacity: 0.35;
       filter: grayscale(1);
     }
     
-    /* Loading */
-    .loading {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 60px;
-      gap: 20px;
+    .achievement.unlocked {
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), transparent);
+      border: 1px solid var(--gold);
     }
     
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 3px solid var(--bg-card);
-      border-top-color: var(--cyan);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
+    /* Sign Out */
+    .signout-section {
+      padding: 20px;
     }
     
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    .btn-signout {
+      width: 100%;
+      padding: 16px;
+      background: transparent;
+      border: 1px solid var(--red);
+      color: var(--red);
+      border-radius: var(--radius-sm);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
     }
     
-    /* Responsive */
-    @media (max-width: 768px) {
-      .top-nav {
-        padding: 15px;
-      }
-      
-      .nav-title {
-        display: none;
-      }
-      
-      .mission-track {
-        padding-left: 30px;
-      }
-      
-      .mission-card::before {
-        left: -23px;
-        width: 16px;
-        height: 16px;
-      }
-      
-      .mission-line {
-        left: 7px;
-      }
-      
-      .progress-overview {
-        grid-template-columns: repeat(2, 1fr);
-      }
+    .btn-signout:active {
+      background: var(--red);
+      color: #fff;
     }
     
-    /* Toast */
+    /* Toast Notification */
     .toast {
       position: fixed;
-      bottom: 30px;
+      top: 30px;
       left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      padding: 15px 25px;
-      background: var(--green);
+      transform: translateX(-50%) translateY(-100px);
+      padding: 16px 28px;
+      background: linear-gradient(135deg, var(--green), #00cc6a);
       color: #000;
-      border-radius: var(--radius-sm);
+      border-radius: var(--radius);
       font-weight: 600;
       z-index: 1000;
       opacity: 0;
-      transition: all 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 10px 40px var(--green-glow);
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
     
     .toast.show {
@@ -1155,28 +1327,124 @@
     }
     
     .toast.error {
-      background: var(--red);
+      background: linear-gradient(135deg, var(--red), #cc0030);
       color: white;
+      box-shadow: 0 10px 40px rgba(255, 71, 87, 0.4);
+    }
+    
+    .toast.xp {
+      background: linear-gradient(135deg, var(--gold), #ff9500);
+      box-shadow: 0 10px 40px var(--gold-glow);
+    }
+    
+    /* XP Popup Animation */
+    .xp-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--gold);
+      text-shadow: 0 0 40px var(--gold-glow);
+      z-index: 1001;
+      pointer-events: none;
+      opacity: 0;
+    }
+    
+    .xp-popup.show {
+      animation: xpPop 1.5s ease-out forwards;
+    }
+    
+    @keyframes xpPop {
+      0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+      20% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+      40% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      100% { transform: translate(-50%, -80%) scale(0.8); opacity: 0; }
+    }
+    
+    /* Loading Screen */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--bg-dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+    
+    .loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid var(--bg-card);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .loading-text {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--text-muted);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    
+    /* Hide loading */
+    .loading-screen.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
     }
   </style>
 </head>
 <body>
-  <div class="bg-animation">
+  <!-- Background Effects -->
+  <div class="game-bg">
     <div class="stars"></div>
+    <div class="particles">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+  </div>
+  
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading Quest...</div>
   </div>
   
   <!-- Toast -->
   <div class="toast" id="toast"></div>
   
+  <!-- XP Popup -->
+  <div class="xp-popup" id="xpPopup"></div>
+  
   <!-- ==========================================
        SCREEN: LOGIN
        ========================================== -->
-  <div class="screen active" id="screen-login">
+  <div class="screen" id="screen-login">
     <div class="login-container">
-      <div class="login-logo">
-        <span class="login-logo-icon">🚀</span>
+      <div class="game-logo">
+        <span class="game-logo-icon">🚀</span>
         <h1>CODE QUEST</h1>
-        <p>Olatoye Academy Hackathon</p>
+        <p>Olatoye Academy</p>
       </div>
       
       <div class="card login-card">
@@ -1188,7 +1456,7 @@
         <form class="login-form" id="loginForm" onsubmit="handleLogin(event)">
           <div class="form-group">
             <label class="label">Your Name</label>
-            <input type="text" class="input-field" id="loginName" placeholder="Enter your name" required>
+            <input type="text" class="input-field" id="loginName" placeholder="Enter your name" required autocomplete="off">
           </div>
           
           <div class="form-group">
@@ -1196,15 +1464,15 @@
             <input type="password" class="input-field" id="loginCode" placeholder="Your secret code" required>
           </div>
           
-          <button type="submit" class="btn btn-primary" style="width: 100%;">
-            🎮 Enter the Quest
+          <button type="submit" class="btn btn-game" style="width: 100%;">
+            🎮 Play
           </button>
         </form>
         
         <form class="login-form" id="registerForm" style="display: none;" onsubmit="handleRegister(event)">
           <div class="form-group">
             <label class="label">Your Name</label>
-            <input type="text" class="input-field" id="regName" placeholder="What should we call you?" required>
+            <input type="text" class="input-field" id="regName" placeholder="What should we call you?" required autocomplete="off">
           </div>
           
           <div class="form-group">
@@ -1213,18 +1481,18 @@
           </div>
           
           <div class="form-group">
-            <label class="label">Confirm Secret Code</label>
+            <label class="label">Confirm Code</label>
             <input type="password" class="input-field" id="regCodeConfirm" placeholder="Type it again" required>
           </div>
           
-          <button type="submit" class="btn btn-primary" style="width: 100%;">
-            ⚡ Begin Your Journey
+          <button type="submit" class="btn btn-game" style="width: 100%;">
+            ⚡ Start Quest
           </button>
         </form>
       </div>
       
-      <p class="login-footer">
-        Ready to become a coding hero? 🦸
+      <p class="game-footer">
+        <span>🎯</span> Ready to become a coding hero?
       </p>
     </div>
   </div>
@@ -1233,16 +1501,16 @@
        SCREEN: PROFILE SETUP
        ========================================== -->
   <div class="screen" id="screen-profile-setup">
-    <div class="profile-setup-container container">
-      <div class="profile-header">
-        <h2>⚡ Create Your Hero Profile</h2>
-        <p>Every hero needs an identity. Set up yours!</p>
+    <div class="setup-container">
+      <div class="setup-header">
+        <h2>⚡ Create Your Hero</h2>
+        <p>Choose your identity for the quest!</p>
       </div>
       
       <div class="card">
         <div class="avatar-selector">
           <div class="avatar-preview" id="avatarPreview">🦸</div>
-          <div class="avatar-options" id="avatarOptions">
+          <div class="avatar-grid" id="avatarOptions">
             <div class="avatar-option selected" onclick="selectAvatar('🦸')">🦸</div>
             <div class="avatar-option" onclick="selectAvatar('🧙')">🧙</div>
             <div class="avatar-option" onclick="selectAvatar('🥷')">🥷</div>
@@ -1258,47 +1526,46 @@
           </div>
         </div>
         
-        <div class="form-group" style="margin-bottom: 20px;">
+        <div class="form-group">
           <label class="label">Hero Name</label>
           <input type="text" class="input-field" id="heroName" placeholder="Your display name">
         </div>
         
         <div class="form-group">
-          <label class="label">Hero Tagline</label>
-          <input type="text" class="input-field" id="heroTagline" placeholder="e.g. 'Future Tech Wizard' or 'Code Ninja'">
+          <label class="label">Tagline</label>
+          <input type="text" class="input-field" id="heroTagline" placeholder="e.g. Future Tech Wizard">
         </div>
         
         <div class="team-section">
-          <div class="team-toggle">
-            <div>
-              <strong>Join or Create a Team?</strong>
-              <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 3px;">Team up with others for bonus XP!</p>
+          <div class="team-toggle" onclick="toggleTeamSection()">
+            <div class="team-toggle-info">
+              <h4>🤝 Join a Team?</h4>
+              <p>Team up for bonus XP!</p>
             </div>
-            <div class="toggle-switch" id="teamToggle" onclick="toggleTeamSection()"></div>
+            <div class="toggle-switch" id="teamToggle"></div>
           </div>
           
           <div class="team-form" id="teamForm">
-            <div class="login-tabs" style="margin-bottom: 20px;">
-              <button class="login-tab active" onclick="switchTeamTab('join')">Join Team</button>
-              <button class="login-tab" onclick="switchTeamTab('create')">Create Team</button>
+            <div class="login-tabs" style="margin-bottom: 15px;">
+              <button class="login-tab active" onclick="switchTeamTab('join')">Join</button>
+              <button class="login-tab" onclick="switchTeamTab('create')">Create</button>
             </div>
             
             <div id="joinTeamForm">
               <div class="form-group">
                 <label class="label">Team Code</label>
-                <input type="text" class="input-field" id="teamCode" placeholder="Enter team code">
+                <input type="text" class="input-field" id="teamCode" placeholder="Enter team code" style="text-transform: uppercase;">
               </div>
             </div>
             
             <div id="createTeamForm" style="display: none;">
-              <div class="form-group" style="margin-bottom: 15px;">
+              <div class="form-group">
                 <label class="label">Team Name</label>
-                <input type="text" class="input-field" id="teamName" placeholder="e.g. 'Code Avengers'">
+                <input type="text" class="input-field" id="teamName" placeholder="e.g. Code Avengers">
               </div>
-              
               <div class="form-group">
                 <label class="label">Team Icon</label>
-                <div class="avatar-options" style="margin-top: 10px;">
+                <div class="avatar-grid" style="grid-template-columns: repeat(6, 1fr); max-width: 240px; margin-top: 10px;" id="teamIconOptions">
                   <div class="avatar-option selected" onclick="selectTeamIcon('⚡')">⚡</div>
                   <div class="avatar-option" onclick="selectTeamIcon('🔥')">🔥</div>
                   <div class="avatar-option" onclick="selectTeamIcon('💎')">💎</div>
@@ -1311,8 +1578,8 @@
           </div>
         </div>
         
-        <button class="btn btn-primary" style="width: 100%; margin-top: 30px;" onclick="saveProfile()">
-          🎮 Start Your Quest
+        <button class="btn btn-game" style="width: 100%; margin-top: 25px;" onclick="saveProfile()">
+          🎮 Start Quest
         </button>
       </div>
     </div>
@@ -1322,143 +1589,77 @@
        SCREEN: DASHBOARD
        ========================================== -->
   <div class="screen" id="screen-dashboard">
-    <nav class="top-nav">
-      <div class="nav-brand">
-        <span class="nav-logo">🚀</span>
-        <span class="nav-title">CODE QUEST</span>
+    <!-- Game HUD -->
+    <div class="game-hud">
+      <div class="hud-left">
+        <div class="hud-avatar" id="hudAvatar" onclick="showScreen('profile')">🦸</div>
+        <div class="hud-info">
+          <div class="hud-name" id="hudName">Hero</div>
+          <div class="hud-rank" id="hudRank">Rank #1</div>
+        </div>
       </div>
-      <div class="nav-user">
-        <div class="nav-xp">
+      <div class="hud-right">
+        <div class="xp-badge">
           <span>⭐</span>
-          <span id="navXP">0 XP</span>
+          <span id="hudXP">0</span>
         </div>
-        <div class="nav-avatar" id="navAvatar" onclick="showScreen('profile')">🦸</div>
       </div>
-    </nav>
+    </div>
     
-    <div class="dashboard-content container">
-      <!-- Progress Overview -->
-      <div class="progress-overview">
-        <div class="card stat-card gold">
-          <div class="stat-icon">⭐</div>
-          <div class="stat-value" id="statXP">0</div>
-          <div class="stat-label">Total XP</div>
-        </div>
-        <div class="card stat-card cyan">
-          <div class="stat-icon">🎯</div>
-          <div class="stat-value" id="statMissions">0/5</div>
-          <div class="stat-label">Missions</div>
-        </div>
-        <div class="card stat-card green">
-          <div class="stat-icon">✅</div>
-          <div class="stat-value" id="statTasks">0</div>
-          <div class="stat-label">Tasks Done</div>
-        </div>
-        <div class="card stat-card purple">
-          <div class="stat-icon">🏆</div>
-          <div class="stat-value" id="statRank">#1</div>
-          <div class="stat-label">Rank</div>
-        </div>
+    <!-- Stats Row -->
+    <div class="stats-row">
+      <div class="stat-box gold">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-value" id="statXP">0</div>
+        <div class="stat-label">XP</div>
       </div>
-      
-      <!-- Current Mission -->
-      <div class="section-header">
-        <h2 class="section-title"><span>🗺️</span> Your Quest</h2>
+      <div class="stat-box cyan">
+        <div class="stat-icon">🎯</div>
+        <div class="stat-value" id="statMissions">0/5</div>
+        <div class="stat-label">Missions</div>
       </div>
-      
-      <div class="mission-track">
-        <div class="mission-line"></div>
-        
-        <div class="card mission-card completed" onclick="openMission(1)">
-          <div class="mission-header">
-            <div>
-              <div class="mission-number">Mission 01</div>
-              <div class="mission-title">The Awakening</div>
-            </div>
-            <div class="mission-xp">+100 XP</div>
-          </div>
-          <p class="mission-description">Every hero starts somewhere. Set up your tools and understand the basics.</p>
-          <div class="mission-tasks">
-            <span class="task-tag done">✓ Create account</span>
-            <span class="task-tag done">✓ Set up profile</span>
-            <span class="task-tag done">✓ Watch intro video</span>
-          </div>
-        </div>
-        
-        <div class="card mission-card current" onclick="openMission(2)">
-          <div class="mission-header">
-            <div>
-              <div class="mission-number">Mission 02</div>
-              <div class="mission-title">The Three Stones</div>
-            </div>
-            <div class="mission-xp">+250 XP</div>
-          </div>
-          <p class="mission-description">Discover the power of Claude, GitHub, and Supabase — your Infinity Stones.</p>
-          <div class="mission-tasks">
-            <span class="task-tag done">✓ Meet Claude</span>
-            <span class="task-tag">Explore GitHub</span>
-            <span class="task-tag">Understand Supabase</span>
-          </div>
-        </div>
-        
-        <div class="card mission-card locked" onclick="openMission(3)">
-          <div class="mission-header">
-            <div>
-              <div class="mission-number">Mission 03</div>
-              <div class="mission-title">First Creation</div>
-            </div>
-            <div class="mission-xp">+400 XP</div>
-          </div>
-          <p class="mission-description">Build your first webpage using Claude. Learn the art of prompting.</p>
-          <div class="mission-tasks">
-            <span class="task-tag">Write first prompt</span>
-            <span class="task-tag">Create homepage</span>
-            <span class="task-tag">Add styling</span>
-          </div>
-        </div>
-        
-        <div class="card mission-card locked" onclick="openMission(4)">
-          <div class="mission-header">
-            <div>
-              <div class="mission-number">Mission 04</div>
-              <div class="mission-title">Going Live</div>
-            </div>
-            <div class="mission-xp">+500 XP</div>
-          </div>
-          <p class="mission-description">Deploy your creation to the world using GitHub Pages.</p>
-          <div class="mission-tasks">
-            <span class="task-tag">Push to GitHub</span>
-            <span class="task-tag">Enable Pages</span>
-            <span class="task-tag">Share your link</span>
-          </div>
-        </div>
-        
-        <div class="card mission-card locked" onclick="openMission(5)">
-          <div class="mission-header">
-            <div>
-              <div class="mission-number">Mission 05</div>
-              <div class="mission-title">Multiplayer Magic</div>
-            </div>
-            <div class="mission-xp">+750 XP</div>
-          </div>
-          <p class="mission-description">Add real-time features with Supabase. Make it multiplayer!</p>
-          <div class="mission-tasks">
-            <span class="task-tag">Connect database</span>
-            <span class="task-tag">Real-time sync</span>
-            <span class="task-tag">Test with others</span>
-          </div>
-        </div>
+      <div class="stat-box green">
+        <div class="stat-icon">✅</div>
+        <div class="stat-value" id="statTasks">0</div>
+        <div class="stat-label">Tasks</div>
       </div>
+      <div class="stat-box purple">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-value" id="statRank">#1</div>
+        <div class="stat-label">Rank</div>
+      </div>
+    </div>
+    
+    <!-- Missions -->
+    <div class="mission-section">
+      <h2 class="section-title"><span>🗺️</span> Missions</h2>
       
-      <!-- Leaderboard -->
-      <div class="leaderboard-section">
-        <div class="section-header">
-          <h2 class="section-title"><span>🏆</span> Leaderboard</h2>
-        </div>
-        
-        <div class="leaderboard-list" id="leaderboardList">
-          <!-- Populated by JS -->
-        </div>
+      <div class="mission-list" id="missionList">
+        <!-- Generated by JS -->
+      </div>
+    </div>
+    
+    <!-- Leaderboard -->
+    <div class="leaderboard-section">
+      <h2 class="section-title"><span>🏆</span> Leaderboard</h2>
+      <div class="leaderboard-list" id="leaderboardList">
+        <!-- Generated by JS -->
+      </div>
+    </div>
+    
+    <!-- Bottom Nav -->
+    <div class="bottom-nav">
+      <div class="nav-item active" onclick="switchTab('missions')">
+        <span>🎯</span>
+        Missions
+      </div>
+      <div class="nav-item" onclick="switchTab('leaderboard')">
+        <span>🏆</span>
+        Ranks
+      </div>
+      <div class="nav-item" onclick="showScreen('profile')">
+        <span>👤</span>
+        Profile
       </div>
     </div>
   </div>
@@ -1467,57 +1668,54 @@
        SCREEN: MISSION DETAIL
        ========================================== -->
   <div class="screen" id="screen-mission">
-    <div class="mission-detail-header">
-      <div class="container">
-        <div class="back-btn" onclick="showScreen('dashboard')">
-          ← Back to Dashboard
-        </div>
-        <div class="mission-number" id="missionDetailNumber">MISSION 02</div>
-        <h1 class="mission-detail-title" id="missionDetailTitle">The Three Stones</h1>
-        <div class="mission-detail-meta">
-          <div class="meta-item"><span>⭐</span> <span id="missionDetailXP">250 XP</span></div>
-          <div class="meta-item"><span>📋</span> <span id="missionDetailTasks">3 Tasks</span></div>
-          <div class="meta-item"><span>⏱️</span> <span id="missionDetailTime">~30 mins</span></div>
-        </div>
+    <div class="mission-header">
+      <div class="back-btn" onclick="showScreen('dashboard')">
+        ← Back
+      </div>
+      <div class="mission-number" id="missionDetailNumber">MISSION 01</div>
+      <h1 class="mission-header-title" id="missionDetailTitle">The Awakening</h1>
+      <div class="mission-header-meta">
+        <div class="meta-badge"><span>⭐</span> <span id="missionDetailXP">100 XP</span></div>
+        <div class="meta-badge"><span>📋</span> <span id="missionDetailTasks">3 Tasks</span></div>
+        <div class="meta-badge"><span>⏱️</span> <span id="missionDetailTime">~15 mins</span></div>
       </div>
     </div>
     
-    <div class="mission-detail-content container">
-      <div class="marvel-tip">
-        <div class="marvel-tip-icon">🦸</div>
-        <div>
-          <h4>Hero's Wisdom</h4>
-          <p id="missionTip">"Before Tony Stark built Iron Man, he had to understand his tools. This mission is about understanding YOUR tools."</p>
-        </div>
+    <div class="tip-card">
+      <div class="tip-icon">🦸</div>
+      <div class="tip-content">
+        <h4>Hero's Wisdom</h4>
+        <p id="missionTip">"Every superhero started somewhere..."</p>
       </div>
-      
-      <h3 style="font-family: 'Orbitron', sans-serif; margin-bottom: 20px;">📋 Mission Tasks</h3>
-      
+    </div>
+    
+    <div class="task-section">
+      <h3 class="section-title"><span>📋</span> Tasks</h3>
       <div class="task-list" id="taskList">
-        <!-- Populated by JS -->
+        <!-- Generated by JS -->
       </div>
-      
-      <div class="prompt-section" id="promptSection">
-        <h3 style="font-family: 'Orbitron', sans-serif; margin-bottom: 20px;">💬 Prompts to Use</h3>
-        <!-- Populated by JS -->
-      </div>
-      
-      <div class="submit-section">
-        <h3>📤 Submit Your Work</h3>
-        <form class="submit-form" onsubmit="submitMission(event)">
-          <div class="form-group">
-            <label class="label">What did you create?</label>
-            <textarea class="input-field" id="submissionText" placeholder="Describe what you built, paste your code, or share a link..."></textarea>
-          </div>
-          <div class="form-group">
-            <label class="label">Link (optional)</label>
-            <input type="url" class="input-field" id="submissionLink" placeholder="https://...">
-          </div>
-          <button type="submit" class="btn btn-primary">
-            🚀 Submit for Review
-          </button>
-        </form>
-      </div>
+    </div>
+    
+    <div class="prompt-section" id="promptSection">
+      <h3 class="section-title"><span>💬</span> Prompts</h3>
+      <!-- Generated by JS -->
+    </div>
+    
+    <div class="submit-section">
+      <h3><span>📤</span> Submit Work</h3>
+      <form onsubmit="submitMission(event)">
+        <div class="form-group">
+          <label class="label">What did you create?</label>
+          <textarea class="input-field" id="submissionText" placeholder="Describe what you built..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="label">Link (optional)</label>
+          <input type="url" class="input-field" id="submissionLink" placeholder="https://...">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">
+          🚀 Submit
+        </button>
+      </form>
     </div>
   </div>
   
@@ -1525,48 +1723,38 @@
        SCREEN: PROFILE
        ========================================== -->
   <div class="screen" id="screen-profile">
-    <nav class="top-nav">
-      <div class="back-btn" onclick="showScreen('dashboard')" style="margin: 0;">
+    <div class="profile-header">
+      <div class="back-btn" onclick="showScreen('dashboard')" style="text-align: left; padding-left: 0;">
         ← Back
       </div>
-      <div class="nav-brand">
-        <span class="nav-title">PROFILE</span>
-      </div>
-      <div style="width: 60px;"></div>
-    </nav>
-    
-    <div class="container" style="padding: 30px 20px;">
-      <div class="card profile-card">
-        <div class="profile-avatar-large" id="profileAvatar">🦸</div>
-        <h2 class="profile-name" id="profileName">Hero Name</h2>
-        <p class="profile-team" id="profileTeam">Solo Hero</p>
-        
-        <div class="profile-stats">
-          <div class="profile-stat">
-            <div class="profile-stat-value" id="profileXP">0</div>
-            <div class="profile-stat-label">XP</div>
-          </div>
-          <div class="profile-stat">
-            <div class="profile-stat-value" id="profileMissions">0</div>
-            <div class="profile-stat-label">Missions</div>
-          </div>
-          <div class="profile-stat">
-            <div class="profile-stat-value" id="profileRank">#1</div>
-            <div class="profile-stat-label">Rank</div>
-          </div>
+      <div class="profile-avatar" id="profileAvatar">🦸</div>
+      <h2 class="profile-name" id="profileName">Hero Name</h2>
+      <p class="profile-tagline" id="profileTagline">Code Hero</p>
+      
+      <div class="profile-stats">
+        <div class="profile-stat">
+          <div class="profile-stat-value" id="profileXP">0</div>
+          <div class="profile-stat-label">XP</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-value" id="profileMissions">0</div>
+          <div class="profile-stat-label">Missions</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-value" id="profileRank">#1</div>
+          <div class="profile-stat-label">Rank</div>
         </div>
       </div>
-      
-      <div class="section-header">
-        <h2 class="section-title"><span>🏅</span> Achievements</h2>
-      </div>
-      
-      <div class="achievements-grid">
-        <div class="card achievement">
+    </div>
+    
+    <div class="achievements-section">
+      <h3 class="section-title"><span>🏅</span> Achievements</h3>
+      <div class="achievements-grid" id="achievementsGrid">
+        <div class="card achievement unlocked">
           <div class="achievement-icon">🌟</div>
           <div class="achievement-name">First Steps</div>
         </div>
-        <div class="card achievement">
+        <div class="card achievement unlocked">
           <div class="achievement-icon">💬</div>
           <div class="achievement-name">First Prompt</div>
         </div>
@@ -1587,13 +1775,15 @@
           <div class="achievement-name">Quest Master</div>
         </div>
       </div>
-      
-      <button class="btn btn-ghost" style="width: 100%; margin-top: 30px;" onclick="logout()">
+    </div>
+    
+    <div class="signout-section">
+      <button class="btn-signout" onclick="logout()">
         🚪 Sign Out
       </button>
     </div>
   </div>
-
+  
   <script>
     // ==========================================
     // SUPABASE CONFIG
@@ -1612,13 +1802,14 @@
         id: 1,
         number: '01',
         title: 'The Awakening',
+        icon: '🌅',
         xp: 100,
         time: '~15 mins',
-        tip: '"Every superhero started as an ordinary person. Your journey begins with a single step."',
+        tip: 'Every superhero started as an ordinary person. Your journey begins now!',
         tasks: [
           { id: 't1-1', title: 'Create your account', desc: 'Sign up for Code Quest', xp: 25 },
-          { id: 't1-2', title: 'Set up your profile', desc: 'Choose your avatar and hero name', xp: 25 },
-          { id: 't1-3', title: 'Watch the intro', desc: 'Understand the quest ahead', xp: 50 }
+          { id: 't1-2', title: 'Set up your profile', desc: 'Choose avatar and name', xp: 25 },
+          { id: 't1-3', title: 'Explore the dashboard', desc: 'Understand your quest', xp: 50 }
         ],
         prompts: []
       },
@@ -1626,35 +1817,36 @@
         id: 2,
         number: '02',
         title: 'The Three Stones',
+        icon: '💎',
         xp: 250,
         time: '~30 mins',
-        tip: '"Before Tony Stark built Iron Man, he had to understand his tools. Master your Infinity Stones: Claude, GitHub, and Supabase."',
+        tip: 'Master your Infinity Stones: Claude, GitHub, and Supabase!',
         tasks: [
-          { id: 't2-1', title: 'Meet Claude AI', desc: 'Have your first conversation with Claude', xp: 75 },
-          { id: 't2-2', title: 'Explore GitHub', desc: 'Understand where your code will live', xp: 75 },
-          { id: 't2-3', title: 'Discover Supabase', desc: 'Learn about real-time databases', xp: 100 }
+          { id: 't2-1', title: 'Meet Claude AI', desc: 'Have your first conversation', xp: 75 },
+          { id: 't2-2', title: 'Explore GitHub', desc: 'Where your code lives', xp: 75 },
+          { id: 't2-3', title: 'Discover Supabase', desc: 'The real-time database', xp: 100 }
         ],
         prompts: [
           {
             label: 'Your First Claude Prompt',
-            code: `Hi Claude! I'm learning to code as part of the Olatoye Academy Hackathon.
+            code: `Hi Claude! I'm learning to code.
 
-Can you explain to me like I'm 10 years old:
+Can you explain like I'm 10:
 1. What is HTML?
 2. What is CSS?
 3. What is JavaScript?
 
-Use fun examples, maybe related to building a video game or a superhero app!`
+Use fun superhero examples!`
           },
           {
-            label: 'Understanding the Tools',
-            code: `I'm using three tools for my hackathon project:
-- Claude (that's you!)
+            label: 'Understanding Tools',
+            code: `I'm using three tools:
+- Claude (you!)
 - GitHub
 - Supabase
 
-Can you explain what each one does using a superhero movie as an analogy? 
-Like, if I was making an Avengers movie, which tool would be the director, the cinema, and the script?`
+Explain what each does using 
+an Avengers movie analogy!`
           }
         ]
       },
@@ -1662,48 +1854,35 @@ Like, if I was making an Avengers movie, which tool would be the director, the c
         id: 3,
         number: '03',
         title: 'First Creation',
+        icon: '🎨',
         xp: 400,
         time: '~45 mins',
-        tip: '"With great power comes great responsibility. Your first creation doesn\'t need to be perfect — it needs to exist."',
+        tip: 'Your first creation doesn\'t need to be perfect — it needs to exist!',
         tasks: [
-          { id: 't3-1', title: 'Write your first prompt', desc: 'Ask Claude to create something', xp: 100 },
-          { id: 't3-2', title: 'Create a homepage', desc: 'Build a simple HTML page', xp: 150 },
-          { id: 't3-3', title: 'Add some style', desc: 'Make it look awesome with CSS', xp: 150 }
+          { id: 't3-1', title: 'Write first prompt', desc: 'Ask Claude to create something', xp: 100 },
+          { id: 't3-2', title: 'Create homepage', desc: 'Build a simple HTML page', xp: 150 },
+          { id: 't3-3', title: 'Add styling', desc: 'Make it look awesome', xp: 150 }
         ],
         prompts: [
           {
             label: 'Create Your Homepage',
-            code: `Create a personal homepage for me with:
+            code: `Create a personal homepage:
 
 1. MY DETAILS
    - Name: [YOUR NAME]
    - Title: "Future Code Hero"
-   - A fun fact about me: [SOMETHING ABOUT YOU]
 
 2. DESIGN
-   - Dark background (like space!)
-   - Bright colorful text
-   - My favorite emoji as a big icon
-   - Cool animations when the page loads
+   - Dark space background
+   - Colorful glowing text
+   - Cool animations
 
 3. SECTIONS
-   - Hero section with my name big and bold
-   - An "About Me" section
-   - A "My Favorite Things" list
-   - A footer that says "Made with ❤️ at Olatoye Academy"
+   - Big hero with my name
+   - About Me section
+   - My Favorite Things list
 
-Make it a single HTML file with CSS included.`
-          },
-          {
-            label: 'Make It Cooler',
-            code: `I love my homepage! Can you make it even cooler by adding:
-
-1. A starfield animation in the background (using CSS only)
-2. Text that glows like neon lights
-3. My sections slide in when the page loads
-4. A color scheme using these colors: [YOUR FAVORITE COLORS]
-
-Keep it as one HTML file.`
+Single HTML file with CSS!`
           }
         ]
       },
@@ -1711,26 +1890,26 @@ Keep it as one HTML file.`
         id: 4,
         number: '04',
         title: 'Going Live',
+        icon: '🌐',
         xp: 500,
         time: '~30 mins',
-        tip: '"A hero isn\'t a hero until the world knows their name. Deploy your creation for everyone to see!"',
+        tip: 'A hero isn\'t a hero until the world knows. Deploy your creation!',
         tasks: [
-          { id: 't4-1', title: 'Push to GitHub', desc: 'Upload your code to your repository', xp: 150 },
-          { id: 't4-2', title: 'Enable GitHub Pages', desc: 'Turn on hosting for your site', xp: 150 },
-          { id: 't4-3', title: 'Share your link', desc: 'Send your live site to family/friends', xp: 200 }
+          { id: 't4-1', title: 'Push to GitHub', desc: 'Upload your code', xp: 150 },
+          { id: 't4-2', title: 'Enable Pages', desc: 'Turn on hosting', xp: 150 },
+          { id: 't4-3', title: 'Share your link', desc: 'Show the world!', xp: 200 }
         ],
         prompts: [
           {
-            label: 'Understanding GitHub',
-            code: `I have my HTML file ready. Now I need to put it on GitHub so it becomes a real website.
+            label: 'GitHub Steps',
+            code: `I have my HTML file ready.
 
-Can you give me step-by-step instructions (like I'm doing this for the first time) for:
+Give me step-by-step for:
+1. Upload to GitHub
+2. Turn on GitHub Pages
+3. Find my live link
 
-1. How to upload my file to a GitHub repository
-2. How to turn on GitHub Pages
-3. How to find my live website link
-
-Assume I already have a GitHub account.`
+Explain like it's my first time!`
           }
         ]
       },
@@ -1738,40 +1917,30 @@ Assume I already have a GitHub account.`
         id: 5,
         number: '05',
         title: 'Multiplayer Magic',
+        icon: '🔮',
         xp: 750,
         time: '~60 mins',
-        tip: '"The Avengers are stronger together. Add real-time features so others can join your creation!"',
+        tip: 'The Avengers are stronger together. Add real-time features!',
         tasks: [
-          { id: 't5-1', title: 'Connect to Supabase', desc: 'Add database connection to your app', xp: 200 },
-          { id: 't5-2', title: 'Add real-time sync', desc: 'Make changes appear for everyone instantly', xp: 300 },
-          { id: 't5-3', title: 'Test with others', desc: 'Have someone else use your app live', xp: 250 }
+          { id: 't5-1', title: 'Connect Supabase', desc: 'Add database connection', xp: 200 },
+          { id: 't5-2', title: 'Real-time sync', desc: 'Live updates for everyone', xp: 300 },
+          { id: 't5-3', title: 'Test with others', desc: 'Have someone join live', xp: 250 }
         ],
         prompts: [
           {
-            label: 'Adding Supabase',
-            code: `I want to add Supabase to my project so multiple people can use it together.
+            label: 'Add Supabase',
+            code: `Add Supabase to my project.
 
-My Supabase details:
-- URL: [YOUR_SUPABASE_URL]
-- Key: [YOUR_ANON_KEY]
+My details:
+- URL: [YOUR_URL]
+- Key: [YOUR_KEY]
 
-I want to:
-1. Store a simple list of messages that anyone can add to
-2. Show all messages on the page
-3. When someone adds a new message, everyone sees it instantly (real-time!)
+I want:
+1. Store messages anyone can add
+2. Show all messages live
+3. Real-time updates!
 
-Can you modify my HTML to add this feature? Show me the JavaScript I need.`
-          },
-          {
-            label: 'Test Real-Time',
-            code: `My Supabase connection is working! 
-
-Now I want to test that it's truly real-time. Can you add:
-1. A visual indicator that shows "Connected" or "Disconnected"
-2. A little animation when a new message appears
-3. Show who sent each message (they can type their name)
-
-Keep it simple and fun!`
+Show me the JavaScript.`
           }
         ]
       }
@@ -1790,14 +1959,46 @@ Keep it simple and fun!`
     function showScreen(screenId) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById(`screen-${screenId}`).classList.add('active');
+      window.scrollTo(0, 0);
     }
     
-    function showToast(message, isError = false) {
+    function showToast(message, type = 'success') {
       const toast = document.getElementById('toast');
       toast.textContent = message;
-      toast.className = 'toast' + (isError ? ' error' : '');
+      toast.className = 'toast ' + type;
       toast.classList.add('show');
       setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+    
+    function showXPPopup(amount) {
+      const popup = document.getElementById('xpPopup');
+      popup.textContent = `+${amount} XP`;
+      popup.classList.add('show');
+      setTimeout(() => popup.classList.remove('show'), 1500);
+    }
+    
+    function playSound(type) {
+      // Simple sound feedback using AudioContext
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        if (type === 'success') {
+          osc.frequency.setValueAtTime(523, ctx.currentTime);
+          osc.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+          osc.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+        } else if (type === 'click') {
+          osc.frequency.setValueAtTime(600, ctx.currentTime);
+        }
+        
+        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.3);
+      } catch(e) {}
     }
     
     function copyPrompt(btn) {
@@ -1805,6 +2006,7 @@ Keep it simple and fun!`
       navigator.clipboard.writeText(code).then(() => {
         const original = btn.textContent;
         btn.textContent = '✓ Copied!';
+        playSound('success');
         setTimeout(() => btn.textContent = original, 2000);
       });
     }
@@ -1813,11 +2015,12 @@ Keep it simple and fun!`
     // LOGIN / REGISTER
     // ==========================================
     function switchLoginTab(tab) {
-      document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('#screen-login .login-tab').forEach(t => t.classList.remove('active'));
       event.target.classList.add('active');
       
       document.getElementById('loginForm').style.display = tab === 'login' ? 'flex' : 'none';
       document.getElementById('registerForm').style.display = tab === 'register' ? 'flex' : 'none';
+      playSound('click');
     }
     
     async function handleLogin(e) {
@@ -1825,7 +2028,6 @@ Keep it simple and fun!`
       const name = document.getElementById('loginName').value.trim();
       const code = document.getElementById('loginCode').value;
       
-      // Check if user exists
       const { data, error } = await db
         .from('hackathon_users')
         .select('*')
@@ -1834,15 +2036,16 @@ Keep it simple and fun!`
         .single();
       
       if (error || !data) {
-        showToast('Invalid name or code!', true);
+        showToast('Invalid name or code!', 'error');
         return;
       }
       
       currentUser = data;
       localStorage.setItem('codequest_user', JSON.stringify(data));
+      playSound('success');
       updateDashboard();
       showScreen('dashboard');
-      showToast(`Welcome back, ${data.display_name}!`);
+      showToast(`Welcome back, ${data.display_name}! 🎮`);
     }
     
     async function handleRegister(e) {
@@ -1852,16 +2055,15 @@ Keep it simple and fun!`
       const codeConfirm = document.getElementById('regCodeConfirm').value;
       
       if (code !== codeConfirm) {
-        showToast('Secret codes don\'t match!', true);
+        showToast('Codes don\'t match!', 'error');
         return;
       }
       
       if (code.length < 4) {
-        showToast('Secret code must be at least 4 characters!', true);
+        showToast('Code must be 4+ characters!', 'error');
         return;
       }
       
-      // Check if name exists
       const { data: existing } = await db
         .from('hackathon_users')
         .select('id')
@@ -1869,11 +2071,10 @@ Keep it simple and fun!`
         .single();
       
       if (existing) {
-        showToast('That name is already taken!', true);
+        showToast('Name already taken!', 'error');
         return;
       }
       
-      // Create user
       const { data, error } = await db
         .from('hackathon_users')
         .insert({
@@ -1889,14 +2090,14 @@ Keep it simple and fun!`
         .single();
       
       if (error) {
-        showToast('Error creating account. Try again!', true);
-        console.error(error);
+        showToast('Error creating account!', 'error');
         return;
       }
       
       currentUser = data;
       localStorage.setItem('codequest_user', JSON.stringify(data));
       document.getElementById('heroName').value = name;
+      playSound('success');
       showScreen('profile-setup');
     }
     
@@ -1909,13 +2110,15 @@ Keep it simple and fun!`
       document.querySelectorAll('#avatarOptions .avatar-option').forEach(opt => {
         opt.classList.toggle('selected', opt.textContent === emoji);
       });
+      playSound('click');
     }
     
     function selectTeamIcon(emoji) {
       selectedTeamIcon = emoji;
-      document.querySelectorAll('#createTeamForm .avatar-option').forEach(opt => {
+      document.querySelectorAll('#teamIconOptions .avatar-option').forEach(opt => {
         opt.classList.toggle('selected', opt.textContent === emoji);
       });
+      playSound('click');
     }
     
     function toggleTeamSection() {
@@ -1923,6 +2126,7 @@ Keep it simple and fun!`
       const form = document.getElementById('teamForm');
       toggle.classList.toggle('active');
       form.classList.toggle('visible');
+      playSound('click');
     }
     
     function switchTeamTab(tab) {
@@ -1931,31 +2135,30 @@ Keep it simple and fun!`
       
       document.getElementById('joinTeamForm').style.display = tab === 'join' ? 'block' : 'none';
       document.getElementById('createTeamForm').style.display = tab === 'create' ? 'block' : 'none';
+      playSound('click');
     }
     
     async function saveProfile() {
       const heroName = document.getElementById('heroName').value.trim() || currentUser.display_name;
-      const tagline = document.getElementById('heroTagline').value.trim();
+      const tagline = document.getElementById('heroTagline').value.trim() || 'Code Hero';
       
       const updates = {
         display_name: heroName,
         avatar: selectedAvatar,
         tagline: tagline,
-        xp: 100, // Award first mission XP
+        xp: 100,
         completed_tasks: ['t1-1', 't1-2', 't1-3'],
         current_mission: 2
       };
       
-      // Handle team
-      const teamToggle = document.getElementById('teamToggle').classList.contains('active');
-      if (teamToggle) {
+      const teamActive = document.getElementById('teamToggle').classList.contains('active');
+      if (teamActive) {
         const teamCode = document.getElementById('teamCode').value.trim();
         const teamName = document.getElementById('teamName').value.trim();
         
         if (teamName) {
-          // Create team
           const code = Math.random().toString(36).substring(2, 6).toUpperCase();
-          const { data: team, error: teamError } = await db
+          const { data: team } = await db
             .from('hackathon_teams')
             .insert({
               name: teamName,
@@ -1972,7 +2175,6 @@ Keep it simple and fun!`
             showToast(`Team created! Code: ${code}`);
           }
         } else if (teamCode) {
-          // Join team
           const { data: team } = await db
             .from('hackathon_teams')
             .select('*')
@@ -1981,14 +2183,13 @@ Keep it simple and fun!`
           
           if (team) {
             updates.team_id = team.id;
-            // Add to team members
             await db
               .from('hackathon_teams')
-              .update({ members: [...team.members, currentUser.id] })
+              .update({ members: [...(team.members || []), currentUser.id] })
               .eq('id', team.id);
-            showToast(`Joined team ${team.name}!`);
+            showToast(`Joined ${team.name}!`);
           } else {
-            showToast('Team not found!', true);
+            showToast('Team not found!', 'error');
           }
         }
       }
@@ -2001,15 +2202,17 @@ Keep it simple and fun!`
         .single();
       
       if (error) {
-        showToast('Error saving profile!', true);
+        showToast('Error saving profile!', 'error');
         return;
       }
       
       currentUser = data;
       localStorage.setItem('codequest_user', JSON.stringify(data));
+      playSound('success');
+      showXPPopup(100);
       updateDashboard();
       showScreen('dashboard');
-      showToast('Profile saved! Mission 1 complete! +100 XP');
+      showToast('🎉 Mission 1 Complete!');
     }
     
     // ==========================================
@@ -2018,50 +2221,53 @@ Keep it simple and fun!`
     function updateDashboard() {
       if (!currentUser) return;
       
-      // Update nav
-      document.getElementById('navXP').textContent = `${currentUser.xp} XP`;
-      document.getElementById('navAvatar').textContent = currentUser.avatar;
+      // HUD
+      document.getElementById('hudAvatar').textContent = currentUser.avatar;
+      document.getElementById('hudName').textContent = currentUser.display_name;
+      document.getElementById('hudXP').textContent = currentUser.xp;
       
-      // Update stats
+      // Stats
       document.getElementById('statXP').textContent = currentUser.xp;
       const completedMissions = Math.min(currentUser.current_mission - 1, 5);
       document.getElementById('statMissions').textContent = `${completedMissions}/5`;
       document.getElementById('statTasks').textContent = (currentUser.completed_tasks || []).length;
       
-      // Update mission cards
-      document.querySelectorAll('.mission-card').forEach((card, i) => {
-        const missionNum = i + 1;
-        card.classList.remove('completed', 'current', 'locked');
+      // Mission List
+      const missionList = document.getElementById('missionList');
+      missionList.innerHTML = MISSIONS.map(mission => {
+        let status = 'locked';
+        if (mission.id < currentUser.current_mission) status = 'completed';
+        else if (mission.id === currentUser.current_mission) status = 'current';
         
-        if (missionNum < currentUser.current_mission) {
-          card.classList.add('completed');
-        } else if (missionNum === currentUser.current_mission) {
-          card.classList.add('current');
-        } else {
-          card.classList.add('locked');
-        }
+        const tasksCompleted = mission.tasks.filter(t => 
+          (currentUser.completed_tasks || []).includes(t.id)
+        ).length;
+        const progress = (tasksCompleted / mission.tasks.length) * 100;
         
-        // Update task tags
-        const mission = MISSIONS[i];
-        const taskTags = card.querySelectorAll('.task-tag');
-        taskTags.forEach((tag, j) => {
-          const taskId = mission.tasks[j]?.id;
-          if (taskId && (currentUser.completed_tasks || []).includes(taskId)) {
-            tag.classList.add('done');
-            if (!tag.textContent.startsWith('✓')) {
-              tag.textContent = '✓ ' + tag.textContent;
-            }
-          }
-        });
-      });
+        return `
+          <div class="card mission-card ${status}" onclick="openMission(${mission.id})">
+            <div class="mission-icon">${status === 'completed' ? '✓' : mission.icon}</div>
+            <div class="mission-info">
+              <div class="mission-number">Mission ${mission.number}</div>
+              <div class="mission-name">${mission.title}${status === 'locked' ? ' 🔒' : ''}</div>
+              <div class="mission-xp">${status === 'completed' ? '✓ ' : ''}${mission.xp} XP</div>
+              ${status === 'current' ? `
+                <div class="mission-progress">
+                  <div class="mission-progress-fill" style="width: ${progress}%"></div>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
       
-      // Update profile
+      // Profile
       document.getElementById('profileAvatar').textContent = currentUser.avatar;
       document.getElementById('profileName').textContent = currentUser.display_name;
+      document.getElementById('profileTagline').textContent = currentUser.tagline || 'Code Hero';
       document.getElementById('profileXP').textContent = currentUser.xp;
       document.getElementById('profileMissions').textContent = completedMissions;
       
-      // Load leaderboard
       loadLeaderboard();
     }
     
@@ -2083,16 +2289,25 @@ Keep it simple and fun!`
             <div class="leaderboard-name">${user.display_name}</div>
             <div class="leaderboard-team">${user.tagline || 'Code Hero'}</div>
           </div>
-          <div class="leaderboard-xp">${user.xp} XP</div>
+          <div class="leaderboard-xp">${user.xp}</div>
         </div>
       `).join('');
       
-      // Update rank
       const myRank = users.findIndex(u => u.id === currentUser?.id) + 1;
       if (myRank > 0) {
         document.getElementById('statRank').textContent = `#${myRank}`;
+        document.getElementById('hudRank').textContent = `Rank #${myRank}`;
         document.getElementById('profileRank').textContent = `#${myRank}`;
       }
+    }
+    
+    function switchTab(tab) {
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      event.target.closest('.nav-item').classList.add('active');
+      
+      document.querySelector('.mission-section').style.display = tab === 'missions' ? 'block' : 'none';
+      document.querySelector('.leaderboard-section').style.display = tab === 'leaderboard' ? 'block' : 'none';
+      playSound('click');
     }
     
     // ==========================================
@@ -2102,11 +2317,12 @@ Keep it simple and fun!`
       const mission = MISSIONS.find(m => m.id === missionId);
       if (!mission) return;
       
-      // Check if locked
       if (missionId > currentUser.current_mission) {
-        showToast('Complete previous missions first!', true);
+        showToast('Complete previous missions first!', 'error');
         return;
       }
+      
+      playSound('click');
       
       document.getElementById('missionDetailNumber').textContent = `MISSION ${mission.number}`;
       document.getElementById('missionDetailTitle').textContent = mission.title;
@@ -2115,31 +2331,31 @@ Keep it simple and fun!`
       document.getElementById('missionDetailTime').textContent = mission.time;
       document.getElementById('missionTip').textContent = mission.tip;
       
-      // Render tasks
+      // Tasks
       const taskList = document.getElementById('taskList');
       taskList.innerHTML = mission.tasks.map(task => {
         const completed = (currentUser.completed_tasks || []).includes(task.id);
         return `
-          <div class="card task-item ${completed ? 'completed' : ''}" onclick="toggleTask('${task.id}', ${task.xp})">
+          <div class="card task-item ${completed ? 'completed' : ''}" onclick="toggleTask('${task.id}', ${task.xp}, ${mission.id})">
             <div class="task-checkbox">${completed ? '✓' : ''}</div>
-            <div class="task-content">
+            <div class="task-info">
               <div class="task-title">${task.title}</div>
               <div class="task-desc">${task.desc}</div>
             </div>
-            <div class="task-xp">+${task.xp} XP</div>
+            <div class="task-xp">+${task.xp}</div>
           </div>
         `;
       }).join('');
       
-      // Render prompts
+      // Prompts
       const promptSection = document.getElementById('promptSection');
       if (mission.prompts.length > 0) {
         promptSection.style.display = 'block';
         promptSection.innerHTML = `
-          <h3 style="font-family: 'Orbitron', sans-serif; margin-bottom: 20px;">💬 Prompts to Use</h3>
+          <h3 class="section-title"><span>💬</span> Prompts</h3>
           ${mission.prompts.map(prompt => `
             <div class="prompt-box">
-              <div class="prompt-box-header">
+              <div class="prompt-header">
                 <span class="prompt-label">${prompt.label}</span>
                 <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
               </div>
@@ -2154,35 +2370,31 @@ Keep it simple and fun!`
       showScreen('mission');
     }
     
-    async function toggleTask(taskId, taskXp) {
+    async function toggleTask(taskId, taskXp, missionId) {
       const completed = (currentUser.completed_tasks || []).includes(taskId);
       
       let newTasks;
       let newXp;
       
       if (completed) {
-        // Uncomplete
         newTasks = currentUser.completed_tasks.filter(t => t !== taskId);
         newXp = currentUser.xp - taskXp;
       } else {
-        // Complete
         newTasks = [...(currentUser.completed_tasks || []), taskId];
         newXp = currentUser.xp + taskXp;
+        playSound('success');
+        showXPPopup(taskXp);
       }
       
-      // Check if mission is now complete
-      const missionPrefix = taskId.split('-')[0];
-      const missionIndex = parseInt(missionPrefix.replace('t', '')) - 1;
-      const mission = MISSIONS[missionIndex];
+      const mission = MISSIONS.find(m => m.id === missionId);
       const allTasksDone = mission.tasks.every(t => newTasks.includes(t.id));
       
       let newCurrentMission = currentUser.current_mission;
       if (allTasksDone && currentUser.current_mission === mission.id) {
         newCurrentMission = mission.id + 1;
-        showToast(`🎉 Mission ${mission.number} Complete!`);
       }
       
-      const { data, error } = await db
+      const { data } = await db
         .from('hackathon_users')
         .update({
           completed_tasks: newTasks,
@@ -2196,12 +2408,13 @@ Keep it simple and fun!`
       if (data) {
         currentUser = data;
         localStorage.setItem('codequest_user', JSON.stringify(data));
-        openMission(mission.id); // Refresh
-        updateDashboard();
         
-        if (!completed) {
-          showToast(`+${taskXp} XP!`);
+        if (allTasksDone && newCurrentMission > missionId) {
+          showToast(`🎉 Mission ${mission.number} Complete!`);
         }
+        
+        openMission(missionId);
+        updateDashboard();
       }
     }
     
@@ -2211,11 +2424,10 @@ Keep it simple and fun!`
       const link = document.getElementById('submissionLink').value;
       
       if (!text.trim()) {
-        showToast('Please describe what you built!', true);
+        showToast('Describe what you built!', 'error');
         return;
       }
       
-      // Save submission
       await db
         .from('hackathon_submissions')
         .insert({
@@ -2226,31 +2438,31 @@ Keep it simple and fun!`
           status: 'pending'
         });
       
-      showToast('Submitted for review! Keep going! 🚀');
+      playSound('success');
+      showToast('🚀 Submitted for review!');
       document.getElementById('submissionText').value = '';
       document.getElementById('submissionLink').value = '';
     }
     
     // ==========================================
-    // PROFILE
+    // LOGOUT
     // ==========================================
     function logout() {
       localStorage.removeItem('codequest_user');
       currentUser = null;
       showScreen('login');
-      showToast('Signed out. See you next time!');
+      showToast('See you next time! 👋');
     }
     
     // ==========================================
     // INIT
     // ==========================================
     async function init() {
-      // Check for saved user
       const saved = localStorage.getItem('codequest_user');
+      
       if (saved) {
         currentUser = JSON.parse(saved);
         
-        // Refresh from DB
         const { data } = await db
           .from('hackathon_users')
           .select('*')
@@ -2269,15 +2481,11 @@ Keep it simple and fun!`
       } else {
         showScreen('login');
       }
-    }
-    
-    // Create tables if needed (run once)
-    async function setupTables() {
-      // This would normally be done in Supabase dashboard
-      // Tables needed:
-      // - hackathon_users: id, name, display_name, secret_code, avatar, tagline, xp, completed_tasks (jsonb), current_mission, team_id, created_at
-      // - hackathon_teams: id, name, icon, code, members (jsonb), xp, created_at  
-      // - hackathon_submissions: id, user_id, mission_id, text, link, status, created_at
+      
+      // Hide loading
+      setTimeout(() => {
+        document.getElementById('loadingScreen').classList.add('hidden');
+      }, 500);
     }
     
     init();
