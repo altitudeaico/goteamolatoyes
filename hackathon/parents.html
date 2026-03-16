@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CODE QUEST - Parent Briefing | #GoTeamOlatoyes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.7;
+    }
+    
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      color: white;
+      padding: 60px 20px;
+      text-align: center;
+    }
+    
+    .header-emoji {
+      font-size: 80px;
+      margin-bottom: 20px;
+    }
+    
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+    
+    .header p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+    
+    .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      padding: 8px 20px;
+      border-radius: 100px;
+      margin-top: 20px;
+      font-weight: 700;
+    }
+    
+    /* Main content */
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    /* TLDR Box */
+    .tldr {
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      border-left: 5px solid #f59e0b;
+      border-radius: 0 20px 20px 0;
+      padding: 25px 30px;
+      margin-bottom: 40px;
+    }
+    
+    .tldr h2 {
+      color: #92400e;
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .tldr ul {
+      list-style: none;
+      font-size: 1.05rem;
+    }
+    
+    .tldr li {
+      padding: 8px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    
+    .tldr li span {
+      font-size: 1.3rem;
+    }
+    
+    /* Section */
+    section {
+      margin-bottom: 45px;
+    }
+    
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+      color: #4f46e5;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    h2 span {
+      font-size: 1.8rem;
+    }
+    
+    p {
+      margin-bottom: 15px;
+      font-size: 1.05rem;
+    }
+    
+    /* Cards */
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      border: 1px solid #e2e8f0;
+    }
+    
+    .card h3 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .card p {
+      color: #64748b;
+      margin-bottom: 0;
+    }
+    
+    /* Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 40px;
+    }
+    
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 10px;
+      bottom: 10px;
+      width: 3px;
+      background: linear-gradient(180deg, #22c55e, #4f46e5, #f59e0b);
+      border-radius: 2px;
+    }
+    
+    .timeline-item {
+      position: relative;
+      margin-bottom: 25px;
+      padding-left: 20px;
+    }
+    
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -32px;
+      top: 5px;
+      width: 16px;
+      height: 16px;
+      background: white;
+      border: 3px solid #4f46e5;
+      border-radius: 50%;
+    }
+    
+    .timeline-item.now::before {
+      background: #22c55e;
+      border-color: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
+    }
+    
+    .timeline-date {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #4f46e5;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .timeline-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin: 5px 0;
+    }
+    
+    .timeline-desc {
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+    
+    /* Action box */
+    .action-box {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: white;
+      border-radius: 20px;
+      padding: 30px;
+      text-align: center;
+      margin: 40px 0;
+    }
+    
+    .action-box h3 {
+      font-size: 1.4rem;
+      margin-bottom: 15px;
+    }
+    
+    .action-box p {
+      opacity: 0.9;
+      margin-bottom: 20px;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 18px 40px;
+      background: white;
+      color: #4f46e5;
+      text-decoration: none;
+      border-radius: 15px;
+      font-weight: 800;
+      font-size: 1.1rem;
+      transition: transform 0.2s;
+    }
+    
+    .btn:hover {
+      transform: scale(1.05);
+    }
+    
+    /* Team grid */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+    
+    .team-card {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      border: 2px solid #e2e8f0;
+    }
+    
+    .team-card-emoji {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    
+    .team-card h4 {
+      font-size: 0.95rem;
+      font-weight: 800;
+      margin-bottom: 5px;
+    }
+    
+    .team-card p {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin: 0;
+    }
+    
+    /* Kids list */
+    .kids-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 15px 0;
+    }
+    
+    .kid-tag {
+      background: #e0e7ff;
+      color: #4338ca;
+      padding: 8px 16px;
+      border-radius: 100px;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    
+    /* Quote */
+    .quote {
+      background: #f1f5f9;
+      border-left: 4px solid #4f46e5;
+      padding: 20px 25px;
+      margin: 25px 0;
+      font-style: italic;
+      color: #475569;
+    }
+    
+    /* FAQ */
+    .faq-item {
+      margin-bottom: 20px;
+    }
+    
+    .faq-q {
+      font-weight: 800;
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+      color: #1e293b;
+    }
+    
+    .faq-a {
+      color: #64748b;
+    }
+    
+    /* Footer */
+    .footer {
+      background: #1e293b;
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    
+    .footer p {
+      opacity: 0.7;
+      font-size: 0.95rem;
+    }
+    
+    .footer-emoji {
+      font-size: 3rem;
+      margin-bottom: 15px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 600px) {
+      .header h1 { font-size: 2rem; }
+      .team-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-emoji">🚀</div>
+    <h1>CODE QUEST</h1>
+    <p>Family Hackathon - Parent Briefing</p>
+    <div class="badge">#GoTeamOlatoyes</div>
+  </header>
+
+  <div class="container">
+    
+    <!-- TLDR -->
+    <div class="tldr">
+      <h2>⚡ THE 30-SECOND VERSION</h2>
+      <ul>
+        <li><span>📅</span> <strong>Hackathon Day:</strong> Friday 4th April (day before Easter)</li>
+        <li><span>🎯</span> <strong>Goal:</strong> Kids build their own quiz game & demo it to the family</li>
+        <li><span>📱</span> <strong>Your action:</strong> Get your kids on the app to start prep tasks</li>
+        <li><span>🔗</span> <strong>Link:</strong> <a href="https://altitudeaico.github.io/goteamolatoyes/hackathon/" style="color:#92400e;font-weight:800;">altitudeaico.github.io/goteamolatoyes/hackathon</a></li>
+      </ul>
+    </div>
+
+    <!-- What is this? -->
+    <section>
+      <h2><span>💡</span> What is this?</h2>
+      <p>Following our brilliant games night (congrats Team Middleton! 🏆), Uncle B has created something special for the kids.</p>
+      <p><strong>CODE QUEST</strong> is a fun, game-like learning platform that teaches kids to build apps using AI. Think of it like Duolingo, but for coding with Claude AI.</p>
+      <p>The end goal? On <strong>4th April</strong>, we'll have a family hackathon where each child (or team) builds their own quiz game and demos it to everyone. Then we all vote on our favourites!</p>
+      
+      <div class="quote">
+        "Vibe coding" is the concept - kids describe what they want to build in plain English, and AI helps them create it. No complex coding required!
+      </div>
+    </section>
+
+    <!-- The Kids -->
+    <section>
+      <h2><span>👨‍👩‍👧‍👦</span> The Kids</h2>
+      <p>Here's who can participate (ages 8+):</p>
+      
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-card-emoji">🗽</div>
+          <h4>Team New York</h4>
+          <p>Theodore & Arthur</p>
+        </div>
+        <div class="team-card">
+          <div class="team-card-emoji">🏰</div>
+          <h4>Team Middleton</h4>
+          <p>Ezekiel, Hannah & Sophia</p>
+        </div>
+        <div class="team-card">
+          <div class="team-card-emoji">⚓</div>
+          <h4>Team Gravesend</h4>
+          <p>Elsie & Emma</p>
+        </div>
+      </div>
+      
+      <div class="card">
+        <h3>🤝 Team Rules</h3>
+        <p>Kids can form <strong>any team combination</strong> they like - siblings, cousins, solo, whatever works! This teaches collaboration and teamwork. They pick their own team name and icon in the app.</p>
+      </div>
+    </section>
+
+    <!-- Timeline -->
+    <section>
+      <h2><span>📅</span> Timeline</h2>
+      
+      <div class="timeline">
+        <div class="timeline-item now">
+          <div class="timeline-date">Now → 3rd April</div>
+          <div class="timeline-title">Prep Phase</div>
+          <div class="timeline-desc">Kids work through CODE QUEST levels at their own pace. Each level teaches a skill they'll need.</div>
+        </div>
+        
+        <div class="timeline-item">
+          <div class="timeline-date">Friday 4th April</div>
+          <div class="timeline-title">🏆 Hackathon Day!</div>
+          <div class="timeline-desc">Kids build their quiz, demo to family, we vote on favourites. Fun prizes!</div>
+        </div>
+        
+        <div class="timeline-item">
+          <div class="timeline-date">Saturday 5th April</div>
+          <div class="timeline-title">🐣 Easter!</div>
+          <div class="timeline-desc">Celebrate with chocolate and pride in what the kids created!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- What they'll learn -->
+    <section>
+      <h2><span>📚</span> What They'll Learn</h2>
+      
+      <div class="card">
+        <h3>🤖 Level 1-3: Meet the AI</h3>
+        <p>How to "talk" to Claude AI and ask good questions. Like having a super-smart helper!</p>
+      </div>
+      
+      <div class="card">
+        <h3>🎨 Level 4-5: Build Something</h3>
+        <p>Create their own webpage with colours, style, and personality.</p>
+      </div>
+      
+      <div class="card">
+        <h3>🎮 Level 6-7: Make a Game</h3>
+        <p>Build an interactive quiz - the exact skill they'll use at the hackathon!</p>
+      </div>
+    </section>
+
+    <!-- What Parents Need to Do -->
+    <section>
+      <h2><span>✅</span> What You Need to Do</h2>
+      
+      <div class="card" style="border-color: #22c55e; border-width: 2px;">
+        <h3>📱 Step 1: Get Them Started (5 mins)</h3>
+        <p>Open the link on their phone/tablet, help them create an account (just name + secret code), pick an avatar, done!</p>
+      </div>
+      
+      <div class="card">
+        <h3>💬 Step 2: Show Them Claude</h3>
+        <p>They'll need access to <a href="https://claude.ai" target="_blank" style="color:#4f46e5;font-weight:700;">claude.ai</a> (free to use). Help them open it the first time.</p>
+      </div>
+      
+      <div class="card">
+        <h3>👀 Step 3: Check In</h3>
+        <p>Maybe once a week, ask "How's your CODE QUEST going?" They can show you their progress and XP!</p>
+      </div>
+      
+      <div class="card">
+        <h3>📅 Step 4: Block 4th April</h3>
+        <p>Make sure the kids are available for the hackathon session. Time TBC!</p>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <div class="action-box">
+      <h3>🎮 Ready to Start?</h3>
+      <p>Get your kids on the app this weekend!</p>
+      <a href="https://altitudeaico.github.io/goteamolatoyes/hackathon/" class="btn" target="_blank">OPEN CODE QUEST →</a>
+    </div>
+
+    <!-- FAQ -->
+    <section>
+      <h2><span>❓</span> Quick FAQs</h2>
+      
+      <div class="faq-item">
+        <div class="faq-q">How long does the prep take?</div>
+        <div class="faq-a">About 30 mins total across all levels. They can do 5-10 mins at a time.</div>
+      </div>
+      
+      <div class="faq-item">
+        <div class="faq-q">What age is this for?</div>
+        <div class="faq-a">8+ ideally, but younger kids can do it with a parent helping.</div>
+      </div>
+      
+      <div class="faq-item">
+        <div class="faq-q">Is it safe?</div>
+        <div class="faq-a">Yes! They're just talking to Claude AI and building simple web pages. No downloads, no personal data collected beyond their chosen display name.</div>
+      </div>
+      
+      <div class="faq-item">
+        <div class="faq-q">What if they get stuck?</div>
+        <div class="faq-a">Each level has copy-paste prompts they can use. And they can always ask Uncle B for help!</div>
+      </div>
+      
+      <div class="faq-item">
+        <div class="faq-q">Do I need to know coding?</div>
+        <div class="faq-a">Nope! That's the beauty of "vibe coding" - the AI does the technical stuff.</div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section>
+      <h2><span>💬</span> Questions?</h2>
+      <p>Drop a message in the family WhatsApp or ping Uncle B directly. Happy to help get everyone set up!</p>
+      
+      <div class="card">
+        <h3>🔗 Important Links</h3>
+        <p style="margin-bottom: 10px;"><strong>CODE QUEST App:</strong><br><a href="https://altitudeaico.github.io/goteamolatoyes/hackathon/" style="color:#4f46e5;">altitudeaico.github.io/goteamolatoyes/hackathon</a></p>
+        <p style="margin-bottom: 10px;"><strong>Claude AI:</strong><br><a href="https://claude.ai" style="color:#4f46e5;">claude.ai</a></p>
+        <p><strong>Family Quiz (from games night):</strong><br><a href="https://altitudeaico.github.io/goteamolatoyes/march2026/" style="color:#4f46e5;">altitudeaico.github.io/goteamolatoyes/march2026</a></p>
+      </div>
+    </section>
+
+  </div>
+
+  <footer class="footer">
+    <div class="footer-emoji">💜</div>
+    <p>Made with love by Uncle B for #GoTeamOlatoyes</p>
+    <p style="margin-top: 10px;">Let's build something amazing together!</p>
+  </footer>
+
+</body>
+</html>
