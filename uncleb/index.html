@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uncle B's World 🦸‍♂️</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #FFD700;
+    --gold-light: #FFE84D;
+    --gold-dark: #B8860B;
+    --black: #05050f;
+    --black-soft: #111122;
+    --accent-red: #FF3B3B;
+    --accent-blue: #00BFFF;
+    --accent-purple: #BF5FFF;
+    --accent-green: #39FF14;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    font-family: 'Nunito', sans-serif;
+    overflow-x: hidden;
+  }
+
+  #bgCanvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .hero {
+    position: relative; z-index: 1;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 2rem; text-align: center;
+  }
+
+  .shield {
+    font-size: clamp(80px, 15vw, 140px);
+    animation: spin-in 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) both,
+               float 4s ease-in-out infinite 1s;
+    filter: drop-shadow(0 0 40px rgba(255,215,0,1));
+    position: relative; z-index: 2;
+  }
+  @keyframes spin-in {
+    from { transform: rotate(-720deg) scale(0); opacity: 0; }
+    to   { transform: rotate(0deg) scale(1); opacity: 1; }
+  }
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50%      { transform: translateY(-18px); }
+  }
+
+  .title {
+    font-family: 'Bangers', cursive;
+    font-size: clamp(60px, 14vw, 140px);
+    color: var(--gold);
+    letter-spacing: 4px; line-height: 1;
+    text-shadow: 4px 4px 0 #000, -2px -2px 0 #000,
+      0 0 60px rgba(255,215,0,0.9), 0 0 120px rgba(255,215,0,0.4);
+    animation: slide-down 0.8s 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    position: relative; z-index: 2;
+  }
+  @keyframes slide-down {
+    from { transform: translateY(-60px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
+
+  .subtitle {
+    font-size: clamp(18px, 4vw, 28px);
+    color: white; font-weight: 900;
+    letter-spacing: 6px; text-transform: uppercase;
+    animation: fade-in 1s 0.7s both;
+    position: relative; z-index: 2; margin-top: 0.5rem;
+    text-shadow: 0 0 20px rgba(255,255,255,0.5);
+  }
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .tagline {
+    margin-top: 1.5rem;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
+    color: var(--black); font-size: clamp(14px, 2.5vw, 20px);
+    font-weight: 900; padding: 0.6rem 2rem; border-radius: 50px;
+    animation: fade-in 1s 1s both;
+    position: relative; z-index: 2;
+    box-shadow: 0 0 40px rgba(255,215,0,0.7), 0 0 80px rgba(255,215,0,0.3);
+  }
+
+  .cards-section {
+    position: relative; z-index: 1;
+    padding: 2rem 1.5rem 4rem;
+    max-width: 1100px; margin: 0 auto;
+  }
+
+  .section-title {
+    font-family: 'Bangers', cursive;
+    font-size: clamp(36px, 7vw, 70px);
+    color: var(--gold); text-align: center; letter-spacing: 3px;
+    text-shadow: 3px 3px 0 #000, 0 0 30px rgba(255,215,0,0.6);
+    margin-bottom: 2rem;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .card {
+    background: rgba(17,17,34,0.85);
+    backdrop-filter: blur(12px);
+    border: 2px solid var(--gold-dark);
+    border-radius: 20px; padding: 2rem 1.5rem;
+    text-align: center; position: relative; overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    animation: card-in 0.7s both;
+  }
+  .card:nth-child(1){animation-delay:0.1s}
+  .card:nth-child(2){animation-delay:0.25s}
+  .card:nth-child(3){animation-delay:0.4s}
+  .card:nth-child(4){animation-delay:0.55s}
+  @keyframes card-in {
+    from { opacity: 0; transform: translateY(40px) scale(0.9); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .card:hover {
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 20px 60px rgba(255,215,0,0.4);
+    border-color: var(--gold);
+  }
+  .card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 4px;
+    background: var(--card-accent, var(--gold));
+    box-shadow: 0 0 12px var(--card-accent, var(--gold));
+  }
+  .card-hero  { --card-accent: #FF3B3B; }
+  .card-ai    { --card-accent: #00BFFF; }
+  .card-color { --card-accent: #FFD700; }
+  .card-vibe  { --card-accent: #BF5FFF; }
+
+  .card-emoji {
+    font-size: 60px; display: block; margin-bottom: 0.8rem;
+    animation: bounce-emoji 2s ease-in-out infinite;
+  }
+  @keyframes bounce-emoji {
+    0%,100%{transform:scale(1)}
+    50%{transform:scale(1.15) rotate(5deg)}
+  }
+  .card-title {
+    font-family: 'Bangers', cursive; font-size: 28px;
+    color: var(--gold); letter-spacing: 2px; margin-bottom: 0.5rem;
+  }
+  .card-text { color: #ccc; font-size: 16px; font-weight: 700; line-height: 1.5; }
+
+  .powers-section {
+    position: relative; z-index: 1;
+    padding: 1rem 1.5rem 4rem;
+    max-width: 800px; margin: 0 auto;
+  }
+  .power-bar-wrap { margin-bottom: 1.4rem; animation: fade-in 0.6s both; }
+  .power-bar-wrap:nth-child(2){animation-delay:0.1s}
+  .power-bar-wrap:nth-child(3){animation-delay:0.2s}
+  .power-bar-wrap:nth-child(4){animation-delay:0.3s}
+  .power-bar-wrap:nth-child(5){animation-delay:0.4s}
+  .power-label {
+    display: flex; justify-content: space-between;
+    color: white; font-weight: 900; font-size: 15px; margin-bottom: 0.4rem;
+  }
+  .power-label span:last-child { color: var(--gold); }
+  .power-track {
+    height: 18px; background: rgba(255,255,255,0.08);
+    border-radius: 50px; overflow: hidden;
+    border: 1px solid rgba(255,215,0,0.2);
+  }
+  .power-fill {
+    height: 100%; border-radius: 50px;
+    background: linear-gradient(90deg, var(--bar-from), var(--bar-to));
+    width: 0;
+    animation: fill-bar 1.5s cubic-bezier(0.22,1,0.36,1) 0.5s forwards;
+    box-shadow: 0 0 12px var(--bar-to);
+  }
+  @keyframes fill-bar { to { width: var(--bar-width); } }
+
+  footer {
+    position: relative; z-index: 1;
+    text-align: center; padding: 3rem 1rem;
+    border-top: 2px solid rgba(255,215,0,0.15);
+  }
+  .footer-emoji { font-size: 50px; display: block; margin-bottom: 0.5rem; animation: float 3s ease-in-out infinite; }
+  footer p { color: rgba(255,255,255,0.4); font-size: 14px; font-weight: 700; }
+  footer strong { color: var(--gold); }
+
+  .badge {
+    position: fixed; z-index: 10; font-size: 28px;
+    pointer-events: none;
+    filter: drop-shadow(0 0 10px rgba(255,215,0,0.9));
+  }
+  .badge-1{top:10%;left:5%;animation:orbit1 7s ease-in-out infinite}
+  .badge-2{top:20%;right:5%;animation:orbit2 9s ease-in-out infinite}
+  .badge-3{bottom:20%;left:4%;animation:orbit3 11s ease-in-out infinite}
+  .badge-4{bottom:15%;right:6%;animation:orbit4 6s ease-in-out infinite}
+  @keyframes orbit1{0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-20px) rotate(15deg)}}
+  @keyframes orbit2{0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(20px) rotate(-15deg)}}
+  @keyframes orbit3{0%,100%{transform:translateX(0) rotate(0deg)} 50%{transform:translateX(15px) rotate(20deg)}}
+  @keyframes orbit4{0%,100%{transform:translateX(0) rotate(0deg)} 50%{transform:translateX(-15px) rotate(-20deg)}}
+
+  .divider {
+    text-align: center; font-size: 28px; letter-spacing: 8px;
+    padding: 1.5rem 0; position: relative; z-index: 1;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="badge badge-1">⚡</div>
+<div class="badge badge-2">🌟</div>
+<div class="badge badge-3">🤖</div>
+<div class="badge badge-4">🛡️</div>
+
+<section class="hero">
+  <div class="shield">🦸🏿‍♂️</div>
+  <h1 class="title">Uncle B</h1>
+  <p class="subtitle">The Legend Has Logged In</p>
+  <p class="tagline">🌟 Superhero Enthusiast · AI Mastermind · Certified Legend 🌟</p>
+</section>
+
+<div class="divider">🔥 ✨ 💛 ✨ 🔥</div>
+
+<section class="cards-section">
+  <h2 class="section-title">⚡ Profile Power-Ups ⚡</h2>
+  <div class="cards-grid">
+    <div class="card card-hero">
+      <span class="card-emoji">🦸🏿‍♂️</span>
+      <div class="card-title">Superhero Fan</div>
+      <div class="card-text">Capes? Cowls? Cosmic powers?<br>Uncle B lives for it ALL. 🕷️💥🦇<br>Every hero has a story — and Uncle B knows every one!</div>
+    </div>
+    <div class="card card-ai">
+      <span class="card-emoji">🤖</span>
+      <div class="card-title">AI Wizard</div>
+      <div class="card-text">Artificial Intelligence isn't the future —<br>it's Uncle B's <em>present</em>. 🧠⚡🚀<br>Teaching machines to think, one prompt at a time!</div>
+    </div>
+    <div class="card card-color">
+      <span class="card-emoji">🖤💛</span>
+      <div class="card-title">Black &amp; Gold</div>
+      <div class="card-text">The colour of POWER. The colour of ROYALTY.<br>The colour of Uncle B. 👑✨<br>If it ain't Black &amp; Gold, it ain't bold!</div>
+    </div>
+    <div class="card card-vibe">
+      <span class="card-emoji">💫</span>
+      <div class="card-title">The Vibe</div>
+      <div class="card-text">Part hero. Part genius. Totally legendary. 🌍🏆<br>Uncle B doesn't follow trends —<br>trends follow Uncle B!</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider">🤖 🦸🏿 🖤 💛 🦸🏿 🤖</div>
+
+<section class="powers-section">
+  <h2 class="section-title">💪 Superpower Stats 💪</h2>
+  <div class="power-bar-wrap">
+    <div class="power-label"><span>🦸 Superhero Knowledge</span><span>LEGENDARY</span></div>
+    <div class="power-track"><div class="power-fill" style="--bar-width:98%;--bar-from:#FF3B3B;--bar-to:#FF8C42;"></div></div>
+  </div>
+  <div class="power-bar-wrap">
+    <div class="power-label"><span>🤖 AI Mastery</span><span>ELITE</span></div>
+    <div class="power-track"><div class="power-fill" style="--bar-width:95%;--bar-from:#00BFFF;--bar-to:#BF5FFF;"></div></div>
+  </div>
+  <div class="power-bar-wrap">
+    <div class="power-label"><span>💛 Style Game</span><span>UNMATCHED</span></div>
+    <div class="power-track"><div class="power-fill" style="--bar-width:100%;--bar-from:#B8860B;--bar-to:#FFD700;"></div></div>
+  </div>
+  <div class="power-bar-wrap">
+    <div class="power-label"><span>⚡ Energy Levels</span><span>INFINITE</span></div>
+    <div class="power-track"><div class="power-fill" style="--bar-width:92%;--bar-from:#39FF14;--bar-to:#00BFFF;"></div></div>
+  </div>
+  <div class="power-bar-wrap">
+    <div class="power-label"><span>👑 Overall Legendness</span><span>∞ / 10</span></div>
+    <div class="power-track"><div class="power-fill" style="--bar-width:100%;--bar-from:#FFD700;--bar-to:#FFFFFF;"></div></div>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-emoji">🏆</span>
+  <p>Built with 🖤 &amp; 💛 for <strong>Uncle B</strong> — the one, the only, the legendary.</p>
+  <p style="margin-top:0.5rem;">🦸🏿‍♂️ · 🤖 · ⚡ · 👑</p>
+</footer>
+
+<script>
+const canvas = document.getElementById('bgCanvas');
+const ctx    = canvas.getContext('2d');
+let W, H;
+const mouse = { x: -999, y: -999 };
+
+function resize() {
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+
+const PALETTE = [
+  '#FFD700','#FFE84D','#B8860B',
+  '#FF3B3B','#FF8C42',
+  '#00BFFF','#0080FF',
+  '#BF5FFF','#FF00FF',
+  '#39FF14',
+];
+const rndCol = () => PALETTE[Math.floor(Math.random() * PALETTE.length)];
+
+/* ── Stars ── */
+class Star {
+  constructor() { this.init(true); }
+  init(rand = false) {
+    this.x = Math.random() * W;
+    this.y = rand ? Math.random() * H : Math.random() * H;
+    this.r = Math.random() * 1.8 + 0.3;
+    this.base = Math.random() * 0.6 + 0.15;
+    this.spd  = Math.random() * 0.01 + 0.003;
+    this.t    = Math.random() * Math.PI * 2;
+    this.col  = Math.random() < 0.18 ? rndCol() : '#fff';
+  }
+  tick() { this.t += this.spd; }
+  draw() {
+    const a = this.base + Math.sin(this.t) * this.base * 0.9;
+    ctx.save();
+    ctx.globalAlpha = a;
+    ctx.fillStyle   = this.col;
+    ctx.shadowColor = this.col;
+    ctx.shadowBlur  = this.r > 1.2 ? 6 : 0;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+/* ── Shooting Stars ── */
+class Shooter {
+  constructor() { this.reset(); }
+  reset() {
+    this.active = false;
+    this.cooldown = Math.floor(Math.random() * 220 + 60);
+    this.x = Math.random() * W * 1.2 - W * 0.1;
+    this.y = Math.random() * H * 0.45;
+    this.len = Math.random() * 200 + 80;
+    this.spd = Math.random() * 16 + 8;
+    this.ang = Math.PI / 4 + (Math.random() - 0.5) * 0.5;
+    this.life = 1;
+    this.col = rndCol();
+  }
+  tick() {
+    if (this.cooldown > 0) { this.cooldown--; return; }
+    if (!this.active) this.active = true;
+    this.x    += Math.cos(this.ang) * this.spd;
+    this.y    += Math.sin(this.ang) * this.spd;
+    this.life -= 0.022;
+    if (this.life <= 0) this.reset();
+  }
+  draw() {
+    if (!this.active || this.life <= 0) return;
+    const tx = this.x - Math.cos(this.ang) * this.len;
+    const ty = this.y - Math.sin(this.ang) * this.len;
+    const g = ctx.createLinearGradient(tx, ty, this.x, this.y);
+    g.addColorStop(0, 'transparent');
+    g.addColorStop(1, this.col);
+    ctx.save();
+    ctx.globalAlpha = this.life * 0.95;
+    ctx.strokeStyle = g;
+    ctx.lineWidth   = 2.5;
+    ctx.shadowColor = this.col;
+    ctx.shadowBlur  = 14;
+    ctx.beginPath();
+    ctx.moveTo(tx, ty);
+    ctx.lineTo(this.x, this.y);
+    ctx.stroke();
+    ctx.restore();
+  }
+}
+
+/* ── Energy Orbs ── */
+class Orb {
+  constructor() { this.init(true); }
+  init(rand = false) {
+    this.x   = Math.random() * W;
+    this.y   = rand ? Math.random() * H : H + 80;
+    this.r   = Math.random() * 70 + 25;
+    this.vx  = (Math.random() - 0.5) * 0.5;
+    this.vy  = -(Math.random() * 0.45 + 0.15);
+    this.col = rndCol();
+    this.a   = Math.random() * 0.09 + 0.03;
+    this.t   = Math.random() * Math.PI * 2;
+  }
+  tick() {
+    this.x += this.vx + Math.sin(this.t) * 0.35;
+    this.y += this.vy;
+    this.t += 0.012;
+    if (this.y < -this.r * 2) this.init();
+  }
+  draw() {
+    const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r);
+    g.addColorStop(0, this.col + 'bb');
+    g.addColorStop(1, 'transparent');
+    ctx.save();
+    ctx.globalAlpha = this.a;
+    ctx.fillStyle   = g;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+/* ── Lightning ── */
+class Lightning {
+  constructor() { this.reset(); }
+  reset() {
+    this.active = false;
+    this.wait   = Math.floor(Math.random() * 300 + 100);
+    this.frames = 0; this.maxF = 7;
+    this.x      = Math.random() * W;
+    this.col    = Math.random() < 0.65 ? '#FFD700' : rndCol();
+    this.segs   = [];
+  }
+  generate() {
+    this.segs = [];
+    let cx = this.x, cy = 0;
+    const steps = Math.floor(Math.random() * 9 + 5);
+    const seg   = (Math.random() * 180 + 120) / steps;
+    for (let i = 0; i < steps; i++) {
+      const nx = cx + (Math.random() - 0.5) * 90;
+      const ny = cy + seg + (Math.random() - 0.5) * 25;
+      this.segs.push([cx, cy, nx, ny]);
+      cx = nx; cy = ny;
+    }
+  }
+  tick() {
+    if (this.wait > 0) { this.wait--; return; }
+    if (!this.active) { this.active = true; this.generate(); this.frames = this.maxF; }
+    this.frames--;
+    if (this.frames <= 0) { this.active = false; this.reset(); }
+  }
+  draw() {
+    if (!this.active) return;
+    const alpha = this.frames / this.maxF;
+    ctx.save();
+    ctx.globalAlpha = alpha * 0.9;
+    ctx.strokeStyle = this.col;
+    ctx.lineWidth   = 1.5;
+    ctx.shadowColor = this.col;
+    ctx.shadowBlur  = 22;
+    ctx.beginPath();
+    this.segs.forEach(([x1,y1,x2,y2]) => { ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); });
+    ctx.stroke();
+    ctx.lineWidth    = 5;
+    ctx.globalAlpha  = alpha * 0.18;
+    ctx.beginPath();
+    this.segs.forEach(([x1,y1,x2,y2]) => { ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); });
+    ctx.stroke();
+    ctx.restore();
+  }
+}
+
+/* ── Firefly Particles ── */
+class Firefly {
+  constructor() { this.init(true); }
+  init(rand = false) {
+    this.x   = rand ? Math.random() * W : mouse.x + (Math.random() - 0.5) * 60;
+    this.y   = rand ? Math.random() * H : mouse.y + (Math.random() - 0.5) * 60;
+    this.vx  = (Math.random() - 0.5) * 1.4;
+    this.vy  = (Math.random() - 0.5) * 1.4 - 0.3;
+    this.r   = Math.random() * 2.5 + 0.5;
+    this.col = rndCol();
+    this.life= 1;
+    this.dec = Math.random() * 0.01 + 0.004;
+  }
+  tick() {
+    this.x    += this.vx;
+    this.y    += this.vy;
+    this.vy   -= 0.015;
+    this.life -= this.dec;
+    if (this.life <= 0) this.init();
+  }
+  draw() {
+    ctx.save();
+    ctx.globalAlpha = this.life * 0.8;
+    ctx.fillStyle   = this.col;
+    ctx.shadowColor = this.col;
+    ctx.shadowBlur  = 10;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+/* ── Hex Grid ── */
+function drawHex() {
+  const s = 44;
+  const cols = Math.ceil(W / (s * 1.732)) + 2;
+  const rows = Math.ceil(H / (s * 1.5))   + 2;
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,215,0,0.035)';
+  ctx.lineWidth   = 1;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const ox = (r % 2) * s * 0.866;
+      const cx = c * s * 1.732 + ox - s;
+      const cy = r * s * 1.5 - s;
+      ctx.beginPath();
+      for (let i = 0; i < 6; i++) {
+        const a = (Math.PI / 180) * (60 * i - 30);
+        const px = cx + s * Math.cos(a), py = cy + s * Math.sin(a);
+        i === 0 ? ctx.moveTo(px,py) : ctx.lineTo(px,py);
+      }
+      ctx.closePath();
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+
+/* ── Build scene ── */
+const stars     = Array.from({length:200},()=>new Star());
+const shooters  = Array.from({length:7},()=>new Shooter());
+const orbs      = Array.from({length:14},()=>new Orb());
+const bolts     = Array.from({length:6},()=>new Lightning());
+const fireflies = Array.from({length:90},()=>new Firefly());
+
+let frame = 0;
+
+function render() {
+  ctx.clearRect(0,0,W,H);
+
+  /* deep space base */
+  const bg = ctx.createRadialGradient(W*0.5, H*0.35, 0, W*0.5, H*0.35, Math.max(W,H)*0.9);
+  bg.addColorStop(0,   '#140a2a');
+  bg.addColorStop(0.4, '#0a051a');
+  bg.addColorStop(1,   '#05050f');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0,0,W,H);
+
+  /* hex grid */
+  drawHex();
+
+  /* aurora ribbons */
+  const t = frame * 0.003;
+  const ribbons = [
+    { y: 0.22, col: 'rgba(255,215,0,0.07)'  },
+    { y: 0.47, col: 'rgba(0,191,255,0.05)'  },
+    { y: 0.68, col: 'rgba(191,95,255,0.055)'},
+  ];
+  ribbons.forEach((rb, i) => {
+    const phase = t + i * 2.1;
+    const g = ctx.createLinearGradient(0, H * rb.y, W, H * rb.y);
+    g.addColorStop(0, 'transparent');
+    g.addColorStop(0.5, rb.col);
+    g.addColorStop(1, 'transparent');
+    ctx.save();
+    ctx.globalAlpha = 0.75 + Math.sin(phase) * 0.25;
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(0, H * rb.y + Math.sin(phase) * 70);
+    ctx.bezierCurveTo(
+      W * 0.3, H * rb.y + Math.cos(phase * 1.3) * 90,
+      W * 0.7, H * rb.y + Math.sin(phase * 0.7) * 90,
+      W,       H * rb.y + Math.cos(phase) * 70
+    );
+    ctx.lineTo(W, H * (rb.y + 0.18));
+    ctx.bezierCurveTo(
+      W * 0.7, H * (rb.y + 0.18) + Math.sin(phase * 0.9) * 60,
+      W * 0.3, H * (rb.y + 0.18) + Math.cos(phase * 1.1) * 60,
+      0,       H * (rb.y + 0.18) + Math.sin(phase) * 60
+    );
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  });
+
+  /* nebula cloud blobs */
+  if (frame % 3 === 0) {
+    const blobs = [
+      { x: W * 0.15, y: H * 0.3,  r: W * 0.22, col: 'rgba(255,60,60,0.018)'   },
+      { x: W * 0.85, y: H * 0.6,  r: W * 0.25, col: 'rgba(0,191,255,0.018)'   },
+      { x: W * 0.5,  y: H * 0.8,  r: W * 0.3,  col: 'rgba(191,95,255,0.015)'  },
+      { x: W * 0.5,  y: H * 0.15, r: W * 0.2,  col: 'rgba(255,215,0,0.025)'   },
+    ];
+    blobs.forEach(b => {
+      const g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
+      g.addColorStop(0, b.col);
+      g.addColorStop(1, 'transparent');
+      ctx.fillStyle = g;
+      ctx.fillRect(0,0,W,H);
+    });
+  }
+
+  /* orbs */
+  orbs.forEach(o => { o.tick(); o.draw(); });
+
+  /* stars */
+  stars.forEach(s => { s.tick(); s.draw(); });
+
+  /* shooting stars */
+  shooters.forEach(s => { s.tick(); s.draw(); });
+
+  /* lightning */
+  bolts.forEach(b => { b.tick(); b.draw(); });
+
+  /* fireflies */
+  fireflies.forEach(f => { f.tick(); f.draw(); });
+
+  /* mouse glow */
+  if (mouse.x > 0 && mouse.y > 0) {
+    const mg = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 140);
+    mg.addColorStop(0, 'rgba(255,215,0,0.14)');
+    mg.addColorStop(1, 'transparent');
+    ctx.fillStyle = mg;
+    ctx.fillRect(0,0,W,H);
+  }
+
+  /* vignette */
+  const vig = ctx.createRadialGradient(W/2, H/2, H*0.25, W/2, H/2, H*0.9);
+  vig.addColorStop(0, 'transparent');
+  vig.addColorStop(1, 'rgba(0,0,0,0.55)');
+  ctx.fillStyle = vig;
+  ctx.fillRect(0,0,W,H);
+
+  frame++;
+  requestAnimationFrame(render);
+}
+
+render();
+</script>
+</body>
+</html>
