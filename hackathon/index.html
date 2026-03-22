@@ -170,6 +170,19 @@
       border-color: #fbbf24;
       transform: scale(1.15);
     }
+
+    .colour-swatch {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 4px solid transparent;
+      transition: all 0.15s;
+    }
+    .colour-swatch.selected {
+      border-color: white;
+      transform: scale(1.2);
+    }
     
     /* Progress dots */
     .dots {
@@ -553,7 +566,7 @@
 
   <!-- SCREEN: Pick Avatar - EXPANDED OPTIONS -->
   <div id="avatar" class="hide">
-    <div class="emoji" id="pickedAvatar">🦸</div>
+    <div id="pickedAvatar" style="font-size:80px; margin-bottom:10px; min-height:90px; display:flex; align-items:center; justify-content:center;">🦸</div>
     <h1>Pick Your Avatar!</h1>
     <p>Choose how you want to look</p>
     <div class="avatars">
@@ -587,12 +600,38 @@
       <div class="avatar" onclick="pick('🦊', this)">🦊</div>
       <div class="avatar" onclick="pick('🚀', this)">🚀</div>
       <div class="avatar" onclick="pick('🤖', this)">🤖</div>
+      <!-- Make My Own -->
+      <div class="avatar" id="customAvatarTile" onclick="toggleCustom(this)" style="font-size:22px; font-weight:900; background: rgba(251,191,36,0.3); border-color: rgba(251,191,36,0.6);">🎨<br><span style="font-size:11px;">Mine!</span></div>
     </div>
+
+    <!-- Custom avatar builder - hidden until "Make My Own" tapped -->
+    <div id="customBuilder" class="hide" style="background:rgba(255,255,255,0.15); border-radius:20px; padding:20px; margin:10px 0; max-width:300px; width:100%;">
+      <p style="margin-bottom:12px; font-size:17px;">Pick a colour for your circle:</p>
+      <div id="colourPicker" style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-bottom:16px;">
+        <div class="colour-swatch" data-colour="#e74c3c" style="background:#e74c3c;" onclick="pickColour('#e74c3c', this)"></div>
+        <div class="colour-swatch" data-colour="#e67e22" style="background:#e67e22;" onclick="pickColour('#e67e22', this)"></div>
+        <div class="colour-swatch" data-colour="#f1c40f" style="background:#f1c40f;" onclick="pickColour('#f1c40f', this)"></div>
+        <div class="colour-swatch" data-colour="#2ecc71" style="background:#2ecc71;" onclick="pickColour('#2ecc71', this)"></div>
+        <div class="colour-swatch" data-colour="#1abc9c" style="background:#1abc9c;" onclick="pickColour('#1abc9c', this)"></div>
+        <div class="colour-swatch" data-colour="#3498db" style="background:#3498db;" onclick="pickColour('#3498db', this)"></div>
+        <div class="colour-swatch" data-colour="#9b59b6" style="background:#9b59b6;" onclick="pickColour('#9b59b6', this)"></div>
+        <div class="colour-swatch" data-colour="#e91e8c" style="background:#e91e8c;" onclick="pickColour('#e91e8c', this)"></div>
+        <div class="colour-swatch" data-colour="#ff6b9d" style="background:#ff6b9d;" onclick="pickColour('#ff6b9d', this)"></div>
+        <div class="colour-swatch" data-colour="#34495e" style="background:#34495e;" onclick="pickColour('#34495e', this)"></div>
+      </div>
+      <button class="btn btn-yellow" style="max-width:200px; padding:15px; font-size:18px;" onclick="applyCustomAvatar()">✨ Use This!</button>
+    </div>
+
     <button class="btn btn-green" onclick="saveAvatar()">That's Me!</button>
+    <button class="btn btn-small" onclick="showHome()" id="avatarBackBtn" style="margin-top:5px;">← Back</button>
   </div>
 
   <!-- SCREEN: Home -->
   <div id="home" class="hide">
+    <div id="homeAvatarWrap" onclick="goChangeAvatar()" title="Change your avatar" style="cursor:pointer; margin-bottom: 10px;">
+      <div id="homeAvatar" style="font-size:72px; line-height:1;">🦸</div>
+      <div style="font-size:13px; opacity:0.7; margin-top:4px;">✏️ change</div>
+    </div>
     <h1>Hey <span id="userName">Hero</span>! 👋</h1>
     <p>Pick a level to play</p>
     <div class="level-list" id="levelList"></div>
@@ -901,16 +940,85 @@ Make it colorful and fun!`
     if (!data) { toast('Error, try again!', true); return; }
     
     user = data;
+    picked = '🦸';
+    renderAvatar(picked, document.getElementById('pickedAvatar'));
     localStorage.setItem('cq', JSON.stringify(user));
+    document.getElementById('avatarBackBtn').classList.add('hide'); // no back on first signup
     go('avatar');
   }
 
-  // Avatar
+  let customColour = '#9b59b6'; // default colour for custom avatar
+
+  // Render avatar (emoji string OR svg: data URI) into an element
+  function renderAvatar(value, el) {
+    if (value && value.startsWith('data:')) {
+      el.innerHTML = `<img src="${value}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+    } else {
+      el.textContent = value || '🦸';
+    }
+  }
+
+  // Make an SVG data URI from initial + colour
+  function makeInitialAvatar(initial, colour) {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle cx="50" cy="50" r="50" fill="${colour}"/><text x="50" y="68" text-anchor="middle" font-size="52" font-family="Nunito,Arial,sans-serif" font-weight="900" fill="white">${initial.toUpperCase()}</text></svg>`;
+    return 'data:image/svg+xml;base64,' + btoa(svg);
+  }
+
+  // Avatar emoji pick
   function pick(emoji, el) {
     picked = emoji;
-    document.getElementById('pickedAvatar').textContent = emoji;
+    renderAvatar(emoji, document.getElementById('pickedAvatar'));
     document.querySelectorAll('.avatar').forEach(a => a.classList.remove('selected'));
     el.classList.add('selected');
+    // Hide custom builder if open
+    document.getElementById('customBuilder').classList.add('hide');
+    document.getElementById('customAvatarTile').classList.remove('selected');
+  }
+
+  // Toggle the custom avatar builder panel
+  function toggleCustom(el) {
+    const builder = document.getElementById('customBuilder');
+    const isOpen = !builder.classList.contains('hide');
+    document.querySelectorAll('.avatar').forEach(a => a.classList.remove('selected'));
+    if (isOpen) {
+      builder.classList.add('hide');
+    } else {
+      builder.classList.remove('hide');
+      el.classList.add('selected');
+      applyCustomAvatar(); // preview immediately
+    }
+  }
+
+  // Pick a colour in the custom builder
+  function pickColour(colour, el) {
+    customColour = colour;
+    document.querySelectorAll('.colour-swatch').forEach(s => s.classList.remove('selected'));
+    el.classList.add('selected');
+    applyCustomAvatar();
+  }
+
+  // Generate and preview the custom initial avatar
+  function applyCustomAvatar() {
+    const initial = (user && user.display_name) ? user.display_name[0] : '?';
+    picked = makeInitialAvatar(initial, customColour);
+    renderAvatar(picked, document.getElementById('pickedAvatar'));
+    document.querySelectorAll('.avatar').forEach(a => a.classList.remove('selected'));
+    document.getElementById('customAvatarTile').classList.add('selected');
+  }
+
+  // Go to avatar screen from home (change avatar)
+  function goChangeAvatar() {
+    picked = user.avatar || '🦸';
+    renderAvatar(picked, document.getElementById('pickedAvatar'));
+    document.getElementById('customBuilder').classList.add('hide');
+    document.getElementById('avatarBackBtn').classList.remove('hide');
+    go('avatar');
+    // Pre-select current avatar tile if it's an emoji
+    if (picked && !picked.startsWith('data:')) {
+      document.querySelectorAll('.avatar').forEach(el => {
+        if (el.textContent.trim() === picked) el.classList.add('selected');
+      });
+    }
   }
 
   async function saveAvatar() {
@@ -926,6 +1034,8 @@ Make it colorful and fun!`
     document.getElementById('xpDisplay').classList.remove('hide');
     document.getElementById('xpDisplay').textContent = '⭐ ' + user.xp;
     document.getElementById('userName').textContent = user.display_name;
+    // Render avatar (emoji or custom SVG)
+    renderAvatar(user.avatar || '🦸', document.getElementById('homeAvatar'));
     
     const list = document.getElementById('levelList');
     list.innerHTML = '';
