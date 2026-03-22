@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Build Your Quiz 🎮 | CODE QUEST</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Nunito', sans-serif; background: #f0f1ff; color: #1e1b4b; line-height: 1.7; }
+
+    .header { background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%); color: white; padding: 50px 20px 40px; text-align: center; position: relative; overflow: hidden; }
+    .header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 70% 30%, rgba(255,255,255,0.12) 0%, transparent 60%); }
+    .header-emoji { font-size: 72px; margin-bottom: 12px; }
+    .header h1 { font-size: 2rem; font-weight: 900; margin-bottom: 8px; position: relative; }
+    .header p { font-size: 1.05rem; opacity: 0.9; max-width: 480px; margin: 0 auto; position: relative; }
+    .back-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 20px; background: rgba(255,255,255,0.2); color: white; text-decoration: none; padding: 10px 20px; border-radius: 100px; font-weight: 800; font-size: 15px; position: relative; }
+
+    .container { max-width: 680px; margin: 0 auto; padding: 36px 20px 80px; }
+
+    .big-explainer { background: white; border-radius: 24px; padding: 32px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(124,58,237,0.08); text-align: center; }
+    .big-explainer .illo { font-size: 52px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+    .big-explainer h2 { font-size: 1.4rem; font-weight: 900; color: #1e1b4b; margin-bottom: 14px; }
+    .big-explainer p { font-size: 1.05rem; color: #374151; max-width: 500px; margin: 0 auto 10px; }
+
+    /* analogy cards */
+    .analogy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 20px 0; }
+    .analogy-card { background: #faf5ff; border-radius: 16px; padding: 18px; text-align: center; border: 2px solid #e9d5ff; }
+    .analogy-card .big { font-size: 38px; margin-bottom: 8px; }
+    .analogy-card strong { font-size: 0.95rem; font-weight: 900; color: #1e1b4b; display: block; margin-bottom: 4px; }
+    .analogy-card span { font-size: 0.85rem; color: #6b7280; line-height: 1.5; }
+
+    .section { background: white; border-radius: 20px; padding: 28px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(124,58,237,0.07); }
+    .section h2 { font-size: 1.25rem; font-weight: 900; color: #1e1b4b; margin-bottom: 14px; }
+    .section p { font-size: 1rem; color: #374151; margin-bottom: 12px; }
+    .section p:last-child { margin-bottom: 0; }
+
+    .steps { list-style: none; margin-top: 16px; }
+    .steps li { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 22px; }
+    .step-circle { min-width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #7c3aed, #db2777); color: white; font-weight: 900; font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+    .step-body strong { display: block; font-size: 1.05rem; font-weight: 900; color: #1e1b4b; margin-bottom: 4px; }
+    .step-body span { font-size: 0.97rem; color: #4b5563; line-height: 1.7; }
+
+    .prompt-box { background: #faf5ff; border: 2.5px dashed #a855f7; border-radius: 14px; padding: 16px 18px; margin: 12px 0 8px; font-size: 1rem; color: #581c87; line-height: 1.8; white-space: pre-wrap; word-break: break-word; }
+    .copy-btn { display: inline-flex; align-items: center; gap: 6px; background: #7c3aed; color: white; border: none; border-radius: 100px; padding: 9px 20px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 14px; cursor: pointer; margin-bottom: 4px; transition: background 0.2s; }
+    .copy-btn:hover { background: #6d28d9; }
+    .copy-btn.copied { background: #22c55e; }
+
+    .tip { background: #f0fdf4; border-left: 5px solid #22c55e; border-radius: 0 12px 12px 0; padding: 14px 16px; margin: 14px 0; font-size: 0.97rem; color: #166534; }
+    .tip strong { font-weight: 900; }
+    .warning { background: #fff7ed; border-left: 5px solid #f97316; border-radius: 0 12px 12px 0; padding: 14px 16px; margin: 14px 0; font-size: 0.97rem; color: #9a3412; }
+    .warning strong { font-weight: 900; }
+
+    .needs-box { background: #faf5ff; border-radius: 16px; padding: 22px; margin-bottom: 20px; border: 2px solid #e9d5ff; }
+    .needs-box h3 { font-size: 1.1rem; font-weight: 900; color: #4c1d95; margin-bottom: 12px; }
+    .needs-box ul { list-style: none; }
+    .needs-box li { display: flex; align-items: flex-start; gap: 10px; font-size: 1rem; color: #3b0764; margin-bottom: 8px; }
+    .needs-box li::before { content: '✅'; flex-shrink: 0; }
+
+    .celebrate { background: linear-gradient(135deg, #fef3c7, #fde68a); border: 3px solid #fbbf24; border-radius: 20px; padding: 28px; margin: 20px 0; text-align: center; }
+    .celebrate .icon { font-size: 56px; margin-bottom: 10px; }
+    .celebrate h3 { font-size: 1.3rem; font-weight: 900; color: #92400e; margin-bottom: 8px; }
+    .celebrate p { color: #78350f; font-size: 1rem; }
+
+    /* what a database does visually */
+    .db-visual { background: #1e1b4b; border-radius: 16px; padding: 20px; margin: 16px 0; color: white; font-family: monospace; font-size: 0.88rem; line-height: 1.8; overflow-x: auto; }
+    .db-visual .row { display: flex; gap: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 6px 0; }
+    .db-visual .row:last-child { border-bottom: none; }
+    .db-visual .header-row { color: #a5f3fc; font-weight: bold; }
+    .db-visual .cell { min-width: 120px; }
+
+    .cta { background: linear-gradient(135deg, #7c3aed, #db2777); border-radius: 20px; padding: 30px; text-align: center; color: white; margin-top: 32px; }
+    .cta h2 { font-size: 1.4rem; font-weight: 900; margin-bottom: 10px; }
+    .cta p { opacity: 0.9; margin-bottom: 18px; font-size: 1rem; }
+    .cta a { display: inline-block; background: #fbbf24; color: #1f2937; text-decoration: none; padding: 15px 30px; border-radius: 100px; font-weight: 900; font-size: 1.05rem; }
+
+    a { color: #7c3aed; }
+    @media (max-width: 480px) { .analogy-grid { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-emoji">🎮</div>
+    <h1>Build Your Quiz Game!</h1>
+    <p>Claude will build it, save the questions, and put it online — all from one message 🤯</p>
+    <a href="index.html" class="back-link">← Back to Code Quest</a>
+  </div>
+
+  <div class="container">
+
+    <!-- What is a database -->
+    <div class="big-explainer">
+      <div class="illo">🧠 💾 🌍</div>
+      <h2>First — what's a database?</h2>
+      <p>A database is like a <strong>super organised notebook</strong> that lives on the internet. Your quiz uses it to <strong>remember things</strong> — like all the questions, and who got the highest score.</p>
+      <p>Without a database, every time someone plays your quiz, the scores disappear. With a database, <strong>every score is saved forever</strong> so the whole family can compete! 🏆</p>
+    </div>
+
+    <!-- Analogy -->
+    <div class="section">
+      <h2>🤔 Think of it like this...</h2>
+      <div class="analogy-grid">
+        <div class="analogy-card">
+          <div class="big">📝</div>
+          <strong>Without a database</strong>
+          <span>Like writing quiz scores on a piece of paper — it disappears when the page closes</span>
+        </div>
+        <div class="analogy-card">
+          <div class="big">💾</div>
+          <strong>With a database</strong>
+          <span>Like writing scores in a permanent book online — saved forever, visible to everyone</span>
+        </div>
+        <div class="analogy-card">
+          <div class="big">❓</div>
+          <strong>Quiz questions</strong>
+          <span>Stored in the database so the quiz can load them any time — even on different devices</span>
+        </div>
+        <div class="analogy-card">
+          <div class="big">🏆</div>
+          <strong>Leaderboard</strong>
+          <span>All scores saved so the whole family can see who's winning — even days later!</span>
+        </div>
+      </div>
+
+      <p style="margin-top:8px;">Here's what your quiz's database actually looks like behind the scenes:</p>
+      <div class="db-visual">
+        <div class="row header-row">
+          <div class="cell">question</div>
+          <div class="cell">option_a</div>
+          <div class="cell">option_b</div>
+          <div class="cell">correct</div>
+        </div>
+        <div class="row">
+          <div class="cell">Capital of France?</div>
+          <div class="cell">London</div>
+          <div class="cell">Paris ✅</div>
+          <div class="cell">b</div>
+        </div>
+        <div class="row">
+          <div class="cell">Fastest animal?</div>
+          <div class="cell">Cheetah ✅</div>
+          <div class="cell">Lion</div>
+          <div class="cell">a</div>
+        </div>
+      </div>
+      <p style="font-size:0.9rem; color:#6b7280; margin-top:4px;">Claude will fill in a table just like this — for every question your team comes up with.</p>
+    </div>
+
+    <!-- What you need -->
+    <div class="needs-box">
+      <h3>🗝️ Before you start — get these from Uncle B:</h3>
+      <ul>
+        <li>Your <strong>Supabase service key</strong> (a long code starting with <code style="background:rgba(0,0,0,0.08);padding:1px 6px;border-radius:4px;">eyJ</code>)</li>
+        <li>Your <strong>GitHub token</strong> (starts with <code style="background:rgba(0,0,0,0.08);padding:1px 6px;border-radius:4px;">ghp_</code>) — for putting the quiz online</li>
+        <li>Your team name confirmed: <strong>GIRLS</strong> or <strong>BOYS</strong></li>
+      </ul>
+      <p style="font-size:0.95rem;color:#4c1d95;margin-top:8px;">Don't have these yet? Message Uncle B on WhatsApp and say "I'm ready to build my quiz, can I have my keys please!"</p>
+    </div>
+
+    <!-- Step 1: Decide your topic -->
+    <div class="section">
+      <h2>🤝 Step 1 — Agree on your topic as a team</h2>
+      <p>Before you talk to Claude, your whole team needs to agree on <strong>one topic</strong> for your quiz. It can be anything the whole family would enjoy playing!</p>
+      <p>Some ideas:</p>
+      <div style="display:flex; flex-wrap:wrap; gap:10px; margin:12px 0;">
+        <span style="background:#fef3c7;padding:6px 14px;border-radius:100px;font-weight:800;color:#92400e;">⚽ Football</span>
+        <span style="background:#dcfce7;padding:6px 14px;border-radius:100px;font-weight:800;color:#166534;">🐾 Animals</span>
+        <span style="background:#e0e7ff;padding:6px 14px;border-radius:100px;font-weight:800;color:#3730a3;">🎬 Movies & TV</span>
+        <span style="background:#fce7f3;padding:6px 14px;border-radius:100px;font-weight:800;color:#9d174d;">🎵 Music</span>
+        <span style="background:#f0fdf4;padding:6px 14px;border-radius:100px;font-weight:800;color:#166534;">🌍 Geography</span>
+        <span style="background:#fff7ed;padding:6px 14px;border-radius:100px;font-weight:800;color:#9a3412;">🍕 Food</span>
+        <span style="background:#f5f3ff;padding:6px 14px;border-radius:100px;font-weight:800;color:#4c1d95;">🦸 Superheroes</span>
+        <span style="background:#fef2f2;padding:6px 14px;border-radius:100px;font-weight:800;color:#991b1b;">🎮 Video Games</span>
+      </div>
+      <div class="tip">
+        <strong>💡 Team tip:</strong> Pick something the <em>whole family</em> can play — not just your team. The judges (your parents and relatives) need to be able to play it too on hackathon day!
+      </div>
+    </div>
+
+    <!-- Step 2: The big prompt -->
+    <div class="section">
+      <h2>🤖 Step 2 — Ask Claude to do everything</h2>
+      <p>Go to <a href="https://claude.ai" target="_blank"><strong>claude.ai</strong></a>, start a new chat, and send this message. Fill in YOUR details:</p>
+
+      <div class="prompt-box" id="prompt-main">I want to build a quiz game for my team. Please read these instructions carefully and do everything for me.
+
+Here are your instructions:
+[PASTE THE CONTENTS OF QUIZ_DB.md HERE]
+
+Here are my details:
+- My team is: [GIRLS or BOYS]
+- My quiz topic is: [YOUR TOPIC]
+- My Supabase service key is: [YOUR SERVICE KEY]
+- My GitHub token is: [YOUR GITHUB TOKEN]
+
+Please:
+1. Create the quiz questions in the database (you can come up with 10 fun questions about my topic — show them to me first so I can approve them)
+2. Build a fun colourful quiz game that loads the questions and saves scores
+3. Put it online for me</div>
+      <button class="copy-btn" onclick="copyEl('prompt-main', this)">📋 Copy this prompt</button>
+
+      <div class="tip">
+        <strong>✅ What Claude will do:</strong> Show you the questions first for approval, then save them to the database, build the quiz page, and deploy it — all automatically!
+      </div>
+      <div class="warning">
+        <strong>⚠️ Keep your keys secret!</strong> Don't share them with anyone or post them anywhere. Only paste them into Claude.
+      </div>
+    </div>
+
+    <!-- Step 3: Approve questions -->
+    <div class="section">
+      <h2>✅ Step 3 — Approve your questions</h2>
+      <p>Claude will show you the 10 questions before saving them. This is your chance to:</p>
+      <ul class="steps" style="margin-top:8px;">
+        <li>
+          <div class="step-circle" style="font-size:16px;">👍</div>
+          <div class="step-body">
+            <strong>Say yes to the ones you like</strong>
+            <span>If the questions look good, just say "Those are great, go ahead!"</span>
+          </div>
+        </li>
+        <li>
+          <div class="step-circle" style="font-size:16px;">✏️</div>
+          <div class="step-body">
+            <strong>Ask Claude to change any you don't like</strong>
+            <span>Just say something like "Can you change question 3 to be about [something else]?" and Claude will swap it out.</span>
+          </div>
+        </li>
+        <li>
+          <div class="step-circle" style="font-size:16px;">➕</div>
+          <div class="step-body">
+            <strong>Add your own questions</strong>
+            <span>Say "Can you add a question about [something specific]?" and Claude will include it.</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Step 4: It goes live -->
+    <div class="section">
+      <h2>🚀 Step 4 — Your quiz goes live!</h2>
+      <p>Once you approve the questions, Claude will:</p>
+      <ul class="steps" style="margin-top:8px;">
+        <li>
+          <div class="step-circle">1</div>
+          <div class="step-body">
+            <strong>Save all questions to the database</strong>
+            <span>So the quiz can load them on any device, any time.</span>
+          </div>
+        </li>
+        <li>
+          <div class="step-circle">2</div>
+          <div class="step-body">
+            <strong>Build your quiz game</strong>
+            <span>A colourful, fun page with your questions, answer buttons, instant feedback, and a score at the end.</span>
+          </div>
+        </li>
+        <li>
+          <div class="step-circle">3</div>
+          <div class="step-body">
+            <strong>Put it online automatically</strong>
+            <span>Your quiz will be live at a link like:<br>
+            <code style="background:#1e1b4b;color:#a5f3fc;padding:4px 10px;border-radius:6px;font-size:0.88rem;">altitudeaico.github.io/goteamolatoyes/hackathon/girls-quiz.html</code></span>
+          </div>
+        </li>
+        <li>
+          <div class="step-circle">4</div>
+          <div class="step-body">
+            <strong>Share it with the family!</strong>
+            <span>Send the link in the WhatsApp group so everyone can practise before hackathon day 🎮</span>
+          </div>
+        </li>
+      </ul>
+
+      <div class="celebrate">
+        <div class="icon">🏆</div>
+        <h3>Your team just built a real quiz game with a real database!</h3>
+        <p>Scores are saved. Questions are stored. Anyone in the world can play it. That's genuinely impressive — you should be proud! 🎉</p>
+      </div>
+    </div>
+
+    <!-- Updating -->
+    <div class="section">
+      <h2>✨ Want to add more questions or change things?</h2>
+      <p>Easy! In the <strong>same Claude chat</strong>, just ask. Here are some things you can say:</p>
+
+      <div class="prompt-box" id="prompt-add">Add 5 more questions to our quiz about [TOPIC]. Show them to me first, then save them to the database and redeploy the quiz.</div>
+      <button class="copy-btn" onclick="copyEl('prompt-add', this)">📋 Copy</button>
+
+      <div class="prompt-box" id="prompt-style">Make our quiz look more exciting — add a timer for each question and make the right answer flash green. Then redeploy it please.</div>
+      <button class="copy-btn" onclick="copyEl('prompt-style', this)">📋 Copy</button>
+
+      <div class="prompt-box" id="prompt-leaderboard">Can you update the leaderboard at the end to show the top 10 scores of all time, not just today? Then redeploy please.</div>
+      <button class="copy-btn" onclick="copyEl('prompt-leaderboard', this)">📋 Copy</button>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta">
+      <h2>Ready to build your quiz? 🎮</h2>
+      <p>Go back to Code Quest and complete Level 6 — Build a Game. Then come back here once you have your keys from Uncle B!</p>
+      <a href="index.html">Back to Code Quest →</a>
+    </div>
+
+  </div>
+
+  <script>
+    function copyEl(id, btn) {
+      const text = document.getElementById(id).textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = '✅ Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+      });
+    }
+  </script>
+
+</body>
+</html>
