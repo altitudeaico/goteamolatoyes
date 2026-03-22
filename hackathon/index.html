@@ -877,7 +877,7 @@ Make it colorful and fun!`
   // Show/hide screens
   function go(id) {
     document.querySelectorAll('body > div').forEach(d => {
-      if (!d.classList.contains('toast') && !d.classList.contains('xp') && d.id !== 'confettiContainer' && d.id !== 'modalContainer') {
+      if (!d.classList.contains('toast') && !d.classList.contains('xp') && d.id !== 'confettiContainer' && d.id !== 'modalContainer' && d.id !== 'ririPanel') {
         d.classList.add('hide');
       }
     });
@@ -1811,9 +1811,14 @@ Keep responses SHORT (2-4 sentences usually). Only go longer if they really need
     try {
       const res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': 'YOUR_ANTHROPIC_API_KEY_HERE',
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
+          model: 'claude-sonnet-4-6',
           max_tokens: 1000,
           system: RIRI_SYSTEM,
           messages: ririHistory
