@@ -45,7 +45,7 @@
     .slide {
       display: none;
       min-height: 100vh;
-      padding: 40px 25px;
+      padding: 60px 25px 120px;
       position: relative;
       z-index: 1;
     }
@@ -70,8 +70,8 @@
     
     /* Big emoji/icon */
     .big-icon {
-      font-size: 120px;
-      margin-bottom: 30px;
+      font-size: 100px;
+      margin-bottom: 25px;
       animation: float 3s ease-in-out infinite;
     }
     
@@ -80,7 +80,7 @@
       50% { transform: translateY(-15px); }
     }
     
-    /* Green Lantern glow effect */
+    /* Glow effect */
     .glow-green {
       text-shadow: 0 0 20px #22c55e, 0 0 40px #22c55e, 0 0 60px #22c55e;
       animation: glowPulse 2s ease-in-out infinite;
@@ -93,14 +93,14 @@
     
     /* Title */
     h1 {
-      font-size: 2.8rem;
+      font-size: 2.5rem;
       font-weight: 900;
       margin-bottom: 20px;
       line-height: 1.2;
     }
     
     h2 {
-      font-size: 2rem;
+      font-size: 1.9rem;
       font-weight: 900;
       margin-bottom: 20px;
       line-height: 1.3;
@@ -108,16 +108,16 @@
     
     /* Text */
     .lead {
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       line-height: 1.6;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
       color: rgba(255,255,255,0.9);
     }
     
     p {
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       line-height: 1.7;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       color: rgba(255,255,255,0.85);
     }
     
@@ -126,8 +126,8 @@
       background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1));
       border: 2px solid #22c55e;
       border-radius: 20px;
-      padding: 30px;
-      margin: 30px 0;
+      padding: 25px;
+      margin: 25px 0;
       text-align: left;
     }
     
@@ -142,8 +142,8 @@
     }
     
     .highlight-box h3 {
-      font-size: 1.3rem;
-      margin-bottom: 15px;
+      font-size: 1.2rem;
+      margin-bottom: 12px;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -151,16 +151,16 @@
     
     .highlight-box p {
       margin-bottom: 0;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
     }
     
     /* Quote */
     .quote {
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       font-weight: 800;
       font-style: italic;
       color: #22c55e;
-      margin: 30px 0;
+      margin: 25px 0;
       text-shadow: 0 0 30px rgba(34, 197, 94, 0.5);
     }
     
@@ -174,13 +174,13 @@
       display: flex;
       justify-content: center;
       gap: 15px;
-      background: linear-gradient(transparent, rgba(15, 15, 26, 0.95));
+      background: linear-gradient(transparent, rgba(15, 15, 26, 0.98));
       z-index: 100;
     }
     
     .btn {
-      padding: 18px 40px;
-      font-size: 1.1rem;
+      padding: 16px 35px;
+      font-size: 1.05rem;
       font-weight: 800;
       font-family: 'Nunito', sans-serif;
       border: none;
@@ -205,26 +205,23 @@
       border: 2px solid rgba(255,255,255,0.3);
     }
     
-    .btn-gold {
-      background: linear-gradient(135deg, #fbbf24, #f59e0b);
-      color: #1f2937;
-      box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
-    }
-    
     /* Progress dots */
     .progress-dots {
       position: fixed;
-      top: 25px;
+      top: 20px;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
-      gap: 10px;
+      gap: 8px;
       z-index: 100;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 90%;
     }
     
     .dot {
-      width: 12px;
-      height: 12px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       background: rgba(255,255,255,0.3);
       transition: all 0.3s;
@@ -239,55 +236,17 @@
       background: #22c55e;
     }
     
-    /* Power ring animation */
-    .ring-container {
-      position: relative;
-      width: 200px;
-      height: 200px;
-      margin: 0 auto 30px;
-    }
-    
-    .ring {
-      width: 100%;
-      height: 100%;
-      border: 8px solid #22c55e;
-      border-radius: 50%;
-      box-shadow: 
-        0 0 30px #22c55e,
-        0 0 60px #22c55e,
-        inset 0 0 30px rgba(34, 197, 94, 0.3);
-      animation: ringPulse 2s ease-in-out infinite;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    @keyframes ringPulse {
-      0%, 100% { 
-        box-shadow: 0 0 30px #22c55e, 0 0 60px #22c55e, inset 0 0 30px rgba(34, 197, 94, 0.3);
-        transform: scale(1);
-      }
-      50% { 
-        box-shadow: 0 0 50px #22c55e, 0 0 100px #22c55e, inset 0 0 50px rgba(34, 197, 94, 0.5);
-        transform: scale(1.05);
-      }
-    }
-    
-    .ring-icon {
-      font-size: 80px;
-    }
-    
     /* Heroes container */
     .heroes-container {
       display: flex;
       justify-content: center;
       gap: 20px;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
     }
     
     .hero-circle {
-      width: 110px;
-      height: 110px;
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -314,48 +273,185 @@
     }
     
     .hero-icon {
-      font-size: 50px;
+      font-size: 45px;
     }
     
-    @media (max-width: 600px) {
-      .heroes-container { gap: 12px; }
-      .hero-circle { width: 85px; height: 85px; }
-      .hero-icon { font-size: 38px; }
+    /* Interactive question box */
+    .question-box {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1));
+      border: 3px solid #3b82f6;
+      border-radius: 25px;
+      padding: 30px;
+      margin: 25px 0;
+      text-align: center;
+    }
+    
+    .question-box h3 {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+      color: #93c5fd;
+    }
+    
+    .question-box p {
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+    
+    /* Response cards container */
+    .responses {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 20px;
+      max-height: 250px;
+      overflow-y: auto;
+      padding-right: 10px;
+    }
+    
+    .response-card {
+      background: rgba(255,255,255,0.1);
+      border-radius: 15px;
+      padding: 15px 20px;
+      text-align: left;
+      animation: slideIn 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    .response-card .avatar {
+      font-size: 1.8rem;
+    }
+    
+    .response-card .content {
+      flex: 1;
+    }
+    
+    .response-card .name {
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: #fbbf24;
+    }
+    
+    .response-card .answer {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.9);
+    }
+    
+    /* Input area */
+    .input-area {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .input-area input {
+      flex: 1;
+      padding: 15px 20px;
+      font-size: 1rem;
+      font-family: 'Nunito', sans-serif;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 15px;
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+    
+    .input-area input:focus {
+      outline: none;
+      border-color: #3b82f6;
+    }
+    
+    .input-area input::placeholder {
+      color: rgba(255,255,255,0.5);
+    }
+    
+    .input-area button {
+      padding: 15px 25px;
+      font-size: 1.2rem;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      border: none;
+      border-radius: 15px;
+      background: #3b82f6;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    
+    .input-area button:active {
+      transform: scale(0.95);
+    }
+    
+    /* Name picker for responses */
+    .name-picker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 15px;
+    }
+    
+    .name-btn {
+      padding: 10px 18px;
+      font-size: 0.95rem;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 25px;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .name-btn:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    
+    .name-btn.selected {
+      border-color: #fbbf24;
+      background: rgba(251, 191, 36, 0.2);
+      color: #fbbf24;
     }
     
     /* Steps */
     .steps {
       text-align: left;
-      margin: 30px 0;
+      margin: 25px 0;
     }
     
     .step {
       display: flex;
-      gap: 20px;
-      margin-bottom: 25px;
+      gap: 18px;
+      margin-bottom: 22px;
       align-items: flex-start;
     }
     
     .step-number {
-      width: 50px;
-      height: 50px;
+      width: 45px;
+      height: 45px;
       border-radius: 50%;
       background: linear-gradient(135deg, #7c3aed, #4f46e5);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       font-weight: 900;
       flex-shrink: 0;
     }
     
     .step-content h4 {
-      font-size: 1.2rem;
-      margin-bottom: 5px;
+      font-size: 1.1rem;
+      margin-bottom: 4px;
     }
     
     .step-content p {
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: rgba(255,255,255,0.7);
       margin: 0;
     }
@@ -365,61 +461,74 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 15px;
-      margin: 30px 0;
+      gap: 12px;
+      margin: 25px 0;
     }
     
     .team-badge {
       background: rgba(255,255,255,0.1);
-      padding: 15px 25px;
+      padding: 15px 22px;
       border-radius: 15px;
       text-align: center;
+      border: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    
+    .team-badge.highlight {
+      border-color: #fbbf24;
+      background: rgba(251, 191, 36, 0.15);
     }
     
     .team-badge-icon {
-      font-size: 2.5rem;
-      margin-bottom: 8px;
+      font-size: 2.2rem;
+      margin-bottom: 6px;
     }
     
     .team-badge-name {
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
+    }
+    
+    .team-badge-members {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.6);
+      margin-top: 4px;
     }
     
     /* Countdown */
     .countdown {
       background: linear-gradient(135deg, #fbbf24, #f59e0b);
       color: #1f2937;
-      padding: 25px 40px;
+      padding: 22px 35px;
       border-radius: 20px;
-      margin: 30px 0;
+      margin: 25px 0;
     }
     
     .countdown-label {
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.1em;
     }
     
     .countdown-date {
-      font-size: 2rem;
+      font-size: 1.8rem;
       font-weight: 900;
     }
     
     /* Final CTA */
     .final-cta {
-      margin-top: 30px;
+      margin-top: 25px;
     }
     
     .final-cta a {
       display: inline-block;
-      padding: 25px 60px;
+      padding: 22px 50px;
       background: linear-gradient(135deg, #22c55e, #16a34a);
       color: white;
       text-decoration: none;
       border-radius: 20px;
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       font-weight: 900;
       box-shadow: 0 8px 30px rgba(34, 197, 94, 0.4);
       transition: transform 0.2s;
@@ -431,17 +540,17 @@
     
     /* Responsive */
     @media (max-width: 600px) {
-      h1 { font-size: 2.2rem; }
-      h2 { font-size: 1.6rem; }
-      .lead { font-size: 1.2rem; }
-      .big-icon { font-size: 80px; }
-      .quote { font-size: 1.4rem; }
-      .ring-container { width: 150px; height: 150px; }
-      .ring-icon { font-size: 60px; }
+      h1 { font-size: 2rem; }
+      h2 { font-size: 1.5rem; }
+      .lead { font-size: 1.1rem; }
+      .big-icon { font-size: 70px; }
+      .quote { font-size: 1.3rem; }
+      .hero-circle { width: 80px; height: 80px; }
+      .hero-icon { font-size: 35px; }
+      .heroes-container { gap: 12px; }
+      .input-area { flex-direction: column; }
+      .input-area button { width: 100%; }
     }
-    
-    /* Hide nav on last slide */
-    .slide:last-of-type .nav { display: none; }
   </style>
 </head>
 <body>
@@ -455,12 +564,12 @@
     <div class="slide-content">
       <div class="big-icon">🚀</div>
       <h1>Welcome to<br>CODE QUEST!</h1>
-      <p class="lead">Get ready to learn the most amazing superpower of the future...</p>
+      <p class="lead">Get ready to discover the most amazing superpower of the future...</p>
       <p>Today, we're going to show you how to build <strong>real apps, games, and websites</strong> — even if you've never coded before!</p>
     </div>
   </div>
 
-  <!-- SLIDE 2: The Superpower -->
+  <!-- SLIDE 2: Heroes Intro -->
   <div class="slide" data-slide="2">
     <div class="slide-content">
       <div class="heroes-container">
@@ -474,7 +583,7 @@
           <span class="hero-icon">👩🏿‍🔬</span>
         </div>
       </div>
-      <h2>You Know These Heroes?</h2>
+      <h2>Some Heroes Create Things From Their Imagination!</h2>
       <p><strong>Green Lantern's</strong> ring creates <em>anything</em> he can imagine.</p>
       <p><strong>Tony Stark & Riri Williams</strong> dream up incredible tech — then build it!</p>
       <p><strong>Shuri</strong> imagines inventions nobody's ever seen — and makes them real.</p>
@@ -482,12 +591,42 @@
     </div>
   </div>
 
-  <!-- SLIDE 3: AI is Your Ring -->
+  <!-- SLIDE 3: Interactive - Your Heroes -->
   <div class="slide" data-slide="3">
     <div class="slide-content">
+      <div class="big-icon">🦸</div>
+      <h2>Your Turn!</h2>
+      
+      <div class="question-box">
+        <h3>🤔 Think about this...</h3>
+        <p>Can you think of a character (from movies, TV, books, or games) who uses their <strong>imagination</strong> to create or build things?</p>
+        
+        <div class="name-picker" id="namePicker1">
+          <button class="name-btn" onclick="selectName(this, 1)">Theodore</button>
+          <button class="name-btn" onclick="selectName(this, 1)">Arthur</button>
+          <button class="name-btn" onclick="selectName(this, 1)">Ezekiel</button>
+          <button class="name-btn" onclick="selectName(this, 1)">Hannah</button>
+          <button class="name-btn" onclick="selectName(this, 1)">Sophia</button>
+          <button class="name-btn" onclick="selectName(this, 1)">Elsie</button>
+          <button class="name-btn" onclick="selectName(this, 1)">Emma</button>
+        </div>
+        
+        <div class="input-area">
+          <input type="text" id="heroInput" placeholder="Type a character's name...">
+          <button onclick="addResponse(1)">Add ✨</button>
+        </div>
+        
+        <div class="responses" id="responses1"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: AI is Your Superpower -->
+  <div class="slide" data-slide="4">
+    <div class="slide-content">
       <div class="big-icon glow-green">🤖</div>
-      <h2>AI is YOUR Power Ring</h2>
-      <p>Just like Green Lantern, you now have access to an incredible power...</p>
+      <h2>AI is YOUR Superpower!</h2>
+      <p>Just like those heroes, you now have access to an incredible power...</p>
       
       <div class="highlight-box">
         <h3>💡 Here's the secret:</h3>
@@ -498,8 +637,8 @@
     </div>
   </div>
 
-  <!-- SLIDE 4: How It Works -->
-  <div class="slide" data-slide="4">
+  <!-- SLIDE 5: How It Works -->
+  <div class="slide" data-slide="5">
     <div class="slide-content">
       <div class="big-icon">✨</div>
       <h2>How Does It Work?</h2>
@@ -532,8 +671,8 @@
     </div>
   </div>
 
-  <!-- SLIDE 5: What You'll Build -->
-  <div class="slide" data-slide="5">
+  <!-- SLIDE 6: What You'll Build -->
+  <div class="slide" data-slide="6">
     <div class="slide-content">
       <div class="big-icon">🎮</div>
       <h2>What Will You Build?</h2>
@@ -548,55 +687,110 @@
         <h3>🎯 Your own quiz game</h3>
         <p>An interactive quiz that your family can actually play!</p>
       </div>
-      
-      <p>And on <strong>Hackathon Day</strong>, you'll show everyone what you made! 🏆</p>
     </div>
   </div>
 
-  <!-- SLIDE 6: The Hackathon -->
-  <div class="slide" data-slide="6">
+  <!-- SLIDE 7: Team-Ups Intro -->
+  <div class="slide" data-slide="7">
     <div class="slide-content">
-      <div class="big-icon">🏆</div>
-      <h2>The Family Hackathon</h2>
+      <div class="big-icon">🦸‍♂️🦸‍♀️</div>
+      <h2>Heroes Are Stronger Together!</h2>
+      <p>Think about the best superhero teams...</p>
+      <p>The Avengers. The Justice League. The Incredibles. The Fantastic Four.</p>
+      <p>When heroes <strong>team up</strong>, they combine their strengths and do amazing things!</p>
       
-      <div class="countdown">
-        <div class="countdown-label">Save the Date!</div>
-        <div class="countdown-date">Friday 4th April</div>
+      <div class="highlight-box">
+        <h3>🤝 That's how YOU'LL work too!</h3>
+        <p>In CODE QUEST, you can work in teams — combining your ideas and creativity to build something awesome together.</p>
       </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: Interactive - Dream Team -->
+  <div class="slide" data-slide="8">
+    <div class="slide-content">
+      <div class="big-icon">⚡</div>
+      <h2>Your Dream Team-Up!</h2>
       
-      <p>On Hackathon Day, everyone will:</p>
-      <p>✅ Build their own quiz game (about any topic you want!)</p>
-      <p>✅ Demo it to the whole family</p>
-      <p>✅ Vote on our favourites</p>
-      <p>✅ Win glory and bragging rights! 😄</p>
+      <div class="question-box">
+        <h3>🤔 If you could pick ANY heroes to team up...</h3>
+        <p>What would be your <strong>ultimate dream team-up</strong>? Which heroes would you put together, and why would they be amazing?</p>
+        
+        <div class="name-picker" id="namePicker2">
+          <button class="name-btn" onclick="selectName(this, 2)">Theodore</button>
+          <button class="name-btn" onclick="selectName(this, 2)">Arthur</button>
+          <button class="name-btn" onclick="selectName(this, 2)">Ezekiel</button>
+          <button class="name-btn" onclick="selectName(this, 2)">Hannah</button>
+          <button class="name-btn" onclick="selectName(this, 2)">Sophia</button>
+          <button class="name-btn" onclick="selectName(this, 2)">Elsie</button>
+          <button class="name-btn" onclick="selectName(this, 2)">Emma</button>
+        </div>
+        
+        <div class="input-area">
+          <input type="text" id="teamInput" placeholder="e.g. Spider-Man + Shuri because...">
+          <button onclick="addResponse(2)">Add ⚡</button>
+        </div>
+        
+        <div class="responses" id="responses2"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: Your Teams -->
+  <div class="slide" data-slide="9">
+    <div class="slide-content">
+      <div class="big-icon">👨‍👩‍👧‍👦</div>
+      <h2>Now... YOUR Team!</h2>
+      <p>For CODE QUEST, you'll be working in teams too!</p>
+      <p>You can team up with <strong>anyone</strong> — siblings, cousins, or go solo. It's up to you!</p>
       
       <div class="teams">
         <div class="team-badge">
           <div class="team-badge-icon">🗽</div>
           <div class="team-badge-name">New York</div>
+          <div class="team-badge-members">Theodore & Arthur</div>
         </div>
         <div class="team-badge">
           <div class="team-badge-icon">🏰</div>
           <div class="team-badge-name">Middleton</div>
+          <div class="team-badge-members">Ezekiel, Hannah & Sophia</div>
         </div>
         <div class="team-badge">
           <div class="team-badge-icon">⚓</div>
           <div class="team-badge-name">Gravesend</div>
-        </div>
-        <div class="team-badge">
-          <div class="team-badge-icon">👑</div>
-          <div class="team-badge-name">Radlett</div>
+          <div class="team-badge-members">Elsie & Emma</div>
         </div>
       </div>
+      
+      <p>Mix it up if you want! Cousins can team up across locations. The choice is yours! 🎉</p>
     </div>
   </div>
 
-  <!-- SLIDE 7: The App -->
-  <div class="slide" data-slide="7">
+  <!-- SLIDE 10: The Hackathon -->
+  <div class="slide" data-slide="10">
+    <div class="slide-content">
+      <div class="big-icon">🏆</div>
+      <h2>The Big Day!</h2>
+      
+      <div class="countdown">
+        <div class="countdown-label">Hackathon Day 🚀</div>
+        <div class="countdown-date">Friday 4th April</div>
+      </div>
+      
+      <p>On Hackathon Day, every team will:</p>
+      <p>✅ Build their own quiz game (any topic you want!)</p>
+      <p>✅ Demo it to the whole family</p>
+      <p>✅ Everyone votes on their favourites</p>
+      <p>✅ Win glory and bragging rights! 😄</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 11: The App -->
+  <div class="slide" data-slide="11">
     <div class="slide-content">
       <div class="big-icon">📱</div>
       <h2>Your Training Begins!</h2>
-      <p>We've built a special app called <strong>CODE QUEST</strong> to help you get ready.</p>
+      <p>We've built a special app called <strong>CODE QUEST</strong> to help you prepare.</p>
       
       <div class="highlight-box">
         <h3>🎮 It's like a game:</h3>
@@ -605,12 +799,11 @@
       
       <p>There are <strong>7 levels</strong> to complete before Hackathon Day.</p>
       <p>Each one teaches you a new skill!</p>
-      <p>You can do them at your own pace — a little bit each day or all at once.</p>
     </div>
   </div>
 
-  <!-- SLIDE 8: Remember -->
-  <div class="slide" data-slide="8">
+  <!-- SLIDE 12: Remember -->
+  <div class="slide" data-slide="12">
     <div class="slide-content">
       <div class="heroes-container">
         <div class="hero-circle green">
@@ -632,19 +825,19 @@
     </div>
   </div>
 
-  <!-- SLIDE 9: Let's Go! -->
-  <div class="slide" data-slide="9">
+  <!-- SLIDE 13: Let's Go! -->
+  <div class="slide" data-slide="13">
     <div class="slide-content">
       <div class="big-icon">🚀</div>
       <h1>Ready to Begin?</h1>
       <p class="lead">Your CODE QUEST starts now!</p>
-      <p>Click the button below to open the app, create your account, and start Level 1.</p>
+      <p>Open the app, create your account, and start Level 1!</p>
       
       <div class="final-cta">
         <a href="index.html">🎮 START CODE QUEST</a>
       </div>
       
-      <p style="margin-top: 30px; font-size: 1rem; opacity: 0.7;">
+      <p style="margin-top: 25px; font-size: 0.95rem; opacity: 0.7;">
         Parents watching? <a href="admin.html" style="color: #fbbf24;">View the dashboard →</a>
       </p>
     </div>
@@ -660,6 +853,9 @@
     const slides = document.querySelectorAll('.slide');
     const totalSlides = slides.length;
     let currentSlide = 1;
+    let selectedNames = { 1: null, 2: null };
+    
+    const avatars = ['🦸', '🧙', '🥷', '🦹', '🧑‍🚀', '🐉', '🦄', '🦊'];
 
     // Create progress dots
     const dotsContainer = document.getElementById('progressDots');
@@ -672,7 +868,6 @@
     }
 
     function updateSlide() {
-      // Update slides
       slides.forEach((slide, i) => {
         slide.classList.remove('active');
         if (i + 1 === currentSlide) {
@@ -680,7 +875,6 @@
         }
       });
 
-      // Update dots
       document.querySelectorAll('.dot').forEach((dot, i) => {
         dot.classList.remove('active', 'done');
         if (i + 1 === currentSlide) {
@@ -690,7 +884,6 @@
         }
       });
 
-      // Update buttons
       document.getElementById('prevBtn').style.visibility = currentSlide === 1 ? 'hidden' : 'visible';
       
       if (currentSlide === totalSlides) {
@@ -720,13 +913,70 @@
       updateSlide();
     }
 
+    // Name selection for responses
+    function selectName(btn, questionNum) {
+      const picker = document.getElementById('namePicker' + questionNum);
+      picker.querySelectorAll('.name-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedNames[questionNum] = btn.textContent;
+    }
+
+    // Add response
+    function addResponse(questionNum) {
+      const inputId = questionNum === 1 ? 'heroInput' : 'teamInput';
+      const input = document.getElementById(inputId);
+      const answer = input.value.trim();
+      const name = selectedNames[questionNum];
+      
+      if (!name) {
+        alert('Pick your name first! 👆');
+        return;
+      }
+      
+      if (!answer) {
+        alert('Type your answer! ✍️');
+        return;
+      }
+      
+      const container = document.getElementById('responses' + questionNum);
+      const avatar = avatars[Math.floor(Math.random() * avatars.length)];
+      
+      const card = document.createElement('div');
+      card.className = 'response-card';
+      card.innerHTML = `
+        <div class="avatar">${avatar}</div>
+        <div class="content">
+          <div class="name">${name}</div>
+          <div class="answer">${answer}</div>
+        </div>
+      `;
+      
+      container.appendChild(card);
+      input.value = '';
+      
+      // Scroll to bottom of responses
+      container.scrollTop = container.scrollHeight;
+    }
+
     // Keyboard navigation
     document.addEventListener('keydown', (e) => {
+      // Don't navigate when typing in inputs
+      if (e.target.tagName === 'INPUT') return;
+      
       if (e.key === 'ArrowRight' || e.key === ' ') {
         nextSlide();
       } else if (e.key === 'ArrowLeft') {
         prevSlide();
       }
+    });
+
+    // Enter key to submit responses
+    document.getElementById('heroInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') addResponse(1);
+    });
+    
+    document.getElementById('teamInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') addResponse(2);
     });
 
     // Touch/swipe support
@@ -738,13 +988,16 @@
     });
 
     document.addEventListener('touchend', e => {
+      // Don't swipe when interacting with inputs
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+      
       touchEndX = e.changedTouches[0].screenX;
       const diff = touchStartX - touchEndX;
       if (Math.abs(diff) > 50) {
         if (diff > 0) {
-          nextSlide(); // Swipe left = next
+          nextSlide();
         } else {
-          prevSlide(); // Swipe right = prev
+          prevSlide();
         }
       }
     });
