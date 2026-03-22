@@ -436,10 +436,15 @@
       { id: 7, icon: '🏆', name: 'Ready!' }
     ];
 
-    const HACKATHON_DATE = new Date('2026-04-04T14:00:00');
+    const HACKATHON_DATE = null; // TBD - parents confirming
 
     // Update countdown
     function updateCountdown() {
+      if (!HACKATHON_DATE) {
+        document.getElementById('countdownValue').textContent = "Date TBD — Coming Soon!";
+        return;
+      }
+      
       const now = new Date();
       const diff = HACKATHON_DATE - now;
       
