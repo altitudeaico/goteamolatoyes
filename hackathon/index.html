@@ -102,6 +102,21 @@
       box-shadow: none;
     }
     
+    .btn-red {
+      background: #ef4444;
+      color: white;
+      box-shadow: 0 8px 0 #b91c1c;
+    }
+    
+    .btn-outline {
+      background: transparent;
+      color: white;
+      border: 3px solid rgba(255,255,255,0.5);
+      box-shadow: none;
+      font-size: 16px;
+      padding: 15px 25px;
+    }
+    
     /* Input */
     input {
       width: 100%;
@@ -127,7 +142,7 @@
       color: #9ca3af;
     }
     
-    /* Avatar grid */
+    /* Avatar grid - EXPANDED with more girly options */
     .avatars {
       display: grid;
       grid-template-columns: repeat(4, 70px);
@@ -238,17 +253,17 @@
     .level-card {
       background: white;
       border-radius: 25px;
-      padding: 25px;
+      padding: 20px;
       width: 100%;
       max-width: 320px;
-      margin: 15px 0;
+      margin: 12px 0;
       color: #1f2937;
       cursor: pointer;
       transition: transform 0.2s;
       text-align: left;
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 15px;
     }
     
     .level-card:active {
@@ -265,14 +280,14 @@
     }
     
     .level-icon {
-      width: 60px;
-      height: 60px;
+      width: 55px;
+      height: 55px;
       border-radius: 50%;
       background: #f3f4f6;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 30px;
+      font-size: 28px;
       flex-shrink: 0;
     }
     
@@ -286,15 +301,36 @@
     }
     
     .level-info h3 {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 800;
-      margin-bottom: 5px;
+      margin-bottom: 3px;
     }
     
     .level-info span {
-      font-size: 14px;
+      font-size: 13px;
       color: #6b7280;
       font-weight: 700;
+    }
+    
+    /* Task type badge */
+    .task-type {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 800;
+      margin-left: 8px;
+      text-transform: uppercase;
+    }
+    
+    .task-type.solo {
+      background: #e0e7ff;
+      color: #4f46e5;
+    }
+    
+    .task-type.team {
+      background: #fef3c7;
+      color: #d97706;
     }
     
     /* Leaderboard */
@@ -321,110 +357,281 @@
       font-weight: 900;
     }
     
-    .leader:nth-child(1) .leader-rank { background: #fbbf24; color: #1f2937; }
-    .leader:nth-child(2) .leader-rank { background: #d1d5db; color: #1f2937; }
-    .leader:nth-child(3) .leader-rank { background: #cd7f32; }
+    .leader.me {
+      background: rgba(251, 191, 36, 0.3);
+      border: 2px solid #fbbf24;
+    }
     
-    .leader-name { flex: 1; font-weight: 700; }
-    .leader-xp { font-weight: 900; color: #fbbf24; }
+    .leader-name {
+      flex: 1;
+      font-weight: 800;
+    }
     
-    .leader.me { border: 3px solid #fbbf24; }
+    .leader-xp {
+      font-weight: 900;
+      color: #fbbf24;
+    }
+    
+    /* Success celebration */
+    .confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 99;
+    }
+    
+    .confetti-piece {
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      background: #fbbf24;
+      animation: confetti-fall 3s ease-out forwards;
+    }
+    
+    @keyframes confetti-fall {
+      0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+    
+    /* Saved indicator */
+    .saved-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #22c55e;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 100px;
+      font-weight: 800;
+      font-size: 16px;
+      margin: 15px 0;
+      animation: pop-in 0.3s ease;
+    }
+    
+    @keyframes pop-in {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    
+    /* Reset confirmation modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+    }
+    
+    .modal {
+      background: white;
+      border-radius: 25px;
+      padding: 30px;
+      max-width: 300px;
+      text-align: center;
+      color: #1f2937;
+    }
+    
+    .modal h2 {
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+    
+    .modal p {
+      color: #6b7280;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .modal-buttons button {
+      flex: 1;
+      padding: 15px;
+      border: none;
+      border-radius: 15px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    
+    .modal-cancel {
+      background: #f3f4f6;
+      color: #6b7280;
+    }
+    
+    .modal-confirm {
+      background: #ef4444;
+      color: white;
+    }
+    
+    /* Task instruction highlight */
+    .instruction-box {
+      background: rgba(255,255,255,0.15);
+      border: 3px solid rgba(255,255,255,0.4);
+      border-radius: 20px;
+      padding: 20px;
+      margin: 20px 0;
+      max-width: 320px;
+    }
+    
+    .instruction-box h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .instruction-box p {
+      font-size: 16px;
+      margin: 0;
+      opacity: 1;
+    }
+    
+    /* Scrollable level list */
+    .level-list {
+      max-height: 60vh;
+      overflow-y: auto;
+      padding: 10px;
+      width: 100%;
+      max-width: 340px;
+    }
   </style>
 </head>
 <body>
 
-<div class="xp hide" id="xpDisplay">⭐ 0</div>
-<div class="toast" id="toast"></div>
+  <div class="xp hide" id="xpDisplay">⭐ 0</div>
+  <div class="toast" id="toast"></div>
+  <div id="confettiContainer"></div>
+  <div id="modalContainer"></div>
 
-<!-- ========== START ========== -->
-<div id="start">
-  <div class="emoji">🚀</div>
-  <h1>CODE QUEST</h1>
-  <p>Learn to build cool stuff with AI!</p>
-  <button class="btn btn-green" onclick="go('login')">START</button>
-</div>
-
-<!-- ========== LOGIN ========== -->
-<div id="login" class="hide">
-  <div class="emoji">👋</div>
-  <h1>What's your name?</h1>
-  <input type="text" id="nameInput" placeholder="Your name">
-  <input type="password" id="codeInput" placeholder="Secret code">
-  <button class="btn btn-green" onclick="tryLogin()">GO!</button>
-  <button class="btn btn-small" onclick="go('signup')">I'm new here</button>
-</div>
-
-<!-- ========== SIGNUP ========== -->
-<div id="signup" class="hide">
-  <div class="emoji">✨</div>
-  <h1>Create Account</h1>
-  <input type="text" id="newName" placeholder="Your name">
-  <input type="password" id="newCode" placeholder="Secret code (4+ letters)">
-  <button class="btn btn-green" onclick="trySignup()">CREATE</button>
-  <button class="btn btn-small" onclick="go('login')">I have an account</button>
-</div>
-
-<!-- ========== PICK AVATAR ========== -->
-<div id="avatar" class="hide">
-  <div class="emoji" id="pickedAvatar">🦸</div>
-  <h1>Pick your hero!</h1>
-  <div class="avatars">
-    <div class="avatar selected" onclick="pick('🦸',this)">🦸</div>
-    <div class="avatar" onclick="pick('🧙',this)">🧙</div>
-    <div class="avatar" onclick="pick('🥷',this)">🥷</div>
-    <div class="avatar" onclick="pick('🦹',this)">🦹</div>
-    <div class="avatar" onclick="pick('🧑‍🚀',this)">🧑‍🚀</div>
-    <div class="avatar" onclick="pick('🐉',this)">🐉</div>
-    <div class="avatar" onclick="pick('🦄',this)">🦄</div>
-    <div class="avatar" onclick="pick('🦊',this)">🦊</div>
+  <!-- SCREEN: Welcome -->
+  <div id="welcome">
+    <div class="emoji">🚀</div>
+    <h1>CODE QUEST</h1>
+    <p>Learn to build with AI!</p>
+    <button class="btn btn-green" onclick="go('login')">I Have an Account</button>
+    <button class="btn btn-white" onclick="go('signup')">I'm New Here!</button>
   </div>
-  <button class="btn btn-yellow" onclick="saveAvatar()">THAT'S ME!</button>
-</div>
 
-<!-- ========== HOME ========== -->
-<div id="home" class="hide">
-  <h1>Hi <span id="userName">Hero</span>! 👋</h1>
-  <p>Pick a level to play</p>
-  <div id="levelList"></div>
-  <button class="btn btn-small" onclick="go('leaders')" style="margin-top:20px;">🏆 Leaderboard</button>
-</div>
-
-<!-- ========== LEADERBOARD ========== -->
-<div id="leaders" class="hide">
-  <h1>🏆 Top Heroes</h1>
-  <div id="leaderList"></div>
-  <button class="btn btn-white" onclick="go('home')" style="margin-top:20px;">← BACK</button>
-</div>
-
-<!-- ========== LEVEL / TASK ========== -->
-<div id="task" class="hide">
-  <div class="dots" id="taskDots"></div>
-  <div class="emoji" id="taskEmoji">🎯</div>
-  <h1 id="taskTitle">Do this thing</h1>
-  <p id="taskDesc">Explanation here</p>
-  <div class="copybox hide" id="copyBox">
-    <code id="copyText"></code>
-    <button class="btn btn-small" onclick="copyIt()" style="margin-top:15px;width:100%;">📋 COPY THIS</button>
+  <!-- SCREEN: Login -->
+  <div id="login" class="hide">
+    <div class="emoji">👋</div>
+    <h1>Welcome Back!</h1>
+    <input type="text" id="nameInput" placeholder="Your name">
+    <input type="password" id="codeInput" placeholder="Secret code">
+    <button class="btn btn-green" onclick="tryLogin()">Let's Go!</button>
+    <button class="btn btn-small" onclick="go('welcome')">← Back</button>
   </div>
-  <button class="btn btn-green" onclick="done()">✅ DONE!</button>
-  <button class="btn btn-small" onclick="go('home')">← BACK</button>
-</div>
 
-<!-- ========== SUCCESS ========== -->
-<div id="success" class="hide">
-  <div class="emoji">🎉</div>
-  <h1>AWESOME!</h1>
-  <p id="successMsg">+25 XP</p>
-  <button class="btn btn-yellow" onclick="nextStep()">NEXT →</button>
-</div>
+  <!-- SCREEN: Signup -->
+  <div id="signup" class="hide">
+    <div class="emoji">✨</div>
+    <h1>Join the Quest!</h1>
+    <input type="text" id="newName" placeholder="Your name">
+    <input type="password" id="newCode" placeholder="Make a secret code">
+    <p style="font-size: 14px; opacity: 0.7; margin-bottom: 20px;">Code must be 4+ characters. Remember it!</p>
+    <button class="btn btn-green" onclick="trySignup()">Create Account</button>
+    <button class="btn btn-small" onclick="go('welcome')">← Back</button>
+  </div>
 
-<!-- ========== LEVEL COMPLETE ========== -->
-<div id="levelDone" class="hide">
-  <div class="emoji">🏆</div>
-  <h1>LEVEL COMPLETE!</h1>
-  <p id="levelDoneMsg">You earned 100 XP!</p>
-  <button class="btn btn-green" onclick="go('home');showHome();">CONTINUE</button>
-</div>
+  <!-- SCREEN: Pick Avatar - EXPANDED OPTIONS -->
+  <div id="avatar" class="hide">
+    <div class="emoji" id="pickedAvatar">🦸</div>
+    <h1>Pick Your Avatar!</h1>
+    <p>Choose how you want to look</p>
+    <div class="avatars">
+      <!-- Row 1: Classic heroes -->
+      <div class="avatar" onclick="pick('🦸', this)">🦸</div>
+      <div class="avatar" onclick="pick('🦸‍♀️', this)">🦸‍♀️</div>
+      <div class="avatar" onclick="pick('🧙', this)">🧙</div>
+      <div class="avatar" onclick="pick('🧙‍♀️', this)">🧙‍♀️</div>
+      <!-- Row 2: Fun characters -->
+      <div class="avatar" onclick="pick('🦄', this)">🦄</div>
+      <div class="avatar" onclick="pick('🐱', this)">🐱</div>
+      <div class="avatar" onclick="pick('🦋', this)">🦋</div>
+      <div class="avatar" onclick="pick('🌸', this)">🌸</div>
+      <!-- Row 3: Cool options -->
+      <div class="avatar" onclick="pick('🐉', this)">🐉</div>
+      <div class="avatar" onclick="pick('🦊', this)">🦊</div>
+      <div class="avatar" onclick="pick('✨', this)">✨</div>
+      <div class="avatar" onclick="pick('🌈', this)">🌈</div>
+      <!-- Row 4: More girly + diverse -->
+      <div class="avatar" onclick="pick('👸', this)">👸</div>
+      <div class="avatar" onclick="pick('🧚', this)">🧚</div>
+      <div class="avatar" onclick="pick('💜', this)">💜</div>
+      <div class="avatar" onclick="pick('🎀', this)">🎀</div>
+    </div>
+    <button class="btn btn-green" onclick="saveAvatar()">That's Me!</button>
+  </div>
+
+  <!-- SCREEN: Home -->
+  <div id="home" class="hide">
+    <h1>Hey <span id="userName">Hero</span>! 👋</h1>
+    <p>Pick a level to play</p>
+    <div class="level-list" id="levelList"></div>
+    <button class="btn btn-small" onclick="go('leaders')" style="margin-top: 15px;">🏆 Leaderboard</button>
+  </div>
+
+  <!-- SCREEN: Task -->
+  <div id="task" class="hide">
+    <div class="dots" id="taskDots"></div>
+    <div class="emoji" id="taskEmoji">🤖</div>
+    <h1 id="taskTitle">Task Title</h1>
+    
+    <div class="instruction-box">
+      <h3>📋 What to do:</h3>
+      <p id="taskDesc">Task description here</p>
+    </div>
+    
+    <div class="copybox hide" id="copyBox">
+      <code id="copyText"></code>
+    </div>
+    
+    <button class="btn btn-yellow hide" id="copyBtn" onclick="copyIt()">📋 Copy This Text</button>
+    <button class="btn btn-green" id="doneBtn" onclick="confirmDone()">✅ I Did It!</button>
+    <button class="btn btn-outline" onclick="showHome()">← Back to Levels</button>
+    <button class="btn btn-outline" onclick="showResetModal()" style="margin-top: 5px; color: #fca5a5; border-color: #fca5a5;">🔄 Start This Level Over</button>
+  </div>
+
+  <!-- SCREEN: Task Done (with celebration) -->
+  <div id="success" class="hide">
+    <div class="emoji">🎉</div>
+    <h1>Amazing!</h1>
+    <div class="saved-badge">✓ Progress Saved!</div>
+    <p id="successMsg">+50 XP</p>
+    <button class="btn btn-green" onclick="nextStep()">Continue →</button>
+  </div>
+
+  <!-- SCREEN: Level Complete -->
+  <div id="levelDone" class="hide">
+    <div class="emoji">🏆</div>
+    <h1>Level Complete!</h1>
+    <div class="saved-badge">✓ Progress Saved!</div>
+    <p id="levelDoneMsg">You earned 100 XP!</p>
+    <button class="btn btn-green" onclick="showHome()">Back to Levels</button>
+  </div>
+
+  <!-- SCREEN: Leaderboard -->
+  <div id="leaders" class="hide">
+    <div class="emoji">🏆</div>
+    <h1>Leaderboard</h1>
+    <div id="leaderList"></div>
+    <button class="btn btn-small" onclick="showHome()" style="margin-top: 20px;">← Back</button>
+  </div>
 
 <script>
   // Supabase
@@ -433,75 +640,135 @@
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3cHhhY2h5bnJobWtlb3d4bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0ODM4NTMsImV4cCI6MjA4OTA1OTg1M30.vMzH379AZ--rY-YJljDDOwJ5xpNnJcq4dH_WfX8Yy4U'
   );
 
-  // Game data - SUPER SIMPLE levels
+  // LEVELS - Updated with clearer instructions, task types, and simpler prompts
   const LEVELS = [
     {
-      id: 1, name: "Say Hello", icon: "👋", xp: 50,
+      id: 1, 
+      name: "Say Hello", 
+      icon: "👋", 
+      xp: 50,
+      taskType: "solo", // solo or team
       tasks: [
-        { emoji: "🤖", title: "Meet Claude", desc: "Claude is your AI helper. Open claude.ai and say hi!", xp: 50 }
+        { 
+          emoji: "🤖", 
+          title: "Meet Claude", 
+          instruction: "Go to claude.ai and type 'Hello Claude!' then press Enter.",
+          xp: 50 
+        }
       ]
     },
     {
-      id: 2, name: "Ask a Question", icon: "❓", xp: 75,
+      id: 2, 
+      name: "Ask a Question", 
+      icon: "❓", 
+      xp: 75,
+      taskType: "solo",
       tasks: [
-        { emoji: "💬", title: "Ask Claude something", desc: "Ask Claude to explain something you're curious about!", xp: 75,
-          prompt: `Hey Claude! 
-
-Can you explain how video games are made?
-
-Explain it simply!` }
+        { 
+          emoji: "💬", 
+          title: "Ask Claude Anything", 
+          instruction: "Copy the text below and paste it into Claude. Change the topic to something YOU want to learn about!",
+          xp: 75,
+          prompt: `Hi Claude! Can you explain how [PICK SOMETHING FUN - like video games, space, or animals] works? Keep it simple and fun!`
+        }
       ]
     },
     {
-      id: 3, name: "Get Creative", icon: "📖", xp: 75,
+      id: 3, 
+      name: "Get Creative", 
+      icon: "📖", 
+      xp: 75,
+      taskType: "solo",
       tasks: [
-        { emoji: "✨", title: "Ask for a story", desc: "Ask Claude to write you a short story!", xp: 75,
-          prompt: `Write me a short adventure story about a kid who discovers a magic computer.
-
-Make it exciting! About 5 sentences.` }
+        { 
+          emoji: "✨", 
+          title: "Get a Story", 
+          instruction: "Copy the text below, paste it into Claude, and fill in YOUR name and favorite thing!",
+          xp: 75,
+          prompt: `Write me a short 5-sentence adventure story where [YOUR NAME] discovers a magical [YOUR FAVORITE THING - like a dragon, computer, or book]. Make it exciting!`
+        }
       ]
     },
     {
-      id: 4, name: "Build a Page", icon: "🎨", xp: 100,
+      id: 4, 
+      name: "Build a Page", 
+      icon: "🎨", 
+      xp: 100,
+      taskType: "solo",
       tasks: [
-        { emoji: "🖥️", title: "Make a webpage!", desc: "Ask Claude to make a webpage about you!", xp: 100,
-          prompt: `Make me a fun webpage about me:
+        { 
+          emoji: "🖥️", 
+          title: "Make YOUR Webpage", 
+          instruction: "Copy the text below, paste it into Claude, and fill in your details. Claude will make you a webpage!",
+          xp: 100,
+          prompt: `Make me a fun webpage about me!
 
-My name is: [YOUR NAME]
-I like: [YOUR HOBBY]
-Favorite color: [YOUR COLOR]
+My name is: [TYPE YOUR NAME]
+My favorite color is: [TYPE A COLOR]
+I love: [TYPE YOUR HOBBY]
 
-Make it colorful with emojis!` }
+Make it colorful with big text and emojis! Show me the code.`
+        }
       ]
     },
     {
-      id: 5, name: "Make it Cool", icon: "⚡", xp: 100,
+      id: 5, 
+      name: "Make it Cool", 
+      icon: "⚡", 
+      xp: 100,
+      taskType: "solo",
       tasks: [
-        { emoji: "🌟", title: "Add more style", desc: "Ask Claude to make your page even cooler!", xp: 100,
-          prompt: `Make my webpage cooler! Add:
+        { 
+          emoji: "🌟", 
+          title: "Upgrade Your Page", 
+          instruction: "Copy this text and paste it into the SAME Claude chat where you made your webpage!",
+          xp: 100,
+          prompt: `Make my webpage even cooler! Add:
+- Glowing text effects
+- A fun animated background
+- Some fun animations when I hover over things
 
-- Glowing text
-- A fun background
-- Animations
-
-Update the code!` }
+Update the code!`
+        }
       ]
     },
     {
-      id: 6, name: "Build a Game", icon: "🎮", xp: 150,
+      id: 6, 
+      name: "Build a Game", 
+      icon: "🎮", 
+      xp: 150,
+      taskType: "team",
       tasks: [
-        { emoji: "🎯", title: "Make a quiz game", desc: "Ask Claude to build you a quiz!", xp: 150,
-          prompt: `Make me a fun quiz game about [YOUR TOPIC].
+        { 
+          emoji: "🎯", 
+          title: "Make a Quiz Game", 
+          instruction: "Work with your team! Copy this text to Claude and pick a topic your team agrees on.",
+          xp: 150,
+          prompt: `Make me a fun quiz game about [YOUR TEAM'S TOPIC - like football, movies, music, or animals].
 
-3 questions with buttons to click.
-Tell me if I got it right or wrong.
-Keep score!` }
+Include:
+- 5 multiple choice questions
+- Buttons to click for answers  
+- Tell me if I'm right or wrong
+- Keep score at the end
+
+Make it colorful and fun!`
+        }
       ]
     },
     {
-      id: 7, name: "Hackathon Ready", icon: "🏆", xp: 200,
+      id: 7, 
+      name: "Hackathon Ready!", 
+      icon: "🏆", 
+      xp: 200,
+      taskType: "team",
       tasks: [
-        { emoji: "🚀", title: "You did it!", desc: "You're ready for the family hackathon! Show everyone what you made!", xp: 200 }
+        { 
+          emoji: "🚀", 
+          title: "You're Ready!", 
+          instruction: "Amazing work! You've learned all the skills for the hackathon. On April 4th, your team will build an awesome quiz game together!",
+          xp: 200 
+        }
       ]
     }
   ];
@@ -515,7 +782,7 @@ Keep score!` }
   // Show/hide screens
   function go(id) {
     document.querySelectorAll('body > div').forEach(d => {
-      if (!d.classList.contains('toast') && !d.classList.contains('xp')) {
+      if (!d.classList.contains('toast') && !d.classList.contains('xp') && d.id !== 'confettiContainer' && d.id !== 'modalContainer') {
         d.classList.add('hide');
       }
     });
@@ -529,6 +796,53 @@ Keep score!` }
     t.className = 'toast' + (err ? ' error' : '');
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // Confetti celebration
+  function showConfetti() {
+    const container = document.getElementById('confettiContainer');
+    container.innerHTML = '';
+    const colors = ['#fbbf24', '#22c55e', '#7c3aed', '#ec4899', '#3b82f6', '#f43f5e'];
+    
+    for (let i = 0; i < 50; i++) {
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      piece.style.left = Math.random() * 100 + 'vw';
+      piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.animationDelay = Math.random() * 0.5 + 's';
+      piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+      container.appendChild(piece);
+    }
+    
+    setTimeout(() => container.innerHTML = '', 3000);
+  }
+
+  // Show reset confirmation modal
+  function showResetModal() {
+    const container = document.getElementById('modalContainer');
+    container.innerHTML = `
+      <div class="modal-overlay" onclick="hideModal()">
+        <div class="modal" onclick="event.stopPropagation()">
+          <h2>🔄 Start Over?</h2>
+          <p>This will reset your progress for this level. Are you sure?</p>
+          <div class="modal-buttons">
+            <button class="modal-cancel" onclick="hideModal()">Cancel</button>
+            <button class="modal-confirm" onclick="resetLevel()">Reset Level</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function hideModal() {
+    document.getElementById('modalContainer').innerHTML = '';
+  }
+
+  function resetLevel() {
+    hideModal();
+    currentTask = 0;
+    showTask();
+    toast('Level reset! Start fresh 🔄');
   }
 
   // Login
@@ -607,13 +921,17 @@ Keep score!` }
       const current = (user.current_mission || 1) === lvl.id;
       const locked = (user.current_mission || 1) < lvl.id;
       
+      const taskTypeBadge = lvl.taskType === 'team' 
+        ? '<span class="task-type team">👥 Team</span>' 
+        : '<span class="task-type solo">👤 Solo</span>';
+      
       const card = document.createElement('div');
       card.className = 'level-card' + (done ? ' done' : current ? ' current' : locked ? ' locked' : '');
       card.innerHTML = `
         <div class="level-icon">${done ? '✅' : lvl.icon}</div>
         <div class="level-info">
-          <h3>${lvl.name}${locked ? ' 🔒' : ''}</h3>
-          <span>${done ? 'Complete!' : lvl.xp + ' XP'}</span>
+          <h3>${lvl.name}${locked ? ' 🔒' : ''}${taskTypeBadge}</h3>
+          <span>${done ? 'Complete! ✓' : lvl.xp + ' XP'}</span>
         </div>
       `;
       
@@ -646,14 +964,18 @@ Keep score!` }
     
     document.getElementById('taskEmoji').textContent = task.emoji;
     document.getElementById('taskTitle').textContent = task.title;
-    document.getElementById('taskDesc').textContent = task.desc;
+    document.getElementById('taskDesc').textContent = task.instruction;
     
     const copyBox = document.getElementById('copyBox');
+    const copyBtn = document.getElementById('copyBtn');
+    
     if (task.prompt) {
       copyBox.classList.remove('hide');
+      copyBtn.classList.remove('hide');
       document.getElementById('copyText').textContent = task.prompt;
     } else {
       copyBox.classList.add('hide');
+      copyBtn.classList.add('hide');
     }
     
     go('task');
@@ -664,6 +986,11 @@ Keep score!` }
     const text = document.getElementById('copyText').textContent;
     navigator.clipboard.writeText(text);
     toast('Copied! Now paste it to Claude 📋');
+  }
+
+  // Confirm before marking done
+  function confirmDone() {
+    done();
   }
 
   // Complete task
@@ -685,6 +1012,9 @@ Keep score!` }
     user.current_mission = newMission;
     localStorage.setItem('cq', JSON.stringify(user));
     document.getElementById('xpDisplay').textContent = '⭐ ' + xp;
+    
+    // Show confetti!
+    showConfetti();
     
     // Level complete?
     if (currentTask === currentLevel.tasks.length - 1) {
