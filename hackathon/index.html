@@ -1022,10 +1022,22 @@ Make it colorful and fun!`
   }
 
   async function saveAvatar() {
-    await db.from('hackathon_users').update({ avatar: picked }).eq('id', user.id);
+    const isCustom = picked && picked.startsWith('data:');
+    const isFirstTime = !user.avatar || user.avatar === '🦸';
+    const xpBonus = isFirstTime ? (isCustom ? 10 : 5) : 0;
+    const newXp = user.xp + xpBonus;
+
+    await db.from('hackathon_users').update({ avatar: picked, xp: newXp }).eq('id', user.id);
     user.avatar = picked;
+    user.xp = newXp;
     localStorage.setItem('cq', JSON.stringify(user));
-    toast('Looking good! ✨');
+
+    if (xpBonus > 0) {
+      showConfetti();
+      toast(isCustom ? `+10 XP for making your own avatar! 🎨` : `+5 XP for picking your avatar! ✨`);
+    } else {
+      toast('Looking good! ✨');
+    }
     showHome();
   }
 
