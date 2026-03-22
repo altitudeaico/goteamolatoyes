@@ -18,25 +18,34 @@
 
     .container { max-width: 680px; margin: 0 auto; padding: 36px 20px 80px; }
 
+    /* big explainer */
     .big-explainer { background: white; border-radius: 24px; padding: 32px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(79,70,229,0.08); text-align: center; }
-    .big-explainer .illo { font-size: 48px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 16px; }
+    .big-explainer .illo { font-size: 52px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 12px; }
     .big-explainer h2 { font-size: 1.4rem; font-weight: 900; color: #1e1b4b; margin-bottom: 14px; }
     .big-explainer p { font-size: 1.05rem; color: #374151; max-width: 500px; margin: 0 auto 10px; }
 
+    /* section */
     .section { background: white; border-radius: 20px; padding: 28px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(79,70,229,0.07); }
-    .section h2 { font-size: 1.25rem; font-weight: 900; color: #1e1b4b; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+    .section h2 { font-size: 1.25rem; font-weight: 900; color: #1e1b4b; margin-bottom: 14px; }
     .section p { font-size: 1rem; color: #374151; margin-bottom: 12px; }
     .section p:last-child { margin-bottom: 0; }
 
-    /* numbered steps */
+    /* steps */
     .steps { list-style: none; margin-top: 16px; }
     .steps li { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 22px; }
     .step-circle { min-width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; font-weight: 900; font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
     .step-body strong { display: block; font-size: 1.05rem; font-weight: 900; color: #1e1b4b; margin-bottom: 4px; }
     .step-body span { font-size: 0.97rem; color: #4b5563; line-height: 1.7; }
 
-    /* prompt boxes */
-    .prompt-box { background: #f0f1ff; border: 2.5px dashed #818cf8; border-radius: 14px; padding: 16px 18px; margin: 12px 0 8px; font-size: 1rem; color: #3730a3; line-height: 1.8; white-space: pre-wrap; }
+    /* token box — styled to look important */
+    .token-box { background: #1e1b4b; border-radius: 14px; padding: 18px 20px; margin: 14px 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .token-box .token-label { color: #a5b4fc; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .token-box .token-value { color: #a5f3fc; font-family: monospace; font-size: 0.9rem; word-break: break-all; }
+    .token-copy { background: #4f46e5; color: white; border: none; border-radius: 100px; padding: 8px 18px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 14px; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+    .token-copy.copied { background: #22c55e; }
+
+    /* prompt box */
+    .prompt-box { background: #f0f1ff; border: 2.5px dashed #818cf8; border-radius: 14px; padding: 16px 18px; margin: 12px 0 8px; font-size: 1rem; color: #3730a3; line-height: 1.8; white-space: pre-wrap; word-break: break-word; }
     .copy-btn { display: inline-flex; align-items: center; gap: 6px; background: #4f46e5; color: white; border: none; border-radius: 100px; padding: 9px 20px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 14px; cursor: pointer; margin-bottom: 4px; transition: background 0.2s; }
     .copy-btn:hover { background: #4338ca; }
     .copy-btn.copied { background: #22c55e; }
@@ -46,21 +55,18 @@
     .warning { background: #fff7ed; border-left: 5px solid #f97316; border-radius: 0 12px 12px 0; padding: 14px 16px; margin: 14px 0; font-size: 0.97rem; color: #9a3412; }
     .warning strong { font-weight: 900; }
 
-    /* hero step — the big moment */
-    .hero-step { background: linear-gradient(135deg, #fef3c7, #fde68a); border: 3px solid #fbbf24; border-radius: 20px; padding: 28px; margin: 20px 0; text-align: center; }
-    .hero-step .icon { font-size: 56px; margin-bottom: 10px; }
-    .hero-step h3 { font-size: 1.3rem; font-weight: 900; color: #92400e; margin-bottom: 8px; }
-    .hero-step p { color: #78350f; font-size: 1rem; margin-bottom: 0; }
+    /* big celebration box */
+    .celebrate { background: linear-gradient(135deg, #fef3c7, #fde68a); border: 3px solid #fbbf24; border-radius: 20px; padding: 28px; margin: 20px 0; text-align: center; }
+    .celebrate .icon { font-size: 56px; margin-bottom: 10px; }
+    .celebrate h3 { font-size: 1.3rem; font-weight: 900; color: #92400e; margin-bottom: 8px; }
+    .celebrate p { color: #78350f; font-size: 1rem; }
 
-    /* netlify drop visual */
-    .drop-visual { border: 4px dashed #818cf8; border-radius: 20px; padding: 30px 20px; text-align: center; margin: 16px 0; background: #f8f7ff; }
-    .drop-visual .drop-icon { font-size: 52px; margin-bottom: 8px; }
-    .drop-visual p { font-size: 1rem; color: #4b5563; margin: 0; }
-    .drop-visual strong { color: #4f46e5; }
-
-    .badge { display: inline-block; border-radius: 100px; padding: 5px 14px; font-size: 13px; font-weight: 800; margin-bottom: 14px; }
-    .badge-green { background: #dcfce7; color: #166534; }
-    .badge-purple { background: #ede9fe; color: #5b21b6; }
+    /* needs from uncle b */
+    .needs-box { background: #ede9fe; border-radius: 16px; padding: 22px; margin-bottom: 20px; }
+    .needs-box h3 { font-size: 1.1rem; font-weight: 900; color: #4c1d95; margin-bottom: 12px; }
+    .needs-box ul { list-style: none; }
+    .needs-box li { display: flex; align-items: flex-start; gap: 10px; font-size: 1rem; color: #3b0764; margin-bottom: 8px; }
+    .needs-box li::before { content: '✅'; flex-shrink: 0; }
 
     .cta { background: linear-gradient(135deg, #4f46e5, #7c3aed); border-radius: 20px; padding: 30px; text-align: center; color: white; margin-top: 32px; }
     .cta h2 { font-size: 1.4rem; font-weight: 900; margin-bottom: 10px; }
@@ -68,6 +74,10 @@
     .cta a { display: inline-block; background: #fbbf24; color: #1f2937; text-decoration: none; padding: 15px 30px; border-radius: 100px; font-weight: 900; font-size: 1.05rem; }
 
     a { color: #4f46e5; }
+
+    @media (max-width: 480px) {
+      .token-box { flex-direction: column; align-items: flex-start; }
+    }
   </style>
 </head>
 <body>
@@ -75,7 +85,7 @@
   <div class="header">
     <div class="header-emoji">🌐</div>
     <h1>Put Your App Online!</h1>
-    <p>Let Claude do all the hard work — you just describe what you want!</p>
+    <p>Claude does all the hard work — you just give it the magic key 🗝️</p>
     <a href="index.html" class="back-link">← Back to Code Quest</a>
   </div>
 
@@ -83,19 +93,29 @@
 
     <!-- What does online mean -->
     <div class="big-explainer">
-      <div class="illo">🖥️ ➡️ 🌍</div>
-      <h2>What does "putting it online" mean?</h2>
-      <p>Right now your webpage only exists on your screen — nobody else can see it. Putting it online gives it a <strong>real link on the internet</strong>, like a proper website, so the whole family can visit it from anywhere!</p>
-      <p>The best part? You're going to ask <strong>Claude to do it for you.</strong> That's what AI is for! 🤖✨</p>
+      <div class="illo">🤖 🗝️ 🌍</div>
+      <h2>Here's the idea</h2>
+      <p>You already know how to ask Claude to <strong>build</strong> your webpage. Now you're going to ask Claude to <strong>put it online</strong> too!</p>
+      <p>To do this, Claude needs a special <strong>secret key</strong> (called a token) that lets it add your page to the family website. Uncle B will give you this key.</p>
+      <p>Once you have it — you just paste it into Claude and Claude handles everything. You don't need to understand how it works. That's the magic of AI! ✨</p>
     </div>
 
-    <!-- PART 1: Ask Claude to build the page -->
-    <div class="section">
-      <h2>🤖 Step 1 — Ask Claude to build your page</h2>
-      <div class="badge badge-purple">Do this in Claude.ai</div>
-      <p>Go to <a href="https://claude.ai" target="_blank"><strong>claude.ai</strong></a>, start a new chat, and paste this prompt. Fill in YOUR details where it says [BRACKETS]:</p>
+    <!-- What you need first -->
+    <div class="needs-box">
+      <h3>🗝️ Before you start — you need these two things from Uncle B:</h3>
+      <ul>
+        <li>Your <strong>secret token</strong> (a long code that starts with <code style="background:rgba(0,0,0,0.1);padding:1px 6px;border-radius:4px;">ghp_</code>)</li>
+        <li>Confirmation that your account is set up ✅</li>
+      </ul>
+      <p style="font-size:0.95rem;color:#4c1d95;margin-top:8px;">Don't have these yet? Send Uncle B a message on WhatsApp and ask for your deploy token!</p>
+    </div>
 
-      <div class="prompt-box" id="prompt1">Make me a personal webpage about me!
+    <!-- Step 1 -->
+    <div class="section">
+      <h2>🤖 Step 1 — Build your page with Claude</h2>
+      <p>Go to <a href="https://claude.ai" target="_blank"><strong>claude.ai</strong></a>, start a new chat, and paste this prompt. Fill in YOUR details:</p>
+
+      <div class="prompt-box" id="prompt-build">Make me a personal webpage about me!
 
 My name is: [YOUR NAME]
 My favourite colour is: [A COLOUR]
@@ -104,129 +124,90 @@ My team is: [GIRLS or BOYS]
 
 Make it colourful, fun and full of emojis.
 Add a cool animation to the background.
-At the bottom write "Built with AI 🚀"
-
-When you're done, give me the complete code as a single HTML file.</div>
-      <button class="copy-btn" onclick="copyPrompt('prompt1', this)">📋 Copy this prompt</button>
+At the bottom write "Built with AI at Code Quest 🚀"</div>
+      <button class="copy-btn" onclick="copyEl('prompt-build', this)">📋 Copy this prompt</button>
 
       <div class="tip">
-        <strong>💡 The more you describe, the cooler it gets!</strong> Tell Claude your favourite colour, show, food, sport — anything! The clearer your words, the better your page will look.
+        <strong>💡 The more detail the better!</strong> Tell Claude your favourite show, food, sport — anything. The clearer your words, the cooler your page.
       </div>
     </div>
 
-    <!-- PART 2: Ask Claude to save it as a file -->
+    <!-- Step 2 -->
     <div class="section">
-      <h2>💾 Step 2 — Ask Claude to save it as a file</h2>
-      <div class="badge badge-purple">Still in Claude.ai</div>
-      <p>Once Claude has made your page, ask it to save the code as a file you can download. Copy and send this message in the <strong>same chat</strong>:</p>
+      <h2>🗝️ Step 2 — Give Claude the secret key</h2>
+      <p>In the <strong>same Claude chat</strong> (don't start a new one!), send this message. You'll need to swap in your real token where it says <code style="background:#f0f1ff;padding:1px 6px;border-radius:4px;">[YOUR TOKEN]</code>:</p>
 
-      <div class="prompt-box" id="prompt2">Can you give me that as a file I can download? Save it as mypage.html</div>
-      <button class="copy-btn" onclick="copyPrompt('prompt2', this)">📋 Copy this message</button>
+      <div class="prompt-box" id="prompt-deploy">Now I want you to put this page online for me.
 
-      <p>Claude will give you a download button or a file to save. Click it and save the file somewhere easy to find — like your Desktop or Downloads folder.</p>
+Here are your instructions:
+[PASTE THE CONTENTS OF DEPLOY.md HERE]
 
-      <div class="tip">
-        <strong>👀 Look for a file called</strong> <code style="background:#f0f1ff;padding:2px 8px;border-radius:6px;">mypage.html</code> in your downloads. That's your whole webpage in one tiny file!
-      </div>
+My name is: [YOUR FIRST NAME]
+My token is: [YOUR TOKEN — starts with ghp_]
+
+Please deploy my page now and give me the link when it's done.</div>
+      <button class="copy-btn" onclick="copyEl('prompt-deploy', this)">📋 Copy this message</button>
 
       <div class="warning">
-        <strong>Can't find a download button?</strong> Ask Claude: <em>"Can you put the code in an artifact so I can copy it?"</em> — then copy all the code and paste it into a new text file, saving it as <code>mypage.html</code>.
+        <strong>⚠️ Keep your token secret!</strong> Don't share it with friends or post it anywhere. It's like a password — only use it in Claude.
       </div>
-    </div>
-
-    <!-- PART 3: Netlify Drop -->
-    <div class="section">
-      <h2>🚀 Step 3 — Drag it onto the internet!</h2>
-      <div class="badge badge-green">✅ This is the magic bit</div>
-      <p>This is the coolest part. We use a free website called <strong>Netlify Drop</strong>. You just <strong>drag your file onto the page</strong> and it goes live on the internet instantly — no accounts, no passwords, nothing!</p>
-
-      <ul class="steps">
-        <li>
-          <div class="step-circle">1</div>
-          <div class="step-body">
-            <strong>Open Netlify Drop</strong>
-            <span>Go to <a href="https://app.netlify.com/drop" target="_blank"><strong>app.netlify.com/drop</strong></a> — you'll see a big page with a dotted box on it.</span>
-          </div>
-        </li>
-        <li>
-          <div class="step-circle">2</div>
-          <div class="step-body">
-            <strong>Find your mypage.html file</strong>
-            <span>Open your Downloads folder (or wherever you saved it) so you can see the file.</span>
-          </div>
-        </li>
-        <li>
-          <div class="step-circle">3</div>
-          <div class="step-body">
-            <strong>Drag the file into the dotted box</strong>
-            <span>Click and hold on your <code style="background:#f0f1ff;padding:1px 6px;border-radius:4px;">mypage.html</code> file, then drag it across to the Netlify Drop page and drop it into the dotted box.</span>
-          </div>
-        </li>
-      </ul>
-
-      <div class="drop-visual">
-        <div class="drop-icon">📄 ➡️ 🟦</div>
-        <p>Drag <strong>mypage.html</strong> into the dotted box on Netlify Drop</p>
-      </div>
-
-      <ul class="steps">
-        <li>
-          <div class="step-circle">4</div>
-          <div class="step-body">
-            <strong>Wait about 10 seconds...</strong>
-            <span>Netlify will spin for a moment, then — boom! Your page is live on the internet! 🎉</span>
-          </div>
-        </li>
-        <li>
-          <div class="step-circle">5</div>
-          <div class="step-body">
-            <strong>Copy your link and share it!</strong>
-            <span>Netlify will show you a link that looks something like <code style="background:#f0f1ff;padding:1px 6px;border-radius:4px;">happy-rainbow-123.netlify.app</code>. Copy it and send it to the family WhatsApp — anyone can click it and see your page!</span>
-          </div>
-        </li>
-      </ul>
-
-      <div class="hero-step">
-        <div class="icon">🎉</div>
-        <h3>You just built and launched a real website!</h3>
-        <p>Most adults don't know how to do this. You just used AI to build a webpage and put it on the internet. That's actually incredible.</p>
-      </div>
-    </div>
-
-    <!-- PART 4: Making it better -->
-    <div class="section">
-      <h2>✨ Want to make it even better?</h2>
-      <p>Easy! Go back to Claude in the same chat and ask it to make changes. Then download the new file and drag it onto Netlify Drop again — your link stays the same but the page updates!</p>
-      <p>Here are some things to ask Claude:</p>
-
-      <p style="font-weight:900;margin-bottom:6px;margin-top:8px;">Add something new:</p>
-      <div class="prompt-box" id="prompt3">Add a section called "My Favourite Things" with a list of my top 5 favourites. Put a big emoji next to each one. Give me the full updated file.</div>
-      <button class="copy-btn" onclick="copyPrompt('prompt3', this)">📋 Copy</button>
-
-      <p style="font-weight:900;margin-bottom:6px;margin-top:8px;">Change the look:</p>
-      <div class="prompt-box" id="prompt4">Make the background a dark night sky with animated shooting stars. Keep everything else the same. Give me the full updated file.</div>
-      <button class="copy-btn" onclick="copyPrompt('prompt4', this)">📋 Copy</button>
-
-      <p style="font-weight:900;margin-bottom:6px;margin-top:8px;">Add a countdown to the hackathon:</p>
-      <div class="prompt-box" id="prompt5">Add a countdown timer to my page that counts down to April 4th 2026 at 6:30pm. Label it "Hackathon in..." and make it look exciting. Give me the full updated file.</div>
-      <button class="copy-btn" onclick="copyPrompt('prompt5', this)">📋 Copy</button>
 
       <div class="tip">
-        <strong>🔑 The secret:</strong> Always say <strong>"give me the full updated file"</strong> at the end of your message to Claude, so it gives you the whole thing ready to drag onto Netlify again.
+        <strong>🤔 What is DEPLOY.md?</strong> It's a set of instructions that tells Claude exactly how to put your page online. Uncle B will send it to you along with your token. Just copy and paste its contents into the message above.
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="section">
+      <h2>⏳ Step 3 — Wait about 1 minute</h2>
+      <p>Claude will do all the work — you'll see it thinking and then it will say something like:</p>
+
+      <div style="background:#f0fdf4; border-radius:14px; padding:18px; margin:12px 0; border-left: 5px solid #22c55e;">
+        <p style="color:#166534; margin:0; font-size:1rem;">✅ <strong>Your page is online!</strong> It will be live in about 1 minute at:<br>
+        <strong>altitudeaico.github.io/goteamolatoyes/hackathon/yourname.html</strong><br>
+        Share that link with your family! 🎉</p>
+      </div>
+
+      <p>That's it — you're done! Copy your link and send it to the family WhatsApp group. 🎊</p>
+
+      <div class="celebrate">
+        <div class="icon">🎉</div>
+        <h3>You just launched a real website!</h3>
+        <p>You described what you wanted, Claude built it, and Claude put it online. That's real AI-powered development — and you just did it!</p>
+      </div>
+    </div>
+
+    <!-- Updating -->
+    <div class="section">
+      <h2>✨ Want to update your page?</h2>
+      <p>Easy! In the <strong>same Claude chat</strong>, just ask for a change and then say "deploy it again please". Claude will update your page and the link stays exactly the same.</p>
+      <p>Try asking Claude things like:</p>
+
+      <div class="prompt-box" id="prompt-update1">Add a section called "My Top 5 Favourite Things" to my page with big emojis. Then deploy it again please.</div>
+      <button class="copy-btn" onclick="copyEl('prompt-update1', this)">📋 Copy</button>
+
+      <div class="prompt-box" id="prompt-update2">Make the background a dark night sky with animated shooting stars. Then deploy it again please.</div>
+      <button class="copy-btn" onclick="copyEl('prompt-update2', this)">📋 Copy</button>
+
+      <div class="prompt-box" id="prompt-update3">Add a countdown timer that counts down to 4th April 2026 at 6:30pm. Label it "Hackathon starts in..." and make it look exciting. Then deploy it again please.</div>
+      <button class="copy-btn" onclick="copyEl('prompt-update3', this)">📋 Copy</button>
+
+      <div class="tip">
+        <strong>🔑 The trick:</strong> Always end your message with <strong>"then deploy it again please"</strong> — that tells Claude to both make the change AND put the updated version online automatically.
       </div>
     </div>
 
     <!-- CTA -->
     <div class="cta">
-      <h2>Ready? Go build your page! 🚀</h2>
-      <p>Head back to Code Quest and complete Level 4. Once you've got your page, come back here and follow the steps to put it online!</p>
+      <h2>Ready? Build your page first! 🚀</h2>
+      <p>Go back to Code Quest and complete Level 4 — Build a Page. Then come back here once you have your page and your token from Uncle B!</p>
       <a href="index.html">Back to Code Quest →</a>
     </div>
 
   </div>
 
   <script>
-    function copyPrompt(id, btn) {
+    function copyEl(id, btn) {
       const text = document.getElementById(id).textContent;
       navigator.clipboard.writeText(text).then(() => {
         const orig = btn.textContent;
