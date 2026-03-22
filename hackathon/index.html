@@ -345,6 +345,26 @@
       background: #fef3c7;
       color: #d97706;
     }
+
+    /* Section dividers in level list */
+    .level-section-header {
+      width: 100%;
+      max-width: 320px;
+      padding: 10px 5px 4px;
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.7;
+      text-align: left;
+      margin-top: 8px;
+    }
+
+    /* Team level cards get a warm tint */
+    .level-card.team-level {
+      background: rgba(251, 191, 36, 0.18);
+      border-color: rgba(251, 191, 36, 0.4);
+    }
     
     /* Leaderboard */
     .leader {
@@ -1078,30 +1098,67 @@ Make it colorful and fun!`
     
     const list = document.getElementById('levelList');
     list.innerHTML = '';
-    
+
+    let soloHeaderAdded = false;
+    let teamHeaderAdded = false;
+    const soloComplete = LEVELS.filter(l => l.taskType === 'solo').every(l => (user.current_mission || 1) > l.id);
+
     LEVELS.forEach((lvl, i) => {
       const done = (user.current_mission || 1) > lvl.id;
       const current = (user.current_mission || 1) === lvl.id;
       const locked = (user.current_mission || 1) < lvl.id;
-      
-      const taskTypeBadge = lvl.taskType === 'team' 
-        ? '<span class="task-type team">👥 Team</span>' 
+
+      // Insert section header before first solo and first team level
+      if (lvl.taskType === 'solo' && !soloHeaderAdded) {
+        soloHeaderAdded = true;
+        const h = document.createElement('div');
+        h.className = 'level-section-header';
+        h.textContent = '👤 Solo Levels — Do these on your own';
+        list.appendChild(h);
+      }
+      if (lvl.taskType === 'team' && !teamHeaderAdded) {
+        teamHeaderAdded = true;
+        const h = document.createElement('div');
+        h.className = 'level-section-header';
+        h.style.color = '#fbbf24';
+        h.style.opacity = '1';
+        h.textContent = '👥 Team Levels — Do these with your team';
+        list.appendChild(h);
+      }
+
+      const taskTypeBadge = lvl.taskType === 'team'
+        ? '<span class="task-type team">👥 Team</span>'
         : '<span class="task-type solo">👤 Solo</span>';
-      
+
+      // Smart lock subtitle
+      let subtitle;
+      if (done) {
+        subtitle = 'Complete! ✓';
+      } else if (locked && lvl.taskType === 'team' && !soloComplete) {
+        subtitle = 'Finish solo levels first 🔒';
+      } else if (locked && lvl.taskType === 'team' && !user.team_id) {
+        subtitle = 'Join your team to unlock 🔒';
+      } else if (locked) {
+        subtitle = 'Complete the level above first 🔒';
+      } else {
+        subtitle = lvl.xp + ' XP';
+      }
+
       const card = document.createElement('div');
-      card.className = 'level-card' + (done ? ' done' : current ? ' current' : locked ? ' locked' : '');
+      const teamClass = lvl.taskType === 'team' ? ' team-level' : '';
+      card.className = 'level-card' + teamClass + (done ? ' done' : current ? ' current' : locked ? ' locked' : '');
       card.innerHTML = `
         <div class="level-icon">${done ? '✅' : lvl.icon}</div>
         <div class="level-info">
-          <h3>${lvl.name}${locked ? ' 🔒' : ''}${taskTypeBadge}</h3>
-          <span>${done ? 'Complete! ✓' : lvl.xp + ' XP'}</span>
+          <h3>${lvl.name}${taskTypeBadge}</h3>
+          <span>${subtitle}</span>
         </div>
       `;
-      
+
       if (!locked) {
         card.onclick = () => startLevel(lvl.id);
       }
-      
+
       list.appendChild(card);
     });
     
