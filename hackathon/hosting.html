@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Host Your App 🚀 | CODE QUEST</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #f0f1ff;
+      color: #1e1b4b;
+      line-height: 1.7;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      color: white;
+      padding: 50px 20px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 70% 30%, rgba(255,255,255,0.12) 0%, transparent 60%);
+    }
+    .header-emoji { font-size: 72px; margin-bottom: 12px; }
+    .header h1 { font-size: 2.2rem; font-weight: 900; margin-bottom: 8px; }
+    .header p { font-size: 1.1rem; opacity: 0.9; max-width: 500px; margin: 0 auto; }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 20px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 100px;
+      font-weight: 800;
+      font-size: 15px;
+      transition: background 0.2s;
+    }
+    .back-link:hover { background: rgba(255,255,255,0.3); }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    /* ── Intro card ── */
+    .intro-card {
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      border-radius: 20px;
+      padding: 28px;
+      margin-bottom: 36px;
+      border-left: 6px solid #f59e0b;
+    }
+    .intro-card h2 { font-size: 1.3rem; font-weight: 900; color: #92400e; margin-bottom: 8px; }
+    .intro-card p { color: #78350f; font-size: 1rem; }
+
+    /* ── Section ── */
+    .section {
+      background: white;
+      border-radius: 20px;
+      padding: 32px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(79,70,229,0.08);
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .section-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+    .icon-purple { background: #ede9fe; }
+    .icon-blue   { background: #dbeafe; }
+    .icon-green  { background: #dcfce7; }
+    .section h2 { font-size: 1.3rem; font-weight: 900; color: #1e1b4b; }
+    .section p  { color: #374151; font-size: 1rem; margin-bottom: 12px; }
+    .section p:last-child { margin-bottom: 0; }
+
+    /* ── Steps ── */
+    .steps { list-style: none; margin-top: 16px; }
+    .steps li {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+    .step-num {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: white;
+      font-weight: 900;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .step-body { flex: 1; }
+    .step-body strong { display: block; font-size: 1rem; font-weight: 800; color: #1e1b4b; margin-bottom: 3px; }
+    .step-body span { font-size: 0.95rem; color: #4b5563; line-height: 1.6; }
+
+    /* ── Code block ── */
+    .code-block {
+      background: #1e1b4b;
+      color: #a5f3fc;
+      border-radius: 12px;
+      padding: 16px 20px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      margin: 14px 0;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    /* ── Prompt box ── */
+    .prompt-box {
+      background: #f0f1ff;
+      border: 2px dashed #818cf8;
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin: 14px 0;
+      font-size: 0.95rem;
+      color: #3730a3;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      font-family: 'Nunito', sans-serif;
+    }
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 100px;
+      padding: 8px 18px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+    .copy-btn:hover { background: #4338ca; }
+    .copy-btn.copied { background: #22c55e; }
+
+    /* ── Tip box ── */
+    .tip {
+      background: #f0fdf4;
+      border-left: 5px solid #22c55e;
+      border-radius: 0 12px 12px 0;
+      padding: 14px 18px;
+      margin: 14px 0;
+      font-size: 0.95rem;
+      color: #166534;
+    }
+    .tip strong { font-weight: 900; }
+
+    /* ── Warning box ── */
+    .warning {
+      background: #fff7ed;
+      border-left: 5px solid #f97316;
+      border-radius: 0 12px 12px 0;
+      padding: 14px 18px;
+      margin: 14px 0;
+      font-size: 0.95rem;
+      color: #9a3412;
+    }
+
+    /* ── Badge ── */
+    .badge {
+      display: inline-block;
+      background: #ede9fe;
+      color: #5b21b6;
+      border-radius: 100px;
+      padding: 4px 14px;
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    /* ── What is hosting explainer ── */
+    .analogy-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .analogy-card {
+      background: #f8f7ff;
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+    }
+    .analogy-card .big { font-size: 36px; margin-bottom: 6px; }
+    .analogy-card strong { font-size: 0.9rem; font-weight: 900; color: #1e1b4b; display: block; }
+    .analogy-card span { font-size: 0.82rem; color: #6b7280; }
+
+    /* ── CTA ── */
+    .cta {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      border-radius: 20px;
+      padding: 32px;
+      text-align: center;
+      color: white;
+      margin-top: 36px;
+    }
+    .cta h2 { font-size: 1.5rem; font-weight: 900; margin-bottom: 10px; }
+    .cta p { opacity: 0.9; margin-bottom: 20px; }
+    .cta a {
+      display: inline-block;
+      background: #fbbf24;
+      color: #1f2937;
+      text-decoration: none;
+      padding: 16px 32px;
+      border-radius: 100px;
+      font-weight: 900;
+      font-size: 1.1rem;
+      transition: transform 0.1s;
+    }
+    .cta a:hover { transform: scale(1.04); }
+
+    @media (max-width: 480px) {
+      .analogy-grid { grid-template-columns: 1fr 1fr; }
+      .header h1 { font-size: 1.7rem; }
+      .section { padding: 22px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-emoji">🌐</div>
+    <h1>How to Host Your App</h1>
+    <p>Put your creation on the internet so anyone can visit it!</p>
+    <a href="index.html" class="back-link">← Back to Code Quest</a>
+  </div>
+
+  <div class="container">
+
+    <!-- Intro -->
+    <div class="intro-card">
+      <h2>🤔 Wait — what does "hosting" mean?</h2>
+      <p>When Claude makes you a webpage, the code lives on YOUR screen — nobody else can see it yet. <strong>Hosting</strong> means putting that code somewhere on the internet so it gets its own link (like <em>yourname.github.io</em>) that the whole family can visit! Think of it like this:</p>
+    </div>
+
+    <!-- Analogy -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon icon-purple">💡</div>
+        <h2>The Big Idea</h2>
+      </div>
+      <div class="analogy-grid">
+        <div class="analogy-card">
+          <div class="big">🖊️</div>
+          <strong>Your Claude code</strong>
+          <span>Like drawing a picture in your notebook — only you can see it</span>
+        </div>
+        <div class="analogy-card">
+          <div class="big">🖼️</div>
+          <strong>Hosted app</strong>
+          <span>Like hanging that picture in a gallery — everyone can come and see it!</span>
+        </div>
+        <div class="analogy-card">
+          <div class="big">🏠</div>
+          <strong>GitHub Pages</strong>
+          <span>The free "gallery wall" where your app lives — and we already use it!</span>
+        </div>
+        <div class="analogy-card">
+          <div class="big">🔗</div>
+          <strong>Your link</strong>
+          <span>The address people type to visit — like <em>yourname.github.io/myapp</em></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Part 1: Get the code from Claude -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon icon-purple">🤖</div>
+        <h2>Step 1 — Ask Claude to make your page</h2>
+      </div>
+      <div class="badge">Do this in Claude.ai</div>
+      <p>First, use Claude to build your webpage. Copy this prompt and fill in YOUR details:</p>
+
+      <div class="prompt-box" id="prompt1">Make me a fun personal webpage about me!
+
+My name is: [YOUR NAME]
+My favourite colour is: [A COLOUR]
+I love: [YOUR HOBBY OR INTEREST]
+My team is: [GIRLS or BOYS]
+
+Make it colourful with big text, emojis, and animations.
+At the bottom, add "Built with AI at Code Quest 🚀"
+Show me the full HTML code.</div>
+      <button class="copy-btn" onclick="copyPrompt('prompt1', this)">📋 Copy Prompt</button>
+
+      <div class="tip">
+        <strong>💡 Tip:</strong> The more detail you give Claude, the cooler your page will be! Tell it your favourite TV show, food, colour — anything!
+      </div>
+
+      <p>Claude will give you a big block of code that starts with <code style="background:#f3f4f6; padding:2px 6px; border-radius:4px; font-size:0.9rem;">&lt;!DOCTYPE html&gt;</code>. That's your webpage — now you just need to put it online.</p>
+    </div>
+
+    <!-- Part 2: GitHub -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon icon-blue">🐙</div>
+        <h2>Step 2 — Put it on GitHub Pages</h2>
+      </div>
+      <div class="badge">Do this with a parent's help</div>
+      <p>GitHub Pages is a free service that hosts websites. Uncle B has already set up the family's GitHub account — you'll add your page to it.</p>
+
+      <ul class="steps">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Go to the family GitHub</strong>
+            <span>Open <a href="https://github.com/altitudeaico/goteamolatoyes" target="_blank" style="color:#4f46e5; font-weight:700;">github.com/altitudeaico/goteamolatoyes</a> — ask a parent to log in if needed.</span>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Go into the "hackathon" folder</strong>
+            <span>Click the folder called <strong>hackathon</strong> — this is where all the Code Quest files live.</span>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Create a new file</strong>
+            <span>Click the <strong>"Add file"</strong> button, then choose <strong>"Create new file"</strong>.</span>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <strong>Name your file</strong>
+            <span>In the filename box, type your name followed by <code style="background:#f3f4f6; padding:2px 5px; border-radius:4px;">.html</code> — for example: <code style="background:#f3f4f6; padding:2px 5px; border-radius:4px;">elsie.html</code> or <code style="background:#f3f4f6; padding:2px 5px; border-radius:4px;">theodore.html</code></span>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <strong>Paste your Claude code</strong>
+            <span>Copy ALL the code Claude gave you (from <code style="background:#f3f4f6; padding:2px 5px; border-radius:4px;">&lt;!DOCTYPE html&gt;</code> to <code style="background:#f3f4f6; padding:2px 5px; border-radius:4px;">&lt;/html&gt;</code>) and paste it into the big text area.</span>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">6</div>
+          <div class="step-body">
+            <strong>Save it ("Commit")</strong>
+            <span>Scroll to the bottom and click the green <strong>"Commit changes"</strong> button. You don't need to change anything else.</span>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">7</div>
+          <div class="step-body">
+            <strong>Wait about 1 minute, then visit your page! 🎉</strong>
+            <span>Your page will be live at:<br>
+            <code style="background:#1e1b4b; color:#a5f3fc; padding:4px 10px; border-radius:6px; font-size:0.9rem;">altitudeaico.github.io/goteamolatoyes/hackathon/YOURNAME.html</code></span>
+          </div>
+        </li>
+      </ul>
+
+      <div class="tip">
+        <strong>🎉 Example:</strong> If Elsie saves a file called <code>elsie.html</code>, her page will be at:<br>
+        <strong>altitudeaico.github.io/goteamolatoyes/hackathon/elsie.html</strong>
+      </div>
+
+      <div class="warning">
+        <strong>⚠️ Something went wrong?</strong> Don't worry! Ask Uncle B or your parent to check — it's usually just a tiny typo in the filename. The most common mistake is forgetting the <code>.html</code> at the end.
+      </div>
+    </div>
+
+    <!-- Part 3: Updating -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon icon-green">✏️</div>
+        <h2>Step 3 — Update your page any time</h2>
+      </div>
+      <p>Want to make your page even cooler? Easy! Go back to Claude, make changes, copy the new code, then:</p>
+      <ul class="steps">
+        <li>
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Find your file on GitHub</strong>
+            <span>Go to the hackathon folder and click on your <code>.html</code> file.</span>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Click the pencil ✏️ icon</strong>
+            <span>This opens the editor so you can change the code.</span>
+          </div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Select all, paste, commit</strong>
+            <span>Press <strong>Ctrl+A</strong> (or Cmd+A on Mac) to select everything, then paste your new code. Click <strong>"Commit changes"</strong> to save.</span>
+          </div>
+        </li>
+      </ul>
+
+      <div class="tip">
+        <strong>💡 Pro tip:</strong> You can ask Claude to make lots of small changes one at a time. Each time Claude updates it, copy the new full code and paste it over the old one on GitHub.
+      </div>
+    </div>
+
+    <!-- Part 4: Claude prompt for updating -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon icon-purple">💬</div>
+        <h2>Useful Claude prompts</h2>
+      </div>
+      <p>Here are some prompts you can use to make your page better:</p>
+
+      <p style="font-weight:800; margin-top:16px; margin-bottom:6px;">🎨 Change colours or style:</p>
+      <div class="prompt-box" id="prompt2">Can you update my webpage to use [COLOUR] as the main colour, and make the background have animated stars?</div>
+      <button class="copy-btn" onclick="copyPrompt('prompt2', this)">📋 Copy</button>
+
+      <p style="font-weight:800; margin-top:20px; margin-bottom:6px;">➕ Add something new:</p>
+      <div class="prompt-box" id="prompt3">Add a section to my webpage called "My Favourite Things" with a list of my top 5 favourite [movies / foods / games]. Make it look fun with emojis.</div>
+      <button class="copy-btn" onclick="copyPrompt('prompt3', this)">📋 Copy</button>
+
+      <p style="font-weight:800; margin-top:20px; margin-bottom:6px;">🔗 Add a link to your team quiz (later):</p>
+      <div class="prompt-box" id="prompt4">Add a big button at the top of my page that says "Play Our Quiz! 🎮" and links to: [PASTE YOUR QUIZ LINK HERE]</div>
+      <button class="copy-btn" onclick="copyPrompt('prompt4', this)">📋 Copy</button>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta">
+      <h2>Ready to go? 🚀</h2>
+      <p>Head back to Code Quest and complete Level 4 — Build a Page. Once you've made your page with Claude, come back here to put it online!</p>
+      <a href="index.html">Back to Code Quest →</a>
+    </div>
+
+  </div>
+
+  <script>
+    function copyPrompt(id, btn) {
+      const text = document.getElementById(id).textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '✅ Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = '📋 Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+  </script>
+
+</body>
+</html>
