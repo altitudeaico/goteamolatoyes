@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Talk to Claude 🤖 | CODE QUEST</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Nunito', sans-serif; background: #f0fdf4; color: #1e1b4b; line-height: 1.7; }
+
+    .header { background: linear-gradient(135deg, #059669 0%, #0891b2 100%); color: white; padding: 50px 20px 40px; text-align: center; position: relative; overflow: hidden; }
+    .header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 70%, rgba(255,255,255,0.1) 0%, transparent 60%); }
+    .header-emoji { font-size: 72px; margin-bottom: 12px; }
+    .header h1 { font-size: 2rem; font-weight: 900; margin-bottom: 8px; position: relative; }
+    .header p { font-size: 1.05rem; opacity: 0.9; max-width: 480px; margin: 0 auto; position: relative; }
+    .back-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 20px; background: rgba(255,255,255,0.2); color: white; text-decoration: none; padding: 10px 20px; border-radius: 100px; font-weight: 800; font-size: 15px; position: relative; }
+
+    .container { max-width: 700px; margin: 0 auto; padding: 36px 20px 80px; }
+
+    /* big intro */
+    .big-explainer { background: white; border-radius: 24px; padding: 32px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(5,150,105,0.1); text-align: center; }
+    .big-explainer .illo { font-size: 52px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+    .big-explainer h2 { font-size: 1.4rem; font-weight: 900; color: #1e1b4b; margin-bottom: 14px; }
+    .big-explainer p { font-size: 1.05rem; color: #374151; max-width: 520px; margin: 0 auto 10px; }
+
+    /* section */
+    .section { background: white; border-radius: 20px; padding: 28px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(5,150,105,0.07); }
+    .section h2 { font-size: 1.25rem; font-weight: 900; color: #1e1b4b; margin-bottom: 14px; }
+    .section p { font-size: 1rem; color: #374151; margin-bottom: 12px; }
+    .section p:last-child { margin-bottom: 0; }
+
+    /* before/after comparison */
+    .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
+    .compare-card { border-radius: 16px; padding: 18px; }
+    .compare-card.bad { background: #fef2f2; border: 2px solid #fca5a5; }
+    .compare-card.good { background: #f0fdf4; border: 2px solid #86efac; }
+    .compare-label { font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .compare-card.bad .compare-label { color: #dc2626; }
+    .compare-card.good .compare-label { color: #16a34a; }
+    .compare-text { font-size: 0.95rem; color: #374151; line-height: 1.6; font-style: italic; }
+    .compare-result { font-size: 0.85rem; margin-top: 10px; padding: 8px 12px; border-radius: 8px; }
+    .compare-card.bad .compare-result { background: #fee2e2; color: #991b1b; }
+    .compare-card.good .compare-result { background: #dcfce7; color: #166534; }
+
+    /* formula boxes */
+    .formula { background: linear-gradient(135deg, #ecfdf5, #d1fae5); border: 2px solid #6ee7b7; border-radius: 20px; padding: 24px; margin: 16px 0; }
+    .formula h3 { font-size: 1.1rem; font-weight: 900; color: #065f46; margin-bottom: 16px; }
+    .formula-parts { display: flex; flex-direction: column; gap: 12px; }
+    .formula-part { display: flex; align-items: flex-start; gap: 14px; }
+    .formula-icon { width: 44px; height: 44px; border-radius: 12px; background: white; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .formula-text strong { display: block; font-size: 1rem; font-weight: 900; color: #065f46; }
+    .formula-text span { font-size: 0.9rem; color: #047857; }
+
+    /* rule cards */
+    .rules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
+    .rule-card { background: #f0fdf4; border-radius: 16px; padding: 18px; border: 2px solid #bbf7d0; }
+    .rule-card .rule-icon { font-size: 32px; margin-bottom: 8px; }
+    .rule-card strong { display: block; font-size: 0.95rem; font-weight: 900; color: #065f46; margin-bottom: 4px; }
+    .rule-card span { font-size: 0.85rem; color: #047857; line-height: 1.5; }
+
+    /* try it prompts */
+    .try-it { background: #ecfdf5; border: 2.5px dashed #34d399; border-radius: 14px; padding: 16px 18px; margin: 12px 0 8px; font-size: 1rem; color: #065f46; line-height: 1.8; white-space: pre-wrap; word-break: break-word; }
+    .copy-btn { display: inline-flex; align-items: center; gap: 6px; background: #059669; color: white; border: none; border-radius: 100px; padding: 9px 20px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 14px; cursor: pointer; margin-bottom: 4px; transition: background 0.2s; }
+    .copy-btn:hover { background: #047857; }
+    .copy-btn.copied { background: #7c3aed; }
+
+    .tip { background: #f0fdf4; border-left: 5px solid #22c55e; border-radius: 0 12px 12px 0; padding: 14px 16px; margin: 14px 0; font-size: 0.97rem; color: #166534; }
+    .tip strong { font-weight: 900; }
+
+    /* interactive before/after toggle */
+    .before-after { border-radius: 20px; overflow: hidden; border: 2px solid #e5e7eb; margin: 16px 0; }
+    .ba-tabs { display: flex; }
+    .ba-tab { flex: 1; padding: 12px; text-align: center; font-weight: 900; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; border: none; font-family: 'Nunito', sans-serif; }
+    .ba-tab.bad { background: #fef2f2; color: #dc2626; }
+    .ba-tab.good { background: #f0fdf4; color: #16a34a; }
+    .ba-tab.active.bad { background: #dc2626; color: white; }
+    .ba-tab.active.good { background: #16a34a; color: white; }
+    .ba-content { padding: 20px; background: white; }
+    .ba-prompt { font-size: 1rem; font-style: italic; color: #374151; margin-bottom: 12px; padding: 12px 16px; border-radius: 10px; }
+    .ba-content .bad-prompt { background: #fef2f2; border-left: 4px solid #f87171; }
+    .ba-content .good-prompt { background: #f0fdf4; border-left: 4px solid #4ade80; }
+    .ba-result { font-size: 0.92rem; color: #6b7280; }
+    .ba-result strong { color: #374151; }
+
+    /* cheat sheet */
+    .cheatsheet { background: linear-gradient(135deg, #1e1b4b, #312e81); border-radius: 20px; padding: 28px; color: white; margin: 20px 0; }
+    .cheatsheet h2 { font-size: 1.2rem; font-weight: 900; margin-bottom: 16px; color: #a5f3fc; }
+    .cheat-item { display: flex; gap: 12px; margin-bottom: 14px; align-items: flex-start; }
+    .cheat-num { width: 28px; height: 28px; border-radius: 50%; background: #4f46e5; color: white; font-weight: 900; font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+    .cheat-text strong { display: block; color: #fbbf24; font-size: 0.95rem; }
+    .cheat-text span { font-size: 0.88rem; color: #c7d2fe; line-height: 1.5; }
+
+    .cta { background: linear-gradient(135deg, #059669, #0891b2); border-radius: 20px; padding: 30px; text-align: center; color: white; margin-top: 32px; }
+    .cta h2 { font-size: 1.4rem; font-weight: 900; margin-bottom: 10px; }
+    .cta p { opacity: 0.9; margin-bottom: 18px; font-size: 1rem; }
+    .cta a { display: inline-block; background: #fbbf24; color: #1f2937; text-decoration: none; padding: 15px 30px; border-radius: 100px; font-weight: 900; font-size: 1.05rem; }
+
+    @media (max-width: 500px) {
+      .comparison { grid-template-columns: 1fr; }
+      .rules-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-emoji">🗣️</div>
+    <h1>How to Talk to Claude</h1>
+    <p>The better you describe things, the more amazing Claude's answers will be!</p>
+    <a href="index.html" class="back-link">← Back to Code Quest</a>
+  </div>
+
+  <div class="container">
+
+    <!-- Intro -->
+    <div class="big-explainer">
+      <div class="illo">🧠 💬 ✨</div>
+      <h2>Your words are your superpower</h2>
+      <p>Claude is incredibly powerful — but it can only build what you describe. The clearer and more detailed your words are, the more amazing the result will be.</p>
+      <p>Think of it like ordering food at a restaurant. If you say <strong>"food please"</strong> you might get anything. If you say <strong>"a large pepperoni pizza with extra cheese, crispy base"</strong> — you get exactly what you want! 🍕</p>
+    </div>
+
+    <!-- The big rule -->
+    <div class="section">
+      <h2>🔑 The one big rule</h2>
+      <p style="font-size:1.2rem; font-weight:900; color:#065f46; text-align:center; padding: 16px; background:#ecfdf5; border-radius:14px; margin-bottom:16px;">
+        "The more specific you are, the better Claude's answer will be."
+      </p>
+      <p>Let's look at some examples. Same request — but one prompt is vague and one is detailed. See the difference:</p>
+
+      <!-- Example 1 -->
+      <div class="before-after" id="ba1">
+        <div class="ba-tabs">
+          <button class="ba-tab bad active" onclick="showTab('ba1','bad')">😬 Weak prompt</button>
+          <button class="ba-tab good" onclick="showTab('ba1','good')">🔥 Strong prompt</button>
+        </div>
+        <div class="ba-content">
+          <div id="ba1-bad" class="ba-prompt bad-prompt">"Make me a webpage"</div>
+          <div id="ba1-good" class="ba-prompt good-prompt" style="display:none;">"Make me a webpage about me — my name is Elsie, I love horses and drawing, my favourite colour is purple, and I want it to have shooting stars in the background and my name in big glittery letters at the top"</div>
+          <div id="ba1-result" class="ba-result"><strong>What Claude will do:</strong> Make a basic white page with "Hello World" or a generic layout — it doesn't know anything about you!</div>
+        </div>
+      </div>
+
+      <!-- Example 2 -->
+      <div class="before-after" id="ba2" style="margin-top:14px;">
+        <div class="ba-tabs">
+          <button class="ba-tab bad active" onclick="showTab('ba2','bad')">😬 Weak prompt</button>
+          <button class="ba-tab good" onclick="showTab('ba2','good')">🔥 Strong prompt</button>
+        </div>
+        <div class="ba-content">
+          <div id="ba2-bad" class="ba-prompt bad-prompt">"Make a quiz"</div>
+          <div id="ba2-good" class="ba-prompt good-prompt" style="display:none;">"Make a 10-question quiz about Premier League football for kids aged 8-14. Multiple choice with 4 options each. Show a scoreboard at the end. Make it exciting with football emojis and green and white colours."</div>
+          <div id="ba2-result" class="ba-result"><strong>What Claude will do:</strong> Make a random quiz about something — you have no idea what topic, how many questions, or what it'll look like.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- The formula -->
+    <div class="section">
+      <h2>✏️ The Prompting Formula</h2>
+      <p>Every great prompt has three ingredients. Mix them together and Claude can build almost anything:</p>
+
+      <div class="formula">
+        <h3>🧪 The Recipe for a Great Prompt</h3>
+        <div class="formula-parts">
+          <div class="formula-part">
+            <div class="formula-icon">🎯</div>
+            <div class="formula-text">
+              <strong>1. What you want</strong>
+              <span>Be clear about what you're asking for. "Make a webpage" vs "Make a personal webpage about me"</span>
+            </div>
+          </div>
+          <div class="formula-part">
+            <div class="formula-icon">📋</div>
+            <div class="formula-text">
+              <strong>2. The details</strong>
+              <span>Tell Claude everything it needs to know — your name, your topic, your colours, your ideas</span>
+            </div>
+          </div>
+          <div class="formula-part">
+            <div class="formula-icon">🎨</div>
+            <div class="formula-text">
+              <strong>3. How you want it to look or feel</strong>
+              <span>Colourful? Dark? Fun? Professional? With animations? With emojis? Tell Claude the vibe!</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 rules -->
+    <div class="section">
+      <h2>📜 4 Golden Rules</h2>
+      <div class="rules-grid">
+        <div class="rule-card">
+          <div class="rule-icon">🔍</div>
+          <strong>Be specific</strong>
+          <span>Don't say "make it nice" — say "make it purple with gold stars and big bold text"</span>
+        </div>
+        <div class="rule-card">
+          <div class="rule-icon">🧩</div>
+          <strong>Give context</strong>
+          <span>Tell Claude who it's for — "for an 8-year-old", "for my whole family to play", "for the hackathon"</span>
+        </div>
+        <div class="rule-card">
+          <div class="rule-icon">📐</div>
+          <strong>Say the format</strong>
+          <span>Do you want a list? A webpage? A story? Code? A quiz? Always say what type of thing you want</span>
+        </div>
+        <div class="rule-card">
+          <div class="rule-icon">🔄</div>
+          <strong>Ask for changes</strong>
+          <span>If you don't like something, just say so! "Make the font bigger", "change the colour to blue", "add more questions"</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weak vs strong examples -->
+    <div class="section">
+      <h2>💪 Weak vs Strong — More Examples</h2>
+
+      <div class="comparison">
+        <div class="compare-card bad">
+          <div class="compare-label">😬 Weak</div>
+          <div class="compare-text">"Write me a story"</div>
+          <div class="compare-result">Claude has to guess everything — the character, the setting, the plot, the length...</div>
+        </div>
+        <div class="compare-card good">
+          <div class="compare-label">🔥 Strong</div>
+          <div class="compare-text">"Write me a 3-paragraph adventure story about a 10-year-old girl who finds a magical horse in her school playground. Make it exciting with a cliffhanger ending."</div>
+          <div class="compare-result">Claude knows exactly what to write — you'll love the result! ✅</div>
+        </div>
+      </div>
+
+      <div class="comparison">
+        <div class="compare-card bad">
+          <div class="compare-label">😬 Weak</div>
+          <div class="compare-text">"Make my page better"</div>
+          <div class="compare-result">Better how? Claude doesn't know what "better" means to you...</div>
+        </div>
+        <div class="compare-card good">
+          <div class="compare-label">🔥 Strong</div>
+          <div class="compare-text">"Add an animated rainbow background to my page, make the heading font bigger, and add a section at the bottom with my top 3 favourite songs with music note emojis 🎵"</div>
+          <div class="compare-result">Crystal clear — Claude can do exactly this! ✅</div>
+        </div>
+      </div>
+
+      <div class="comparison">
+        <div class="compare-card bad">
+          <div class="compare-label">😬 Weak</div>
+          <div class="compare-text">"Explain coding"</div>
+          <div class="compare-result">Too broad — Claude might write an essay that's too long or too complicated...</div>
+        </div>
+        <div class="compare-card good">
+          <div class="compare-label">🔥 Strong</div>
+          <div class="compare-text">"Explain what HTML is in 3 simple sentences that an 8-year-old would understand. Use a fun analogy."</div>
+          <div class="compare-result">Short, simple, with a fun comparison — perfect! ✅</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Try it yourself -->
+    <div class="section">
+      <h2>🚀 Try these prompts right now!</h2>
+      <p>Copy these into Claude and see what happens. These are all examples of <strong>strong prompts</strong> — notice how detailed they are!</p>
+
+      <p style="font-weight:900;margin-bottom:6px;margin-top:8px;">🎨 Design something:</p>
+      <div class="try-it" id="try1">Design a logo for my team called [YOUR TEAM NAME]. Use [YOUR FAVOURITE COLOUR] as the main colour. Make it look powerful and fun. Describe what it looks like and show me the design as an SVG image.</div>
+      <button class="copy-btn" onclick="copyEl('try1',this)">📋 Copy &amp; try it</button>
+
+      <p style="font-weight:900;margin-bottom:6px;margin-top:8px;">📖 Get a story:</p>
+      <div class="try-it" id="try2">Write a short funny story (about 5 sentences) where [YOUR NAME] and their best friend discover a secret door in their school that leads to a world made entirely of [YOUR FAVOURITE FOOD]. Include one joke and end with a surprise twist.</div>
+      <button class="copy-btn" onclick="copyEl('try2',this)">📋 Copy &amp; try it</button>
+
+      <p style="font-weight:900;margin-bottom:6px;margin-top:8px;">🧠 Learn something:</p>
+      <div class="try-it" id="try3">Explain how the internet works in exactly 4 bullet points. Each point should be one sentence. Use simple words that a 10-year-old would understand. Start each bullet with a fun emoji.</div>
+      <button class="copy-btn" onclick="copyEl('try3',this)">📋 Copy &amp; try it</button>
+
+      <p style="font-weight:900;margin-bottom:6px;margin-top:8px;">🎮 Build something:</p>
+      <div class="try-it" id="try4">Make me a simple clicker game in HTML. Every time I click a big button, I earn a point. Show my score at the top. After every 10 clicks, show a funny celebration message with confetti. Make it colourful and mobile-friendly.</div>
+      <button class="copy-btn" onclick="copyEl('try4',this)">📋 Copy &amp; try it</button>
+
+      <div class="tip">
+        <strong>🎯 Challenge:</strong> After you try one of these, go back to Claude and ask it to change something. Use the 4 golden rules — be specific about exactly what you want different!
+      </div>
+    </div>
+
+    <!-- Cheat sheet -->
+    <div class="cheatsheet">
+      <h2>📌 Quick Cheat Sheet — Save This!</h2>
+      <div class="cheat-item">
+        <div class="cheat-num">1</div>
+        <div class="cheat-text">
+          <strong>Start with what you want</strong>
+          <span>"Make me a...", "Write me a...", "Build me a...", "Explain..."</span>
+        </div>
+      </div>
+      <div class="cheat-item">
+        <div class="cheat-num">2</div>
+        <div class="cheat-text">
+          <strong>Add your details</strong>
+          <span>Name, topic, colours, style, who it's for, how long/short</span>
+        </div>
+      </div>
+      <div class="cheat-item">
+        <div class="cheat-num">3</div>
+        <div class="cheat-text">
+          <strong>Say the vibe</strong>
+          <span>"Fun and colourful", "dark and mysterious", "simple and clean", "exciting with animations"</span>
+        </div>
+      </div>
+      <div class="cheat-item">
+        <div class="cheat-num">4</div>
+        <div class="cheat-text">
+          <strong>If you don't like it — say so!</strong>
+          <span>"Make the text bigger", "change the colour", "add more detail", "make it shorter"</span>
+        </div>
+      </div>
+      <div class="cheat-item">
+        <div class="cheat-num">5</div>
+        <div class="cheat-text">
+          <strong>Magic words that always help</strong>
+          <span>"Keep it simple", "make it fun", "suitable for all ages", "show me the full code", "give me 3 options"</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta">
+      <h2>Now go and try it! 🚀</h2>
+      <p>Head to claude.ai and practise writing strong prompts. The more you do it, the better you'll get — and the more amazing things you'll be able to build!</p>
+      <a href="index.html">Back to Code Quest →</a>
+    </div>
+
+  </div>
+
+  <script>
+    function showTab(id, type) {
+      const ba = document.getElementById(id);
+      ba.querySelectorAll('.ba-tab').forEach(t => t.classList.remove('active'));
+      ba.querySelector('.ba-tab.' + type).classList.add('active');
+
+      const badEl = document.getElementById(id + '-bad');
+      const goodEl = document.getElementById(id + '-good');
+      const resultEl = document.getElementById(id + '-result');
+
+      if (type === 'bad') {
+        badEl.style.display = 'block';
+        goodEl.style.display = 'none';
+        resultEl.innerHTML = '<strong>What Claude will do:</strong> ' + (id === 'ba1'
+          ? "Make a basic white page with generic content — it doesn't know anything about you!"
+          : "Make a random quiz about something — you have no idea what topic, how many questions, or what it'll look like.");
+      } else {
+        badEl.style.display = 'none';
+        goodEl.style.display = 'block';
+        resultEl.innerHTML = '<strong>What Claude will do:</strong> ' + (id === 'ba1'
+          ? "Build a gorgeous page that's completely personal to you — purple background, shooting stars, glittery name at the top. Exactly what you imagined! ✅"
+          : "Build a proper football quiz for kids, 10 questions, multiple choice, scoreboard at the end, football theme. Just what you asked for! ✅");
+      }
+    }
+
+    function copyEl(id, btn) {
+      const text = document.getElementById(id).textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = '✅ Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+      });
+    }
+  </script>
+
+</body>
+</html>
