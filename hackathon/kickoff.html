@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CODE QUEST - Kickoff! 🚀</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #0f0f1a;
+      color: white;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    /* Animated stars background */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background: 
+        radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+        radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+        radial-gradient(2px 2px at 160px 120px, rgba(255,255,255,0.9), transparent),
+        radial-gradient(1px 1px at 230px 80px, #fff, transparent),
+        radial-gradient(2px 2px at 300px 150px, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1px 1px at 350px 50px, #fff, transparent);
+      background-size: 400px 200px;
+      animation: twinkle 5s ease-in-out infinite;
+    }
+    
+    @keyframes twinkle {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    
+    /* Slides */
+    .slide {
+      display: none;
+      min-height: 100vh;
+      padding: 40px 25px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .slide.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    .slide-content {
+      max-width: 600px;
+      text-align: center;
+    }
+    
+    /* Big emoji/icon */
+    .big-icon {
+      font-size: 120px;
+      margin-bottom: 30px;
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+    
+    /* Green Lantern glow effect */
+    .glow-green {
+      text-shadow: 0 0 20px #22c55e, 0 0 40px #22c55e, 0 0 60px #22c55e;
+      animation: glowPulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes glowPulse {
+      0%, 100% { text-shadow: 0 0 20px #22c55e, 0 0 40px #22c55e; }
+      50% { text-shadow: 0 0 30px #22c55e, 0 0 60px #22c55e, 0 0 80px #22c55e; }
+    }
+    
+    /* Title */
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 900;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+    
+    h2 {
+      font-size: 2rem;
+      font-weight: 900;
+      margin-bottom: 20px;
+      line-height: 1.3;
+    }
+    
+    /* Text */
+    .lead {
+      font-size: 1.4rem;
+      line-height: 1.6;
+      margin-bottom: 30px;
+      color: rgba(255,255,255,0.9);
+    }
+    
+    p {
+      font-size: 1.2rem;
+      line-height: 1.7;
+      margin-bottom: 20px;
+      color: rgba(255,255,255,0.85);
+    }
+    
+    /* Highlight box */
+    .highlight-box {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1));
+      border: 2px solid #22c55e;
+      border-radius: 20px;
+      padding: 30px;
+      margin: 30px 0;
+      text-align: left;
+    }
+    
+    .highlight-box.purple {
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(124, 58, 237, 0.1));
+      border-color: #7c3aed;
+    }
+    
+    .highlight-box.gold {
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(251, 191, 36, 0.1));
+      border-color: #fbbf24;
+    }
+    
+    .highlight-box h3 {
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .highlight-box p {
+      margin-bottom: 0;
+      font-size: 1.1rem;
+    }
+    
+    /* Quote */
+    .quote {
+      font-size: 1.8rem;
+      font-weight: 800;
+      font-style: italic;
+      color: #22c55e;
+      margin: 30px 0;
+      text-shadow: 0 0 30px rgba(34, 197, 94, 0.5);
+    }
+    
+    /* Navigation */
+    .nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      background: linear-gradient(transparent, rgba(15, 15, 26, 0.95));
+      z-index: 100;
+    }
+    
+    .btn {
+      padding: 18px 40px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn:active {
+      transform: scale(0.95);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white;
+      box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+    }
+    
+    .btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: 2px solid rgba(255,255,255,0.3);
+    }
+    
+    .btn-gold {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #1f2937;
+      box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
+    }
+    
+    /* Progress dots */
+    .progress-dots {
+      position: fixed;
+      top: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 100;
+    }
+    
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      transition: all 0.3s;
+    }
+    
+    .dot.active {
+      background: #22c55e;
+      box-shadow: 0 0 10px #22c55e;
+    }
+    
+    .dot.done {
+      background: #22c55e;
+    }
+    
+    /* Power ring animation */
+    .ring-container {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 30px;
+    }
+    
+    .ring {
+      width: 100%;
+      height: 100%;
+      border: 8px solid #22c55e;
+      border-radius: 50%;
+      box-shadow: 
+        0 0 30px #22c55e,
+        0 0 60px #22c55e,
+        inset 0 0 30px rgba(34, 197, 94, 0.3);
+      animation: ringPulse 2s ease-in-out infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    @keyframes ringPulse {
+      0%, 100% { 
+        box-shadow: 0 0 30px #22c55e, 0 0 60px #22c55e, inset 0 0 30px rgba(34, 197, 94, 0.3);
+        transform: scale(1);
+      }
+      50% { 
+        box-shadow: 0 0 50px #22c55e, 0 0 100px #22c55e, inset 0 0 50px rgba(34, 197, 94, 0.5);
+        transform: scale(1.05);
+      }
+    }
+    
+    .ring-icon {
+      font-size: 80px;
+    }
+    
+    /* Steps */
+    .steps {
+      text-align: left;
+      margin: 30px 0;
+    }
+    
+    .step {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 25px;
+      align-items: flex-start;
+    }
+    
+    .step-number {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+    
+    .step-content h4 {
+      font-size: 1.2rem;
+      margin-bottom: 5px;
+    }
+    
+    .step-content p {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.7);
+      margin: 0;
+    }
+    
+    /* Team badges */
+    .teams {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin: 30px 0;
+    }
+    
+    .team-badge {
+      background: rgba(255,255,255,0.1);
+      padding: 15px 25px;
+      border-radius: 15px;
+      text-align: center;
+    }
+    
+    .team-badge-icon {
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+    }
+    
+    .team-badge-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    
+    /* Countdown */
+    .countdown {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #1f2937;
+      padding: 25px 40px;
+      border-radius: 20px;
+      margin: 30px 0;
+    }
+    
+    .countdown-label {
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    
+    .countdown-date {
+      font-size: 2rem;
+      font-weight: 900;
+    }
+    
+    /* Final CTA */
+    .final-cta {
+      margin-top: 30px;
+    }
+    
+    .final-cta a {
+      display: inline-block;
+      padding: 25px 60px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white;
+      text-decoration: none;
+      border-radius: 20px;
+      font-size: 1.4rem;
+      font-weight: 900;
+      box-shadow: 0 8px 30px rgba(34, 197, 94, 0.4);
+      transition: transform 0.2s;
+    }
+    
+    .final-cta a:hover {
+      transform: scale(1.05);
+    }
+    
+    /* Responsive */
+    @media (max-width: 600px) {
+      h1 { font-size: 2.2rem; }
+      h2 { font-size: 1.6rem; }
+      .lead { font-size: 1.2rem; }
+      .big-icon { font-size: 80px; }
+      .quote { font-size: 1.4rem; }
+      .ring-container { width: 150px; height: 150px; }
+      .ring-icon { font-size: 60px; }
+    }
+    
+    /* Hide nav on last slide */
+    .slide:last-of-type .nav { display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="stars"></div>
+  
+  <div class="progress-dots" id="progressDots"></div>
+
+  <!-- SLIDE 1: Welcome -->
+  <div class="slide active" data-slide="1">
+    <div class="slide-content">
+      <div class="big-icon">🚀</div>
+      <h1>Welcome to<br>CODE QUEST!</h1>
+      <p class="lead">Get ready to learn the most amazing superpower of the future...</p>
+      <p>Today, we're going to show you how to build <strong>real apps, games, and websites</strong> — even if you've never coded before!</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: The Superpower -->
+  <div class="slide" data-slide="2">
+    <div class="slide-content">
+      <div class="ring-container">
+        <div class="ring">
+          <span class="ring-icon">💍</span>
+        </div>
+      </div>
+      <h2>You Know Green Lantern?</h2>
+      <p>Green Lantern has a <strong>power ring</strong> that can create <em>anything</em> he imagines.</p>
+      <p>A giant hammer? ✅ A spaceship? ✅ A dinosaur? ✅</p>
+      <p class="quote">"If you can see it clearly in your mind... the ring makes it real."</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: AI is Your Ring -->
+  <div class="slide" data-slide="3">
+    <div class="slide-content">
+      <div class="big-icon glow-green">🤖</div>
+      <h2>AI is YOUR Power Ring</h2>
+      <p>Just like Green Lantern, you now have access to an incredible power...</p>
+      
+      <div class="highlight-box">
+        <h3>💡 Here's the secret:</h3>
+        <p>If you can <strong>imagine it</strong> clearly and <strong>describe it</strong> with words — AI can help you <strong>build it</strong>.</p>
+      </div>
+      
+      <p>A website about you? A quiz game? An interactive story? <strong>All possible.</strong></p>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: How It Works -->
+  <div class="slide" data-slide="4">
+    <div class="slide-content">
+      <div class="big-icon">✨</div>
+      <h2>How Does It Work?</h2>
+      
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h4>Imagine It 🧠</h4>
+            <p>Picture what you want to create in your mind</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h4>Describe It 💬</h4>
+            <p>Tell Claude AI what you want in plain English</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h4>Build It 🔨</h4>
+            <p>Claude writes the code — you bring it to life!</p>
+          </div>
+        </div>
+      </div>
+      
+      <p>The better you describe it, the better it works. <strong>Your words are the magic!</strong></p>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: What You'll Build -->
+  <div class="slide" data-slide="5">
+    <div class="slide-content">
+      <div class="big-icon">🎮</div>
+      <h2>What Will You Build?</h2>
+      <p>By the end of CODE QUEST, you'll have created:</p>
+      
+      <div class="highlight-box purple">
+        <h3>🖥️ Your own webpage</h3>
+        <p>A personal page all about YOU — with your favourite things, colours, and style!</p>
+      </div>
+      
+      <div class="highlight-box gold">
+        <h3>🎯 Your own quiz game</h3>
+        <p>An interactive quiz that your family can actually play!</p>
+      </div>
+      
+      <p>And on <strong>Hackathon Day</strong>, you'll show everyone what you made! 🏆</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: The Hackathon -->
+  <div class="slide" data-slide="6">
+    <div class="slide-content">
+      <div class="big-icon">🏆</div>
+      <h2>The Family Hackathon</h2>
+      
+      <div class="countdown">
+        <div class="countdown-label">Save the Date!</div>
+        <div class="countdown-date">Friday 4th April</div>
+      </div>
+      
+      <p>On Hackathon Day, everyone will:</p>
+      <p>✅ Build their own quiz game (about any topic you want!)</p>
+      <p>✅ Demo it to the whole family</p>
+      <p>✅ Vote on our favourites</p>
+      <p>✅ Win glory and bragging rights! 😄</p>
+      
+      <div class="teams">
+        <div class="team-badge">
+          <div class="team-badge-icon">🗽</div>
+          <div class="team-badge-name">New York</div>
+        </div>
+        <div class="team-badge">
+          <div class="team-badge-icon">🏰</div>
+          <div class="team-badge-name">Middleton</div>
+        </div>
+        <div class="team-badge">
+          <div class="team-badge-icon">⚓</div>
+          <div class="team-badge-name">Gravesend</div>
+        </div>
+        <div class="team-badge">
+          <div class="team-badge-icon">👑</div>
+          <div class="team-badge-name">Radlett</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: The App -->
+  <div class="slide" data-slide="7">
+    <div class="slide-content">
+      <div class="big-icon">📱</div>
+      <h2>Your Training Begins!</h2>
+      <p>We've built a special app called <strong>CODE QUEST</strong> to help you get ready.</p>
+      
+      <div class="highlight-box">
+        <h3>🎮 It's like a game:</h3>
+        <p>Complete levels → Earn XP → Climb the leaderboard → Get ready for the hackathon!</p>
+      </div>
+      
+      <p>There are <strong>7 levels</strong> to complete before Hackathon Day.</p>
+      <p>Each one teaches you a new skill!</p>
+      <p>You can do them at your own pace — a little bit each day or all at once.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: Remember -->
+  <div class="slide" data-slide="8">
+    <div class="slide-content">
+      <div class="ring-container">
+        <div class="ring">
+          <span class="ring-icon">💚</span>
+        </div>
+      </div>
+      <h2>Remember...</h2>
+      <p class="quote">"If you can think it, and describe it clearly... AI can help you build it."</p>
+      <p>You don't need to know how to code.</p>
+      <p>You don't need to be a computer expert.</p>
+      <p>You just need <strong>imagination</strong> and <strong>words</strong>.</p>
+      <p>That's your superpower now. 💚</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: Let's Go! -->
+  <div class="slide" data-slide="9">
+    <div class="slide-content">
+      <div class="big-icon">🚀</div>
+      <h1>Ready to Begin?</h1>
+      <p class="lead">Your CODE QUEST starts now!</p>
+      <p>Click the button below to open the app, create your account, and start Level 1.</p>
+      
+      <div class="final-cta">
+        <a href="index.html">🎮 START CODE QUEST</a>
+      </div>
+      
+      <p style="margin-top: 30px; font-size: 1rem; opacity: 0.7;">
+        Parents watching? <a href="admin.html" style="color: #fbbf24;">View the dashboard →</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="nav" id="nav">
+    <button class="btn btn-secondary" id="prevBtn" onclick="prevSlide()">← Back</button>
+    <button class="btn btn-primary" id="nextBtn" onclick="nextSlide()">Next →</button>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    let currentSlide = 1;
+
+    // Create progress dots
+    const dotsContainer = document.getElementById('progressDots');
+    for (let i = 1; i <= totalSlides; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'dot' + (i === 1 ? ' active' : '');
+      dot.dataset.slide = i;
+      dot.onclick = () => goToSlide(i);
+      dotsContainer.appendChild(dot);
+    }
+
+    function updateSlide() {
+      // Update slides
+      slides.forEach((slide, i) => {
+        slide.classList.remove('active');
+        if (i + 1 === currentSlide) {
+          slide.classList.add('active');
+        }
+      });
+
+      // Update dots
+      document.querySelectorAll('.dot').forEach((dot, i) => {
+        dot.classList.remove('active', 'done');
+        if (i + 1 === currentSlide) {
+          dot.classList.add('active');
+        } else if (i + 1 < currentSlide) {
+          dot.classList.add('done');
+        }
+      });
+
+      // Update buttons
+      document.getElementById('prevBtn').style.visibility = currentSlide === 1 ? 'hidden' : 'visible';
+      
+      if (currentSlide === totalSlides) {
+        document.getElementById('nav').style.display = 'none';
+      } else {
+        document.getElementById('nav').style.display = 'flex';
+        document.getElementById('nextBtn').textContent = currentSlide === totalSlides - 1 ? "Let's Go! 🚀" : 'Next →';
+      }
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) {
+        currentSlide++;
+        updateSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        currentSlide--;
+        updateSlide();
+      }
+    }
+
+    function goToSlide(n) {
+      currentSlide = n;
+      updateSlide();
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        prevSlide();
+      }
+    });
+
+    // Touch/swipe support
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    document.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) {
+          nextSlide(); // Swipe left = next
+        } else {
+          prevSlide(); // Swipe right = prev
+        }
+      }
+    });
+
+    updateSlide();
+  </script>
+
+</body>
+</html>
