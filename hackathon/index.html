@@ -633,9 +633,13 @@
       <div style="font-size:13px; opacity:0.7; margin-top:4px;">✏️ change</div>
     </div>
     <h1>Hey <span id="userName">Hero</span>! 👋</h1>
+    <div id="teamBadge" class="hide" style="display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,0.2); border-radius:100px; padding:8px 18px; font-size:17px; font-weight:800; margin-bottom:10px;"></div>
     <p>Pick a level to play</p>
     <div class="level-list" id="levelList"></div>
-    <button class="btn btn-small" onclick="go('leaders')" style="margin-top: 15px;">🏆 Leaderboard</button>
+    <div style="display:flex; gap:10px; justify-content:center; margin-top:15px; flex-wrap:wrap;">
+      <button class="btn btn-small" onclick="go('leaders')">🏆 Leaderboard</button>
+      <button class="btn btn-small" id="joinTeamBtn" onclick="go('joinTeam')" style="display:none;">👥 Join Team</button>
+    </div>
   </div>
 
   <!-- SCREEN: Task -->
@@ -682,8 +686,23 @@
   <div id="leaders" class="hide">
     <div class="emoji">🏆</div>
     <h1>Leaderboard</h1>
+    <div id="teamScores" style="display:flex; gap:12px; justify-content:center; margin-bottom:20px; width:100%; max-width:340px;"></div>
     <div id="leaderList"></div>
     <button class="btn btn-small" onclick="showHome()" style="margin-top: 20px;">← Back</button>
+  </div>
+
+  <!-- SCREEN: Join Team -->
+  <div id="joinTeam" class="hide">
+    <div class="emoji">👥</div>
+    <h1>Join Your Team!</h1>
+    <p>Ask Uncle B for your team code</p>
+    <div style="background:rgba(255,255,255,0.15); border-radius:20px; padding:16px; margin-bottom:20px; max-width:300px; font-size:15px; line-height:1.8;">
+      👧 <strong>Girls team code:</strong> GIRLS<br>
+      👦 <strong>Boys team code:</strong> BOYS
+    </div>
+    <input type="text" id="teamCodeInput" placeholder="Type your team code" style="text-transform:uppercase;">
+    <button class="btn btn-green" onclick="tryJoinTeam()">Join Team! 🚀</button>
+    <button class="btn btn-small" id="teamSkipBtn" onclick="showHome()" style="margin-top:5px;">Skip for now</button>
   </div>
 
 <script>
@@ -1038,7 +1057,13 @@ Make it colorful and fun!`
     } else {
       toast('Looking good! ✨');
     }
-    showHome();
+
+    // New users go to team join; returning users go straight home
+    if (isFirstTime && !user.team_id) {
+      go('joinTeam');
+    } else {
+      showHome();
+    }
   }
 
   // Home
@@ -1048,6 +1073,8 @@ Make it colorful and fun!`
     document.getElementById('userName').textContent = user.display_name;
     // Render avatar (emoji or custom SVG)
     renderAvatar(user.avatar || '🦸', document.getElementById('homeAvatar'));
+    // Load team badge async
+    loadUserTeam();
     
     const list = document.getElementById('levelList');
     list.innerHTML = '';
@@ -1190,22 +1217,103 @@ Make it colorful and fun!`
     }
   }
 
-  // Leaderboard
+  // ── TEAMS ──────────────────────────────────────────────
+
+  const TEAMS_SEED = [
+    { name: 'Girl Power', icon: '👧', code: 'GIRLS' },
+    { name: 'Tech Bros',  icon: '👦', code: 'BOYS'  }
+  ];
+
+  // Ensure both teams exist in Supabase (safe to run every load)
+  async function seedTeams() {
+    for (const t of TEAMS_SEED) {
+      const { data } = await db.from('hackathon_teams').select('id').eq('code', t.code).single();
+      if (!data) {
+        await db.from('hackathon_teams').insert({ name: t.name, icon: t.icon, code: t.code, xp: 0 });
+      }
+    }
+  }
+
+  // Try to join a team by code
+  async function tryJoinTeam() {
+    const code = document.getElementById('teamCodeInput').value.trim().toUpperCase();
+    if (!code) { toast('Type your team code!', true); return; }
+
+    const { data: team } = await db.from('hackathon_teams').select('*').eq('code', code).single();
+    if (!team) { toast('Code not right — try again!', true); return; }
+
+    await db.from('hackathon_users').update({ team_id: team.id }).eq('id', user.id);
+    user.team_id = team.id;
+    user.team = team; // cache locally
+    localStorage.setItem('cq', JSON.stringify(user));
+
+    showConfetti();
+    toast(`Welcome to ${team.icon} ${team.name}! 🎉`);
+    showHome();
+  }
+
+  // Load team info for current user and update badge
+  async function loadUserTeam() {
+    if (!user.team_id) {
+      document.getElementById('teamBadge').classList.add('hide');
+      document.getElementById('joinTeamBtn').style.display = 'inline-flex';
+      return;
+    }
+    const { data: team } = await db.from('hackathon_teams').select('*').eq('id', user.team_id).single();
+    if (team) {
+      user.team = team;
+      const badge = document.getElementById('teamBadge');
+      badge.textContent = `${team.icon} ${team.name}`;
+      badge.classList.remove('hide');
+      badge.style.display = 'inline-flex';
+      document.getElementById('joinTeamBtn').style.display = 'none';
+    }
+  }
+
+  // Leaderboard with team scores
   async function loadLeaders() {
-    const { data } = await db.from('hackathon_users')
-      .select('*').order('xp', { ascending: false }).limit(10);
-    
-    const list = document.getElementById('leaderList');
-    list.innerHTML = data.map((u, i) => `
-      <div class="leader ${u.id === user?.id ? 'me' : ''}">
-        <div class="leader-rank">${i + 1}</div>
-        <div>${u.avatar}</div>
-        <div class="leader-name">${u.display_name}</div>
-        <div class="leader-xp">${u.xp} ⭐</div>
+    const [{ data: players }, { data: teams }] = await Promise.all([
+      db.from('hackathon_users').select('*').order('xp', { ascending: false }).limit(20),
+      db.from('hackathon_teams').select('*').order('xp', { ascending: false })
+    ]);
+
+    // Calculate live team XP from player totals
+    const teamXpMap = {};
+    (players || []).forEach(p => {
+      if (p.team_id) teamXpMap[p.team_id] = (teamXpMap[p.team_id] || 0) + p.xp;
+    });
+
+    // Team scores banner
+    const teamScoresEl = document.getElementById('teamScores');
+    teamScoresEl.innerHTML = (teams || []).map(t => `
+      <div style="flex:1; background:rgba(255,255,255,0.18); border-radius:16px; padding:12px 8px; text-align:center;">
+        <div style="font-size:28px;">${t.icon}</div>
+        <div style="font-weight:900; font-size:15px;">${t.name}</div>
+        <div style="font-size:20px; font-weight:900; color:#fbbf24;">${teamXpMap[t.id] || 0} ⭐</div>
       </div>
     `).join('');
-    
-    go('leaders');
+
+    // Player list
+    const list = document.getElementById('leaderList');
+    list.innerHTML = (players || []).map((u, i) => {
+      const teamInfo = (teams || []).find(t => t.id === u.team_id);
+      const avatarHtml = u.avatar && u.avatar.startsWith('data:')
+        ? `<img src="${u.avatar}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">`
+        : `<span style="font-size:28px;">${u.avatar || '🦸'}</span>`;
+      return `
+        <div class="leader ${u.id === user?.id ? 'me' : ''}">
+          <div class="leader-rank">${i + 1}</div>
+          <div>${avatarHtml}</div>
+          <div class="leader-name">
+            ${u.display_name}
+            ${teamInfo ? `<span style="font-size:12px; opacity:0.7;"> ${teamInfo.icon}</span>` : ''}
+          </div>
+          <div class="leader-xp">${u.xp} ⭐</div>
+        </div>
+      `;
+    }).join('');
+
+    originalGo('leaders');
   }
 
   // Override go for leaders
@@ -1220,6 +1328,7 @@ Make it colorful and fun!`
 
   // Init
   async function init() {
+    seedTeams(); // ensure teams exist, non-blocking
     const saved = localStorage.getItem('cq');
     if (saved) {
       user = JSON.parse(saved);
