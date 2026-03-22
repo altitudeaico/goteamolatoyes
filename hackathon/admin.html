@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CODE QUEST - Parent Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #f1f5f9;
+      color: #1e293b;
+      min-height: 100vh;
+    }
+    
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      color: white;
+      padding: 30px 20px;
+      text-align: center;
+    }
+    
+    .header h1 {
+      font-size: 1.8rem;
+      font-weight: 900;
+      margin-bottom: 5px;
+    }
+    
+    .header p {
+      opacity: 0.9;
+      font-size: 1rem;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    /* Stats Row */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+    
+    .stat-card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: #4f46e5;
+    }
+    
+    .stat-label {
+      font-size: 0.85rem;
+      color: #64748b;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    /* Section */
+    .section {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    /* Player Card */
+    .player-card {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 18px;
+      background: #f8fafc;
+      border-radius: 15px;
+      margin-bottom: 12px;
+      border-left: 4px solid #e2e8f0;
+    }
+    
+    .player-card.active {
+      border-left-color: #22c55e;
+      background: #f0fdf4;
+    }
+    
+    .player-card.completed {
+      border-left-color: #fbbf24;
+      background: #fefce8;
+    }
+    
+    .player-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      flex-shrink: 0;
+    }
+    
+    .player-info {
+      flex: 1;
+    }
+    
+    .player-name {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    
+    .player-progress {
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+    
+    .player-xp {
+      text-align: right;
+    }
+    
+    .player-xp-value {
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: #fbbf24;
+    }
+    
+    .player-xp-label {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+    }
+    
+    /* Progress Bar */
+    .progress-bar {
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4f46e5, #7c3aed);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+    
+    /* Level badges */
+    .level-badges {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    
+    .level-badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+    }
+    
+    .level-badge.done {
+      background: #22c55e;
+      color: white;
+    }
+    
+    .level-badge.current {
+      background: #fbbf24;
+      color: #1f2937;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    
+    /* Levels Legend */
+    .levels-legend {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #e2e8f0;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+    
+    .legend-icon {
+      font-size: 1.2rem;
+    }
+    
+    /* Refresh button */
+    .refresh-btn {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+      transition: transform 0.2s;
+    }
+    
+    .refresh-btn:active {
+      transform: scale(0.95);
+    }
+    
+    .refresh-btn.spinning {
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #94a3b8;
+    }
+    
+    .empty-state-emoji {
+      font-size: 4rem;
+      margin-bottom: 15px;
+    }
+    
+    .empty-state h3 {
+      font-size: 1.2rem;
+      color: #64748b;
+      margin-bottom: 10px;
+    }
+    
+    /* Last updated */
+    .last-updated {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #94a3b8;
+      margin-top: 20px;
+      padding-bottom: 80px;
+    }
+    
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #e2e8f0;
+      border-top-color: #4f46e5;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    
+    /* Countdown */
+    .countdown {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #1f2937;
+      padding: 20px;
+      border-radius: 16px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .countdown-label {
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+    
+    .countdown-value {
+      font-size: 2rem;
+      font-weight: 900;
+    }
+    
+    /* Links */
+    .quick-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+    
+    .quick-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 16px;
+      background: #f1f5f9;
+      border-radius: 10px;
+      text-decoration: none;
+      color: #4f46e5;
+      font-weight: 700;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+    
+    .quick-link:hover {
+      background: #e2e8f0;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <h1>📊 Parent Dashboard</h1>
+    <p>CODE QUEST Progress Tracker</p>
+  </header>
+
+  <div class="container">
+    
+    <!-- Countdown to Hackathon -->
+    <div class="countdown" id="countdown">
+      <div class="countdown-label">🚀 Hackathon Day</div>
+      <div class="countdown-value" id="countdownValue">Loading...</div>
+    </div>
+    
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-number" id="statPlayers">-</div>
+        <div class="stat-label">Players</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="statXP">-</div>
+        <div class="stat-label">Total XP</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="statComplete">-</div>
+        <div class="stat-label">Completed</div>
+      </div>
+    </div>
+    
+    <!-- Players List -->
+    <div class="section">
+      <h2 class="section-title">👨‍👩‍👧‍👦 All Players</h2>
+      <div id="playersList">
+        <div class="loading">
+          <div class="loading-spinner"></div>
+          <p>Loading players...</p>
+        </div>
+      </div>
+      
+      <div class="levels-legend">
+        <div class="legend-item"><span class="legend-icon">👋</span> Say Hello</div>
+        <div class="legend-item"><span class="legend-icon">❓</span> Ask Question</div>
+        <div class="legend-item"><span class="legend-icon">📖</span> Get Creative</div>
+        <div class="legend-item"><span class="legend-icon">🎨</span> Build Page</div>
+        <div class="legend-item"><span class="legend-icon">⚡</span> Make Cool</div>
+        <div class="legend-item"><span class="legend-icon">🎮</span> Build Game</div>
+        <div class="legend-item"><span class="legend-icon">🏆</span> Ready!</div>
+      </div>
+    </div>
+    
+    <!-- Quick Links -->
+    <div class="section">
+      <h2 class="section-title">🔗 Quick Links</h2>
+      <div class="quick-links">
+        <a href="index.html" class="quick-link" target="_blank">🎮 Kids App</a>
+        <a href="parents.html" class="quick-link" target="_blank">📄 Parent Briefing</a>
+        <a href="https://claude.ai" class="quick-link" target="_blank">🤖 Claude AI</a>
+      </div>
+    </div>
+    
+    <div class="last-updated" id="lastUpdated">
+      Last updated: --
+    </div>
+    
+  </div>
+
+  <button class="refresh-btn" id="refreshBtn" onclick="loadData()">🔄</button>
+
+  <script>
+    // Supabase
+    const db = supabase.createClient(
+      'https://pwpxachynrhmkeowxmhg.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3cHhhY2h5bnJobWtlb3d4bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0ODM4NTMsImV4cCI6MjA4OTA1OTg1M30.vMzH379AZ--rY-YJljDDOwJ5xpNnJcq4dH_WfX8Yy4U'
+    );
+
+    const LEVELS = [
+      { id: 1, icon: '👋', name: 'Say Hello' },
+      { id: 2, icon: '❓', name: 'Ask Question' },
+      { id: 3, icon: '📖', name: 'Get Creative' },
+      { id: 4, icon: '🎨', name: 'Build Page' },
+      { id: 5, icon: '⚡', name: 'Make Cool' },
+      { id: 6, icon: '🎮', name: 'Build Game' },
+      { id: 7, icon: '🏆', name: 'Ready!' }
+    ];
+
+    const HACKATHON_DATE = new Date('2026-04-04T14:00:00');
+
+    // Update countdown
+    function updateCountdown() {
+      const now = new Date();
+      const diff = HACKATHON_DATE - now;
+      
+      if (diff <= 0) {
+        document.getElementById('countdownValue').textContent = "It's Hackathon Day! 🎉";
+        return;
+      }
+      
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      
+      if (days > 0) {
+        document.getElementById('countdownValue').textContent = `${days} day${days !== 1 ? 's' : ''} to go!`;
+      } else {
+        document.getElementById('countdownValue').textContent = `${hours} hour${hours !== 1 ? 's' : ''} to go!`;
+      }
+    }
+
+    // Load data
+    async function loadData() {
+      const btn = document.getElementById('refreshBtn');
+      btn.classList.add('spinning');
+      
+      try {
+        const { data: users, error } = await db
+          .from('hackathon_users')
+          .select('*')
+          .order('xp', { ascending: false });
+        
+        if (error) throw error;
+        
+        // Update stats
+        document.getElementById('statPlayers').textContent = users.length;
+        document.getElementById('statXP').textContent = users.reduce((sum, u) => sum + (u.xp || 0), 0);
+        document.getElementById('statComplete').textContent = users.filter(u => (u.current_mission || 1) > 7).length;
+        
+        // Render players
+        const list = document.getElementById('playersList');
+        
+        if (users.length === 0) {
+          list.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-state-emoji">👻</div>
+              <h3>No players yet!</h3>
+              <p>Players will appear here once they sign up.</p>
+            </div>
+          `;
+        } else {
+          list.innerHTML = users.map(user => {
+            const currentLevel = user.current_mission || 1;
+            const isComplete = currentLevel > 7;
+            const progress = Math.min(((currentLevel - 1) / 7) * 100, 100);
+            
+            return `
+              <div class="player-card ${isComplete ? 'completed' : currentLevel > 1 ? 'active' : ''}">
+                <div class="player-avatar">${user.avatar || '🦸'}</div>
+                <div class="player-info">
+                  <div class="player-name">${user.display_name}</div>
+                  <div class="player-progress">
+                    ${isComplete ? '🎉 All levels complete!' : `Level ${currentLevel} of 7 - ${LEVELS[currentLevel - 1]?.name || ''}`}
+                  </div>
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${progress}%"></div>
+                  </div>
+                  <div class="level-badges">
+                    ${LEVELS.map(lvl => {
+                      const done = currentLevel > lvl.id;
+                      const current = currentLevel === lvl.id;
+                      return `<div class="level-badge ${done ? 'done' : current ? 'current' : ''}">${done ? '✓' : lvl.icon}</div>`;
+                    }).join('')}
+                  </div>
+                </div>
+                <div class="player-xp">
+                  <div class="player-xp-value">${user.xp || 0}</div>
+                  <div class="player-xp-label">XP</div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+        
+        // Update timestamp
+        document.getElementById('lastUpdated').textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
+        
+      } catch (err) {
+        console.error('Error loading data:', err);
+        document.getElementById('playersList').innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-emoji">😕</div>
+            <h3>Couldn't load data</h3>
+            <p>Check your connection and try again.</p>
+          </div>
+        `;
+      }
+      
+      btn.classList.remove('spinning');
+    }
+
+    // Init
+    updateCountdown();
+    setInterval(updateCountdown, 60000); // Update countdown every minute
+    loadData();
+    
+    // Auto-refresh every 30 seconds
+    setInterval(loadData, 30000);
+  </script>
+
+</body>
+</html>
