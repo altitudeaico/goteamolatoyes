@@ -8,50 +8,66 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Nunito', sans-serif; background: #f0f1ff; color: #1e1b4b; line-height: 1.7; }
+
     .header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; padding: 50px 20px 40px; text-align: center; position: relative; overflow: hidden; }
     .header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 70% 30%, rgba(255,255,255,0.12) 0%, transparent 60%); }
     .header-emoji { font-size: 72px; margin-bottom: 12px; }
     .header h1 { font-size: 2rem; font-weight: 900; margin-bottom: 8px; position: relative; }
     .header p { font-size: 1.05rem; opacity: 0.9; max-width: 480px; margin: 0 auto; position: relative; }
     .back-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 20px; background: rgba(255,255,255,0.2); color: white; text-decoration: none; padding: 10px 20px; border-radius: 100px; font-weight: 800; font-size: 15px; position: relative; }
+
     .container { max-width: 680px; margin: 0 auto; padding: 36px 20px 80px; }
+
     .big-explainer { background: white; border-radius: 24px; padding: 32px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(79,70,229,0.08); text-align: center; }
-    .big-explainer .illo { font-size: 48px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 16px; }
+    .big-explainer .illo { font-size: 48px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 16px; }
     .big-explainer h2 { font-size: 1.4rem; font-weight: 900; color: #1e1b4b; margin-bottom: 14px; }
     .big-explainer p { font-size: 1.05rem; color: #374151; max-width: 500px; margin: 0 auto 10px; }
+
     .section { background: white; border-radius: 20px; padding: 28px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(79,70,229,0.07); }
-    .section-title { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
-    .section-num { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; font-size: 20px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .section h2 { font-size: 1.25rem; font-weight: 900; color: #1e1b4b; }
+    .section h2 { font-size: 1.25rem; font-weight: 900; color: #1e1b4b; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
     .section p { font-size: 1rem; color: #374151; margin-bottom: 12px; }
     .section p:last-child { margin-bottom: 0; }
+
+    /* numbered steps */
     .steps { list-style: none; margin-top: 16px; }
-    .steps li { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 20px; }
-    .step-circle { width: 36px; height: 36px; border-radius: 50%; background: #ede9fe; color: #5b21b6; font-weight: 900; font-size: 17px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
-    .step-body strong { display: block; font-size: 1.05rem; font-weight: 900; color: #1e1b4b; margin-bottom: 3px; }
-    .step-body span { font-size: 0.97rem; color: #4b5563; line-height: 1.65; }
-    .prompt-box { background: #f0f1ff; border: 2.5px dashed #818cf8; border-radius: 14px; padding: 16px 18px; margin: 14px 0 8px; font-size: 1rem; color: #3730a3; line-height: 1.8; white-space: pre-wrap; }
-    .copy-btn { display: inline-flex; align-items: center; gap: 6px; background: #4f46e5; color: white; border: none; border-radius: 100px; padding: 9px 20px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 14px; cursor: pointer; margin-bottom: 16px; transition: background 0.2s; }
+    .steps li { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 22px; }
+    .step-circle { min-width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; font-weight: 900; font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+    .step-body strong { display: block; font-size: 1.05rem; font-weight: 900; color: #1e1b4b; margin-bottom: 4px; }
+    .step-body span { font-size: 0.97rem; color: #4b5563; line-height: 1.7; }
+
+    /* prompt boxes */
+    .prompt-box { background: #f0f1ff; border: 2.5px dashed #818cf8; border-radius: 14px; padding: 16px 18px; margin: 12px 0 8px; font-size: 1rem; color: #3730a3; line-height: 1.8; white-space: pre-wrap; }
+    .copy-btn { display: inline-flex; align-items: center; gap: 6px; background: #4f46e5; color: white; border: none; border-radius: 100px; padding: 9px 20px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 14px; cursor: pointer; margin-bottom: 4px; transition: background 0.2s; }
     .copy-btn:hover { background: #4338ca; }
     .copy-btn.copied { background: #22c55e; }
+
     .tip { background: #f0fdf4; border-left: 5px solid #22c55e; border-radius: 0 12px 12px 0; padding: 14px 16px; margin: 14px 0; font-size: 0.97rem; color: #166534; }
     .tip strong { font-weight: 900; }
     .warning { background: #fff7ed; border-left: 5px solid #f97316; border-radius: 0 12px 12px 0; padding: 14px 16px; margin: 14px 0; font-size: 0.97rem; color: #9a3412; }
     .warning strong { font-weight: 900; }
-    .easy-option { background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 20px; padding: 28px; margin-bottom: 20px; border: 3px solid #fbbf24; }
-    .easy-option h2 { font-size: 1.3rem; font-weight: 900; color: #92400e; margin-bottom: 10px; }
-    .easy-option p { color: #78350f; font-size: 1rem; margin-bottom: 10px; }
-    .or-divider { text-align: center; position: relative; margin: 28px 0; font-size: 1.1rem; font-weight: 900; color: #6b7280; }
-    .or-divider::before, .or-divider::after { content: ''; position: absolute; top: 50%; width: 38%; height: 2px; background: #e5e7eb; }
-    .or-divider::before { left: 0; }
-    .or-divider::after { right: 0; }
+
+    /* hero step — the big moment */
+    .hero-step { background: linear-gradient(135deg, #fef3c7, #fde68a); border: 3px solid #fbbf24; border-radius: 20px; padding: 28px; margin: 20px 0; text-align: center; }
+    .hero-step .icon { font-size: 56px; margin-bottom: 10px; }
+    .hero-step h3 { font-size: 1.3rem; font-weight: 900; color: #92400e; margin-bottom: 8px; }
+    .hero-step p { color: #78350f; font-size: 1rem; margin-bottom: 0; }
+
+    /* netlify drop visual */
+    .drop-visual { border: 4px dashed #818cf8; border-radius: 20px; padding: 30px 20px; text-align: center; margin: 16px 0; background: #f8f7ff; }
+    .drop-visual .drop-icon { font-size: 52px; margin-bottom: 8px; }
+    .drop-visual p { font-size: 1rem; color: #4b5563; margin: 0; }
+    .drop-visual strong { color: #4f46e5; }
+
     .badge { display: inline-block; border-radius: 100px; padding: 5px 14px; font-size: 13px; font-weight: 800; margin-bottom: 14px; }
-    .badge-easy { background: #dcfce7; color: #166534; }
-    .badge-advanced { background: #ede9fe; color: #5b21b6; }
+    .badge-green { background: #dcfce7; color: #166534; }
+    .badge-purple { background: #ede9fe; color: #5b21b6; }
+
     .cta { background: linear-gradient(135deg, #4f46e5, #7c3aed); border-radius: 20px; padding: 30px; text-align: center; color: white; margin-top: 32px; }
     .cta h2 { font-size: 1.4rem; font-weight: 900; margin-bottom: 10px; }
     .cta p { opacity: 0.9; margin-bottom: 18px; font-size: 1rem; }
     .cta a { display: inline-block; background: #fbbf24; color: #1f2937; text-decoration: none; padding: 15px 30px; border-radius: 100px; font-weight: 900; font-size: 1.05rem; }
+
+    a { color: #4f46e5; }
   </style>
 </head>
 <body>
@@ -59,7 +75,7 @@
   <div class="header">
     <div class="header-emoji">🌐</div>
     <h1>Put Your App Online!</h1>
-    <p>So the whole family can see what you built 🎉</p>
+    <p>Let Claude do all the hard work — you just describe what you want!</p>
     <a href="index.html" class="back-link">← Back to Code Quest</a>
   </div>
 
@@ -68,177 +84,142 @@
     <!-- What does online mean -->
     <div class="big-explainer">
       <div class="illo">🖥️ ➡️ 🌍</div>
-      <h2>What does "putting it online" actually mean?</h2>
-      <p>When Claude makes your webpage, it only exists on <em>your</em> screen — like drawing a picture in your notebook. Nobody else can see it.</p>
-      <p>Putting it online means giving your page its own <strong>real website link</strong> so Mum, Dad, cousins, everyone can visit it from anywhere in the world!</p>
-      <p><strong>And it's completely free 🥳</strong></p>
+      <h2>What does "putting it online" mean?</h2>
+      <p>Right now your webpage only exists on your screen — nobody else can see it. Putting it online gives it a <strong>real link on the internet</strong>, like a proper website, so the whole family can visit it from anywhere!</p>
+      <p>The best part? You're going to ask <strong>Claude to do it for you.</strong> That's what AI is for! 🤖✨</p>
     </div>
 
-    <!-- EASY WAY -->
-    <div class="easy-option">
-      <h2>⭐ The Easy Way — Ask Uncle B!</h2>
-      <div class="badge badge-easy">✅ Start here — this is the simplest</div>
-      <p>You only need to do <strong>two things</strong>:</p>
-      <ul class="steps" style="margin-top: 0;">
-        <li>
-          <div class="step-circle">1</div>
-          <div class="step-body">
-            <strong>Build your page in Claude</strong>
-            <span>Use the prompt in Level 4 (Build a Page). Claude will give you a big block of text — that's your page's code!</span>
-          </div>
-        </li>
-        <li>
-          <div class="step-circle">2</div>
-          <div class="step-body">
-            <strong>Copy it and send it to Uncle B on WhatsApp</strong>
-            <span>Select all the code Claude gave you, copy it, and paste it into a WhatsApp message to Uncle B. He'll put it online and send you back your link — done! 🎉</span>
-          </div>
-        </li>
-      </ul>
-      <div class="tip">
-        <strong>💬 What to say:</strong> "Uncle B, here's my webpage code, can you put it online please?" — then paste the code underneath.
-      </div>
-    </div>
-
-    <div class="or-divider">OR have a go yourself!</div>
-
-    <!-- DIY WAY -->
+    <!-- PART 1: Ask Claude to build the page -->
     <div class="section">
-      <div class="section-title">
-        <div class="section-num">🚀</div>
-        <h2>The Adventure Way — Do It Yourself</h2>
-      </div>
-      <div class="badge badge-advanced">🔥 A little trickier — ask a parent to sit with you</div>
-      <p>Want to learn how to do it yourself? Here's how — with a grown-up helping.</p>
-      <p>We use a free website called <strong>GitHub</strong>. Think of it like a <strong>big filing cabinet on the internet</strong>. All the Code Quest files live in there already. When you add your file, it appears online automatically!</p>
+      <h2>🤖 Step 1 — Ask Claude to build your page</h2>
+      <div class="badge badge-purple">Do this in Claude.ai</div>
+      <p>Go to <a href="https://claude.ai" target="_blank"><strong>claude.ai</strong></a>, start a new chat, and paste this prompt. Fill in YOUR details where it says [BRACKETS]:</p>
 
-      <ul class="steps">
-        <li>
-          <div class="step-circle">1</div>
-          <div class="step-body">
-            <strong>Build your page in Claude first</strong>
-            <span>Go to <a href="https://claude.ai" target="_blank" style="color:#4f46e5;font-weight:700;">claude.ai</a> and use this prompt:</span>
-          </div>
-        </li>
-      </ul>
+      <div class="prompt-box" id="prompt1">Make me a personal webpage about me!
 
-      <div class="prompt-box" id="prompt1">Make me a fun personal webpage about me!
+My name is: [YOUR NAME]
+My favourite colour is: [A COLOUR]
+My favourite things are: [2 OR 3 THINGS YOU LOVE]
+My team is: [GIRLS or BOYS]
 
-My name is: [TYPE YOUR NAME HERE]
-My favourite colour is: [TYPE A COLOUR]
-I love: [TYPE YOUR HOBBY OR FAVOURITE THING]
+Make it colourful, fun and full of emojis.
+Add a cool animation to the background.
+At the bottom write "Built with AI 🚀"
 
-Make it colourful with big text and emojis.
-Show me the full HTML code.</div>
+When you're done, give me the complete code as a single HTML file.</div>
       <button class="copy-btn" onclick="copyPrompt('prompt1', this)">📋 Copy this prompt</button>
 
       <div class="tip">
-        <strong>👀 What you're looking for:</strong> Claude will write a LONG block of code. It starts with the words <code style="background:#f0f1ff;padding:2px 6px;border-radius:4px;">&lt;!DOCTYPE html&gt;</code> at the very top. That whole thing is your webpage!
+        <strong>💡 The more you describe, the cooler it gets!</strong> Tell Claude your favourite colour, show, food, sport — anything! The clearer your words, the better your page will look.
       </div>
+    </div>
+
+    <!-- PART 2: Ask Claude to save it as a file -->
+    <div class="section">
+      <h2>💾 Step 2 — Ask Claude to save it as a file</h2>
+      <div class="badge badge-purple">Still in Claude.ai</div>
+      <p>Once Claude has made your page, ask it to save the code as a file you can download. Copy and send this message in the <strong>same chat</strong>:</p>
+
+      <div class="prompt-box" id="prompt2">Can you give me that as a file I can download? Save it as mypage.html</div>
+      <button class="copy-btn" onclick="copyPrompt('prompt2', this)">📋 Copy this message</button>
+
+      <p>Claude will give you a download button or a file to save. Click it and save the file somewhere easy to find — like your Desktop or Downloads folder.</p>
+
+      <div class="tip">
+        <strong>👀 Look for a file called</strong> <code style="background:#f0f1ff;padding:2px 8px;border-radius:6px;">mypage.html</code> in your downloads. That's your whole webpage in one tiny file!
+      </div>
+
+      <div class="warning">
+        <strong>Can't find a download button?</strong> Ask Claude: <em>"Can you put the code in an artifact so I can copy it?"</em> — then copy all the code and paste it into a new text file, saving it as <code>mypage.html</code>.
+      </div>
+    </div>
+
+    <!-- PART 3: Netlify Drop -->
+    <div class="section">
+      <h2>🚀 Step 3 — Drag it onto the internet!</h2>
+      <div class="badge badge-green">✅ This is the magic bit</div>
+      <p>This is the coolest part. We use a free website called <strong>Netlify Drop</strong>. You just <strong>drag your file onto the page</strong> and it goes live on the internet instantly — no accounts, no passwords, nothing!</p>
 
       <ul class="steps">
         <li>
+          <div class="step-circle">1</div>
+          <div class="step-body">
+            <strong>Open Netlify Drop</strong>
+            <span>Go to <a href="https://app.netlify.com/drop" target="_blank"><strong>app.netlify.com/drop</strong></a> — you'll see a big page with a dotted box on it.</span>
+          </div>
+        </li>
+        <li>
           <div class="step-circle">2</div>
           <div class="step-body">
-            <strong>Copy ALL of the code</strong>
-            <span>Click anywhere on the code, then press <strong>Ctrl+A</strong> to select everything, then <strong>Ctrl+C</strong> to copy it. (On a Mac or iPad, use <strong>Cmd</strong> instead of Ctrl.)</span>
+            <strong>Find your mypage.html file</strong>
+            <span>Open your Downloads folder (or wherever you saved it) so you can see the file.</span>
           </div>
         </li>
         <li>
           <div class="step-circle">3</div>
           <div class="step-body">
-            <strong>Open the Code Quest filing cabinet</strong>
-            <span>Ask your parent to go to this website and log in — Uncle B has the password:<br>
-            <a href="https://github.com/altitudeaico/goteamolatoyes/tree/main/hackathon" target="_blank" style="color:#4f46e5;font-weight:700;word-break:break-all;">github.com/altitudeaico/goteamolatoyes</a></span>
+            <strong>Drag the file into the dotted box</strong>
+            <span>Click and hold on your <code style="background:#f0f1ff;padding:1px 6px;border-radius:4px;">mypage.html</code> file, then drag it across to the Netlify Drop page and drop it into the dotted box.</span>
           </div>
         </li>
+      </ul>
+
+      <div class="drop-visual">
+        <div class="drop-icon">📄 ➡️ 🟦</div>
+        <p>Drag <strong>mypage.html</strong> into the dotted box on Netlify Drop</p>
+      </div>
+
+      <ul class="steps">
         <li>
           <div class="step-circle">4</div>
           <div class="step-body">
-            <strong>Click the folder called "hackathon"</strong>
-            <span>You'll see a list of files and folders. Click the one called <strong>hackathon</strong> to open it — that's where your file will go.</span>
+            <strong>Wait about 10 seconds...</strong>
+            <span>Netlify will spin for a moment, then — boom! Your page is live on the internet! 🎉</span>
           </div>
         </li>
         <li>
           <div class="step-circle">5</div>
           <div class="step-body">
-            <strong>Make a new file</strong>
-            <span>Click the button that says <strong>"Add file"</strong>, then click <strong>"Create new file"</strong>.</span>
-          </div>
-        </li>
-        <li>
-          <div class="step-circle">6</div>
-          <div class="step-body">
-            <strong>Give your file a name</strong>
-            <span>In the little box at the top, type your first name and then <strong>.html</strong> — like this:<br><br>
-            👧 <code style="background:#f0f1ff;padding:2px 8px;border-radius:6px;font-size:1rem;">elsie.html</code><br>
-            👦 <code style="background:#f0f1ff;padding:2px 8px;border-radius:6px;font-size:1rem;">theodore.html</code><br><br>
-            ⚠️ The <strong>.html</strong> bit at the end is really important — don't leave it out!</span>
-          </div>
-        </li>
-        <li>
-          <div class="step-circle">7</div>
-          <div class="step-body">
-            <strong>Paste your code into the big white box</strong>
-            <span>Click inside the big white area below the filename, then press <strong>Ctrl+V</strong> (or Cmd+V) to paste all your code in.</span>
-          </div>
-        </li>
-        <li>
-          <div class="step-circle">8</div>
-          <div class="step-body">
-            <strong>Click the green "Commit changes" button</strong>
-            <span>Scroll down to the bottom of the page and click the big green button. This saves your file into the filing cabinet — like pressing Save!</span>
-          </div>
-        </li>
-        <li>
-          <div class="step-circle">9</div>
-          <div class="step-body">
-            <strong>Wait about 1 minute... then visit your page! 🎉</strong>
-            <span>Your page will be live on the internet at this address. Swap <strong>YOURNAME</strong> for whatever you named your file:<br><br>
-            <code style="background:#1e1b4b;color:#a5f3fc;padding:8px 12px;border-radius:8px;font-size:0.88rem;display:inline-block;word-break:break-all;">altitudeaico.github.io/goteamolatoyes/hackathon/YOURNAME.html</code></span>
+            <strong>Copy your link and share it!</strong>
+            <span>Netlify will show you a link that looks something like <code style="background:#f0f1ff;padding:1px 6px;border-radius:4px;">happy-rainbow-123.netlify.app</code>. Copy it and send it to the family WhatsApp — anyone can click it and see your page!</span>
           </div>
         </li>
       </ul>
 
-      <div class="tip">
-        <strong>🎉 Real example:</strong> If Elsie names her file <code>elsie.html</code>, her page will be at:<br>
-        <strong>altitudeaico.github.io/goteamolatoyes/hackathon/elsie.html</strong><br>
-        She can share that link with anyone!
-      </div>
-
-      <div class="warning">
-        <strong>😬 Not working?</strong> Don't panic! The most common mistake is forgetting the <strong>.html</strong> at the end of the filename. If it's still not working after checking that, just send the code to Uncle B on WhatsApp and he'll sort it out.
+      <div class="hero-step">
+        <div class="icon">🎉</div>
+        <h3>You just built and launched a real website!</h3>
+        <p>Most adults don't know how to do this. You just used AI to build a webpage and put it on the internet. That's actually incredible.</p>
       </div>
     </div>
 
-    <!-- Making changes -->
+    <!-- PART 4: Making it better -->
     <div class="section">
-      <div class="section-title">
-        <div class="section-num">✏️</div>
-        <h2>Want to make your page even cooler?</h2>
-      </div>
-      <p>No problem! Go back to Claude, ask it to make changes, then copy the new code and either send it to Uncle B or follow the steps above again to update your file.</p>
-      <p>Here are some fun things to try:</p>
+      <h2>✨ Want to make it even better?</h2>
+      <p>Easy! Go back to Claude in the same chat and ask it to make changes. Then download the new file and drag it onto Netlify Drop again — your link stays the same but the page updates!</p>
+      <p>Here are some things to ask Claude:</p>
 
-      <p style="font-weight:900;margin-bottom:6px;margin-top:8px;">🎨 Change the colours and background:</p>
-      <div class="prompt-box" id="prompt2">Can you update my webpage so the background is dark with animated shooting stars? Use [YOUR FAVOURITE COLOUR] for the headings. Show me the full updated code.</div>
-      <button class="copy-btn" onclick="copyPrompt('prompt2', this)">📋 Copy</button>
-
-      <p style="font-weight:900;margin-bottom:6px;margin-top:4px;">⭐ Add a "My Favourite Things" section:</p>
-      <div class="prompt-box" id="prompt3">Add a section to my webpage called "My Top 5 Favourite Things" with:
-1. [THING 1]
-2. [THING 2]
-3. [THING 3]
-4. [THING 4]
-5. [THING 5]
-Make it colourful with a big emoji next to each one. Show me the full updated code.</div>
+      <p style="font-weight:900;margin-bottom:6px;margin-top:8px;">Add something new:</p>
+      <div class="prompt-box" id="prompt3">Add a section called "My Favourite Things" with a list of my top 5 favourites. Put a big emoji next to each one. Give me the full updated file.</div>
       <button class="copy-btn" onclick="copyPrompt('prompt3', this)">📋 Copy</button>
+
+      <p style="font-weight:900;margin-bottom:6px;margin-top:8px;">Change the look:</p>
+      <div class="prompt-box" id="prompt4">Make the background a dark night sky with animated shooting stars. Keep everything else the same. Give me the full updated file.</div>
+      <button class="copy-btn" onclick="copyPrompt('prompt4', this)">📋 Copy</button>
+
+      <p style="font-weight:900;margin-bottom:6px;margin-top:8px;">Add a countdown to the hackathon:</p>
+      <div class="prompt-box" id="prompt5">Add a countdown timer to my page that counts down to April 4th 2026 at 6:30pm. Label it "Hackathon in..." and make it look exciting. Give me the full updated file.</div>
+      <button class="copy-btn" onclick="copyPrompt('prompt5', this)">📋 Copy</button>
+
+      <div class="tip">
+        <strong>🔑 The secret:</strong> Always say <strong>"give me the full updated file"</strong> at the end of your message to Claude, so it gives you the whole thing ready to drag onto Netlify again.
+      </div>
     </div>
 
     <!-- CTA -->
     <div class="cta">
       <h2>Ready? Go build your page! 🚀</h2>
-      <p>Head back to Code Quest and complete Level 4 — Build a Page. Once Claude makes your page, come back here to put it online!</p>
+      <p>Head back to Code Quest and complete Level 4. Once you've got your page, come back here and follow the steps to put it online!</p>
       <a href="index.html">Back to Code Quest →</a>
     </div>
 
