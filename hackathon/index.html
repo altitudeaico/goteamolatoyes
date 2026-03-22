@@ -1746,6 +1746,10 @@ Keep responses SHORT (2-4 sentences usually). Only go longer if they really need
   let ririHistory = [];
   let ririGreeted = false;
 
+  function getRiriKey() {
+    return localStorage.getItem('riri_key') || '';
+  }
+
   function toggleRiri() {
     ririOpen = !ririOpen;
     document.getElementById('ririPanel').classList.toggle('open', ririOpen);
@@ -1754,6 +1758,11 @@ Keep responses SHORT (2-4 sentences usually). Only go longer if they really need
     if (ririOpen && !ririGreeted) {
       ririGreeted = true;
       setTimeout(() => {
+        // If no key stored, ask for it first
+        if (!getRiriKey()) {
+          showRiriKeyPrompt();
+          return;
+        }
         const name = user ? user.display_name : null;
         const greeting = name
           ? `Hey ${name}! 👋🏾 I'm Riri — I'm here to help you through Code Quest! What level are you on, or do you have a question?`
@@ -1764,6 +1773,35 @@ Keep responses SHORT (2-4 sentences usually). Only go longer if they really need
     if (ririOpen) {
       setTimeout(() => document.getElementById('ririInput').focus(), 350);
     }
+  }
+
+  function showRiriKeyPrompt() {
+    const msgs = document.getElementById('ririMessages');
+    msgs.innerHTML = `
+      <div class="riri-msg riri">
+        <div class="riri-msg-avatar">👧🏾</div>
+        <div class="riri-bubble">Hey! 👋🏾 I'm Riri. To activate me, paste the Riri key Uncle B gave you below 🗝️</div>
+      </div>
+      <div style="padding: 8px 0;">
+        <input id="ririKeyInput" placeholder="Paste your Riri key here..." style="width:100%;border:2px solid #f9a8d4;border-radius:12px;padding:10px 14px;font-family:'Nunito',sans-serif;font-size:13px;color:#1f2937;background:#fdf2f8;outline:none;box-sizing:border-box;">
+        <button onclick="saveRiriKey()" style="margin-top:8px;width:100%;background:linear-gradient(135deg,#ec4899,#f97316);color:white;border:none;border-radius:12px;padding:10px;font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;cursor:pointer;">Activate Riri ✨</button>
+      </div>
+    `;
+  }
+
+  function saveRiriKey() {
+    const key = document.getElementById('ririKeyInput').value.trim();
+    if (!key.startsWith('sk-ant-')) {
+      alert('That doesn\'t look right — the key should start with sk-ant-');
+      return;
+    }
+    localStorage.setItem('riri_key', key);
+    document.getElementById('ririMessages').innerHTML = '';
+    const name = user ? user.display_name : null;
+    const greeting = name
+      ? `Hey ${name}! 👋🏾 I'm Riri — I'm here to help you through Code Quest! What level are you on, or do you have a question?`
+      : `Hey! 👋🏾 I'm Riri — your Code Quest guide! What would you like to know?`;
+    addRiriMessage('riri', greeting);
   }
 
   function addRiriMessage(from, text) {
@@ -1813,7 +1851,7 @@ Keep responses SHORT (2-4 sentences usually). Only go longer if they really need
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': 'YOUR_ANTHROPIC_API_KEY_HERE',
+          'x-api-key': getRiriKey(),
           'anthropic-version': '2023-06-01',
           'anthropic-dangerous-direct-browser-access': 'true'
         },
