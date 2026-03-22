@@ -499,6 +499,9 @@
       font-size: 16px;
       margin: 0;
       opacity: 1;
+      white-space: pre-line;
+      text-align: left;
+      line-height: 1.7;
     }
     
     /* Scrollable level list */
@@ -554,26 +557,36 @@
     <h1>Pick Your Avatar!</h1>
     <p>Choose how you want to look</p>
     <div class="avatars">
-      <!-- Row 1: Classic heroes -->
+      <!-- Heroes -->
       <div class="avatar" onclick="pick('🦸', this)">🦸</div>
       <div class="avatar" onclick="pick('🦸‍♀️', this)">🦸‍♀️</div>
       <div class="avatar" onclick="pick('🧙', this)">🧙</div>
       <div class="avatar" onclick="pick('🧙‍♀️', this)">🧙‍♀️</div>
-      <!-- Row 2: Fun characters -->
-      <div class="avatar" onclick="pick('🦄', this)">🦄</div>
-      <div class="avatar" onclick="pick('🐱', this)">🐱</div>
-      <div class="avatar" onclick="pick('🦋', this)">🦋</div>
-      <div class="avatar" onclick="pick('🌸', this)">🌸</div>
-      <!-- Row 3: Cool options -->
-      <div class="avatar" onclick="pick('🐉', this)">🐉</div>
-      <div class="avatar" onclick="pick('🦊', this)">🦊</div>
-      <div class="avatar" onclick="pick('✨', this)">✨</div>
-      <div class="avatar" onclick="pick('🌈', this)">🌈</div>
-      <!-- Row 4: More girly + diverse -->
+      <!-- Royals & magic girls -->
       <div class="avatar" onclick="pick('👸', this)">👸</div>
       <div class="avatar" onclick="pick('🧚', this)">🧚</div>
-      <div class="avatar" onclick="pick('💜', this)">💜</div>
+      <div class="avatar" onclick="pick('🧚‍♀️', this)">🧚‍♀️</div>
+      <div class="avatar" onclick="pick('🧜‍♀️', this)">🧜‍♀️</div>
+      <!-- Pretty & sparkly -->
+      <div class="avatar" onclick="pick('💅', this)">💅</div>
       <div class="avatar" onclick="pick('🎀', this)">🎀</div>
+      <div class="avatar" onclick="pick('🌸', this)">🌸</div>
+      <div class="avatar" onclick="pick('🌺', this)">🌺</div>
+      <!-- Animals -->
+      <div class="avatar" onclick="pick('🦄', this)">🦄</div>
+      <div class="avatar" onclick="pick('🦋', this)">🦋</div>
+      <div class="avatar" onclick="pick('🐱', this)">🐱</div>
+      <div class="avatar" onclick="pick('🐼', this)">🐼</div>
+      <!-- Cool & colourful -->
+      <div class="avatar" onclick="pick('🌈', this)">🌈</div>
+      <div class="avatar" onclick="pick('✨', this)">✨</div>
+      <div class="avatar" onclick="pick('💜', this)">💜</div>
+      <div class="avatar" onclick="pick('💖', this)">💖</div>
+      <!-- Tech & adventure -->
+      <div class="avatar" onclick="pick('🐉', this)">🐉</div>
+      <div class="avatar" onclick="pick('🦊', this)">🦊</div>
+      <div class="avatar" onclick="pick('🚀', this)">🚀</div>
+      <div class="avatar" onclick="pick('🤖', this)">🤖</div>
     </div>
     <button class="btn btn-green" onclick="saveAvatar()">That's Me!</button>
   </div>
@@ -603,6 +616,7 @@
     
     <button class="btn btn-yellow hide" id="copyBtn" onclick="copyIt()">📋 Copy This Text</button>
     <button class="btn btn-green" id="doneBtn" onclick="confirmDone()">✅ I Did It!</button>
+    <div id="savingIndicator" class="hide" style="margin:10px 0; font-size:15px; opacity:0.9;">⏳ Saving your progress...</div>
     <button class="btn btn-outline" onclick="showHome()">← Back to Levels</button>
     <button class="btn btn-outline" onclick="showResetModal()" style="margin-top: 5px; color: #fca5a5; border-color: #fca5a5;">🔄 Start This Level Over</button>
   </div>
@@ -683,7 +697,7 @@
         { 
           emoji: "✨", 
           title: "Get a Story", 
-          instruction: "Copy the text below, paste it into Claude, and fill in YOUR name and favorite thing!",
+          instruction: "Step 1: Open claude.ai in a new tab.\nStep 2: Copy the text below using the button.\nStep 3: Paste it into Claude (tap the message box, then paste).\nStep 4: Change [YOUR NAME] to your actual name, and [YOUR FAVORITE THING] to something you love — like a dragon, football, or book.\nStep 5: Press Enter and read your story!\nStep 6: Come back here and tap ✅ I Did It!",
           xp: 75,
           prompt: `Write me a short 5-sentence adventure story where [YOUR NAME] discovers a magical [YOUR FAVORITE THING - like a dragon, computer, or book]. Make it exciting!`
         }
@@ -699,7 +713,7 @@
         { 
           emoji: "🖥️", 
           title: "Make YOUR Webpage", 
-          instruction: "Copy the text below, paste it into Claude, and fill in your details. Claude will make you a webpage!",
+          instruction: "Step 1: Open claude.ai in a new tab.\nStep 2: Copy the text below.\nStep 3: Paste it into Claude.\nStep 4: Replace [TYPE YOUR NAME], [TYPE A COLOR], and [TYPE YOUR HOBBY] with your real answers.\nStep 5: Press Enter — Claude will write code for your webpage!\nStep 6: Come back here and tap ✅ I Did It!",
           xp: 100,
           prompt: `Make me a fun webpage about me!
 
@@ -1002,16 +1016,34 @@ Make it colorful and fun!`
     if (currentTask === currentLevel.tasks.length - 1 && currentLevel.id === newMission) {
       newMission = currentLevel.id + 1;
     }
-    
-    await db.from('hackathon_users').update({ 
-      xp: xp, 
-      current_mission: newMission 
-    }).eq('id', user.id);
-    
+
+    // Show saving indicator, disable button
+    const btn = document.getElementById('doneBtn');
+    const indicator = document.getElementById('savingIndicator');
+    btn.disabled = true;
+    btn.textContent = '⏳ Saving...';
+    indicator.classList.remove('hide');
+
+    // Always save to localStorage immediately
     user.xp = xp;
     user.current_mission = newMission;
     localStorage.setItem('cq', JSON.stringify(user));
     document.getElementById('xpDisplay').textContent = '⭐ ' + xp;
+
+    // Try to save to Supabase — if it fails, local save is still good
+    try {
+      const { error } = await db.from('hackathon_users').update({ 
+        xp: xp, 
+        current_mission: newMission 
+      }).eq('id', user.id);
+      if (error) console.warn('Supabase save failed (local save OK):', error.message);
+    } catch(e) {
+      console.warn('Supabase unreachable (local save OK):', e);
+    }
+
+    btn.disabled = false;
+    btn.textContent = '✅ I Did It!';
+    indicator.classList.add('hide');
     
     // Show confetti!
     showConfetti();
