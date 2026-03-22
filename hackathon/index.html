@@ -1671,6 +1671,7 @@ Make it colorful and fun!`
       <span>Your Code Quest guide ✨</span>
     </div>
     <button class="riri-close" onclick="toggleRiri()">✕</button>
+    <button onclick="resetRiriKey()" style="background:none;border:none;color:rgba(255,255,255,0.5);font-size:11px;cursor:pointer;font-family:'Nunito',sans-serif;padding:0 0 0 4px;" title="Reset Riri key">🔑</button>
   </div>
 
   <div class="riri-messages" id="ririMessages"></div>
@@ -1780,10 +1781,10 @@ Keep responses SHORT (2-4 sentences usually). Only go longer if they really need
     msgs.innerHTML = `
       <div class="riri-msg riri">
         <div class="riri-msg-avatar">👧🏾</div>
-        <div class="riri-bubble">Hey! 👋🏾 I'm Riri. To activate me, paste the Riri key Uncle B gave you below 🗝️</div>
+        <div class="riri-bubble">Hey! 👋🏾 I'm Riri! Ask a parent to paste your Riri key below to activate me — you only need to do this once! 🗝️</div>
       </div>
-      <div style="padding: 8px 0;">
-        <input id="ririKeyInput" placeholder="Paste your Riri key here..." style="width:100%;border:2px solid #f9a8d4;border-radius:12px;padding:10px 14px;font-family:'Nunito',sans-serif;font-size:13px;color:#1f2937;background:#fdf2f8;outline:none;box-sizing:border-box;">
+      <div style="padding:8px 0;">
+        <input id="ririKeyInput" placeholder="Paste Riri key here..." style="width:100%;border:2px solid #f9a8d4;border-radius:12px;padding:10px 14px;font-family:'Nunito',sans-serif;font-size:13px;color:#1f2937;background:#fdf2f8;outline:none;box-sizing:border-box;">
         <button onclick="saveRiriKey()" style="margin-top:8px;width:100%;background:linear-gradient(135deg,#ec4899,#f97316);color:white;border:none;border-radius:12px;padding:10px;font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;cursor:pointer;">Activate Riri ✨</button>
       </div>
     `;
@@ -1802,6 +1803,16 @@ Keep responses SHORT (2-4 sentences usually). Only go longer if they really need
       ? `Hey ${name}! 👋🏾 I'm Riri — I'm here to help you through Code Quest! What level are you on, or do you have a question?`
       : `Hey! 👋🏾 I'm Riri — your Code Quest guide! What would you like to know?`;
     addRiriMessage('riri', greeting);
+  }
+
+  function resetRiriKey() {
+    if (confirm('Reset Riri key? You\'ll need to paste it again.')) {
+      localStorage.removeItem('riri_key');
+      ririGreeted = false;
+      ririHistory = [];
+      document.getElementById('ririMessages').innerHTML = '';
+      showRiriKeyPrompt();
+    }
   }
 
   function addRiriMessage(from, text) {
