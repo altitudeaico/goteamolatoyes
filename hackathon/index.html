@@ -2303,8 +2303,13 @@ Make it exciting and something our whole family will enjoy playing!`
     document.getElementById(tabId)?.classList.add('active');
 
     // Channel label
-    const labels = { everyone: '🌍 Everyone', team: '👥 My Team' };
-    document.getElementById('chatChannelName').textContent = labels[channel] || '💌 Direct Message';
+    const labels = {
+      everyone: { name: '🌍 Everyone', sub: 'Code Quest family chat' },
+      team: { name: '👥 My Team', sub: 'Team chat' }
+    };
+    const label = labels[channel] || { name: '💌 Direct Message', sub: '' };
+    document.getElementById('chatChannelName').textContent = label.name;
+    document.getElementById('chatChannelSub').textContent = label.sub;
 
     saveLastSeen(channel);
     updateUnreadBadges();
@@ -2324,7 +2329,7 @@ Make it exciting and something our whole family will enjoy playing!`
 
   async function loadMessages() {
     const body = document.getElementById('chatBody');
-    body.innerHTML = '<div class="chat-empty"><div class="chat-empty-icon">💬</div>Loading...</div>';
+    body.innerHTML = `<div class="chat-empty"><div class="chat-empty-icon">⏳</div><p>Loading messages...</p></div>`;
 
     const { data } = await db.from('hackathon_messages')
       .select('*')
@@ -2335,48 +2340,51 @@ Make it exciting and something our whole family will enjoy playing!`
     renderMessages(data || []);
   }
 
-  function renderMessages(msgs) {
-    const body = document.getElementById('chatBody');
-    if (!msgs.length) {
-      body.innerHTML = '<div class="chat-empty"><div class="chat-empty-icon">💬</div>No messages yet — say hello!</div>';
-      return;
-    }
+  function buildMsgHtml(m) {
+    const mine = m.sender_id === user.id;
+    const d = new Date(m.created_at);
+    const timeStr = d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+    const reactions = m.reactions || {};
+    const reactionHtml = Object.entries(reactions).map(([emoji, uids]) => {
+      if (!uids.length) return '';
+      const isMine = uids.includes(user.id);
+      return `<span class="reaction-pill ${isMine?'mine':''}" onclick="toggleReaction('${m.id}','${emoji}')">${emoji} ${uids.length}</span>`;
+    }).join('');
+    const avatarHtml = m.sender_avatar?.startsWith('data:')
+      ? `<img src="${m.sender_avatar}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;">`
+      : `<span style="font-size:16px;">${m.sender_avatar||'🦸'}</span>`;
 
-    let lastDate = '';
-    body.innerHTML = msgs.map(m => {
-      const mine = m.sender_id === user.id;
-      const d = new Date(m.created_at);
-      const dateStr = d.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short' });
-      const timeStr = d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
-      let sep = '';
-      if (dateStr !== lastDate) { lastDate = dateStr; sep = `<div class="chat-date-sep">${dateStr}</div>`; }
-
-      const reactions = m.reactions || {};
-      const reactionHtml = Object.entries(reactions).map(([emoji, uids]) => {
-        if (!uids.length) return '';
-        const isMine = uids.includes(user.id);
-        return `<span class="reaction-pill ${isMine?'mine':''}" onclick="toggleReaction('${m.id}','${emoji}')">${emoji} ${uids.length}</span>`;
-      }).join('');
-
-      const avatarHtml = m.sender_avatar?.startsWith('data:')
-        ? `<img src="${m.sender_avatar}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;">`
-        : `<span style="font-size:18px;">${m.sender_avatar||'🦸'}</span>`;
-
-      return `${sep}
-        <div class="chat-msg ${mine?'mine':''}" id="msg-${m.id}">
-          ${!mine ? `<div class="chat-msg-avatar">${avatarHtml}</div>` : ''}
-          <div class="chat-msg-content">
-            <div class="chat-msg-name">${mine?'You':m.sender_name} · ${timeStr}</div>
-            <div class="chat-bubble">${escapeHtml(m.body)}</div>
+    return `
+      <div class="chat-msg ${mine?'mine':''}" id="msg-${m.id}">
+        ${!mine ? `<div class="chat-msg-avatar">${avatarHtml}</div>` : ''}
+        <div class="chat-msg-content">
+          ${!mine ? `<div class="chat-msg-name">${m.sender_name}</div>` : ''}
+          <div class="chat-bubble">${escapeHtml(m.body)}</div>
+          <div class="chat-meta">
+            <span class="chat-time">${timeStr}</span>
             <div class="chat-reactions">
               ${reactionHtml}
               <span class="add-reaction" onclick="showEmojiPicker(event,'${m.id}')">+😊</span>
             </div>
           </div>
-          ${mine ? `<div class="chat-msg-avatar">${avatarHtml}</div>` : ''}
-        </div>`;
-    }).join('');
+        </div>
+      </div>`;
+  }
 
+  function renderMessages(msgs) {
+    const body = document.getElementById('chatBody');
+    if (!msgs.length) {
+      body.innerHTML = `<div class="chat-empty"><div class="chat-empty-icon">💬</div><p>No messages yet<br>Say hello! 👋</p></div>`;
+      return;
+    }
+    let lastDate = '';
+    body.innerHTML = msgs.map(m => {
+      const d = new Date(m.created_at);
+      const dateStr = d.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short' });
+      let sep = '';
+      if (dateStr !== lastDate) { lastDate = dateStr; sep = `<div class="chat-date-sep">${dateStr}</div>`; }
+      return sep + buildMsgHtml(m);
+    }).join('');
     body.scrollTop = body.scrollHeight;
   }
 
@@ -2431,32 +2439,9 @@ Make it exciting and something our whole family will enjoy playing!`
 
   function appendMessage(m) {
     const body = document.getElementById('chatBody');
-    // Remove empty state
     const empty = body.querySelector('.chat-empty');
     if (empty) empty.remove();
-
-    const mine = m.sender_id === user.id;
-    const d = new Date(m.created_at);
-    const timeStr = d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
-    const avatarHtml = m.sender_avatar?.startsWith('data:')
-      ? `<img src="${m.sender_avatar}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;">`
-      : `<span style="font-size:18px;">${m.sender_avatar||'🦸'}</span>`;
-
-    const div = document.createElement('div');
-    div.className = `chat-msg ${mine?'mine':''}`;
-    div.id = `msg-${m.id}`;
-    div.innerHTML = `
-      ${!mine ? `<div class="chat-msg-avatar">${avatarHtml}</div>` : ''}
-      <div class="chat-msg-content">
-        <div class="chat-msg-name">${mine?'You':m.sender_name} · ${timeStr}</div>
-        <div class="chat-bubble">${escapeHtml(m.body)}</div>
-        <div class="chat-reactions">
-          <span class="add-reaction" onclick="showEmojiPicker(event,'${m.id}')">+😊</span>
-        </div>
-      </div>
-      ${mine ? `<div class="chat-msg-avatar">${avatarHtml}</div>` : ''}
-    `;
-    body.appendChild(div);
+    body.insertAdjacentHTML('beforeend', buildMsgHtml(m));
     body.scrollTop = body.scrollHeight;
   }
 
@@ -2523,18 +2508,18 @@ Make it exciting and something our whole family will enjoy playing!`
       const ch = dmChannel(u.id);
       const unread = unreadCounts[ch] || 0;
       const avatarHtml = u.avatar?.startsWith('data:')
-        ? `<img src="${u.avatar}" style="width:42px;height:42px;border-radius:50%;object-fit:cover;">`
-        : `<span style="font-size:26px;">${u.avatar||'🦸'}</span>`;
+        ? `<img src="${u.avatar}" style="width:46px;height:46px;border-radius:50%;object-fit:cover;">`
+        : `<span style="font-size:28px;">${u.avatar||'🦸'}</span>`;
       return `
         <div class="dm-user-item" onclick="openDM('${u.id}','${u.display_name.replace(/'/g,"\\'")}')">
           <div class="dm-user-avatar">${avatarHtml}</div>
           <div class="dm-user-info">
             <strong>${u.display_name}</strong>
-            <span>Tap to message</span>
+            <span>Tap to send a message</span>
           </div>
-          ${unread ? `<div class="dm-unread">${unread}</div>` : ''}
+          ${unread ? `<div class="dm-unread">${unread}</div>` : '<span class="dm-chevron">›</span>'}
         </div>`;
-    }).join('') || '<div class="chat-empty"><div class="chat-empty-icon">👥</div>No other players yet!</div>';
+    }).join('') || '<div class="chat-empty"><div class="chat-empty-icon">👥</div><p>No other players yet!</p></div>';
 
     go('chat');
   }
@@ -2607,230 +2592,374 @@ Make it exciting and something our whole family will enjoy playing!`
 <!--  CHAT                                           -->
 <!-- ═══════════════════════════════════════════════ -->
 <style>
-  /* Chat screen */
+  /* ── CHAT ─────────────────────────────────────── */
   #chat {
     padding: 0 !important;
     display: flex;
     flex-direction: column;
     height: 100vh;
     height: 100dvh;
-    max-height: 100vh;
-    max-height: 100dvh;
-    width: 100%;
     max-width: 480px;
-    background: white;
-    border-radius: 0;
+    background: #f7f8fc;
   }
-
   @media (min-width: 600px) {
-    #chat {
-      height: 85vh;
-      border-radius: 28px;
-      overflow: hidden;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.3);
-    }
+    #chat { height: 85vh; border-radius: 28px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,0.3); }
   }
 
+  /* Header */
   .chat-header {
-    background: linear-gradient(135deg, #4f46e5, #7c3aed);
-    padding: 14px 16px;
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    padding: 14px 16px 0;
+    flex-shrink: 0;
+  }
+  .chat-header-top {
     display: flex;
     align-items: center;
     gap: 10px;
-    flex-shrink: 0;
+    margin-bottom: 0;
   }
-  .chat-back { background: rgba(255,255,255,0.2); border: none; color: white; width: 34px; height: 34px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: 'Nunito', sans-serif; flex-shrink: 0; }
-  .chat-title { flex: 1; font-weight: 900; font-size: 16px; color: white; }
-  .chat-title span { display: block; font-size: 12px; font-weight: 600; opacity: 0.8; }
+  .chat-back {
+    background: rgba(255,255,255,0.18);
+    border: none; color: white;
+    width: 36px; height: 36px;
+    border-radius: 50%; font-size: 17px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Nunito', sans-serif;
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .chat-back:hover { background: rgba(255,255,255,0.28); }
+  .chat-header-info { flex: 1; }
+  .chat-header-info strong { display: block; font-size: 16px; font-weight: 900; color: white; }
+  .chat-header-info span { font-size: 12px; color: rgba(255,255,255,0.65); }
 
-  /* Channel tabs */
+  /* Tabs — inside header, at bottom */
   .chat-tabs {
     display: flex;
-    background: rgba(0,0,0,0.15);
-    flex-shrink: 0;
+    margin-top: 10px;
     overflow-x: auto;
     scrollbar-width: none;
   }
   .chat-tabs::-webkit-scrollbar { display: none; }
   .chat-tab {
-    padding: 10px 16px;
+    flex: 1;
+    padding: 10px 8px;
     font-size: 13px;
     font-weight: 800;
-    color: rgba(255,255,255,0.6);
+    color: rgba(255,255,255,0.55);
     cursor: pointer;
     white-space: nowrap;
+    border: none;
     border-bottom: 3px solid transparent;
-    font-family: 'Nunito', sans-serif;
     background: none;
-    border-left: none;
-    border-right: none;
-    border-top: none;
+    font-family: 'Nunito', sans-serif;
     position: relative;
+    transition: color 0.15s;
+    letter-spacing: 0.3px;
   }
-  .chat-tab.active { color: white; border-bottom-color: #fbbf24; }
-  .chat-tab .tab-badge {
+  .chat-tab:hover { color: rgba(255,255,255,0.8); }
+  .chat-tab.active {
+    color: white;
+    border-bottom-color: #fbbf24;
+  }
+  .tab-badge {
     position: absolute;
-    top: 4px; right: 4px;
+    top: 6px; right: 6px;
     background: #ef4444;
     color: white;
     border-radius: 50%;
     width: 16px; height: 16px;
-    font-size: 10px;
+    font-size: 9px;
     display: none;
     align-items: center;
     justify-content: center;
+    font-weight: 900;
   }
-  .chat-tab .tab-badge.show { display: flex; }
+  .tab-badge.show { display: flex; }
 
-  /* Messages area */
+  /* Messages */
   .chat-messages {
     flex: 1;
     overflow-y: auto;
-    padding: 12px;
-    background: #f0f1ff;
+    padding: 16px 12px;
+    background: #f7f8fc;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 2px;
   }
 
-  .chat-msg { display: flex; gap: 8px; align-items: flex-end; }
+  .chat-msg {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+    margin-bottom: 2px;
+  }
   .chat-msg.mine { flex-direction: row-reverse; }
-  .chat-msg-avatar { width: 30px; height: 30px; border-radius: 50%; background: rgba(79,70,229,0.2); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
-  .chat-msg-content { max-width: 75%; }
-  .chat-msg-name { font-size: 11px; font-weight: 800; color: #6b7280; margin-bottom: 3px; }
-  .chat-msg.mine .chat-msg-name { text-align: right; }
+
+  /* Show avatar only on first of a run */
+  .chat-msg-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: #e0e7ff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; flex-shrink: 0;
+    margin-bottom: 2px;
+  }
+  .chat-msg.mine .chat-msg-avatar { display: none; }
+
+  .chat-msg-content { max-width: 72%; display: flex; flex-direction: column; }
+  .chat-msg.mine .chat-msg-content { align-items: flex-end; }
+
+  .chat-msg-name {
+    font-size: 11px;
+    font-weight: 900;
+    color: #6366f1;
+    margin-bottom: 3px;
+    padding-left: 12px;
+  }
+  .chat-msg.mine .chat-msg-name { display: none; }
+
   .chat-bubble {
-    padding: 9px 13px;
-    border-radius: 18px;
-    font-size: 14px;
-    line-height: 1.5;
+    padding: 10px 14px;
+    border-radius: 20px;
+    font-size: 14.5px;
+    line-height: 1.45;
     font-family: 'Nunito', sans-serif;
     font-weight: 600;
     word-break: break-word;
+    max-width: 100%;
+    position: relative;
   }
-  .chat-msg:not(.mine) .chat-bubble { background: white; color: #1f2937; border-bottom-left-radius: 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-  .chat-msg.mine .chat-bubble { background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; border-bottom-right-radius: 4px; }
+  .chat-msg:not(.mine) .chat-bubble {
+    background: white;
+    color: #1f2937;
+    border-bottom-left-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.04);
+  }
+  .chat-msg.mine .chat-bubble {
+    background: linear-gradient(135deg, #4f46e5 0%, #6d28d9 100%);
+    color: white;
+    border-bottom-right-radius: 6px;
+    box-shadow: 0 2px 8px rgba(79,70,229,0.3);
+  }
+
+  .chat-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 3px;
+    padding: 0 4px;
+  }
+  .chat-time {
+    font-size: 10px;
+    color: #9ca3af;
+    font-weight: 700;
+  }
 
   /* Reactions */
-  .chat-reactions { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+  .chat-reactions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 4px;
+    padding: 0 2px;
+  }
   .reaction-pill {
     background: white;
     border: 1.5px solid #e5e7eb;
     border-radius: 100px;
-    padding: 2px 8px;
+    padding: 3px 9px;
     font-size: 13px;
     cursor: pointer;
     display: flex;
     align-items: center;
     gap: 3px;
     font-family: 'Nunito', sans-serif;
-    font-weight: 700;
+    font-weight: 800;
     color: #374151;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    transition: all 0.15s;
   }
-  .reaction-pill:hover { background: #f3f4f6; }
-  .reaction-pill.mine { background: #ede9fe; border-color: #a78bfa; }
-  .add-reaction { background: #f3f4f6; border: 1.5px dashed #d1d5db; border-radius: 100px; padding: 2px 8px; font-size: 13px; cursor: pointer; color: #9ca3af; }
+  .reaction-pill:hover { background: #f5f3ff; border-color: #a78bfa; }
+  .reaction-pill.mine { background: #ede9fe; border-color: #7c3aed; color: #5b21b6; }
+  .add-reaction {
+    background: rgba(0,0,0,0.05);
+    border: 1.5px solid transparent;
+    border-radius: 100px;
+    padding: 3px 9px;
+    font-size: 12px;
+    cursor: pointer;
+    color: #9ca3af;
+    transition: all 0.15s;
+    font-family: 'Nunito', sans-serif;
+  }
+  .add-reaction:hover { background: #ede9fe; color: #7c3aed; }
 
   /* Emoji picker */
   .emoji-picker-popup {
-    position: absolute;
+    position: fixed;
     background: white;
-    border-radius: 14px;
-    padding: 10px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    border-radius: 16px;
+    padding: 12px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.06);
     display: flex;
-    gap: 6px;
+    gap: 4px;
     flex-wrap: wrap;
-    max-width: 200px;
-    z-index: 300;
+    max-width: 220px;
+    z-index: 500;
   }
-  .emoji-picker-popup span { font-size: 22px; cursor: pointer; padding: 4px; border-radius: 8px; }
+  .emoji-picker-popup span {
+    font-size: 24px; cursor: pointer;
+    padding: 5px; border-radius: 10px;
+    transition: background 0.1s;
+  }
   .emoji-picker-popup span:hover { background: #f3f4f6; }
 
   /* Date separator */
-  .chat-date-sep { text-align: center; font-size: 11px; color: #9ca3af; font-weight: 800; margin: 8px 0; }
+  .chat-date-sep {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 12px 0 8px;
+    color: #9ca3af;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+  }
+  .chat-date-sep::before, .chat-date-sep::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e5e7eb;
+  }
 
-  /* DM user list */
-  .dm-user-list { flex: 1; overflow-y: auto; background: #f0f1ff; }
+  /* Empty state */
+  .chat-empty {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+    color: #9ca3af;
+  }
+  .chat-empty .chat-empty-icon { font-size: 52px; margin-bottom: 12px; opacity: 0.7; }
+  .chat-empty p { font-size: 15px; line-height: 1.6; font-weight: 700; }
+
+  /* DM list */
+  .dm-user-list { flex: 1; overflow-y: auto; background: #f7f8fc; padding: 8px 0; }
   .dm-user-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 14px 16px;
-    background: white;
-    margin: 6px 12px;
-    border-radius: 16px;
+    gap: 14px;
+    padding: 12px 16px;
     cursor: pointer;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    transition: background 0.12s;
+    position: relative;
   }
-  .dm-user-item:hover { background: #f5f3ff; }
-  .dm-user-avatar { width: 42px; height: 42px; border-radius: 50%; background: #ede9fe; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .dm-user-item:hover { background: rgba(79,70,229,0.06); }
+  .dm-user-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 72px; right: 16px;
+    height: 1px;
+    background: #f0f1ff;
+  }
+  .dm-user-avatar {
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    background: #ede9fe;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; flex-shrink: 0;
+    box-shadow: 0 0 0 2px white, 0 0 0 3px #e0e7ff;
+  }
+  .dm-user-info { flex: 1; }
   .dm-user-info strong { display: block; font-size: 15px; font-weight: 900; color: #1f2937; }
-  .dm-user-info span { font-size: 12px; color: #6b7280; }
-  .dm-unread { margin-left: auto; background: #ef4444; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
+  .dm-user-info span { font-size: 12px; color: #9ca3af; font-weight: 700; }
+  .dm-chevron { color: #d1d5db; font-size: 16px; }
+  .dm-unread {
+    background: #4f46e5; color: white;
+    border-radius: 100px;
+    min-width: 20px; height: 20px;
+    padding: 0 6px;
+    font-size: 11px; font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+  }
 
-  /* Input */
+  /* Input area */
   .chat-input-row {
     display: flex;
-    gap: 8px;
-    padding: 10px 12px;
+    gap: 10px;
+    padding: 12px 14px;
     background: white;
-    border-top: 2px solid #e5e7eb;
+    border-top: 1px solid #f0f1ff;
     flex-shrink: 0;
+    align-items: flex-end;
   }
   .chat-input {
     flex: 1;
     border: 2px solid #e5e7eb;
-    border-radius: 100px;
-    padding: 10px 16px;
+    border-radius: 22px;
+    padding: 11px 18px;
     font-family: 'Nunito', sans-serif;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
     color: #1f2937;
     outline: none;
-    background: #f9fafb;
+    background: #f7f8fc;
+    transition: border-color 0.15s, background 0.15s;
+    resize: none;
+    line-height: 1.4;
+    max-height: 120px;
+    overflow-y: auto;
   }
   .chat-input:focus { border-color: #7c3aed; background: white; }
+  .chat-input::placeholder { color: #9ca3af; }
   .chat-send {
-    width: 42px; height: 42px;
+    width: 44px; height: 44px;
     border-radius: 50%;
     background: linear-gradient(135deg, #4f46e5, #7c3aed);
     border: none; color: white; font-size: 18px;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
-    transition: transform 0.1s;
+    transition: transform 0.1s, box-shadow 0.15s;
+    box-shadow: 0 3px 10px rgba(79,70,229,0.35);
   }
-  .chat-send:active { transform: scale(0.9); }
-  .chat-send:disabled { opacity: 0.4; }
-
-  .chat-empty { text-align: center; padding: 40px 20px; color: #9ca3af; font-size: 15px; }
-  .chat-empty .chat-empty-icon { font-size: 48px; margin-bottom: 10px; }
+  .chat-send:hover { box-shadow: 0 5px 16px rgba(79,70,229,0.5); }
+  .chat-send:active { transform: scale(0.92); }
+  .chat-send:disabled { opacity: 0.35; box-shadow: none; }
 </style>
 
 <!-- SCREEN: Chat -->
 <div id="chat" class="hide">
   <div class="chat-header">
-    <button class="chat-back" onclick="showHome()">←</button>
-    <div class="chat-title">
-      <span id="chatChannelName">Everyone 🌍</span>
-      <span id="chatChannelSub"></span>
+    <div class="chat-header-top">
+      <button class="chat-back" onclick="showHome()">←</button>
+      <div class="chat-header-info">
+        <strong id="chatChannelName">Everyone 🌍</strong>
+        <span id="chatChannelSub">Code Quest family chat</span>
+      </div>
+    </div>
+    <div class="chat-tabs" id="chatTabs">
+      <button class="chat-tab active" id="tab-everyone" onclick="openChat('everyone')">
+        🌍 Everyone<span class="tab-badge" id="badge-everyone"></span>
+      </button>
+      <button class="chat-tab" id="tab-team" onclick="openChatTeam()">
+        👥 My Team<span class="tab-badge" id="badge-team"></span>
+      </button>
+      <button class="chat-tab" id="tab-dm" onclick="showDMList()">
+        💌 Direct<span class="tab-badge" id="badge-dm"></span>
+      </button>
     </div>
   </div>
 
-  <!-- Channel tabs (shown when not in DM view) -->
-  <div class="chat-tabs" id="chatTabs">
-    <button class="chat-tab active" id="tab-everyone" onclick="openChat('everyone')">🌍 Everyone<span class="tab-badge" id="badge-everyone"></span></button>
-    <button class="chat-tab" id="tab-team" onclick="openChatTeam()">👥 My Team<span class="tab-badge" id="badge-team"></span></button>
-    <button class="chat-tab" id="tab-dm" onclick="showDMList()">💌 DMs<span class="tab-badge" id="badge-dm"></span></button>
-  </div>
-
-  <!-- Messages / DM list (swapped by JS) -->
   <div id="chatBody" class="chat-messages"></div>
 
-  <!-- Input (hidden on DM list view) -->
   <div class="chat-input-row" id="chatInputRow">
-    <input class="chat-input" id="chatInput" placeholder="Say something..." maxlength="500"
+    <input class="chat-input" id="chatInput" placeholder="Message..." maxlength="500"
       onkeydown="if(event.key==='Enter' && !event.shiftKey) { event.preventDefault(); sendChatMsg(); }">
     <button class="chat-send" id="chatSendBtn" onclick="sendChatMsg()">➤</button>
   </div>
