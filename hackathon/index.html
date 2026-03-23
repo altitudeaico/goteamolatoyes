@@ -1396,7 +1396,23 @@
     </div>
   </div>
 
-  <!-- SCREEN: Pick Avatar - EXPANDED OPTIONS -->
+  <!-- SCREEN: Change Password (parents first login) -->
+  <div id="changePassword" class="hide">
+    <div class="emoji">🔑</div>
+    <h1>Set Your Password</h1>
+    <p style="margin-bottom:24px; opacity:0.8; font-size:16px;">Welcome <span id="changePwName"></span>! Before you continue, please set your own private password.</p>
+    <div style="position:relative; width:100%; max-width:380px;">
+      <span style="position:absolute; left:16px; top:50%; transform:translateY(-50%); font-size:18px;">🔑</span>
+      <input type="password" id="newPwInput" placeholder="New password (4+ characters)" style="width:100%; padding:16px 16px 16px 48px; margin-bottom:12px;"
+        onkeydown="if(event.key==='Enter') document.getElementById('newPwConfirm').focus()">
+    </div>
+    <div style="position:relative; width:100%; max-width:380px;">
+      <span style="position:absolute; left:16px; top:50%; transform:translateY(-50%); font-size:18px;">✅</span>
+      <input type="password" id="newPwConfirm" placeholder="Confirm your password" style="width:100%; padding:16px 16px 16px 48px; margin-bottom:20px;"
+        onkeydown="if(event.key==='Enter') saveNewPassword()">
+    </div>
+    <button class="btn btn-green" onclick="saveNewPassword()" style="width:100%; max-width:380px;">Save Password 🔐</button>
+  </div>
   <div id="avatar" class="hide">
     <div id="pickedAvatar" style="font-size:80px; margin-bottom:10px; min-height:90px; display:flex; align-items:center; justify-content:center;">🦸</div>
     <h1>Pick Your Avatar!</h1>
@@ -1906,7 +1922,30 @@ Make it exciting and something our whole family will enjoy playing!`
   let currentTask = 0;
 
   // Show/hide screens
-  // ── Auth screen navigation (isolated from go()) ──
+  function showChangePassword() {
+    document.getElementById('changePwName').textContent = user.display_name;
+    go('changePassword');
+  }
+
+  async function saveNewPassword() {
+    const pw = document.getElementById('newPwInput').value;
+    const confirm = document.getElementById('newPwConfirm').value;
+    if (!pw || pw.length < 4) { toast('Password needs 4+ characters!', true); return; }
+    if (pw !== confirm) { toast('Passwords don\'t match!', true); return; }
+    if (pw === 'codequestparent') { toast('Please choose a different password!', true); return; }
+
+    try {
+      await db.from('hackathon_users').update({ secret_code: pw }).eq('id', user.id);
+      user.secret_code = pw;
+      localStorage.setItem('cq', JSON.stringify(user));
+      toast('Password saved! 🎉');
+      subscribeToUnreadNotifications();
+      updateUnreadBadges();
+      showHome();
+    } catch(e) {
+      toast('Save failed — try again', true);
+    }
+  }
   function showWelcome() {
     document.getElementById('welcome').style.display = 'flex';
     document.getElementById('login').style.display = 'none';
@@ -2335,6 +2374,13 @@ Make it exciting and something our whole family will enjoy playing!`
     
     user = data;
     localStorage.setItem('cq', JSON.stringify(user));
+
+    // Parent using default code (not Uncle B) must change password first
+    if (data.role === 'parent' && data.name !== 'uncle_b' && code === 'codequestparent') {
+      showChangePassword();
+      return;
+    }
+
     subscribeToUnreadNotifications();
     updateUnreadBadges();
     showHome();
