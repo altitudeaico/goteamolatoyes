@@ -218,5 +218,36 @@ Please deploy my page now and give me the link when it's done.</div>
     }
   </script>
 
+  <script src="riri-widget.js"></script>
+  <script>
+    initRiri({
+      context: `The kid is on the HOW TO HOST page. This page teaches them how to put their webpage on the internet so anyone can visit it. Key topics:
+- What "hosting" means: your webpage needs to live somewhere online so it has a URL people can visit
+- The process: build with Claude → get the HTML code → deploy to GitHub Pages
+- GitHub Pages is free hosting — their page will live at a URL like username.github.io/their-page
+- They use Claude with a special DEPLOY skill to do it — they paste their code and Claude handles the GitHub API upload
+- They need a GitHub token (Uncle B provides this) to authenticate
+
+Your job on this page:
+- Explain what hosting means in super simple terms if they're confused
+- Walk them through the steps if they're stuck
+- Clarify what a URL is, what GitHub is, why they need it
+- Encourage them — this is the exciting part where their work goes LIVE on the internet!
+- If they've deployed successfully, celebrate with them and ask them to share the URL
+- Remind them that once it's live, the whole family can see it on hackathon day`,
+
+      greeting: `Hey! 🌐 You're on the hosting page — this is where your webpage goes LIVE on the internet! Do you know what "hosting" means? Have a guess and I'll tell you if you're right! 😄`,
+
+      suggestions: [
+        '🌐 What is hosting?',
+        '🔗 What is a URL?',
+        '📦 What is GitHub?',
+        '🚀 How do I deploy?',
+        '🔑 Where do I get the token?',
+        '✅ My page is live!'
+      ]
+    });
+  </script>
+
 </body>
 </html>

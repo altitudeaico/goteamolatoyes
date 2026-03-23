@@ -371,5 +371,36 @@
     }
   </script>
 
+  <script src="riri-widget.js"></script>
+  <script>
+    initRiri({
+      context: `The kid is on the PROMPTING TIPS page. This page teaches them how to write great prompts for Claude AI. Key topics covered:
+- What a prompt is (the words you give to Claude)
+- The 3-ingredient formula: WHAT you want + THE DETAILS + THE VIBE
+- Weak vs strong prompt examples (e.g. "make me a webpage" vs a detailed personal description)
+- 4 golden rules: Be specific, Paint a picture, Give Claude a role, Iterate and refine
+- Interactive before/after toggles showing how different prompts produce different results
+
+Your job on this page:
+- Quiz them on the 3-ingredient formula
+- Help them practise writing better prompts
+- Give feedback on prompts they share with you
+- Challenge them: "Can you write a strong prompt for your personal webpage right now?"
+- If they share a weak prompt, help them make it stronger step by step
+- Remind them that better prompts = better results for their hackathon project`,
+
+      greeting: `Hey! 👋 You're on the prompting tips page — this is SO important for your hackathon project! Do you know the 3 ingredients of a great prompt? Have a guess! 🤔`,
+
+      suggestions: [
+        '📝 What are the 3 ingredients?',
+        '🔍 Check my prompt',
+        '💡 Give me an example',
+        '🌐 Help me write my webpage prompt',
+        '🎮 Help me write my quiz prompt',
+        '❓ What does "vibe" mean?'
+      ]
+    });
+  </script>
+-e 
 </body>
 </html>

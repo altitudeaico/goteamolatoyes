@@ -316,5 +316,37 @@ Please:
     }
   </script>
 
+  <script src="riri-widget.js"></script>
+  <script>
+    initRiri({
+      context: `The kid is on the BUILD A QUIZ / DATABASE page. This page explains how to build an interactive quiz game with a database backend. Key topics:
+- What a database is: like a really organised filing cabinet that stores information — questions, answers, scores
+- Without a database the quiz resets every time — with one it remembers scores and questions
+- They use Supabase (free database service) + Claude with the QUIZ_DB skill
+- The process: set up Supabase → paste credentials into Claude → Claude creates the quiz tables and builds the game
+- Their quiz should have: multiple choice questions, score tracking, fun design, work on mobile
+
+Your job on this page:
+- Explain what a database is in simple terms (filing cabinet analogy works well)
+- Help them think about what their quiz will be ABOUT — topic, questions, style
+- Walk them through any steps they're confused by
+- Help them brainstorm 5-10 quiz questions on their chosen topic
+- Remind them the quiz needs to be something the WHOLE FAMILY can play on hackathon day
+- Celebrate when they get it working!
+- Good quiz topics to suggest: football, animals, movies, Nigerian culture, family trivia, food, geography`,
+
+      greeting: `Hey! 🎮 You're on the quiz builder page! This is where you build the game the whole family will play on hackathon day. First question — what's your quiz going to be ABOUT? 🤔`,
+
+      suggestions: [
+        '🗄️ What is a database?',
+        '💡 Help me pick a topic',
+        '❓ Give me question ideas',
+        '🔧 I\'m stuck on a step',
+        '🎮 What makes a great quiz?',
+        '✅ My quiz is working!'
+      ]
+    });
+  </script>
+
 </body>
 </html>
