@@ -514,35 +514,84 @@
     .claude-send-btn:active { transform: scale(0.9); }
     .claude-send-btn:disabled { opacity: 0.4; }
 
-    /* ── Claude Studio screen ── */
+    /* ── Claude Studio — split screen ── */
     #studioScreen {
       padding: 0 !important;
       display: flex;
       flex-direction: column;
-      height: 100vh;
-      height: 100dvh;
-      width: 100%;
-      max-width: 480px;
-    }
-    @media (min-width: 600px) {
-      #studioScreen {
-        height: 85vh;
-        border-radius: 28px;
-        overflow: hidden;
-        box-shadow: 0 24px 60px rgba(0,0,0,0.3);
-      }
+      position: fixed;
+      inset: 0;
+      z-index: 150;
+      background: #0f0e1a;
     }
     .studio-header {
-      background: linear-gradient(135deg, #1e1b4b, #312e81);
-      padding: 14px 16px;
+      background: #1a1730;
+      padding: 12px 16px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
+      flex-shrink: 0;
+      border-bottom: 1px solid #312e81;
+    }
+    .studio-back {
+      background: rgba(255,255,255,0.1);
+      border: none; color: white;
+      width: 34px; height: 34px;
+      border-radius: 50%; font-size: 16px;
+      cursor: pointer; font-family:'Nunito',sans-serif;
       flex-shrink: 0;
     }
-    .studio-back { background: rgba(255,255,255,0.15); border: none; color: white; width: 34px; height: 34px; border-radius: 50%; font-size: 16px; cursor: pointer; font-family:'Nunito',sans-serif; }
-    .studio-title strong { display: block; color: white; font-size: 16px; font-weight: 900; }
-    .studio-title span { color: rgba(255,255,255,0.7); font-size: 12px; }
+    .studio-title { flex: 1; }
+    .studio-title strong { display: block; color: white; font-size: 15px; font-weight: 900; }
+    .studio-title span { color: rgba(255,255,255,0.5); font-size: 11px; }
+
+    /* Mobile toggle */
+    .studio-toggle {
+      display: flex;
+      background: rgba(255,255,255,0.08);
+      border-radius: 100px;
+      padding: 3px;
+      gap: 2px;
+    }
+    .studio-toggle-btn {
+      background: none; border: none;
+      color: rgba(255,255,255,0.5);
+      padding: 5px 12px;
+      border-radius: 100px;
+      font-size: 12px; font-weight: 800;
+      cursor: pointer; font-family: 'Nunito', sans-serif;
+      white-space: nowrap;
+    }
+    .studio-toggle-btn.active {
+      background: #4f46e5;
+      color: white;
+    }
+    @media (min-width: 768px) {
+      .studio-toggle { display: none; }
+    }
+
+    /* Body — split on desktop, stacked on mobile */
+    .studio-body {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* Chat pane */
+    .studio-chat-pane {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    @media (min-width: 768px) {
+      .studio-chat-pane {
+        width: 380px;
+        border-right: 1px solid #312e81;
+      }
+    }
+
     .studio-messages {
       flex: 1; overflow-y: auto;
       padding: 16px;
@@ -552,25 +601,20 @@
     .studio-msg { display: flex; gap: 8px; align-items: flex-end; }
     .studio-msg.user { flex-direction: row-reverse; }
     .studio-bubble {
-      max-width: 80%;
+      max-width: 85%;
       padding: 10px 14px;
       border-radius: 18px;
-      font-size: 14px;
-      line-height: 1.6;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 600;
-      white-space: pre-wrap;
+      font-size: 14px; line-height: 1.6;
+      font-family: 'Nunito', sans-serif; font-weight: 600;
       word-break: break-word;
     }
     .studio-msg:not(.user) .studio-bubble {
-      background: #1e1b4b;
-      color: #e0e7ff;
+      background: #1e1b4b; color: #e0e7ff;
       border-bottom-left-radius: 4px;
     }
     .studio-msg.user .studio-bubble {
       background: linear-gradient(135deg, #4f46e5, #7c3aed);
-      color: white;
-      border-bottom-right-radius: 4px;
+      color: white; border-bottom-right-radius: 4px;
     }
     .studio-avatar {
       width: 28px; height: 28px; border-radius: 50%;
@@ -587,12 +631,10 @@
     }
     .studio-input {
       flex: 1;
-      background: #2d2a4a;
-      border: 2px solid #4f46e5;
+      background: #2d2a4a; border: 2px solid #4f46e5;
       border-radius: 100px;
       padding: 10px 16px;
-      font-family: 'Nunito', sans-serif;
-      font-size: 14px; font-weight: 600;
+      font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 600;
       color: white; outline: none;
     }
     .studio-input:focus { border-color: #818cf8; }
@@ -606,25 +648,72 @@
     }
     .studio-send:active { transform: scale(0.9); }
     .studio-send:disabled { opacity: 0.4; }
-    .studio-empty {
-      text-align: center; padding: 40px 20px; color: #4f46e5;
-    }
-    .studio-empty .big { font-size: 52px; margin-bottom: 12px; }
-    .studio-empty p { color: #6b7280; font-size: 15px; line-height: 1.6; }
     .studio-suggestions {
-      padding: 10px 14px 6px;
+      padding: 10px 12px 6px;
       background: #1a1730;
-      display: flex; gap: 8px; flex-wrap: wrap;
-      flex-shrink: 0;
+      border-bottom: 1px solid #312e81;
+      display: flex; gap: 8px; flex-wrap: nowrap;
+      overflow-x: auto; flex-shrink: 0;
+      scrollbar-width: none;
     }
+    .studio-suggestions::-webkit-scrollbar { display: none; }
     .studio-suggestion {
       background: #2d2a4a; border: 1.5px solid #4f46e5;
       color: #a5b4fc; border-radius: 100px;
       padding: 6px 14px; font-size: 13px; font-weight: 800;
       cursor: pointer; font-family: 'Nunito', sans-serif;
-      white-space: nowrap;
+      white-space: nowrap; flex-shrink: 0;
     }
-    .studio-suggestion:hover { background: #3730a3; }
+    .studio-suggestion:hover { background: #3730a3; color: white; }
+    .studio-empty {
+      text-align: center; padding: 40px 20px; color: #4f46e5;
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+    .studio-empty .big { font-size: 52px; margin-bottom: 12px; }
+    .studio-empty p { color: #4f46e5; font-size: 15px; line-height: 1.6; opacity: 0.7; }
+
+    /* Preview pane */
+    .studio-preview-pane {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      background: #f9fafb;
+      overflow: hidden;
+    }
+    @media (min-width: 768px) {
+      .studio-preview-pane { display: flex; }
+    }
+    .studio-preview-pane.mobile-visible { display: flex !important; }
+    .studio-chat-pane.mobile-hidden { display: none !important; }
+
+    .preview-toolbar {
+      background: white;
+      padding: 10px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 2px solid #e5e7eb;
+      flex-shrink: 0;
+    }
+    .preview-btn {
+      background: #f3f4f6; border: 2px solid #e5e7eb;
+      border-radius: 100px; padding: 6px 14px;
+      font-size: 13px; font-weight: 800;
+      cursor: pointer; font-family: 'Nunito', sans-serif;
+      color: #374151;
+    }
+    .preview-btn:hover { background: #e5e7eb; }
+    .preview-empty {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 40px;
+      color: #9ca3af;
+    }
+    .preview-empty p { font-size: 15px; line-height: 1.6; font-family: 'Nunito', sans-serif; font-weight: 700; }
+    .preview-frame {
+      flex: 1; border: none; display: none;
+      width: 100%; background: white;
+    }
+    .preview-frame.visible { display: block; }
 
     /* ── Markdown rendering (shared) ── */
     .md-body { font-size: 14px; line-height: 1.6; }
@@ -1145,30 +1234,63 @@
 
   <!-- SCREEN: Claude Studio -->
   <div id="studioScreen" class="hide">
+
+    <!-- Top bar -->
     <div class="studio-header">
       <button class="studio-back" onclick="showHome()">←</button>
       <div class="studio-title">
         <strong>🤖 Claude Studio</strong>
-        <span>Your AI workshop — build anything!</span>
+        <span id="studioSubtitle">Your AI workshop</span>
+      </div>
+      <!-- Mobile: toggle chat/preview -->
+      <div class="studio-toggle" id="studioToggle">
+        <button class="studio-toggle-btn active" id="toggleChatBtn" onclick="studioShowPane('chat')">💬 Chat</button>
+        <button class="studio-toggle-btn" id="togglePreviewBtn" onclick="studioShowPane('preview')">👁️ Preview</button>
       </div>
     </div>
-    <div class="studio-suggestions" id="studioSuggestions">
-      <button class="studio-suggestion" onclick="studioSuggest('Make me a fun webpage about me!')">🌐 Webpage</button>
-      <button class="studio-suggestion" onclick="studioSuggest('Write me a short adventure story where I discover a magical power')">📖 Story</button>
-      <button class="studio-suggestion" onclick="studioSuggest('Make a 5-question quiz about ')">🎮 Quiz</button>
-      <button class="studio-suggestion" onclick="studioSuggest('Explain how the internet works in simple words for a kid')">🧠 Learn</button>
-      <button class="studio-suggestion" onclick="studioSuggest('Make me a simple clicker game in HTML')">🕹️ Game</button>
-    </div>
-    <div class="studio-messages" id="studioMessages">
-      <div class="studio-empty">
-        <div class="big">🤖</div>
-        <p>This is your Claude Studio.<br>Ask Claude to build anything — a webpage, a story, a quiz, a game. This is your workshop!</p>
+
+    <!-- Split body -->
+    <div class="studio-body">
+
+      <!-- Left: chat -->
+      <div class="studio-chat-pane" id="studioChatPane">
+        <div class="studio-suggestions" id="studioSuggestions">
+          <button class="studio-suggestion" onclick="studioSuggest('Make me a fun personal webpage. My name is [YOUR NAME], my favourite colour is [COLOUR] and I love [HOBBY]. Make it colourful with animations.')">🌐 My Webpage</button>
+          <button class="studio-suggestion" onclick="studioSuggest('Write me a short exciting adventure story where I discover a magical power. Include a plot twist at the end.')">📖 Story</button>
+          <button class="studio-suggestion" onclick="studioSuggest('Make a fun 5-question multiple choice quiz about ')">🎮 Quiz</button>
+          <button class="studio-suggestion" onclick="studioSuggest('Make me a simple clicker game in HTML. Every click earns a point. Add a high score and celebrations every 10 points.')">🕹️ Clicker Game</button>
+          <button class="studio-suggestion" onclick="studioSuggest('Explain how [SOMETHING] works in simple words with fun emojis. Keep it short.')">🧠 Explain it</button>
+        </div>
+        <div class="studio-messages" id="studioMessages">
+          <div class="studio-empty">
+            <div class="big">🤖</div>
+            <p>Ask Claude to build anything!<br>A webpage, story, quiz, or game.<br>It appears live on the right ✨</p>
+          </div>
+        </div>
+        <div class="studio-input-row">
+          <input class="studio-input" id="studioInput" placeholder="Ask Claude to build something..."
+            onkeydown="if(event.key==='Enter' && !event.shiftKey){ event.preventDefault(); sendStudio(); }">
+          <button class="studio-send" id="studioSend" onclick="sendStudio()">➤</button>
+        </div>
       </div>
-    </div>
-    <div class="studio-input-row">
-      <input class="studio-input" id="studioInput" placeholder="Ask Claude to build something..."
-        onkeydown="if(event.key==='Enter' && !event.shiftKey){ event.preventDefault(); sendStudio(); }">
-      <button class="studio-send" id="studioSend" onclick="sendStudio()">➤</button>
+
+      <!-- Right: live preview -->
+      <div class="studio-preview-pane" id="studioPreviewPane">
+        <div class="preview-toolbar">
+          <span id="previewLabel" style="font-size:13px; font-weight:800; color:#6b7280;">No preview yet</span>
+          <div style="display:flex; gap:8px;">
+            <button class="preview-btn" id="previewCopyBtn" onclick="copyPreviewCode()" style="display:none;">📋 Copy Code</button>
+            <button class="preview-btn" id="previewDeployBtn" onclick="deployPreview()" style="display:none;">🚀 Deploy</button>
+            <button class="preview-btn" id="previewRefreshBtn" onclick="refreshPreview()" style="display:none;">🔄</button>
+          </div>
+        </div>
+        <div class="preview-empty" id="previewEmpty">
+          <div style="font-size:52px; margin-bottom:12px;">✨</div>
+          <p>Your creation will appear here<br>as Claude builds it</p>
+        </div>
+        <iframe id="previewFrame" class="preview-frame" sandbox="allow-scripts allow-same-origin"></iframe>
+      </div>
+
     </div>
   </div>
 
@@ -3059,6 +3181,82 @@ Keep explanations short and clear. Use emojis occasionally. Never be negative or
   // ── Claude Studio ──
 
   let studioHistory = [];
+  let currentPreviewCode = '';
+
+  function studioShowPane(pane) {
+    const chat = document.getElementById('studioChatPane');
+    const preview = document.getElementById('studioPreviewPane');
+    const chatBtn = document.getElementById('toggleChatBtn');
+    const previewBtn = document.getElementById('togglePreviewBtn');
+    if (pane === 'chat') {
+      chat.classList.remove('mobile-hidden');
+      preview.classList.remove('mobile-visible');
+      chatBtn.classList.add('active');
+      previewBtn.classList.remove('active');
+    } else {
+      chat.classList.add('mobile-hidden');
+      preview.classList.add('mobile-visible');
+      previewBtn.classList.add('active');
+      chatBtn.classList.remove('active');
+    }
+  }
+
+  function extractHTML(text) {
+    // Try to find a full HTML document
+    const fullMatch = text.match(/<!DOCTYPE[\s\S]*<\/html>/i) ||
+                      text.match(/<html[\s\S]*<\/html>/i);
+    if (fullMatch) return fullMatch[0];
+    // Try code block
+    const codeMatch = text.match(/```(?:html)?\n?([\s\S]*?)```/i);
+    if (codeMatch) {
+      const inner = codeMatch[1].trim();
+      if (inner.includes('<') && inner.includes('>')) return inner;
+    }
+    return null;
+  }
+
+  function renderPreview(html) {
+    currentPreviewCode = html;
+    const frame = document.getElementById('previewFrame');
+    const empty = document.getElementById('previewEmpty');
+    const label = document.getElementById('previewLabel');
+    const copyBtn = document.getElementById('previewCopyBtn');
+    const deployBtn = document.getElementById('previewDeployBtn');
+    const refreshBtn = document.getElementById('previewRefreshBtn');
+
+    empty.style.display = 'none';
+    frame.classList.add('visible');
+    frame.srcdoc = html;
+    label.textContent = '✅ Live Preview';
+    label.style.color = '#22c55e';
+    copyBtn.style.display = 'inline-block';
+    deployBtn.style.display = 'inline-block';
+    refreshBtn.style.display = 'inline-block';
+
+    // On mobile, auto-switch to preview when something renders
+    if (window.innerWidth < 768) {
+      studioShowPane('preview');
+    }
+  }
+
+  function refreshPreview() {
+    if (currentPreviewCode) renderPreview(currentPreviewCode);
+  }
+
+  function copyPreviewCode() {
+    navigator.clipboard.writeText(currentPreviewCode).then(() => {
+      const btn = document.getElementById('previewCopyBtn');
+      btn.textContent = '✅ Copied!';
+      setTimeout(() => btn.textContent = '📋 Copy Code', 2000);
+    });
+  }
+
+  function deployPreview() {
+    // Pre-fill the hosting guide flow — for now open a toast with instructions
+    toast('To deploy: go to the How to Host guide! 🚀');
+    // Store the code so hosting guide can pick it up
+    localStorage.setItem('studioDeployCode', currentPreviewCode);
+  }
 
   function addStudioMsg(from, text) {
     const msgs = document.getElementById('studioMessages');
@@ -3075,6 +3273,12 @@ Keep explanations short and clear. Use emojis occasionally. Never be negative or
     div.innerHTML = `${avatarHtml}<div class="studio-bubble${from === 'claude' ? ' md-body' : ''}">${rendered}</div>`;
     msgs.appendChild(div);
     msgs.scrollTop = msgs.scrollHeight;
+
+    // Auto-render any HTML Claude returns
+    if (from === 'claude') {
+      const html = extractHTML(text);
+      if (html) renderPreview(html);
+    }
   }
 
   function showStudioTyping() {
