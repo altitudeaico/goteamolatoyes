@@ -1999,6 +1999,8 @@ Make it exciting and something our whole family will enjoy playing!`
       }
     }
   }
+
+  function openKickoff() {
     const frame = document.getElementById('kickoffFrame');
     if (!frame.src || frame.src === window.location.href || !frame.src.includes('kickoff')) {
       frame.src = 'kickoff.html?embedded=1';
