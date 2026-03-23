@@ -801,6 +801,18 @@
     .claude-msg-bubble.md-body .md-code-block { background: rgba(0,0,0,0.4); }
     .claude-msg-bubble.md-body .md-inline-code { background: rgba(0,0,0,0.3); }
 
+    /* Riri bubble markdown — dark text on white background */
+    .riri-bubble.md-body { color: #1f2937; }
+    .riri-bubble.md-body .md-h2,
+    .riri-bubble.md-body .md-h3,
+    .riri-bubble.md-body .md-h4 { color: #1f2937; }
+    .riri-bubble.md-body .md-code-block { background: #f3f4f6; border: 1px solid #e5e7eb; }
+    .riri-bubble.md-body .md-code-lang { background: #e5e7eb; color: #4b5563; }
+    .riri-bubble.md-body .md-code-block pre { color: #1f2937; }
+    .riri-bubble.md-body .md-inline-code { background: #f3f4f6; color: #4f46e5; }
+    .riri-bubble.md-body .md-copy-btn { color: #9ca3af; border-top-color: #e5e7eb; }
+    .riri-bubble.md-body .md-ul { color: #374151; }
+
     /* Parent kid card */
     .parent-kid-card {
       background: rgba(255,255,255,0.12);
@@ -3703,9 +3715,12 @@ Keep responses SHORT (2-4 sentences usually). Only go longer if they really need
     const msgs = document.getElementById('ririMessages');
     const div = document.createElement('div');
     div.className = 'riri-msg ' + from;
+    const rendered = from === 'riri'
+      ? renderMarkdown(text)
+      : text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     div.innerHTML = from === 'riri'
-      ? `<div class="riri-msg-avatar">👧🏾</div><div class="riri-bubble">${text}</div>`
-      : `<div class="riri-bubble">${text}</div>`;
+      ? `<div class="riri-msg-avatar">👧🏾</div><div class="riri-bubble md-body">${rendered}</div>`
+      : `<div class="riri-bubble">${rendered}</div>`;
     msgs.appendChild(div);
     msgs.scrollTop = msgs.scrollHeight;
   }
