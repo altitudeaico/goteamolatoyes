@@ -601,6 +601,14 @@
 
   <script src="riri-widget.js"></script>
   <script>
+    const isEmbedded = new URLSearchParams(window.location.search).get('embedded') === '1';
+
+    // Hide elements that duplicate the parent app's chrome when embedded
+    if (isEmbedded) {
+      document.querySelector('.back-bar').style.display = 'none';
+      document.querySelector('.scroll-hint').style.display = 'none';
+    }
+
     // Stars
     const container = document.getElementById('stars');
     for (let i = 0; i < 80; i++) {
@@ -610,8 +618,10 @@
       container.appendChild(star);
     }
 
-    initRiri({
-      context: `The kid is on the KICKOFF RECAP page. This page covers:
+    // Only show Riri on standalone page, not when embedded (parent app has its own Riri)
+    if (!isEmbedded) {
+      initRiri({
+        context: `The kid is on the KICKOFF RECAP page. This page covers:
 - The Code Quest kickoff session that happened on 22nd March 2026
 - The full session recording (Google Meet video, ~70 minutes)
 - Key highlights: whisper scream opener, superhero analogies (Green Lantern, Iron Man, Riri Williams, Shuri), defining AI and prompts, Arthur's famous "coding play date" quote, Elsie's Enish restaurant story, the Sunday school coincidence, the teams being picked (Girls: Elsie/Hannah/Sophia, Boys: Theodore/Ezekiel/Arthur), the live Claude demo, the hackathon date (4th April 6:30pm)
@@ -624,17 +634,18 @@ Your job on this page:
 - Remind them of the hackathon date and what they need to build
 - Make it fun — reference the funny moments like Arthur's quote or the whisper scream`,
 
-      greeting: `Hey! 👋 Welcome to the kickoff recap! Have you had a chance to watch the video yet? 🎬 Or if you were in the session — what's the one thing you remember most from it?`,
+        greeting: `Hey! 👋 Welcome to the kickoff recap! Have you had a chance to watch the video yet? 🎬 Or if you were in the session — what's the one thing you remember most from it?`,
 
-      suggestions: [
-        '🤖 What is AI again?',
-        '💬 What is a prompt?',
-        '🦸 Tell me about the superheroes',
-        '📅 When is the hackathon?',
-        '🏆 What do we have to build?',
-        '😂 What did Arthur say?'
-      ]
-    });
+        suggestions: [
+          '🤖 What is AI again?',
+          '💬 What is a prompt?',
+          '🦸 Tell me about the superheroes',
+          '📅 When is the hackathon?',
+          '🏆 What do we have to build?',
+          '😂 What did Arthur say?'
+        ]
+      });
+    }
   </script>
 
 </body>
