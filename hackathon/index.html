@@ -34,7 +34,7 @@
     }
 
     /* App shell — caps width nicely on desktop */
-    body > div:not(.toast):not(.xp):not(#confettiContainer):not(#modalContainer):not(#ririPanel):not(#chat):not(#studioScreen):not(#kickoffScreen):not(#teamDash):not(#teamPill) {
+    body > div:not(.toast):not(.xp):not(#confettiContainer):not(#modalContainer):not(#ririPanel):not(#chat):not(#studioScreen):not(#kickoffScreen):not(#teamDash):not(#teamPill):not(#profilePill):not(#profileDash) {
       width: 100%;
       max-width: 480px;
       display: flex;
@@ -49,7 +49,7 @@
         padding: 40px 20px;
         background: linear-gradient(160deg, #3730a3 0%, #6d28d9 100%);
       }
-      body > div:not(.toast):not(.xp):not(#confettiContainer):not(#modalContainer):not(#ririPanel):not(#chat):not(#studioScreen):not(#kickoffScreen):not(#teamDash):not(#teamPill) {
+      body > div:not(.toast):not(.xp):not(#confettiContainer):not(#modalContainer):not(#ririPanel):not(#chat):not(#studioScreen):not(#kickoffScreen):not(#teamDash):not(#teamPill):not(#profilePill):not(#profileDash) {
         background: rgba(255,255,255,0.07);
         border-radius: 28px;
         padding: 40px 32px;
@@ -988,6 +988,31 @@
       color: white;
     }
     
+    /* ── Profile pill (top-right, below XP) ── */
+    .profile-pill {
+      position: fixed;
+      top: 70px;
+      right: 16px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      border: 1.5px solid rgba(255,255,255,0.25);
+      border-radius: 100px;
+      padding: 6px 14px 6px 8px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 13px;
+      color: white;
+      cursor: pointer;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s, transform 0.1s;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    }
+    .profile-pill:hover { background: rgba(255,255,255,0.25); transform: scale(1.03); }
+    .profile-pill:active { transform: scale(0.97); }
+
     /* ── Team pill (top-left, mirrors XP pill) ── */
     .team-pill {
       position: fixed;
@@ -1189,6 +1214,10 @@
 <body>
 
   <div class="xp hide" id="xpDisplay">⭐ 0</div>
+  <div class="profile-pill hide" id="profilePill" onclick="openProfileDash()">
+    <div id="profilePillAvatar" style="font-size:18px; line-height:1;">🦸</div>
+    <span id="profilePillName">Me</span>
+  </div>
   <div class="team-pill hide" id="teamPill" onclick="openTeamDash()">
     <span id="teamPillIcon">👥</span>
     <span id="teamPillName">My Team</span>
@@ -1720,10 +1749,11 @@ Make it exciting and something our whole family will enjoy playing!`
     document.getElementById('chat').classList.add('hide');
     document.getElementById('kickoffScreen').classList.add('hide');
     document.getElementById('teamDash').classList.add('hide');
+    document.getElementById('profileDash').classList.add('hide');
     document.querySelectorAll('body > div').forEach(d => {
       if (!d.classList.contains('toast') && !d.classList.contains('xp')
         && d.id !== 'confettiContainer' && d.id !== 'modalContainer'
-        && d.id !== 'ririPanel' && d.id !== 'teamPill') {
+        && d.id !== 'ririPanel' && d.id !== 'teamPill' && d.id !== 'profilePill') {
         d.classList.add('hide');
       }
     });
@@ -2029,6 +2059,11 @@ Make it exciting and something our whole family will enjoy playing!`
     document.getElementById('userName').textContent = user.display_name;
     // Render avatar (emoji or custom SVG)
     renderAvatar(user.avatar || '🦸', document.getElementById('homeAvatar'));
+    // Profile pill
+    const pill = document.getElementById('profilePill');
+    pill.classList.remove('hide');
+    document.getElementById('profilePillName').textContent = user.display_name.split(' ')[0];
+    renderAvatar(user.avatar || '🦸', document.getElementById('profilePillAvatar'));
     // Load team badge async
     loadUserTeam();
     updateKickoffBanner();
@@ -3254,6 +3289,68 @@ Make it exciting and something our whole family will enjoy playing!`
 
 </div>
 
+<!-- SCREEN: Profile Dashboard -->
+<div id="profileDash" class="hide" style="
+  position:fixed; inset:0; z-index:150;
+  display:flex; flex-direction:column;
+  background:#0f0e1a; overflow-y:auto;">
+
+  <!-- Header -->
+  <div style="display:flex; align-items:center; gap:12px; padding:14px 16px; background:rgba(255,255,255,0.04); border-bottom:1px solid rgba(255,255,255,0.08); flex-shrink:0;">
+    <button onclick="closeProfileDash()" style="background:rgba(255,255,255,0.1); border:none; color:white; width:36px; height:36px; border-radius:50%; font-size:17px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; flex-shrink:0;">←</button>
+    <div style="font-weight:900; font-size:16px; color:white; font-family:'Nunito',sans-serif;">My Profile</div>
+  </div>
+
+  <!-- Avatar + name hero -->
+  <div style="padding:32px 20px 20px; display:flex; flex-direction:column; align-items:center; gap:12px; flex-shrink:0;">
+    <div id="profileDashAvatar" style="width:96px; height:96px; border-radius:50%; background:rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; font-size:60px; border:3px solid rgba(255,255,255,0.2); box-shadow:0 8px 32px rgba(0,0,0,0.3); cursor:pointer;" onclick="closeProfileDash(); goChangeAvatar();" title="Change avatar">🦸</div>
+    <div style="text-align:center;">
+      <div id="profileDashName" style="font-size:24px; font-weight:900; color:white; font-family:'Nunito',sans-serif;"></div>
+      <div id="profileDashTeam" style="font-size:14px; color:rgba(255,255,255,0.55); margin-top:4px; font-family:'Nunito',sans-serif;"></div>
+    </div>
+    <button onclick="closeProfileDash(); goChangeAvatar();" style="background:rgba(255,255,255,0.1); border:1.5px solid rgba(255,255,255,0.2); color:white; border-radius:100px; padding:8px 20px; font-size:13px; font-weight:800; cursor:pointer; font-family:'Nunito',sans-serif;">✏️ Change Avatar</button>
+  </div>
+
+  <!-- XP + stats -->
+  <div style="margin:0 16px 16px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+    <div style="background:rgba(251,191,36,0.12); border:1.5px solid rgba(251,191,36,0.25); border-radius:16px; padding:14px; text-align:center;">
+      <div id="profileDashXP" style="font-size:22px; font-weight:900; color:#fbbf24; font-family:'Nunito',sans-serif;">0</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.5); font-weight:800; text-transform:uppercase; letter-spacing:1px; font-family:'Nunito',sans-serif;">XP</div>
+    </div>
+    <div style="background:rgba(99,102,241,0.15); border:1.5px solid rgba(99,102,241,0.3); border-radius:16px; padding:14px; text-align:center;">
+      <div id="profileDashLevel" style="font-size:22px; font-weight:900; color:#a5b4fc; font-family:'Nunito',sans-serif;">0</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.5); font-weight:800; text-transform:uppercase; letter-spacing:1px; font-family:'Nunito',sans-serif;">Levels</div>
+    </div>
+    <div style="background:rgba(34,197,94,0.12); border:1.5px solid rgba(34,197,94,0.25); border-radius:16px; padding:14px; text-align:center;">
+      <div id="profileDashRank" style="font-size:22px; font-weight:900; color:#4ade80; font-family:'Nunito',sans-serif;">#-</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.5); font-weight:800; text-transform:uppercase; letter-spacing:1px; font-family:'Nunito',sans-serif;">Rank</div>
+    </div>
+  </div>
+
+  <!-- Level progress -->
+  <div style="margin:0 16px 16px;">
+    <p style="font-size:12px; font-weight:900; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:10px; font-family:'Nunito',sans-serif;">Level Progress</p>
+    <div id="profileLevelProgress" style="display:flex; flex-direction:column; gap:8px;"></div>
+  </div>
+
+  <!-- Actions -->
+  <div style="margin:0 16px 32px; display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+    <button class="team-action-btn" onclick="closeProfileDash(); openChat('everyone');" style="background:linear-gradient(135deg,#4f46e5,#7c3aed);">
+      <span style="font-size:22px;">💬</span><span>Chat</span>
+    </button>
+    <button class="team-action-btn" onclick="closeProfileDash(); go('leaders');" style="background:linear-gradient(135deg,#d97706,#f59e0b);">
+      <span style="font-size:22px;">🏆</span><span>Leaderboard</span>
+    </button>
+    <button class="team-action-btn" onclick="closeProfileDash(); openFreeStudio();" style="background:linear-gradient(135deg,#7c3aed,#a855f7);">
+      <span style="font-size:22px;">🤖</span><span>Studio</span>
+    </button>
+    <button class="team-action-btn" onclick="closeProfileDash(); logOut();" style="background:rgba(239,68,68,0.2); border:1.5px solid rgba(239,68,68,0.4);">
+      <span style="font-size:22px;">🚪</span><span style="color:#fca5a5;">Log Out</span>
+    </button>
+  </div>
+
+</div>
+
 <!-- SCREEN: Team Dashboard -->
 <div id="teamDash" class="hide" style="
   position:fixed; inset:0; z-index:150;
@@ -3804,6 +3901,63 @@ Keep explanations short and clear. Use emojis occasionally. Never be negative or
     }
     document.getElementById('inlineClaudeSend').disabled = false;
     document.getElementById('inlineClaudeInput').focus();
+  }
+
+  // ── Profile Dashboard ───────────────────────────
+
+  async function openProfileDash() {
+    document.querySelectorAll('body > div').forEach(d => {
+      if (!d.classList.contains('toast') && !d.classList.contains('xp')
+        && d.id !== 'confettiContainer' && d.id !== 'modalContainer'
+        && d.id !== 'ririPanel' && d.id !== 'profileDash'
+        && d.id !== 'teamPill' && d.id !== 'profilePill') {
+        d.classList.add('hide');
+      }
+    });
+    document.getElementById('profileDash').classList.remove('hide');
+
+    // Avatar
+    renderAvatar(user.avatar || '🦸', document.getElementById('profileDashAvatar'));
+    document.getElementById('profileDashName').textContent = user.display_name;
+    document.getElementById('profileDashTeam').textContent = user.team
+      ? `${user.team.icon} ${user.team.name}`
+      : 'No team yet';
+    document.getElementById('profileDashXP').textContent = `⭐ ${user.xp || 0}`;
+    const levelsDone = Math.max(0, (user.current_mission || 1) - 1);
+    document.getElementById('profileDashLevel').textContent = levelsDone;
+
+    // Level progress bars
+    const prog = document.getElementById('profileLevelProgress');
+    prog.innerHTML = LEVELS.filter(l => l.taskType === 'solo').map(l => {
+      const done = (user.current_mission || 1) > l.id;
+      const current = (user.current_mission || 1) === l.id;
+      return `
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="font-size:18px; width:24px; text-align:center;">${done ? '✅' : current ? l.icon : '🔒'}</div>
+          <div style="flex:1;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:3px;">
+              <span style="font-size:13px; font-weight:800; color:${done ? 'rgba(255,255,255,0.9)' : current ? 'white' : 'rgba(255,255,255,0.4)'}; font-family:'Nunito',sans-serif;">${l.name}</span>
+              <span style="font-size:12px; font-weight:800; color:#fbbf24; font-family:'Nunito',sans-serif;">${done ? '+' + l.xp + ' XP ✓' : current ? 'In progress' : 'Locked'}</span>
+            </div>
+            <div style="background:rgba(255,255,255,0.08); border-radius:100px; height:6px;">
+              <div style="height:100%; width:${done ? '100' : current ? '50' : '0'}%; background:${done ? 'linear-gradient(90deg,#22c55e,#4ade80)' : 'linear-gradient(90deg,#4f46e5,#7c3aed)'}; border-radius:100px; transition:width 0.6s;"></div>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+
+    // Rank — fetch leaderboard position
+    try {
+      const { data } = await db.from('hackathon_users')
+        .select('id').eq('role', 'kid').order('xp', { ascending: false });
+      const rank = (data || []).findIndex(p => p.id === user.id) + 1;
+      document.getElementById('profileDashRank').textContent = rank ? `#${rank}` : '#-';
+    } catch(e) { /* silent */ }
+  }
+
+  function closeProfileDash() {
+    document.getElementById('profileDash').classList.add('hide');
+    showHome();
   }
 
   // ── Team Dashboard ──────────────────────────────
