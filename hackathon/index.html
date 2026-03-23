@@ -1820,15 +1820,16 @@ Keep responses SHORT (2-4 sentences usually). Only go longer if they really need
         })
       });
       const data = await res.json();
+      console.log('Riri response:', res.status, JSON.stringify(data));
       const reply = data.content?.[0]?.text || "Hmm, I couldn't think of a reply! Try asking me again 😅";
       removeRiriTyping();
       addRiriMessage('riri', reply);
       ririHistory.push({ role: 'assistant', content: reply });
-      // Keep history manageable
       if (ririHistory.length > 20) ririHistory = ririHistory.slice(-20);
     } catch(e) {
+      console.error('Riri error:', e);
       removeRiriTyping();
-      addRiriMessage('riri', "Oops — I lost my connection for a second! Try again? 😅");
+      addRiriMessage('riri', `Error: ${e.message}`);
     }
 
     sendBtn.disabled = false;
