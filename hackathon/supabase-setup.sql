@@ -41,12 +41,28 @@ CREATE TABLE IF NOT EXISTS hackathon_submissions (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 4. ENABLE RLS (Row Level Security)
+-- 4. MESSAGES TABLE
+-- channel: 'everyone', 'team:<team_id>', or 'dm:<user_id_a>:<user_id_b>' (sorted)
+CREATE TABLE IF NOT EXISTS hackathon_messages (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  channel TEXT NOT NULL,
+  sender_id UUID REFERENCES hackathon_users(id),
+  sender_name TEXT NOT NULL,
+  sender_avatar TEXT NOT NULL,
+  body TEXT NOT NULL,
+  reactions JSONB DEFAULT '{}'::jsonb,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_messages_channel ON hackathon_messages(channel, created_at DESC);
+
+-- 5. ENABLE RLS
 ALTER TABLE hackathon_users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE hackathon_teams ENABLE ROW LEVEL SECURITY;
 ALTER TABLE hackathon_submissions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE hackathon_messages ENABLE ROW LEVEL SECURITY;
 
--- 5. CREATE POLICIES (Allow all for simplicity - adjust for production)
+-- 6. CREATE POLICIES
 CREATE POLICY "Allow all access to hackathon_users" ON hackathon_users
   FOR ALL TO anon USING (true) WITH CHECK (true);
 
@@ -56,7 +72,13 @@ CREATE POLICY "Allow all access to hackathon_teams" ON hackathon_teams
 CREATE POLICY "Allow all access to hackathon_submissions" ON hackathon_submissions
   FOR ALL TO anon USING (true) WITH CHECK (true);
 
--- 6. CREATE INDEXES
+CREATE POLICY "Allow all access to hackathon_messages" ON hackathon_messages
+  FOR ALL TO anon USING (true) WITH CHECK (true);
+
+-- 7. ENABLE REALTIME on messages
+ALTER PUBLICATION supabase_realtime ADD TABLE hackathon_messages;
+
+-- 8. CREATE INDEXES
 CREATE INDEX IF NOT EXISTS idx_hackathon_users_xp ON hackathon_users(xp DESC);
 CREATE INDEX IF NOT EXISTS idx_hackathon_users_name ON hackathon_users(name);
 CREATE INDEX IF NOT EXISTS idx_hackathon_teams_code ON hackathon_teams(code);

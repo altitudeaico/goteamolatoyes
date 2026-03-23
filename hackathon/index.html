@@ -658,6 +658,10 @@
     <div class="level-list" id="levelList"></div>
     <div style="display:flex; gap:10px; justify-content:center; margin-top:15px; flex-wrap:wrap;">
       <button class="btn btn-small" onclick="go('leaders')">🏆 Leaderboard</button>
+      <button class="btn btn-small" onclick="openChat('everyone')" style="position:relative;">
+        💬 Chat
+        <span id="chatUnreadBadge" style="display:none; position:absolute; top:-6px; right:-6px; background:#ef4444; color:white; border-radius:50%; width:18px; height:18px; font-size:11px; font-weight:900; align-items:center; justify-content:center;">0</span>
+      </button>
       <button class="btn btn-small" id="joinTeamBtn" onclick="go('joinTeam')" style="display:none;">👥 Join Team</button>
       <a href="prompts.html" class="btn btn-small" style="text-decoration:none;">💬 Prompting Tips</a>
       <a href="hosting.html" class="btn btn-small" style="text-decoration:none;">🌐 How to Host</a>
@@ -953,6 +957,8 @@ Make it colorful and fun!`
     
     user = data;
     localStorage.setItem('cq', JSON.stringify(user));
+    subscribeToUnreadNotifications();
+    updateUnreadBadges();
     showHome();
   }
 
@@ -1396,6 +1402,8 @@ Make it colorful and fun!`
       if (data) {
         user = data;
         localStorage.setItem('cq', JSON.stringify(user));
+        subscribeToUnreadNotifications();
+        updateUnreadBadges();
         showHome();
       } else {
         localStorage.removeItem('cq');
@@ -1404,11 +1412,550 @@ Make it colorful and fun!`
   }
 
   init();
+
+  // ── CHAT ────────────────────────────────────────
+
+  const EMOJI_REACTIONS = ['❤️','😂','🔥','👍','🎉','😮','💪','🏆'];
+  let chatChannel = 'everyone';
+  let chatSubscription = null;
+  let allUsers = [];
+  let unreadCounts = {};
+  let lastSeenKey = 'cq_lastseen';
+  let lastSeen = JSON.parse(localStorage.getItem(lastSeenKey) || '{}');
+
+  function dmChannel(otherId) {
+    const ids = [user.id, otherId].sort();
+    return `dm:${ids[0]}:${ids[1]}`;
+  }
+
+  function saveLastSeen(channel) {
+    lastSeen[channel] = new Date().toISOString();
+    localStorage.setItem(lastSeenKey, JSON.stringify(lastSeen));
+  }
+
+  async function openChat(channel) {
+    chatChannel = channel;
+    document.getElementById('chatTabs').style.display = 'flex';
+    document.getElementById('chatInputRow').style.display = 'flex';
+    document.getElementById('chatBody').className = 'chat-messages';
+
+    // Update tabs
+    document.querySelectorAll('.chat-tab').forEach(t => t.classList.remove('active'));
+    const tabId = channel === 'everyone' ? 'tab-everyone' : channel.startsWith('dm:') ? 'tab-dm' : 'tab-team';
+    document.getElementById(tabId)?.classList.add('active');
+
+    // Channel label
+    const labels = { everyone: '🌍 Everyone', team: '👥 My Team' };
+    document.getElementById('chatChannelName').textContent = labels[channel] || '💌 Direct Message';
+
+    saveLastSeen(channel);
+    updateUnreadBadges();
+
+    go('chat');
+    await loadMessages();
+    subscribeToMessages();
+  }
+
+  async function openChatTeam() {
+    if (!user.team_id) {
+      toast('Join a team first to use team chat!', true);
+      return;
+    }
+    openChat('team:' + user.team_id);
+  }
+
+  async function loadMessages() {
+    const body = document.getElementById('chatBody');
+    body.innerHTML = '<div class="chat-empty"><div class="chat-empty-icon">💬</div>Loading...</div>';
+
+    const { data } = await db.from('hackathon_messages')
+      .select('*')
+      .eq('channel', chatChannel)
+      .order('created_at', { ascending: true })
+      .limit(100);
+
+    renderMessages(data || []);
+  }
+
+  function renderMessages(msgs) {
+    const body = document.getElementById('chatBody');
+    if (!msgs.length) {
+      body.innerHTML = '<div class="chat-empty"><div class="chat-empty-icon">💬</div>No messages yet — say hello!</div>';
+      return;
+    }
+
+    let lastDate = '';
+    body.innerHTML = msgs.map(m => {
+      const mine = m.sender_id === user.id;
+      const d = new Date(m.created_at);
+      const dateStr = d.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short' });
+      const timeStr = d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+      let sep = '';
+      if (dateStr !== lastDate) { lastDate = dateStr; sep = `<div class="chat-date-sep">${dateStr}</div>`; }
+
+      const reactions = m.reactions || {};
+      const reactionHtml = Object.entries(reactions).map(([emoji, uids]) => {
+        if (!uids.length) return '';
+        const isMine = uids.includes(user.id);
+        return `<span class="reaction-pill ${isMine?'mine':''}" onclick="toggleReaction('${m.id}','${emoji}')">${emoji} ${uids.length}</span>`;
+      }).join('');
+
+      const avatarHtml = m.sender_avatar?.startsWith('data:')
+        ? `<img src="${m.sender_avatar}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;">`
+        : `<span style="font-size:18px;">${m.sender_avatar||'🦸'}</span>`;
+
+      return `${sep}
+        <div class="chat-msg ${mine?'mine':''}" id="msg-${m.id}">
+          ${!mine ? `<div class="chat-msg-avatar">${avatarHtml}</div>` : ''}
+          <div class="chat-msg-content">
+            <div class="chat-msg-name">${mine?'You':m.sender_name} · ${timeStr}</div>
+            <div class="chat-bubble">${escapeHtml(m.body)}</div>
+            <div class="chat-reactions">
+              ${reactionHtml}
+              <span class="add-reaction" onclick="showEmojiPicker(event,'${m.id}')">+😊</span>
+            </div>
+          </div>
+          ${mine ? `<div class="chat-msg-avatar">${avatarHtml}</div>` : ''}
+        </div>`;
+    }).join('');
+
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+  }
+
+  async function sendChatMsg() {
+    const input = document.getElementById('chatInput');
+    const body = input.value.trim();
+    if (!body) return;
+    input.value = '';
+    document.getElementById('chatSendBtn').disabled = true;
+
+    await db.from('hackathon_messages').insert({
+      channel: chatChannel,
+      sender_id: user.id,
+      sender_name: user.display_name,
+      sender_avatar: user.avatar || '🦸',
+      body,
+      reactions: {}
+    });
+
+    document.getElementById('chatSendBtn').disabled = false;
+    input.focus();
+  }
+
+  function subscribeToMessages() {
+    if (chatSubscription) { chatSubscription.unsubscribe(); chatSubscription = null; }
+
+    chatSubscription = db.channel('chat:' + chatChannel)
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'hackathon_messages',
+        filter: `channel=eq.${chatChannel}`
+      }, payload => {
+        appendMessage(payload.new);
+        saveLastSeen(chatChannel);
+      })
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'hackathon_messages',
+        filter: `channel=eq.${chatChannel}`
+      }, payload => {
+        // Re-render that message's reactions
+        updateMessageReactions(payload.new);
+      })
+      .subscribe();
+  }
+
+  function appendMessage(m) {
+    const body = document.getElementById('chatBody');
+    // Remove empty state
+    const empty = body.querySelector('.chat-empty');
+    if (empty) empty.remove();
+
+    const mine = m.sender_id === user.id;
+    const d = new Date(m.created_at);
+    const timeStr = d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+    const avatarHtml = m.sender_avatar?.startsWith('data:')
+      ? `<img src="${m.sender_avatar}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;">`
+      : `<span style="font-size:18px;">${m.sender_avatar||'🦸'}</span>`;
+
+    const div = document.createElement('div');
+    div.className = `chat-msg ${mine?'mine':''}`;
+    div.id = `msg-${m.id}`;
+    div.innerHTML = `
+      ${!mine ? `<div class="chat-msg-avatar">${avatarHtml}</div>` : ''}
+      <div class="chat-msg-content">
+        <div class="chat-msg-name">${mine?'You':m.sender_name} · ${timeStr}</div>
+        <div class="chat-bubble">${escapeHtml(m.body)}</div>
+        <div class="chat-reactions">
+          <span class="add-reaction" onclick="showEmojiPicker(event,'${m.id}')">+😊</span>
+        </div>
+      </div>
+      ${mine ? `<div class="chat-msg-avatar">${avatarHtml}</div>` : ''}
+    `;
+    body.appendChild(div);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function updateMessageReactions(m) {
+    const el = document.getElementById('msg-' + m.id);
+    if (!el) return;
+    const reactions = m.reactions || {};
+    const reactionHtml = Object.entries(reactions).map(([emoji, uids]) => {
+      if (!uids.length) return '';
+      const isMine = uids.includes(user.id);
+      return `<span class="reaction-pill ${isMine?'mine':''}" onclick="toggleReaction('${m.id}','${emoji}')">${emoji} ${uids.length}</span>`;
+    }).join('');
+    const reactDiv = el.querySelector('.chat-reactions');
+    reactDiv.innerHTML = reactionHtml + `<span class="add-reaction" onclick="showEmojiPicker(event,'${m.id}')">+😊</span>`;
+  }
+
+  // Emoji picker
+  let pickerTimeout = null;
+  function showEmojiPicker(e, msgId) {
+    e.stopPropagation();
+    document.querySelectorAll('.emoji-picker-popup').forEach(p => p.remove());
+    const picker = document.createElement('div');
+    picker.className = 'emoji-picker-popup';
+    picker.innerHTML = EMOJI_REACTIONS.map(em => `<span onclick="toggleReaction('${msgId}','${em}'); this.closest('.emoji-picker-popup').remove();">${em}</span>`).join('');
+    // Position near the button
+    const rect = e.target.getBoundingClientRect();
+    picker.style.position = 'fixed';
+    picker.style.bottom = (window.innerHeight - rect.top + 6) + 'px';
+    picker.style.left = Math.max(8, rect.left - 60) + 'px';
+    document.body.appendChild(picker);
+    setTimeout(() => document.addEventListener('click', () => picker.remove(), { once: true }), 50);
+  }
+
+  async function toggleReaction(msgId, emoji) {
+    const { data: msg } = await db.from('hackathon_messages').select('reactions').eq('id', msgId).single();
+    if (!msg) return;
+    const reactions = msg.reactions || {};
+    const uids = reactions[emoji] || [];
+    const idx = uids.indexOf(user.id);
+    if (idx === -1) uids.push(user.id);
+    else uids.splice(idx, 1);
+    reactions[emoji] = uids;
+    await db.from('hackathon_messages').update({ reactions }).eq('id', msgId);
+  }
+
+  // DM list
+  async function showDMList() {
+    document.querySelectorAll('.chat-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-dm').classList.add('active');
+    document.getElementById('chatChannelName').textContent = '💌 Direct Messages';
+    document.getElementById('chatInputRow').style.display = 'none';
+
+    const body = document.getElementById('chatBody');
+    body.className = 'dm-user-list';
+
+    // Load all other users
+    const { data: users } = await db.from('hackathon_users')
+      .select('id, display_name, avatar, team_id')
+      .neq('id', user.id);
+
+    allUsers = users || [];
+
+    body.innerHTML = allUsers.map(u => {
+      const ch = dmChannel(u.id);
+      const unread = unreadCounts[ch] || 0;
+      const avatarHtml = u.avatar?.startsWith('data:')
+        ? `<img src="${u.avatar}" style="width:42px;height:42px;border-radius:50%;object-fit:cover;">`
+        : `<span style="font-size:26px;">${u.avatar||'🦸'}</span>`;
+      return `
+        <div class="dm-user-item" onclick="openDM('${u.id}','${u.display_name.replace(/'/g,"\\'")}')">
+          <div class="dm-user-avatar">${avatarHtml}</div>
+          <div class="dm-user-info">
+            <strong>${u.display_name}</strong>
+            <span>Tap to message</span>
+          </div>
+          ${unread ? `<div class="dm-unread">${unread}</div>` : ''}
+        </div>`;
+    }).join('') || '<div class="chat-empty"><div class="chat-empty-icon">👥</div>No other players yet!</div>';
+
+    go('chat');
+  }
+
+  async function openDM(otherId, otherName) {
+    const ch = dmChannel(otherId);
+    document.getElementById('chatChannelName').textContent = `💌 ${otherName}`;
+    document.getElementById('chatTabs').style.display = 'flex';
+    document.getElementById('chatInputRow').style.display = 'flex';
+    document.getElementById('chatBody').className = 'chat-messages';
+    chatChannel = ch;
+    document.querySelectorAll('.chat-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-dm').classList.add('active');
+    saveLastSeen(ch);
+    await loadMessages();
+    subscribeToMessages();
+  }
+
+  // Unread badge logic
+  async function updateUnreadBadges() {
+    // Count messages in each channel since last seen
+    const channels = ['everyone'];
+    if (user.team_id) channels.push('team:' + user.team_id);
+
+    for (const ch of channels) {
+      const since = lastSeen[ch] || '2000-01-01';
+      const { count } = await db.from('hackathon_messages')
+        .select('id', { count: 'exact', head: true })
+        .eq('channel', ch)
+        .neq('sender_id', user.id)
+        .gt('created_at', since);
+
+      unreadCounts[ch] = count || 0;
+    }
+
+    const total = Object.values(unreadCounts).reduce((a,b) => a+b, 0);
+    const badge = document.getElementById('chatUnreadBadge');
+    if (badge) {
+      badge.style.display = total > 0 ? 'flex' : 'none';
+      badge.textContent = total;
+    }
+  }
+
+  // Subscribe to unread notifications globally (even when not in chat)
+  function subscribeToUnreadNotifications() {
+    db.channel('chat-notify')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'hackathon_messages'
+      }, payload => {
+        const m = payload.new;
+        if (m.sender_id === user.id) return;
+        // If not currently viewing this channel, increment unread
+        const currentScreen = document.querySelector('body > div:not(.hide):not(.toast):not(.xp):not(#confettiContainer):not(#modalContainer):not(#ririPanel):not(#chat)');
+        if (currentScreen || chatChannel !== m.channel) {
+          unreadCounts[m.channel] = (unreadCounts[m.channel] || 0) + 1;
+          const total = Object.values(unreadCounts).reduce((a,b) => a+b, 0);
+          const badge = document.getElementById('chatUnreadBadge');
+          if (badge) { badge.style.display = 'flex'; badge.textContent = total; }
+          // Toast notification
+          toast(`💬 ${m.sender_name}: ${m.body.substring(0,30)}${m.body.length>30?'...':''}`);
+        }
+      })
+      .subscribe();
+  }
 </script>
 
 <!-- ═══════════════════════════════════════════════ -->
-<!--  RIRI — Code Quest AI Guide                     -->
+<!--  CHAT                                           -->
 <!-- ═══════════════════════════════════════════════ -->
+<style>
+  /* Chat screen */
+  #chat { padding: 0 !important; display: flex; flex-direction: column; height: 100vh; max-height: 100vh; }
+
+  .chat-header {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .chat-back { background: rgba(255,255,255,0.2); border: none; color: white; width: 34px; height: 34px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: 'Nunito', sans-serif; flex-shrink: 0; }
+  .chat-title { flex: 1; font-weight: 900; font-size: 16px; color: white; }
+  .chat-title span { display: block; font-size: 12px; font-weight: 600; opacity: 0.8; }
+
+  /* Channel tabs */
+  .chat-tabs {
+    display: flex;
+    background: rgba(0,0,0,0.15);
+    flex-shrink: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .chat-tabs::-webkit-scrollbar { display: none; }
+  .chat-tab {
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.6);
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    font-family: 'Nunito', sans-serif;
+    background: none;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    position: relative;
+  }
+  .chat-tab.active { color: white; border-bottom-color: #fbbf24; }
+  .chat-tab .tab-badge {
+    position: absolute;
+    top: 4px; right: 4px;
+    background: #ef4444;
+    color: white;
+    border-radius: 50%;
+    width: 16px; height: 16px;
+    font-size: 10px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .chat-tab .tab-badge.show { display: flex; }
+
+  /* Messages area */
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+    background: #f0f1ff;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .chat-msg { display: flex; gap: 8px; align-items: flex-end; }
+  .chat-msg.mine { flex-direction: row-reverse; }
+  .chat-msg-avatar { width: 30px; height: 30px; border-radius: 50%; background: rgba(79,70,229,0.2); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .chat-msg-content { max-width: 75%; }
+  .chat-msg-name { font-size: 11px; font-weight: 800; color: #6b7280; margin-bottom: 3px; }
+  .chat-msg.mine .chat-msg-name { text-align: right; }
+  .chat-bubble {
+    padding: 9px 13px;
+    border-radius: 18px;
+    font-size: 14px;
+    line-height: 1.5;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    word-break: break-word;
+  }
+  .chat-msg:not(.mine) .chat-bubble { background: white; color: #1f2937; border-bottom-left-radius: 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  .chat-msg.mine .chat-bubble { background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; border-bottom-right-radius: 4px; }
+
+  /* Reactions */
+  .chat-reactions { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+  .reaction-pill {
+    background: white;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 100px;
+    padding: 2px 8px;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    color: #374151;
+  }
+  .reaction-pill:hover { background: #f3f4f6; }
+  .reaction-pill.mine { background: #ede9fe; border-color: #a78bfa; }
+  .add-reaction { background: #f3f4f6; border: 1.5px dashed #d1d5db; border-radius: 100px; padding: 2px 8px; font-size: 13px; cursor: pointer; color: #9ca3af; }
+
+  /* Emoji picker */
+  .emoji-picker-popup {
+    position: absolute;
+    background: white;
+    border-radius: 14px;
+    padding: 10px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    max-width: 200px;
+    z-index: 300;
+  }
+  .emoji-picker-popup span { font-size: 22px; cursor: pointer; padding: 4px; border-radius: 8px; }
+  .emoji-picker-popup span:hover { background: #f3f4f6; }
+
+  /* Date separator */
+  .chat-date-sep { text-align: center; font-size: 11px; color: #9ca3af; font-weight: 800; margin: 8px 0; }
+
+  /* DM user list */
+  .dm-user-list { flex: 1; overflow-y: auto; background: #f0f1ff; }
+  .dm-user-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: white;
+    margin: 6px 12px;
+    border-radius: 16px;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .dm-user-item:hover { background: #f5f3ff; }
+  .dm-user-avatar { width: 42px; height: 42px; border-radius: 50%; background: #ede9fe; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .dm-user-info strong { display: block; font-size: 15px; font-weight: 900; color: #1f2937; }
+  .dm-user-info span { font-size: 12px; color: #6b7280; }
+  .dm-unread { margin-left: auto; background: #ef4444; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
+
+  /* Input */
+  .chat-input-row {
+    display: flex;
+    gap: 8px;
+    padding: 10px 12px;
+    background: white;
+    border-top: 2px solid #e5e7eb;
+    flex-shrink: 0;
+  }
+  .chat-input {
+    flex: 1;
+    border: 2px solid #e5e7eb;
+    border-radius: 100px;
+    padding: 10px 16px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+    outline: none;
+    background: #f9fafb;
+  }
+  .chat-input:focus { border-color: #7c3aed; background: white; }
+  .chat-send {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    border: none; color: white; font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.1s;
+  }
+  .chat-send:active { transform: scale(0.9); }
+  .chat-send:disabled { opacity: 0.4; }
+
+  .chat-empty { text-align: center; padding: 40px 20px; color: #9ca3af; font-size: 15px; }
+  .chat-empty .chat-empty-icon { font-size: 48px; margin-bottom: 10px; }
+</style>
+
+<!-- SCREEN: Chat -->
+<div id="chat" class="hide">
+  <div class="chat-header">
+    <button class="chat-back" onclick="showHome()">←</button>
+    <div class="chat-title">
+      <span id="chatChannelName">Everyone 🌍</span>
+      <span id="chatChannelSub"></span>
+    </div>
+  </div>
+
+  <!-- Channel tabs (shown when not in DM view) -->
+  <div class="chat-tabs" id="chatTabs">
+    <button class="chat-tab active" id="tab-everyone" onclick="openChat('everyone')">🌍 Everyone<span class="tab-badge" id="badge-everyone"></span></button>
+    <button class="chat-tab" id="tab-team" onclick="openChatTeam()">👥 My Team<span class="tab-badge" id="badge-team"></span></button>
+    <button class="chat-tab" id="tab-dm" onclick="showDMList()">💌 DMs<span class="tab-badge" id="badge-dm"></span></button>
+  </div>
+
+  <!-- Messages / DM list (swapped by JS) -->
+  <div id="chatBody" class="chat-messages"></div>
+
+  <!-- Input (hidden on DM list view) -->
+  <div class="chat-input-row" id="chatInputRow">
+    <input class="chat-input" id="chatInput" placeholder="Say something..." maxlength="500"
+      onkeydown="if(event.key==='Enter' && !event.shiftKey) { event.preventDefault(); sendChatMsg(); }">
+    <button class="chat-send" id="chatSendBtn" onclick="sendChatMsg()">➤</button>
+  </div>
+</div>
 <style>
   /* ── Riri bubble button ── */
   #ririBtn {
