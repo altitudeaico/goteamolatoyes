@@ -1311,7 +1311,7 @@
   <div id="modalContainer"></div>
 
   <!-- SCREEN: Welcome -->
-  <div id="welcome" style="padding:0 !important; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; min-height:100dvh; width:100%;">
+  <div id="welcome">
     <!-- Animated background blobs -->
     <div style="position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:0;">
       <div style="position:absolute; width:400px; height:400px; background:radial-gradient(circle, rgba(124,58,237,0.4) 0%, transparent 70%); top:-100px; right:-100px; border-radius:50%; animation:blob-float 6s ease-in-out infinite;"></div>
@@ -1335,7 +1335,7 @@
   </div>
 
   <!-- SCREEN: Login -->
-  <div id="login" class="hide" style="padding:0 !important; min-height:100vh; min-height:100dvh; width:100%; flex-direction:column; align-items:center; justify-content:center;">
+  <div id="login" class="hide">
     <div style="position:relative; z-index:1; width:100%; max-width:380px; padding:24px;">
       <button onclick="go('welcome')" style="background:rgba(255,255,255,0.1); border:none; color:white; width:38px; height:38px; border-radius:50%; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; margin-bottom:28px;">←</button>
       <div style="font-size:52px; margin-bottom:12px;">👋</div>
@@ -1356,7 +1356,7 @@
   </div>
 
   <!-- SCREEN: Signup -->
-  <div id="signup" class="hide" style="padding:0 !important; min-height:100vh; min-height:100dvh; width:100%; flex-direction:column; align-items:center; justify-content:center;">
+  <div id="signup" class="hide">
     <div style="position:relative; z-index:1; width:100%; max-width:380px; padding:24px;">
       <button onclick="go('welcome')" style="background:rgba(255,255,255,0.1); border:none; color:white; width:38px; height:38px; border-radius:50%; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; margin-bottom:28px;">←</button>
       <div style="font-size:52px; margin-bottom:12px;">✨</div>
@@ -1896,20 +1896,15 @@ Make it exciting and something our whole family will enjoy playing!`
     document.getElementById('teamDash').classList.add('hide');
     document.getElementById('profileDash').classList.add('hide');
 
-    // Hide all body > div screens
     document.querySelectorAll('body > div').forEach(d => {
       if (!d.classList.contains('toast') && !d.classList.contains('xp')
         && d.id !== 'confettiContainer' && d.id !== 'modalContainer'
         && d.id !== 'ririPanel' && d.id !== 'teamPill' && d.id !== 'profilePill') {
         d.classList.add('hide');
-        d.style.display = '';
       }
     });
 
-    // Show target
-    const el = document.getElementById(id);
-    el.classList.remove('hide');
-    el.style.display = ['welcome','login','signup'].includes(id) ? 'flex' : '';
+    document.getElementById(id).classList.remove('hide');
   }
 
   function openParentKickoff() {
