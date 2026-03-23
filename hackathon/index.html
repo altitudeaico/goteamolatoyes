@@ -1941,8 +1941,8 @@ Make it exciting and something our whole family will enjoy playing!`
   }
 
   function go(id) {
-    // Hide auth container when going to any app screen
-    document.getElementById('authContainer').style.display = 'none';
+    // Hide auth container for all app screens
+    const authContainer = document.getElementById('authContainer');
 
     document.getElementById('studioScreen').classList.add('hide');
     document.getElementById('chat').classList.add('hide');
@@ -1951,6 +1951,16 @@ Make it exciting and something our whole family will enjoy playing!`
     document.getElementById('parentKickoffScreen').classList.add('hide');
     document.getElementById('teamDash').classList.add('hide');
     document.getElementById('profileDash').classList.add('hide');
+
+    // If navigating to welcome/login/signup, show auth container
+    if (id === 'welcome' || id === 'login' || id === 'signup') {
+      authContainer.style.display = 'flex';
+      authShow('authWelcome');
+      return;
+    }
+
+    // Otherwise hide auth and show app screen
+    authContainer.style.display = 'none';
 
     document.querySelectorAll('body > div').forEach(d => {
       if (!d.classList.contains('toast') && !d.classList.contains('xp')
