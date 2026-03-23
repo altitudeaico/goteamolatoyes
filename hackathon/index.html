@@ -1105,6 +1105,35 @@
     .team-member-info span { font-size:12px; color:rgba(255,255,255,0.5); font-family:'Nunito',sans-serif; }
     .team-member-xp { font-size:15px; font-weight:900; color:#fbbf24; font-family:'Nunito',sans-serif; }
 
+    /* ── Message notification pills on home ── */
+    .msg-notif-pill {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.12);
+      border: 1.5px solid rgba(255,255,255,0.2);
+      border-radius: 16px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      animation: pill-slide-in 0.3s ease;
+      width: 100%;
+      text-align: left;
+    }
+    .msg-notif-pill:hover { background: rgba(255,255,255,0.2); transform: scale(1.01); }
+    .msg-notif-pill.everyone { border-color: rgba(99,102,241,0.5); background: rgba(99,102,241,0.15); }
+    .msg-notif-pill.team { border-color: rgba(236,72,153,0.5); background: rgba(236,72,153,0.15); }
+    .msg-notif-pill.dm { border-color: rgba(245,158,11,0.5); background: rgba(245,158,11,0.12); }
+    .msg-notif-avatar { width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.15); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+    .msg-notif-content { flex:1; min-width:0; }
+    .msg-notif-content strong { display:block; font-size:13px; font-weight:900; color:white; font-family:'Nunito',sans-serif; }
+    .msg-notif-content span { display:block; font-size:12px; color:rgba(255,255,255,0.65); font-family:'Nunito',sans-serif; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .msg-notif-badge { background:#ef4444; color:white; border-radius:100px; min-width:22px; height:22px; padding:0 6px; font-size:12px; font-weight:900; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-family:'Nunito',sans-serif; }
+    @keyframes pill-slide-in {
+      from { opacity:0; transform:translateY(-8px); }
+      to { opacity:1; transform:translateY(0); }
+    }
+
     /* ── Kickoff Quiz options ── */
     .quiz-option {
       width: 100%;
@@ -1435,6 +1464,9 @@
       </button>
       <button class="btn btn-small" id="joinTeamBtn" onclick="go('joinTeam')" style="display:none;">👥 Join Team</button>
     </div>
+
+    <!-- Message notification pills -->
+    <div id="msgNotifArea" style="width:100%; max-width:420px; margin-top:12px; display:flex; flex-direction:column; gap:8px;"></div>
     <div style="margin-top:12px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.2); width:100%; max-width:420px;">
       <p style="font-size:13px; opacity:0.6; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:900;">Resources</p>
       <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
@@ -2895,6 +2927,7 @@ Make it exciting and something our whole family will enjoy playing!`
     document.getElementById('chatChannelSub').textContent = label.sub;
 
     saveLastSeen(channel);
+    delete unreadLatest[channel];
     updateUnreadBadges();
 
     // Show chat as full-screen overlay (hide everything else first)
@@ -3132,19 +3165,43 @@ Make it exciting and something our whole family will enjoy playing!`
 
   // Unread badge logic
   async function updateUnreadBadges() {
-    // Count messages in each channel since last seen
     const channels = ['everyone'];
     if (user.team_id) channels.push('team:' + user.team_id);
 
+    // Also check DMs
+    const { data: dmMsgs } = await db.from('hackathon_messages')
+      .select('channel, sender_name, sender_avatar, body, created_at')
+      .like('channel', 'dm:%')
+      .neq('sender_id', user.id)
+      .gt('created_at', lastSeen['dm'] || '2000-01-01')
+      .order('created_at', { ascending: false })
+      .limit(50);
+
     for (const ch of channels) {
       const since = lastSeen[ch] || '2000-01-01';
-      const { count } = await db.from('hackathon_messages')
-        .select('id', { count: 'exact', head: true })
+      const { data: msgs } = await db.from('hackathon_messages')
+        .select('id, sender_name, sender_avatar, body, created_at')
         .eq('channel', ch)
         .neq('sender_id', user.id)
-        .gt('created_at', since);
+        .gt('created_at', since)
+        .order('created_at', { ascending: false })
+        .limit(10);
 
-      unreadCounts[ch] = count || 0;
+      unreadCounts[ch] = msgs?.length || 0;
+      // Store latest message for pill preview
+      if (msgs?.length) unreadLatest[ch] = msgs[0];
+    }
+
+    // DM unread
+    if (dmMsgs?.length) {
+      const dmChannels = [...new Set(dmMsgs.map(m => m.channel))];
+      for (const ch of dmChannels) {
+        const chMsgs = dmMsgs.filter(m => m.channel === ch && m.channel.includes(user.id));
+        if (chMsgs.length) {
+          unreadCounts[ch] = chMsgs.length;
+          unreadLatest[ch] = chMsgs[0];
+        }
+      }
     }
 
     const total = Object.values(unreadCounts).reduce((a,b) => a+b, 0);
@@ -3153,6 +3210,75 @@ Make it exciting and something our whole family will enjoy playing!`
       badge.style.display = total > 0 ? 'flex' : 'none';
       badge.textContent = total;
     }
+
+    renderMsgNotifPills();
+  }
+
+  let unreadLatest = {};
+
+  function renderMsgNotifPills() {
+    const area = document.getElementById('msgNotifArea');
+    if (!area) return;
+
+    const pills = [];
+
+    // Everyone channel
+    const everyoneCount = unreadCounts['everyone'] || 0;
+    if (everyoneCount > 0) {
+      const latest = unreadLatest['everyone'];
+      const avatarHtml = latest?.sender_avatar?.startsWith('data:')
+        ? `<img src="${latest.sender_avatar}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">`
+        : `<span style="font-size:20px;">${latest?.sender_avatar || '💬'}</span>`;
+      pills.push(`
+        <button class="msg-notif-pill everyone" onclick="openChat('everyone')">
+          <div class="msg-notif-avatar">${avatarHtml}</div>
+          <div class="msg-notif-content">
+            <strong>🌍 Everyone</strong>
+            <span>${latest ? `${latest.sender_name}: ${latest.body}` : 'New messages'}</span>
+          </div>
+          <div class="msg-notif-badge">${everyoneCount}</div>
+        </button>`);
+    }
+
+    // Team channel
+    const teamCh = user.team_id ? 'team:' + user.team_id : null;
+    const teamCount = teamCh ? (unreadCounts[teamCh] || 0) : 0;
+    if (teamCount > 0 && user.team) {
+      const latest = unreadLatest[teamCh];
+      const avatarHtml = latest?.sender_avatar?.startsWith('data:')
+        ? `<img src="${latest.sender_avatar}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">`
+        : `<span style="font-size:20px;">${latest?.sender_avatar || '👥'}</span>`;
+      pills.push(`
+        <button class="msg-notif-pill team" onclick="openChatTeam()">
+          <div class="msg-notif-avatar">${avatarHtml}</div>
+          <div class="msg-notif-content">
+            <strong>${user.team.icon} ${user.team.name}</strong>
+            <span>${latest ? `${latest.sender_name}: ${latest.body}` : 'New team messages'}</span>
+          </div>
+          <div class="msg-notif-badge">${teamCount}</div>
+        </button>`);
+    }
+
+    // DMs
+    Object.entries(unreadCounts).forEach(([ch, count]) => {
+      if (!ch.startsWith('dm:') || !count) return;
+      const latest = unreadLatest[ch];
+      if (!latest) return;
+      const avatarHtml = latest.sender_avatar?.startsWith('data:')
+        ? `<img src="${latest.sender_avatar}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">`
+        : `<span style="font-size:20px;">${latest.sender_avatar || '💌'}</span>`;
+      pills.push(`
+        <button class="msg-notif-pill dm" onclick="openChat('${ch}')">
+          <div class="msg-notif-avatar">${avatarHtml}</div>
+          <div class="msg-notif-content">
+            <strong>💌 ${latest.sender_name}</strong>
+            <span>${latest.body}</span>
+          </div>
+          <div class="msg-notif-badge">${count}</div>
+        </button>`);
+    });
+
+    area.innerHTML = pills.join('');
   }
 
   // Subscribe to unread notifications globally (even when not in chat)
@@ -3165,15 +3291,25 @@ Make it exciting and something our whole family will enjoy playing!`
       }, payload => {
         const m = payload.new;
         if (m.sender_id === user.id) return;
-        // If not currently viewing this channel, increment unread
-        const currentScreen = document.querySelector('body > div:not(.hide):not(.toast):not(.xp):not(#confettiContainer):not(#modalContainer):not(#ririPanel):not(#chat)');
-        if (currentScreen || chatChannel !== m.channel) {
+
+        // Only count if not currently viewing this channel
+        const inChat = !document.getElementById('chat').classList.contains('hide');
+        if (!inChat || chatChannel !== m.channel) {
           unreadCounts[m.channel] = (unreadCounts[m.channel] || 0) + 1;
+          unreadLatest[m.channel] = m;
+
           const total = Object.values(unreadCounts).reduce((a,b) => a+b, 0);
           const badge = document.getElementById('chatUnreadBadge');
           if (badge) { badge.style.display = 'flex'; badge.textContent = total; }
+
+          // Refresh pills on home screen
+          renderMsgNotifPills();
+
           // Toast notification
-          toast(`💬 ${m.sender_name}: ${m.body.substring(0,30)}${m.body.length>30?'...':''}`);
+          const channelLabel = m.channel === 'everyone' ? '🌍 Everyone'
+            : m.channel.startsWith('team:') ? `👥 Team`
+            : `💌 DM`;
+          toast(`${channelLabel} · ${m.sender_name}: ${m.body.substring(0,40)}${m.body.length>40?'...':''}`);
         }
       })
       .subscribe();
