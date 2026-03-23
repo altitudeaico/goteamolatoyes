@@ -34,7 +34,7 @@
     }
 
     /* App shell — caps width nicely on desktop */
-    body > div:not(.toast):not(.xp):not(#confettiContainer):not(#modalContainer):not(#ririPanel):not(#chat):not(#studioScreen):not(#kickoffScreen):not(#teamDash):not(#teamPill):not(#profilePill):not(#profileDash) {
+    body > div:not(.toast):not(.xp):not(#confettiContainer):not(#modalContainer):not(#ririPanel):not(#chat):not(#studioScreen):not(#kickoffScreen):not(#kickoffQuiz):not(#teamDash):not(#teamPill):not(#profilePill):not(#profileDash) {
       width: 100%;
       max-width: 480px;
       display: flex;
@@ -49,7 +49,7 @@
         padding: 40px 20px;
         background: linear-gradient(160deg, #3730a3 0%, #6d28d9 100%);
       }
-      body > div:not(.toast):not(.xp):not(#confettiContainer):not(#modalContainer):not(#ririPanel):not(#chat):not(#studioScreen):not(#kickoffScreen):not(#teamDash):not(#teamPill):not(#profilePill):not(#profileDash) {
+      body > div:not(.toast):not(.xp):not(#confettiContainer):not(#modalContainer):not(#ririPanel):not(#chat):not(#studioScreen):not(#kickoffScreen):not(#kickoffQuiz):not(#teamDash):not(#teamPill):not(#profilePill):not(#profileDash) {
         background: rgba(255,255,255,0.07);
         border-radius: 28px;
         padding: 40px 32px;
@@ -1084,6 +1084,29 @@
     .team-member-info strong { display:block; font-size:15px; font-weight:900; color:white; font-family:'Nunito',sans-serif; }
     .team-member-info span { font-size:12px; color:rgba(255,255,255,0.5); font-family:'Nunito',sans-serif; }
     .team-member-xp { font-size:15px; font-weight:900; color:#fbbf24; font-family:'Nunito',sans-serif; }
+
+    /* ── Kickoff Quiz options ── */
+    .quiz-option {
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 14px 18px;
+      text-align: left;
+      color: white;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.15s;
+      line-height: 1.4;
+    }
+    .quiz-option:hover:not(:disabled) { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); }
+    .quiz-option.selected { background: rgba(99,102,241,0.25); border-color: #6366f1; }
+    .quiz-option.correct { background: rgba(34,197,94,0.2) !important; border-color: #22c55e !important; color: #4ade80 !important; }
+    .quiz-option.wrong { background: rgba(239,68,68,0.2) !important; border-color: #ef4444 !important; color: #fca5a5 !important; }
+    .quiz-option.reveal { background: rgba(34,197,94,0.1) !important; border-color: rgba(34,197,94,0.4) !important; }
+    .quiz-option:disabled { cursor: default; }
     .kickoff-banner {
       position: relative;
       border-radius: 20px;
@@ -1748,6 +1771,7 @@ Make it exciting and something our whole family will enjoy playing!`
     document.getElementById('studioScreen').classList.add('hide');
     document.getElementById('chat').classList.add('hide');
     document.getElementById('kickoffScreen').classList.add('hide');
+    document.getElementById('kickoffQuiz').classList.add('hide');
     document.getElementById('teamDash').classList.add('hide');
     document.getElementById('profileDash').classList.add('hide');
     document.querySelectorAll('body > div').forEach(d => {
@@ -1765,12 +1789,21 @@ Make it exciting and something our whole family will enjoy playing!`
     if (!frame.src || frame.src === window.location.href || !frame.src.includes('kickoff')) {
       frame.src = 'kickoff.html?embedded=1';
     }
-    // Show/hide confirm bar based on reviewed status
     const reviewed = user?.kickoff_reviewed;
     document.getElementById('kickoffConfirmBar').style.display = reviewed ? 'none' : 'flex';
     document.getElementById('kickoffReviewedBadge').style.display = reviewed ? 'block' : 'none';
     document.getElementById('kickoffConfirmBtn').disabled = false;
-    document.getElementById('kickoffConfirmBtn').textContent = '✅ I\'ve reviewed the kickoff! +25 XP';
+    document.getElementById('kickoffConfirmBtn').textContent = '🧠 Test My Knowledge! +25 XP';
+
+    // Show attempt info
+    const attempts = user?.kickoff_attempts || 0;
+    const best = user?.kickoff_best_score || 0;
+    const infoEl = document.getElementById('kickoffAttemptInfo');
+    if (attempts > 0 && !reviewed) {
+      infoEl.textContent = `Attempt ${attempts + 1} · Best score so far: ${best}/10`;
+    } else {
+      infoEl.textContent = '';
+    }
 
     document.querySelectorAll('body > div').forEach(d => {
       if (!d.classList.contains('toast') && !d.classList.contains('xp')
@@ -1784,37 +1817,213 @@ Make it exciting and something our whole family will enjoy playing!`
 
   function closeKickoff() {
     document.getElementById('kickoffScreen').classList.add('hide');
+    document.getElementById('kickoffQuiz').classList.add('hide');
     showHome();
   }
 
-  async function confirmKickoffReviewed() {
-    const btn = document.getElementById('kickoffConfirmBtn');
-    btn.disabled = true;
-    btn.textContent = '⏳ Saving...';
+  // ── Kickoff Quiz ─────────────────────────────────
+
+  const KICKOFF_QUESTIONS = [
+    {
+      q: "What is Code Quest?",
+      options: ["A video game about coding", "A hackathon learning programme where you build real apps using AI", "A coding course with lessons and homework", "A YouTube channel about technology"],
+      answer: 1
+    },
+    {
+      q: "What is AI in simple terms?",
+      options: ["A robot that can walk and talk", "A superpower that lets you build things by describing them clearly in words", "A type of computer virus", "A video editing tool"],
+      answer: 1
+    },
+    {
+      q: "What is a prompt?",
+      options: ["A reminder to do your homework", "A password for an app", "The words you give to an AI to tell it what you want", "A type of computer code"],
+      answer: 2
+    },
+    {
+      q: "What two things will each team build for the hackathon?",
+      options: ["A mobile app and a game", "A personal webpage and an interactive quiz game", "A video and a presentation", "A robot and a website"],
+      answer: 1
+    },
+    {
+      q: "When is the hackathon taking place?",
+      options: ["Friday 3rd April at 5pm", "Sunday 5th April at 3pm", "Saturday 4th April at 6:30pm", "Saturday 4th April at 9am"],
+      answer: 2
+    },
+    {
+      q: "Which superheroes were used as examples of using imagination to build things?",
+      options: ["Spider-Man and Batman", "Green Lantern, Iron Man, Riri Williams and Shuri", "Superman and Wonder Woman", "Thor and Captain America"],
+      answer: 1
+    },
+    {
+      q: "What are the two teams?",
+      options: ["Red team and Blue team", "Beginners and Advanced", "Girls (Elsie, Hannah, Sophia) vs Boys (Theodore, Ezekiel, Arthur)", "Gravesend vs New York"],
+      answer: 2
+    },
+    {
+      q: "Arthur described a hackathon as what?",
+      options: ["A coding competition", "A tech conference", "A coding play date", "A computer camp"],
+      answer: 2
+    },
+    {
+      q: "To get the best result from Claude, what should your prompt include?",
+      options: ["Only one word describing what you want", "Lots of personal details, colours, style and exactly what you want", "Just your name", "Technical coding instructions"],
+      answer: 1
+    },
+    {
+      q: "What is the key message of Code Quest?",
+      options: ["You need to learn to code before you can build anything", "Only experts can use AI to build apps", "If you can think it and describe it clearly, AI can help you build it", "Computers are only for adults"],
+      answer: 2
+    }
+  ];
+
+  let quizAnswers = [];
+  let currentQ = 0;
+  let quizSelected = null;
+  let quizRevealed = false;
+
+  function startKickoffQuiz() {
+    currentQ = 0;
+    quizAnswers = [];
+    quizSelected = null;
+    quizRevealed = false;
+
+    // Show quiz screen
+    document.getElementById('kickoffQuiz').classList.remove('hide');
+    renderQuestion();
+  }
+
+  function closeKickoffQuiz() {
+    document.getElementById('kickoffQuiz').classList.add('hide');
+  }
+
+  function renderQuestion() {
+    const q = KICKOFF_QUESTIONS[currentQ];
+    const total = KICKOFF_QUESTIONS.length;
+    quizSelected = null;
+    quizRevealed = false;
+
+    document.getElementById('quizProgressLabel').textContent = `${currentQ + 1} / ${total}`;
+    document.getElementById('quizProgressBar').style.width = `${(currentQ / total) * 100}%`;
+    document.getElementById('quizNextBtn').style.display = 'none';
+    document.getElementById('quizSubmitBtn').style.display = 'none';
+
+    document.getElementById('quizBody').innerHTML = `
+      <div style="font-size:12px; font-weight:900; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1.5px; font-family:'Nunito',sans-serif; margin-bottom:4px;">Question ${currentQ + 1} of ${total}</div>
+      <div style="font-size:19px; font-weight:900; color:white; font-family:'Nunito',sans-serif; line-height:1.4; margin-bottom:20px;">${q.q}</div>
+      <div style="display:flex; flex-direction:column; gap:10px;" id="optionList">
+        ${q.options.map((opt, i) => `
+          <button class="quiz-option" id="opt-${i}" onclick="selectOption(${i})">
+            <span style="opacity:0.5; margin-right:8px; font-weight:900;">${['A','B','C','D'][i]}.</span>${opt}
+          </button>`).join('')}
+      </div>
+    `;
+  }
+
+  function selectOption(idx) {
+    if (quizRevealed) return;
+    quizSelected = idx;
+
+    // Highlight selected
+    document.querySelectorAll('.quiz-option').forEach((btn, i) => {
+      btn.classList.toggle('selected', i === idx);
+    });
+
+    // Reveal answer
+    quizRevealed = true;
+    const correct = KICKOFF_QUESTIONS[currentQ].answer;
+    quizAnswers.push({ selected: idx, correct });
+
+    document.querySelectorAll('.quiz-option').forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === correct) btn.classList.add('correct');
+      else if (i === idx && idx !== correct) btn.classList.add('wrong');
+    });
+
+    // Show next or submit
+    const isLast = currentQ === KICKOFF_QUESTIONS.length - 1;
+    if (isLast) {
+      document.getElementById('quizSubmitBtn').style.display = 'block';
+    } else {
+      document.getElementById('quizNextBtn').style.display = 'block';
+    }
+  }
+
+  function nextQuestion() {
+    currentQ++;
+    renderQuestion();
+  }
+
+  async function submitQuiz() {
+    const score = quizAnswers.filter(a => a.selected === a.correct).length;
+    const total = KICKOFF_QUESTIONS.length;
+    const pct = Math.round((score / total) * 100);
+    const passed = pct >= 90;
+    const attempts = (user.kickoff_attempts || 0) + 1;
+    const bestScore = Math.max(user.kickoff_best_score || 0, score);
+
+    // Update progress bar to 100%
+    document.getElementById('quizProgressBar').style.width = '100%';
+    document.getElementById('quizNextBtn').style.display = 'none';
+    document.getElementById('quizSubmitBtn').style.display = 'none';
+
+    // Save attempt to DB
+    const update = {
+      kickoff_attempts: attempts,
+      kickoff_best_score: bestScore
+    };
+    if (passed) {
+      update.kickoff_reviewed = true;
+      update.xp = (user.xp || 0) + 25;
+    }
 
     try {
-      const newXP = (user.xp || 0) + 25;
-      await db.from('hackathon_users')
-        .update({ kickoff_reviewed: true, xp: newXP })
-        .eq('id', user.id);
-
-      user.kickoff_reviewed = true;
-      user.xp = newXP;
+      await db.from('hackathon_users').update(update).eq('id', user.id);
+      user.kickoff_attempts = attempts;
+      user.kickoff_best_score = bestScore;
+      if (passed) {
+        user.kickoff_reviewed = true;
+        user.xp = update.xp;
+      }
       localStorage.setItem('cq', JSON.stringify(user));
+    } catch(e) { console.warn('Save failed', e); }
 
-      // Update overlay UI
+    // Show result screen
+    document.getElementById('quizBody').innerHTML = passed ? `
+      <div style="text-align:center; padding:30px 10px; display:flex; flex-direction:column; align-items:center; gap:16px;">
+        <div style="font-size:72px;">🎉</div>
+        <div style="font-size:28px; font-weight:900; color:#4ade80; font-family:'Nunito',sans-serif;">You passed!</div>
+        <div style="font-size:18px; color:rgba(255,255,255,0.8); font-family:'Nunito',sans-serif;">${score} / ${total} correct · ${pct}%</div>
+        <div style="background:rgba(34,197,94,0.15); border:1.5px solid rgba(34,197,94,0.3); border-radius:16px; padding:16px 24px; font-size:16px; font-weight:700; color:#4ade80; font-family:'Nunito',sans-serif;">+25 XP earned! ⭐</div>
+        <p style="color:rgba(255,255,255,0.6); font-family:'Nunito',sans-serif; font-size:14px; line-height:1.6;">Amazing! You really paid attention to the kickoff session. You know your stuff — now go build something! 🚀</p>
+        <button class="kickoff-confirm-btn" onclick="closeKickoffQuiz(); closeKickoff(); showConfetti(); updateKickoffBanner();" style="padding:14px 32px;">
+          🚀 Let's Go!
+        </button>
+      </div>
+    ` : `
+      <div style="text-align:center; padding:30px 10px; display:flex; flex-direction:column; align-items:center; gap:16px;">
+        <div style="font-size:72px;">😅</div>
+        <div style="font-size:26px; font-weight:900; color:#fbbf24; font-family:'Nunito',sans-serif;">So close!</div>
+        <div style="font-size:18px; color:rgba(255,255,255,0.8); font-family:'Nunito',sans-serif;">${score} / ${total} correct · ${pct}%</div>
+        <div style="background:rgba(251,191,36,0.1); border:1.5px solid rgba(251,191,36,0.3); border-radius:16px; padding:14px 20px; font-size:15px; font-weight:700; color:#fbbf24; font-family:'Nunito',sans-serif; text-align:center; line-height:1.5;">You need 9/10 to pass.<br>Read the recap again and give it another go!</div>
+        <div style="font-size:14px; color:rgba(255,255,255,0.5); font-family:'Nunito',sans-serif;">Attempt ${attempts} · Best score: ${bestScore}/10</div>
+        <div style="display:flex; gap:10px; width:100%;">
+          <button class="kickoff-confirm-btn" onclick="closeKickoffQuiz();" style="flex:1; padding:14px; background:rgba(255,255,255,0.1);">
+            📖 Read Again
+          </button>
+          <button class="kickoff-confirm-btn" onclick="startKickoffQuiz();" style="flex:1; padding:14px;">
+            🔄 Try Again
+          </button>
+        </div>
+      </div>
+    `;
+
+    if (passed) {
+      showConfetti();
+      toast('🎉 +25 XP! Kickoff quiz passed!');
       document.getElementById('kickoffConfirmBar').style.display = 'none';
       document.getElementById('kickoffReviewedBadge').style.display = 'block';
-
-      showConfetti();
-      toast('🎉 +25 XP! Kickoff reviewed!');
-
-      // Update home banner state for when they close
+      document.getElementById('xpDisplay').textContent = '⭐ ' + user.xp;
       updateKickoffBanner();
-    } catch(e) {
-      btn.disabled = false;
-      btn.textContent = '✅ I\'ve reviewed the kickoff! +25 XP';
-      toast('Save failed — try again', true);
     }
   }
 
@@ -2480,6 +2689,17 @@ Make it exciting and something our whole family will enjoy playing!`
       const avatarHtml = k.avatar?.startsWith('data:')
         ? `<img src="${k.avatar}" style="width:42px;height:42px;border-radius:50%;object-fit:cover;">`
         : `<span style="font-size:28px;">${k.avatar || '🦸'}</span>`;
+
+      // Kickoff quiz status
+      const quizPassed = k.kickoff_reviewed;
+      const attempts = k.kickoff_attempts || 0;
+      const bestScore = k.kickoff_best_score || 0;
+      const quizBadge = quizPassed
+        ? `<span style="background:rgba(34,197,94,0.2); color:#4ade80; border:1px solid rgba(34,197,94,0.4); border-radius:100px; padding:2px 10px; font-size:11px; font-weight:900; font-family:'Nunito',sans-serif;">✓ Quiz passed ${bestScore}/10</span>`
+        : attempts > 0
+          ? `<span style="background:rgba(251,191,36,0.15); color:#fbbf24; border:1px solid rgba(251,191,36,0.3); border-radius:100px; padding:2px 10px; font-size:11px; font-weight:900; font-family:'Nunito',sans-serif;">⚠️ ${attempts} attempt${attempts>1?'s':''} · Best: ${bestScore}/10</span>`
+          : `<span style="background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.4); border-radius:100px; padding:2px 10px; font-size:11px; font-weight:800; font-family:'Nunito',sans-serif;">📋 Quiz not attempted</span>`;
+
       return `
         <div class="parent-kid-card">
           <div>${avatarHtml}</div>
@@ -2489,6 +2709,7 @@ Make it exciting and something our whole family will enjoy playing!`
             <div class="parent-kid-progress">
               <div class="parent-kid-progress-bar" style="width:${pct}%"></div>
             </div>
+            <div style="margin-top:6px;">${quizBadge}</div>
           </div>
           <div class="parent-kid-xp">${k.xp}⭐</div>
         </div>`;
@@ -3280,11 +3501,49 @@ Make it exciting and something our whole family will enjoy playing!`
     display:flex; flex-direction:column; align-items:center; gap:8px;
     flex-shrink:0;">
     <p style="color:rgba(255,255,255,0.55); font-size:13px; font-weight:700; text-align:center; margin:0; font-family:'Nunito',sans-serif;">
-      Watched the video and read the recap?
+      Read the recap and watched the video?
     </p>
-    <button class="kickoff-confirm-btn" id="kickoffConfirmBtn" onclick="confirmKickoffReviewed()">
-      ✅ I've reviewed the kickoff! +25 XP
+    <button class="kickoff-confirm-btn" id="kickoffConfirmBtn" onclick="startKickoffQuiz()">
+      🧠 Test My Knowledge! +25 XP
     </button>
+    <div id="kickoffAttemptInfo" style="font-size:12px; color:rgba(255,255,255,0.4); font-family:'Nunito',sans-serif; text-align:center;"></div>
+  </div>
+
+</div>
+
+<!-- SCREEN: Kickoff Quiz -->
+<div id="kickoffQuiz" class="hide" style="
+  position:fixed; inset:0; z-index:160;
+  display:flex; flex-direction:column;
+  background:#0f0e1a;">
+
+  <!-- Quiz header -->
+  <div style="display:flex; align-items:center; gap:12px; padding:14px 16px; background:rgba(255,255,255,0.04); border-bottom:1px solid rgba(255,255,255,0.08); flex-shrink:0;">
+    <button onclick="closeKickoffQuiz()" style="background:rgba(255,255,255,0.1); border:none; color:white; width:36px; height:36px; border-radius:50%; font-size:17px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif;">←</button>
+    <div style="flex:1;">
+      <div style="font-weight:900; font-size:15px; color:white; font-family:'Nunito',sans-serif;">🧠 Kickoff Knowledge Quiz</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.5); font-family:'Nunito',sans-serif;">Score 90% or more to earn your XP</div>
+    </div>
+    <div id="quizProgressLabel" style="font-size:13px; font-weight:900; color:#a5b4fc; font-family:'Nunito',sans-serif;"></div>
+  </div>
+
+  <!-- Progress bar -->
+  <div style="height:4px; background:rgba(255,255,255,0.08); flex-shrink:0;">
+    <div id="quizProgressBar" style="height:100%; background:linear-gradient(90deg,#4f46e5,#7c3aed); width:0%; transition:width 0.4s;"></div>
+  </div>
+
+  <!-- Quiz body -->
+  <div id="quizBody" style="flex:1; overflow-y:auto; padding:24px 16px; display:flex; flex-direction:column; gap:16px;">
+    <div style="text-align:center; padding:40px 20px; color:rgba(255,255,255,0.5);">
+      <div style="font-size:48px; margin-bottom:16px;">⏳</div>
+      <div style="font-family:'Nunito',sans-serif; font-weight:800; font-size:16px;">Loading your quiz...</div>
+    </div>
+  </div>
+
+  <!-- Quiz footer -->
+  <div style="padding:14px 16px; background:#1a1730; border-top:1px solid rgba(255,255,255,0.08); flex-shrink:0; display:flex; gap:10px;">
+    <button id="quizNextBtn" onclick="nextQuestion()" class="kickoff-confirm-btn" style="display:none; flex:1; padding:14px; font-size:16px;">Next →</button>
+    <button id="quizSubmitBtn" onclick="submitQuiz()" class="kickoff-confirm-btn" style="display:none; flex:1; padding:14px; font-size:16px;">Submit Answers 🚀</button>
   </div>
 
 </div>
