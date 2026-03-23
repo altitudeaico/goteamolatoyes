@@ -1488,8 +1488,10 @@ Make it colorful and fun!`
 
   // Show/hide screens
   function go(id) {
+    // Always hide the studio when navigating away
+    document.getElementById('studioScreen').classList.add('hide');
     document.querySelectorAll('body > div').forEach(d => {
-      if (!d.classList.contains('toast') && !d.classList.contains('xp') && d.id !== 'confettiContainer' && d.id !== 'modalContainer' && d.id !== 'ririPanel' && d.id !== 'studioScreen') {
+      if (!d.classList.contains('toast') && !d.classList.contains('xp') && d.id !== 'confettiContainer' && d.id !== 'modalContainer' && d.id !== 'ririPanel') {
         d.classList.add('hide');
       }
     });
