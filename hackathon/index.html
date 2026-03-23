@@ -21,15 +21,42 @@
     
     body {
       font-family: 'Nunito', sans-serif;
-      background: linear-gradient(180deg, #4f46e5 0%, #7c3aed 100%);
+      background: linear-gradient(160deg, #4f46e5 0%, #7c3aed 100%);
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 30px 20px;
+      justify-content: flex-start;
+      padding: 40px 20px 100px;
       color: white;
       text-align: center;
+    }
+
+    /* App shell — caps width nicely on desktop */
+    body > div:not(.toast):not(.xp):not(#confettiContainer):not(#modalContainer):not(#ririPanel):not(#chat) {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Desktop: centre everything in a card-like shell */
+    @media (min-width: 600px) {
+      body {
+        justify-content: center;
+        padding: 40px 20px;
+        background: linear-gradient(160deg, #3730a3 0%, #6d28d9 100%);
+      }
+      body > div:not(.toast):not(.xp):not(#confettiContainer):not(#modalContainer):not(#ririPanel):not(#chat) {
+        background: rgba(255,255,255,0.07);
+        border-radius: 28px;
+        padding: 40px 32px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+        max-width: 480px;
+      }
     }
     
     .hide { display: none !important; }
@@ -65,15 +92,15 @@
     /* Big button */
     .btn {
       width: 100%;
-      max-width: 300px;
-      padding: 25px 40px;
-      font-size: 22px;
+      max-width: 420px;
+      padding: 22px 40px;
+      font-size: 20px;
       font-weight: 900;
       font-family: 'Nunito', sans-serif;
       border: none;
-      border-radius: 20px;
+      border-radius: 18px;
       cursor: pointer;
-      margin: 8px 0;
+      margin: 6px 0;
       transition: transform 0.1s;
     }
     
@@ -130,15 +157,15 @@
     /* Input */
     input {
       width: 100%;
-      max-width: 300px;
-      padding: 20px;
-      font-size: 24px;
+      max-width: 420px;
+      padding: 18px;
+      font-size: 22px;
       font-family: 'Nunito', sans-serif;
       font-weight: 700;
       border: 4px solid white;
       border-radius: 15px;
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       background: rgba(255,255,255,0.95);
       color: #1f2937;
     }
@@ -235,7 +262,8 @@
       border-radius: 15px;
       padding: 20px;
       margin: 20px 0;
-      max-width: 320px;
+      width: 100%;
+      max-width: 420px;
       text-align: left;
     }
     
@@ -275,20 +303,26 @@
     /* Level card */
     .level-card {
       background: white;
-      border-radius: 25px;
-      padding: 20px;
+      border-radius: 20px;
+      padding: 16px 18px;
       width: 100%;
-      max-width: 320px;
-      margin: 12px 0;
+      max-width: 420px;
+      margin: 8px 0;
       color: #1f2937;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: transform 0.15s, box-shadow 0.15s;
       text-align: left;
       display: flex;
       align-items: center;
       gap: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
     
+    .level-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+
     .level-card:active {
       transform: scale(0.97);
     }
@@ -359,7 +393,7 @@
     /* Section dividers in level list */
     .level-section-header {
       width: 100%;
-      max-width: 320px;
+      max-width: 420px;
       padding: 10px 5px 4px;
       font-size: 13px;
       font-weight: 900;
@@ -382,7 +416,7 @@
       border-radius: 15px;
       padding: 15px 20px;
       width: 100%;
-      max-width: 320px;
+      max-width: 420px;
       margin: 8px 0;
       display: flex;
       align-items: center;
@@ -527,7 +561,8 @@
       border-radius: 20px;
       padding: 20px;
       margin: 20px 0;
-      max-width: 320px;
+      width: 100%;
+      max-width: 420px;
     }
     
     .instruction-box h3 {
@@ -549,11 +584,20 @@
     
     /* Scrollable level list */
     .level-list {
-      max-height: 60vh;
+      max-height: 55vh;
       overflow-y: auto;
-      padding: 10px;
+      padding: 4px 4px 10px;
       width: 100%;
-      max-width: 340px;
+      max-width: 420px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.3) transparent;
+    }
+    .level-list::-webkit-scrollbar { width: 4px; }
+    .level-list::-webkit-scrollbar-track { background: transparent; }
+    .level-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 4px; }
+
+    @media (min-width: 600px) {
+      .level-list { max-height: 50vh; }
     }
   </style>
 </head>
@@ -666,16 +710,21 @@
     <div id="teamBadge" class="hide" style="display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,0.2); border-radius:100px; padding:8px 18px; font-size:17px; font-weight:800; margin-bottom:10px;"></div>
     <p>Pick a level to play</p>
     <div class="level-list" id="levelList"></div>
-    <div style="display:flex; gap:10px; justify-content:center; margin-top:15px; flex-wrap:wrap;">
+    <div style="display:flex; gap:10px; justify-content:center; margin-top:15px; flex-wrap:wrap; width:100%; max-width:420px;">
       <button class="btn btn-small" onclick="go('leaders')">🏆 Leaderboard</button>
       <button class="btn btn-small" onclick="openChat('everyone')" style="position:relative;">
         💬 Chat
         <span id="chatUnreadBadge" style="display:none; position:absolute; top:-6px; right:-6px; background:#ef4444; color:white; border-radius:50%; width:18px; height:18px; font-size:11px; font-weight:900; align-items:center; justify-content:center;">0</span>
       </button>
       <button class="btn btn-small" id="joinTeamBtn" onclick="go('joinTeam')" style="display:none;">👥 Join Team</button>
-      <a href="prompts.html" class="btn btn-small" style="text-decoration:none;">💬 Prompting Tips</a>
-      <a href="hosting.html" class="btn btn-small" style="text-decoration:none;">🌐 How to Host</a>
-      <a href="database.html" class="btn btn-small" style="text-decoration:none;">🎮 Build Quiz</a>
+    </div>
+    <div style="margin-top:12px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.2); width:100%; max-width:420px;">
+      <p style="font-size:13px; opacity:0.6; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:900;">Resources</p>
+      <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+        <a href="prompts.html" class="btn btn-small" style="text-decoration:none; font-size:14px; padding:12px 16px;">✏️ Prompting Tips</a>
+        <a href="hosting.html" class="btn btn-small" style="text-decoration:none; font-size:14px; padding:12px 16px;">🌐 How to Host</a>
+        <a href="database.html" class="btn btn-small" style="text-decoration:none; font-size:14px; padding:12px 16px;">🎮 Build Quiz</a>
+      </div>
     </div>
   </div>
 
@@ -1769,7 +1818,28 @@ Make it colorful and fun!`
 <!-- ═══════════════════════════════════════════════ -->
 <style>
   /* Chat screen */
-  #chat { padding: 0 !important; display: flex; flex-direction: column; height: 100vh; max-height: 100vh; }
+  #chat {
+    padding: 0 !important;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+    max-height: 100vh;
+    max-height: 100dvh;
+    width: 100%;
+    max-width: 480px;
+    background: white;
+    border-radius: 0;
+  }
+
+  @media (min-width: 600px) {
+    #chat {
+      height: 85vh;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+    }
+  }
 
   .chat-header {
     background: linear-gradient(135deg, #4f46e5, #7c3aed);
