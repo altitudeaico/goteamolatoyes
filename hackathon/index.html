@@ -409,6 +409,37 @@
       background: rgba(251, 191, 36, 0.18);
       border-color: rgba(251, 191, 36, 0.4);
     }
+
+    /* Parent kid card */
+    .parent-kid-card {
+      background: rgba(255,255,255,0.12);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: default;
+      border: 2px solid rgba(255,255,255,0.15);
+    }
+    .parent-kid-card:hover { background: rgba(255,255,255,0.18); }
+    .parent-kid-info { flex: 1; text-align: left; }
+    .parent-kid-info strong { display: block; font-size: 16px; font-weight: 900; }
+    .parent-kid-info span { font-size: 13px; opacity: 0.75; }
+    .parent-kid-xp { font-size: 20px; font-weight: 900; color: #fbbf24; }
+    .parent-kid-progress {
+      height: 6px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 3px;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+    .parent-kid-progress-bar {
+      height: 100%;
+      background: #22c55e;
+      border-radius: 3px;
+      transition: width 0.5s;
+    }
     
     /* Leaderboard */
     .leader {
@@ -728,7 +759,73 @@
     </div>
   </div>
 
-  <!-- SCREEN: Task -->
+  <!-- SCREEN: Parent Dashboard -->
+  <div id="parentDash" class="hide">
+    <div style="font-size:48px; margin-bottom:8px;">👨‍👩‍👧‍👦</div>
+    <h1 id="parentName">Parent Dashboard</h1>
+    <p style="margin-bottom:20px; font-size:16px; opacity:0.8;">Hackathon: Saturday 4th April · 6:30pm</p>
+
+    <!-- Countdown -->
+    <div id="parentCountdown" style="background:rgba(255,255,255,0.15); border-radius:16px; padding:14px 20px; margin-bottom:20px; font-size:22px; font-weight:900; width:100%; max-width:420px;"></div>
+
+    <!-- Quick actions -->
+    <div style="display:flex; gap:10px; width:100%; max-width:420px; margin-bottom:20px; flex-wrap:wrap; justify-content:center;">
+      <button class="btn btn-yellow" style="flex:1; min-width:120px; padding:14px; font-size:16px;" onclick="openChat('everyone')">💬 Chat</button>
+      <button class="btn btn-white" style="flex:1; min-width:120px; padding:14px; font-size:16px;" onclick="go('leaders')">🏆 Leaderboard</button>
+      <button class="btn btn-small" style="flex:1; min-width:120px; padding:14px; font-size:15px;" onclick="openAwardXP()">⭐ Award XP</button>
+      <button class="btn btn-small" style="flex:1; min-width:120px; padding:14px; font-size:15px;" onclick="openLevelEditor()">✏️ Edit Levels</button>
+    </div>
+
+    <!-- Kids progress -->
+    <div style="width:100%; max-width:420px; text-align:left;">
+      <p style="font-size:13px; opacity:0.6; text-transform:uppercase; letter-spacing:1px; font-weight:900; margin-bottom:10px;">Kids Progress</p>
+      <div id="parentKidCards"></div>
+    </div>
+
+    <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center; width:100%; max-width:420px;">
+      <a href="hosting.html" class="btn btn-small" style="text-decoration:none; font-size:14px; padding:12px 16px;">🌐 Hosting Guide</a>
+      <a href="database.html" class="btn btn-small" style="text-decoration:none; font-size:14px; padding:12px 16px;">🎮 Quiz Guide</a>
+      <button class="btn btn-small" style="font-size:14px; padding:12px 16px; color:#fca5a5; border-color:#fca5a5;" onclick="logOut()">🚪 Log Out</button>
+    </div>
+  </div>
+
+  <!-- SCREEN: Award XP -->
+  <div id="parentAwardXP" class="hide">
+    <div class="emoji">⭐</div>
+    <h1>Award Bonus XP</h1>
+    <p>Reward a kid for great work!</p>
+    <select id="awardKidSelect" style="width:100%; max-width:420px; padding:16px; font-size:18px; font-family:'Nunito',sans-serif; font-weight:700; border:4px solid white; border-radius:15px; background:rgba(255,255,255,0.95); color:#1f2937; margin-bottom:16px;">
+      <option value="">Choose a kid...</option>
+    </select>
+    <input type="number" id="awardXPAmount" placeholder="XP amount (e.g. 50)" min="1" max="500" style="margin-bottom:16px;">
+    <input type="text" id="awardXPReason" placeholder="Reason (e.g. Great teamwork!)" style="margin-bottom:16px;">
+    <button class="btn btn-green" onclick="doAwardXP()">⭐ Award XP!</button>
+    <button class="btn btn-outline" onclick="showHome()">← Back</button>
+  </div>
+
+  <!-- SCREEN: Edit Levels -->
+  <div id="parentLevels" class="hide">
+    <div class="emoji">✏️</div>
+    <h1>Edit Levels</h1>
+    <p>Tap a level to edit its instructions or prompt</p>
+    <div id="parentLevelList" style="width:100%; max-width:420px;"></div>
+    <button class="btn btn-outline" style="margin-top:10px;" onclick="showHome()">← Back</button>
+  </div>
+
+  <!-- SCREEN: Edit Single Level -->
+  <div id="parentEditLevel" class="hide">
+    <h1 style="margin-bottom:20px;">✏️ Edit Level</h1>
+    <div style="width:100%; max-width:420px; text-align:left;">
+      <label style="font-size:14px; font-weight:900; opacity:0.8; display:block; margin-bottom:6px;">LEVEL NAME</label>
+      <input id="editLevelName" style="margin-bottom:16px; text-align:left;">
+      <label style="font-size:14px; font-weight:900; opacity:0.8; display:block; margin-bottom:6px;">INSTRUCTIONS (shown to kids)</label>
+      <textarea id="editLevelInstr" style="width:100%; padding:16px; font-size:15px; font-family:'Nunito',sans-serif; font-weight:600; border:4px solid white; border-radius:15px; background:rgba(255,255,255,0.95); color:#1f2937; margin-bottom:16px; min-height:100px; resize:vertical;"></textarea>
+      <label style="font-size:14px; font-weight:900; opacity:0.8; display:block; margin-bottom:6px;">COPY-PASTE PROMPT (optional)</label>
+      <textarea id="editLevelPrompt" style="width:100%; padding:16px; font-size:15px; font-family:'Nunito',sans-serif; font-weight:600; border:4px solid white; border-radius:15px; background:rgba(255,255,255,0.95); color:#1f2937; margin-bottom:16px; min-height:80px; resize:vertical;"></textarea>
+    </div>
+    <button class="btn btn-green" onclick="saveEditedLevel()">💾 Save Changes</button>
+    <button class="btn btn-outline" onclick="go('parentLevels')">← Back</button>
+  </div>
   <div id="task" class="hide">
     <div class="dots" id="taskDots"></div>
     <div class="emoji" id="taskEmoji">🤖</div>
@@ -1154,10 +1251,14 @@ Make it colorful and fun!`
     }
   }
 
-  // Home
+  // Home — routes to kid home or parent dashboard
   function showHome() {
     document.getElementById('xpDisplay').classList.remove('hide');
     document.getElementById('xpDisplay').textContent = '⭐ ' + user.xp;
+    if (user.role === 'parent') {
+      showParentDashboard();
+      return;
+    }
     document.getElementById('userName').textContent = user.display_name;
     // Render avatar (emoji or custom SVG)
     renderAvatar(user.avatar || '🦸', document.getElementById('homeAvatar'));
@@ -1481,7 +1582,156 @@ Make it colorful and fun!`
     });
   }
 
-  // ── CHAT ────────────────────────────────────────
+  function logOut() {
+    localStorage.removeItem('cq');
+    user = null;
+    go('welcome');
+  }
+
+  // ── PARENT DASHBOARD ────────────────────────────
+
+  let editingLevelId = null;
+
+  async function showParentDashboard() {
+    document.getElementById('xpDisplay').classList.add('hide');
+    document.getElementById('parentName').textContent = `Hey ${user.display_name}! 👋`;
+    go('parentDash');
+    startParentCountdown();
+    loadKidCards();
+  }
+
+  function startParentCountdown() {
+    const hackathon = new Date('2026-04-04T18:30:00');
+    function tick() {
+      const now = new Date();
+      const diff = hackathon - now;
+      if (diff <= 0) {
+        document.getElementById('parentCountdown').textContent = '🚀 Hackathon is happening NOW!';
+        return;
+      }
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      document.getElementById('parentCountdown').textContent =
+        `⏳ ${d}d ${h}h ${m}m ${s}s to hackathon`;
+    }
+    tick();
+    setInterval(tick, 1000);
+  }
+
+  async function loadKidCards() {
+    const { data: kids } = await db.from('hackathon_users')
+      .select('*, hackathon_teams(name, icon)')
+      .eq('role', 'kid')
+      .order('xp', { ascending: false });
+
+    const totalLevels = LEVELS.length;
+    const container = document.getElementById('parentKidCards');
+    if (!kids?.length) {
+      container.innerHTML = '<p style="opacity:0.6; text-align:center;">No kids signed up yet</p>';
+      return;
+    }
+
+    container.innerHTML = kids.map(k => {
+      const levelsComplete = Math.max(0, (k.current_mission || 1) - 1);
+      const pct = Math.round((levelsComplete / totalLevels) * 100);
+      const team = k.hackathon_teams ? `${k.hackathon_teams.icon} ${k.hackathon_teams.name}` : 'No team yet';
+      const avatarHtml = k.avatar?.startsWith('data:')
+        ? `<img src="${k.avatar}" style="width:42px;height:42px;border-radius:50%;object-fit:cover;">`
+        : `<span style="font-size:28px;">${k.avatar || '🦸'}</span>`;
+      return `
+        <div class="parent-kid-card">
+          <div>${avatarHtml}</div>
+          <div class="parent-kid-info">
+            <strong>${k.display_name}</strong>
+            <span>${team} · Level ${levelsComplete}/${totalLevels} complete</span>
+            <div class="parent-kid-progress">
+              <div class="parent-kid-progress-bar" style="width:${pct}%"></div>
+            </div>
+          </div>
+          <div class="parent-kid-xp">${k.xp}⭐</div>
+        </div>`;
+    }).join('');
+  }
+
+  // Award XP
+  async function openAwardXP() {
+    const { data: kids } = await db.from('hackathon_users').select('id, display_name').eq('role', 'kid').order('display_name');
+    const sel = document.getElementById('awardKidSelect');
+    sel.innerHTML = '<option value="">Choose a kid...</option>' +
+      (kids || []).map(k => `<option value="${k.id}">${k.display_name}</option>`).join('');
+    go('parentAwardXP');
+  }
+
+  async function doAwardXP() {
+    const kidId = document.getElementById('awardKidSelect').value;
+    const amount = parseInt(document.getElementById('awardXPAmount').value);
+    const reason = document.getElementById('awardXPReason').value.trim();
+    if (!kidId) { toast('Pick a kid first!', true); return; }
+    if (!amount || amount < 1) { toast('Enter a valid XP amount!', true); return; }
+
+    const { data: kid } = await db.from('hackathon_users').select('xp, display_name').eq('id', kidId).single();
+    if (!kid) { toast('Kid not found!', true); return; }
+
+    const newXp = kid.xp + amount;
+    await db.from('hackathon_users').update({ xp: newXp }).eq('id', kidId);
+
+    // Send a system message in everyone chat
+    const msg = reason
+      ? `🌟 ${user.display_name} awarded ${kid.display_name} +${amount} XP — "${reason}"`
+      : `🌟 ${user.display_name} awarded ${kid.display_name} +${amount} XP!`;
+    await db.from('hackathon_messages').insert({
+      channel: 'everyone',
+      sender_id: user.id,
+      sender_name: user.display_name,
+      sender_avatar: user.avatar || '👨‍👩‍👧‍👦',
+      body: msg,
+      reactions: {}
+    });
+
+    showConfetti();
+    toast(`+${amount} XP awarded to ${kid.display_name}! 🌟`);
+    document.getElementById('awardXPAmount').value = '';
+    document.getElementById('awardXPReason').value = '';
+    document.getElementById('awardKidSelect').value = '';
+  }
+
+  // Level editor
+  function openLevelEditor() {
+    const container = document.getElementById('parentLevelList');
+    container.innerHTML = LEVELS.map(lvl => `
+      <div class="level-card" onclick="openEditLevel(${lvl.id})" style="max-width:100%; cursor:pointer;">
+        <div class="level-icon">${lvl.icon}</div>
+        <div class="level-info">
+          <h3>${lvl.name}</h3>
+          <span>${lvl.taskType === 'team' ? '👥 Team' : '👤 Solo'} · ${lvl.xp} XP · Tap to edit</span>
+        </div>
+      </div>`).join('');
+    go('parentLevels');
+  }
+
+  function openEditLevel(id) {
+    const lvl = LEVELS.find(l => l.id === id);
+    if (!lvl || !lvl.tasks?.[0]) return;
+    editingLevelId = id;
+    document.getElementById('editLevelName').value = lvl.name;
+    document.getElementById('editLevelInstr').value = lvl.tasks[0].instruction || '';
+    document.getElementById('editLevelPrompt').value = lvl.tasks[0].prompt || '';
+    go('parentEditLevel');
+  }
+
+  function saveEditedLevel() {
+    const lvl = LEVELS.find(l => l.id === editingLevelId);
+    if (!lvl) return;
+    lvl.name = document.getElementById('editLevelName').value.trim() || lvl.name;
+    if (lvl.tasks?.[0]) {
+      lvl.tasks[0].instruction = document.getElementById('editLevelInstr').value;
+      lvl.tasks[0].prompt = document.getElementById('editLevelPrompt').value;
+    }
+    toast('Level updated! ✅');
+    go('parentLevels');
+  }
 
   const EMOJI_REACTIONS = ['❤️','😂','🔥','👍','🎉','😮','💪','🏆'];
   let chatChannel = 'everyone';
