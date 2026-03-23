@@ -428,11 +428,42 @@
       <div class="section-label">Watch it back</div>
       <h2 class="section-title">The Full Recording 🎥</h2>
       <p class="section-desc">Miss something? Want to watch Arthur define a hackathon again? The full session is right here.</p>
-      <div class="video-wrapper">
-        <iframe
-          src="https://drive.google.com/file/d/1LZIGyGTqO027D0umoz3FMIEz-eviyGG-/preview"
+      <div class="video-wrapper" id="videoWrapper" onclick="playVideo()" style="cursor:pointer;">
+        <!-- Thumbnail shown before play -->
+        <div id="videoThumb" style="position:absolute; inset:0;">
+          <img src="codequest_thumbnail.png" alt="Code Quest Kickoff" style="width:100%; height:100%; object-fit:cover;">
+          <!-- Play button overlay -->
+          <div style="
+            position:absolute; inset:0;
+            display:flex; align-items:center; justify-content:center;
+            background:rgba(0,0,0,0.35);
+            transition:background 0.2s;">
+            <div style="
+              width:80px; height:80px;
+              background:rgba(255,255,255,0.95);
+              border-radius:50%;
+              display:flex; align-items:center; justify-content:center;
+              box-shadow:0 8px 32px rgba(0,0,0,0.4);
+              transition:transform 0.15s;">
+              <div style="width:0; height:0; border-top:22px solid transparent; border-bottom:22px solid transparent; border-left:36px solid #4f46e5; margin-left:6px;"></div>
+            </div>
+          </div>
+          <div style="
+            position:absolute; bottom:16px; left:50%; transform:translateX(-50%);
+            background:rgba(0,0,0,0.7); color:white;
+            padding:6px 16px; border-radius:100px;
+            font-size:13px; font-weight:800; white-space:nowrap;
+            font-family:'Nunito',sans-serif;">
+            ▶ Watch the full session · ~70 mins
+          </div>
+        </div>
+        <!-- iframe loads on click -->
+        <iframe id="videoFrame"
+          src=""
+          data-src="https://drive.google.com/file/d/1LZIGyGTqO027D0umoz3FMIEz-eviyGG-/preview"
           allow="autoplay"
-          allowfullscreen>
+          allowfullscreen
+          style="display:none; position:absolute; inset:0; width:100%; height:100%; border:none;">
         </iframe>
       </div>
       <p class="video-note">Recording from Google Meet · 22 March 2026 · ~70 minutes</p>
@@ -602,6 +633,17 @@
   <script src="riri-widget.js"></script>
   <script>
     const isEmbedded = new URLSearchParams(window.location.search).get('embedded') === '1';
+
+    function playVideo() {
+      const thumb = document.getElementById('videoThumb');
+      const frame = document.getElementById('videoFrame');
+      const wrapper = document.getElementById('videoWrapper');
+      frame.src = frame.dataset.src;
+      frame.style.display = 'block';
+      thumb.style.display = 'none';
+      wrapper.style.cursor = 'default';
+      wrapper.onclick = null;
+    }
 
     // Hide elements that duplicate the parent app's chrome when embedded
     if (isEmbedded) {
