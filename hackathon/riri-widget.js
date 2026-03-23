@@ -50,15 +50,15 @@ function initRiri({ context, greeting, suggestions = [] }) {
       #riri-widget-btn::before {
         content: 'ASK RIRI';
         position: absolute;
-        top: -22px;
+        top: -26px;
         left: 50%;
         transform: translateX(-50%);
         background: rgba(0,0,0,0.65);
         color: white;
-        font-size: 9px;
+        font-size: 11px;
         font-weight: 900;
-        letter-spacing: 1.5px;
-        padding: 3px 8px;
+        letter-spacing: 2px;
+        padding: 4px 10px;
         border-radius: 100px;
         white-space: nowrap;
         font-family: 'Nunito', sans-serif;
