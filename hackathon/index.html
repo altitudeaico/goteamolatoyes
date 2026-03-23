@@ -1542,8 +1542,9 @@ Make it exciting and something our whole family will enjoy playing!`
 
   // Show/hide screens
   function go(id) {
-    // Always hide the studio when navigating away
+    // Always hide full-screen overlays when navigating
     document.getElementById('studioScreen').classList.add('hide');
+    document.getElementById('chat').classList.add('hide');
     document.querySelectorAll('body > div').forEach(d => {
       if (!d.classList.contains('toast') && !d.classList.contains('xp') && d.id !== 'confettiContainer' && d.id !== 'modalContainer' && d.id !== 'ririPanel') {
         d.classList.add('hide');
@@ -2314,7 +2315,16 @@ Make it exciting and something our whole family will enjoy playing!`
     saveLastSeen(channel);
     updateUnreadBadges();
 
-    go('chat');
+    // Show chat as full-screen overlay (hide everything else first)
+    document.querySelectorAll('body > div').forEach(d => {
+      if (!d.classList.contains('toast') && !d.classList.contains('xp')
+        && d.id !== 'confettiContainer' && d.id !== 'modalContainer'
+        && d.id !== 'ririPanel' && d.id !== 'chat') {
+        d.classList.add('hide');
+      }
+    });
+    document.getElementById('chat').classList.remove('hide');
+
     await loadMessages();
     subscribeToMessages();
   }
@@ -2594,16 +2604,13 @@ Make it exciting and something our whole family will enjoy playing!`
 <style>
   /* ── CHAT ─────────────────────────────────────── */
   #chat {
+    position: fixed;
+    inset: 0;
     padding: 0 !important;
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    height: 100dvh;
-    max-width: 480px;
     background: #f7f8fc;
-  }
-  @media (min-width: 600px) {
-    #chat { height: 85vh; border-radius: 28px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,0.3); }
+    z-index: 150;
   }
 
   /* Header */
