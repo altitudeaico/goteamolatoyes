@@ -1811,9 +1811,12 @@ Keep responses SHORT (2-4 sentences usually). Only go longer if they really need
     try {
       const res = await fetch('https://pwpxachynrhmkeowxmhg.supabase.co/functions/v1/riri', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3cHhhY2h5bnJobWtlb3d4bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0ODM4NTMsImV4cCI6MjA4OTA1OTg1M30.vMzH379AZ--rY-YJljDDOwJ5xpNnJcq4dH_WfX8Yy4U'
+        },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-6',
+          model: 'claude-haiku-4-5-20251001',
           max_tokens: 1000,
           system: RIRI_SYSTEM,
           messages: ririHistory
