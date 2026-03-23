@@ -2900,10 +2900,16 @@ Make it exciting and something our whole family will enjoy playing!`
   }
 
   async function loadKidCards() {
-    const { data: kids } = await db.from('hackathon_users')
-      .select('*, hackathon_teams(name, icon)')
-      .eq('role', 'kid')
-      .order('xp', { ascending: false });
+    const [{ data: kids }, { data: teams }] = await Promise.all([
+      db.from('hackathon_users')
+        .select('*')
+        .eq('role', 'kid')
+        .order('xp', { ascending: false }),
+      db.from('hackathon_teams').select('*')
+    ]);
+
+    const teamMap = {};
+    (teams || []).forEach(t => teamMap[t.id] = t);
 
     const totalLevels = LEVELS.length;
     const container = document.getElementById('parentKidCards');
@@ -2915,7 +2921,9 @@ Make it exciting and something our whole family will enjoy playing!`
     container.innerHTML = kids.map(k => {
       const levelsComplete = Math.max(0, (k.current_mission || 1) - 1);
       const pct = Math.round((levelsComplete / totalLevels) * 100);
-      const team = k.hackathon_teams ? `${k.hackathon_teams.icon} ${k.hackathon_teams.name}` : 'No team yet';
+      const team = k.team_id && teamMap[k.team_id]
+        ? `${teamMap[k.team_id].icon} ${teamMap[k.team_id].name}`
+        : 'No team yet';
       const avatarHtml = k.avatar?.startsWith('data:')
         ? `<img src="${k.avatar}" style="width:42px;height:42px;border-radius:50%;object-fit:cover;">`
         : `<span style="font-size:28px;">${k.avatar || '🦸'}</span>`;
