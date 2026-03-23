@@ -46,6 +46,23 @@ function initRiri({ context, greeting, suggestions = [] }) {
         animation: riri-bob 3s ease-in-out infinite;
         font-family: sans-serif;
       }
+      /* ASK RIRI label */
+      #riri-widget-btn::before {
+        content: 'ASK RIRI';
+        position: absolute;
+        top: -22px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.65);
+        color: white;
+        font-size: 9px;
+        font-weight: 900;
+        letter-spacing: 1.5px;
+        padding: 3px 8px;
+        border-radius: 100px;
+        white-space: nowrap;
+        font-family: 'Nunito', sans-serif;
+      }
       @keyframes riri-bob {
         0%,100% { transform: translateY(0); }
         50% { transform: translateY(-5px); }

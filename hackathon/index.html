@@ -3385,6 +3385,22 @@ Make it exciting and something our whole family will enjoy playing!`
     transition: transform 0.2s;
     animation: riri-bounce 3s ease-in-out infinite;
   }
+  #ririBtn::before {
+    content: 'ASK RIRI';
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.6);
+    color: white;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    padding: 3px 8px;
+    border-radius: 100px;
+    white-space: nowrap;
+    font-family: 'Nunito', sans-serif;
+  }
   #ririBtn:hover { transform: scale(1.1); }
   #ririBtn .riri-notif {
     position: absolute;
