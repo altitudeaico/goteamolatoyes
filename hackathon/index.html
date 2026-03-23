@@ -2261,6 +2261,7 @@ Make it exciting and something our whole family will enjoy playing!`
   function showHome() {
     document.getElementById('xpDisplay').classList.remove('hide');
     document.getElementById('xpDisplay').textContent = '⭐ ' + user.xp;
+    document.getElementById('ririBtn').classList.remove('hide');
     if (user.role === 'parent') {
       showParentDashboard();
       return;
@@ -2634,6 +2635,10 @@ Make it exciting and something our whole family will enjoy playing!`
   function logOut() {
     localStorage.removeItem('cq');
     user = null;
+    document.getElementById('ririBtn').classList.add('hide');
+    document.getElementById('xpDisplay').classList.add('hide');
+    document.getElementById('teamPill').classList.add('hide');
+    document.getElementById('profilePill').classList.add('hide');
     go('welcome');
   }
 
@@ -3985,7 +3990,7 @@ Make it exciting and something our whole family will enjoy playing!`
 </style>
 
 <!-- Riri floating button -->
-<button id="ririBtn" onclick="toggleRiri()" aria-label="Chat with Riri">
+<button id="ririBtn" class="hide" onclick="toggleRiri()" aria-label="Chat with Riri">
   👧🏾
   <div class="riri-notif" id="ririNotif"></div>
 </button>
