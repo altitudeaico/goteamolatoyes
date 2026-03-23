@@ -3624,6 +3624,57 @@ Tone examples:
 
 Keep responses SHORT (2-4 sentences usually). Only go longer if they really need a step-by-step explanation.`;
 
+  // Builds Riri's system prompt dynamically with current context
+  function getRiriSystem() {
+    let context = RIRI_SYSTEM;
+
+    // Add current user context
+    if (user) {
+      const levelsDone = Math.max(0, (user.current_mission || 1) - 1);
+      const totalLevels = LEVELS.length;
+      context += `\n\n## Current user context\n`;
+      context += `- Name: ${user.display_name}\n`;
+      context += `- XP: ${user.xp} ⭐\n`;
+      context += `- Levels completed: ${levelsDone} of ${totalLevels}\n`;
+
+      // Current level
+      const currentMission = user.current_mission || 1;
+      const activeLvl = LEVELS.find(l => l.id === currentMission);
+      if (activeLvl) {
+        context += `- Currently on: Level ${activeLvl.id} — "${activeLvl.name}" (${activeLvl.taskType})\n`;
+        if (activeLvl.tasks?.[0]?.instruction) {
+          context += `- Level task: ${activeLvl.tasks[0].instruction.split('\n')[0]}\n`;
+        }
+      }
+
+      // If in Studio level mode
+      if (studioLevelMode && studioLevelId) {
+        const studioLvl = LEVELS.find(l => l.id === studioLevelId);
+        if (studioLvl) {
+          context += `- RIGHT NOW: Working in Claude Studio on Level ${studioLvl.id} — "${studioLvl.name}"\n`;
+          context += `- They are building something with Claude. If they ask for help, guide them on their prompt or what to ask Claude next.\n`;
+          if (studioHistory.length > 0) {
+            context += `- They have sent ${Math.floor(studioHistory.length/2)} messages to Claude in their Studio session so far.\n`;
+            // Include last Claude response snippet for context
+            const lastClaude = [...studioHistory].reverse().find(m => m.role === 'assistant');
+            if (lastClaude) {
+              const snippet = lastClaude.content.slice(0, 200).replace(/\n/g, ' ');
+              context += `- Claude's last response started with: "${snippet}..."\n`;
+            }
+          }
+        }
+      }
+
+      // Team context
+      if (user.team) {
+        context += `- Team: ${user.team.icon} ${user.team.name}\n`;
+      }
+    }
+
+    context += `\nUse this context to give highly relevant, specific help. If they're in the Studio, help them with what they're actually building right now.`;
+    return context;
+  }
+
   let ririOpen = false;
   let ririHistory = [];
   let ririGreeted = false;
@@ -3700,7 +3751,7 @@ Keep responses SHORT (2-4 sentences usually). Only go longer if they really need
         body: JSON.stringify({
           model: 'claude-haiku-4-5-20251001',
           max_tokens: 1000,
-          system: RIRI_SYSTEM,
+          system: getRiriSystem(),
           messages: ririHistory
         })
       });
