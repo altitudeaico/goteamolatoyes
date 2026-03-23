@@ -1311,98 +1311,61 @@
   <div id="modalContainer"></div>
 
   <script>
-    function showWelcome() {
-      var w = document.getElementById('welcome');
-      var l = document.getElementById('login');
-      var s = document.getElementById('signup');
-      w.classList.remove('hide'); w.style.display = 'flex';
-      l.classList.add('hide');    l.style.display = 'none';
-      s.classList.add('hide');    s.style.display = 'none';
-    }
-    function showLogin() {
-      var w = document.getElementById('welcome');
-      var l = document.getElementById('login');
-      var s = document.getElementById('signup');
-      w.classList.add('hide');    w.style.display = 'none';
-      l.classList.remove('hide'); l.style.display = 'flex';
-      s.classList.add('hide');    s.style.display = 'none';
-    }
-    function showSignup() {
-      var w = document.getElementById('welcome');
-      var l = document.getElementById('login');
-      var s = document.getElementById('signup');
-      w.classList.add('hide');    w.style.display = 'none';
-      l.classList.add('hide');    l.style.display = 'none';
-      s.classList.remove('hide'); s.style.display = 'flex';
+    function showWelcome() { authShow('authWelcome'); }
+    function showLogin()   { authShow('authLogin'); }
+    function showSignup()  { authShow('authSignup'); }
+    function authShow(id) {
+      ['authWelcome','authLogin','authSignup'].forEach(function(s) {
+        document.getElementById(s).style.display = s === id ? 'flex' : 'none';
+      });
     }
   </script>
 
-  <!-- SCREEN: Welcome -->
-  <div id="welcome" style="display:flex;">
-    <!-- Animated background blobs -->
-    <div style="position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:0;">
-      <div style="position:absolute; width:400px; height:400px; background:radial-gradient(circle, rgba(124,58,237,0.4) 0%, transparent 70%); top:-100px; right:-100px; border-radius:50%; animation:blob-float 6s ease-in-out infinite;"></div>
-      <div style="position:absolute; width:300px; height:300px; background:radial-gradient(circle, rgba(236,72,153,0.3) 0%, transparent 70%); bottom:-50px; left:-50px; border-radius:50%; animation:blob-float 8s ease-in-out infinite reverse;"></div>
-    </div>
-    <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; text-align:center; padding:40px 24px; width:100%; max-width:380px;">
-      <div style="font-size:72px; margin-bottom:8px; animation:bounce 1s ease infinite;">🚀</div>
-      <div style="font-family:'Nunito',sans-serif; font-size:13px; font-weight:900; letter-spacing:4px; text-transform:uppercase; color:rgba(255,255,255,0.5); margin-bottom:8px;">#GoTeamOlatoyes</div>
-      <h1 style="font-size:48px; font-weight:900; margin-bottom:8px; background:linear-gradient(135deg,white,#c4b5fd); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">CODE QUEST</h1>
-      <p style="font-size:16px; opacity:0.65; margin-bottom:40px; line-height:1.5;">Build real apps with AI.<br>Hackathon: Saturday 4th April 🚀</p>
-      <button class="btn btn-green" onclick="showLogin()" style="width:100%; font-size:17px; padding:18px; margin-bottom:12px; box-shadow:0 6px 20px rgba(34,197,94,0.4);">👋 I Have an Account</button>
-      <button class="btn btn-white" onclick="showSignup()" style="width:100%; font-size:17px; padding:18px;">✨ I'm New Here!</button>
-      <div style="margin-top:32px; display:flex; gap:24px; font-size:13px; color:rgba(255,255,255,0.4); font-weight:700;">
-        <span>👧 Girls Team</span>
-        <span>·</span>
-        <span>👦 Boys Team</span>
-        <span>·</span>
-        <span>🏆 Bragging rights</span>
+  <!-- SINGLE AUTH CONTAINER -->
+  <div id="authContainer" style="position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;flex-direction:column;">
+
+    <!-- Welcome -->
+    <div id="authWelcome" style="display:flex;flex-direction:column;align-items:center;text-align:center;padding:40px 24px;width:100%;max-width:380px;">
+      <div style="font-size:72px;margin-bottom:8px;">🚀</div>
+      <div style="font-size:13px;font-weight:900;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:8px;">#GoTeamOlatoyes</div>
+      <h1 style="font-size:48px;font-weight:900;margin-bottom:8px;background:linear-gradient(135deg,white,#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">CODE QUEST</h1>
+      <p style="font-size:16px;opacity:0.65;margin-bottom:40px;line-height:1.5;">Build real apps with AI.<br>Hackathon: Saturday 4th April 🚀</p>
+      <button class="btn btn-green" onclick="showLogin()" style="width:100%;font-size:17px;padding:18px;margin-bottom:12px;box-shadow:0 6px 20px rgba(34,197,94,0.4);">👋 I Have an Account</button>
+      <button class="btn btn-white" onclick="showSignup()" style="width:100%;font-size:17px;padding:18px;">✨ I'm New Here!</button>
+      <div style="margin-top:32px;display:flex;gap:24px;font-size:13px;color:rgba(255,255,255,0.4);font-weight:700;">
+        <span>👧 Girls Team</span><span>·</span><span>👦 Boys Team</span><span>·</span><span>🏆 Bragging rights</span>
       </div>
     </div>
+
+    <!-- Login -->
+    <div id="authLogin" style="display:none;flex-direction:column;width:100%;max-width:380px;padding:24px;">
+      <button onclick="showWelcome()" style="background:rgba(255,255,255,0.1);border:none;color:white;width:38px;height:38px;border-radius:50%;font-size:18px;cursor:pointer;margin-bottom:28px;font-family:'Nunito',sans-serif;">←</button>
+      <div style="font-size:52px;margin-bottom:12px;">👋</div>
+      <h1 style="font-size:32px;font-weight:900;margin-bottom:6px;">Welcome Back!</h1>
+      <p style="font-size:15px;opacity:0.6;margin-bottom:32px;">Enter your name and secret code</p>
+      <input type="text" id="nameInput" placeholder="Your name" style="width:100%;background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.2);color:white;font-size:16px;border-radius:16px;padding:16px;margin-bottom:12px;" onkeydown="if(event.key==='Enter')document.getElementById('codeInput').focus()">
+      <input type="password" id="codeInput" placeholder="Secret code" style="width:100%;background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.2);color:white;font-size:16px;border-radius:16px;padding:16px;margin-bottom:20px;" onkeydown="if(event.key==='Enter')tryLogin()">
+      <button class="btn btn-green" onclick="tryLogin()" style="width:100%;font-size:17px;padding:18px;box-shadow:0 6px 20px rgba(34,197,94,0.4);">Let's Go! 🚀</button>
+    </div>
+
+    <!-- Signup -->
+    <div id="authSignup" style="display:none;flex-direction:column;width:100%;max-width:380px;padding:24px;">
+      <button onclick="showWelcome()" style="background:rgba(255,255,255,0.1);border:none;color:white;width:38px;height:38px;border-radius:50%;font-size:18px;cursor:pointer;margin-bottom:28px;font-family:'Nunito',sans-serif;">←</button>
+      <div style="font-size:52px;margin-bottom:12px;">✨</div>
+      <h1 style="font-size:32px;font-weight:900;margin-bottom:6px;">Join the Quest!</h1>
+      <p style="font-size:15px;opacity:0.6;margin-bottom:32px;">Create your account to get started</p>
+      <input type="text" id="newName" placeholder="Your name" style="width:100%;background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.2);color:white;font-size:16px;border-radius:16px;padding:16px;margin-bottom:12px;" onkeydown="if(event.key==='Enter')document.getElementById('newCode').focus()">
+      <input type="password" id="newCode" placeholder="Make a secret code (4+ characters)" style="width:100%;background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.2);color:white;font-size:16px;border-radius:16px;padding:16px;margin-bottom:8px;" onkeydown="if(event.key==='Enter')trySignup()">
+      <p style="font-size:13px;opacity:0.5;margin-bottom:20px;">Remember your code — you'll need it to log back in!</p>
+      <button class="btn btn-green" onclick="trySignup()" style="width:100%;font-size:17px;padding:18px;box-shadow:0 6px 20px rgba(34,197,94,0.4);">Create Account 🎉</button>
+    </div>
+
   </div>
 
-  <!-- SCREEN: Login -->
-  <div id="login" class="hide">
-    <div style="position:relative; z-index:1; width:100%; max-width:380px; padding:24px;">
-      <button onclick="showWelcome()" style="background:rgba(255,255,255,0.1); border:none; color:white; width:38px; height:38px; border-radius:50%; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; margin-bottom:28px;">←</button>
-      <div style="font-size:52px; margin-bottom:12px;">👋</div>
-      <h1 style="font-size:32px; font-weight:900; margin-bottom:6px;">Welcome Back!</h1>
-      <p style="font-size:15px; opacity:0.6; margin-bottom:32px;">Enter your name and secret code</p>
-      <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:20px;">
-        <div style="position:relative;">
-          <span style="position:absolute; left:16px; top:50%; transform:translateY(-50%); font-size:18px;">😊</span>
-          <input type="text" id="nameInput" placeholder="Your name" style="padding-left:48px; width:100%; background:rgba(255,255,255,0.12); border:2px solid rgba(255,255,255,0.15); color:white; font-size:16px; border-radius:16px; padding:16px 16px 16px 48px;" onkeydown="if(event.key==='Enter') document.getElementById('codeInput').focus()">
-        </div>
-        <div style="position:relative;">
-          <span style="position:absolute; left:16px; top:50%; transform:translateY(-50%); font-size:18px;">🔑</span>
-          <input type="password" id="codeInput" placeholder="Secret code" style="padding-left:48px; width:100%; background:rgba(255,255,255,0.12); border:2px solid rgba(255,255,255,0.15); color:white; font-size:16px; border-radius:16px; padding:16px 16px 16px 48px;" onkeydown="if(event.key==='Enter') tryLogin()">
-        </div>
-      </div>
-      <button class="btn btn-green" onclick="tryLogin()" style="width:100%; font-size:17px; padding:18px; box-shadow:0 6px 20px rgba(34,197,94,0.4);">Let's Go! 🚀</button>
-    </div>
-  </div>
-
-  <!-- SCREEN: Signup -->
-  <div id="signup" class="hide">
-    <div style="position:relative; z-index:1; width:100%; max-width:380px; padding:24px;">
-      <button onclick="showWelcome()" style="background:rgba(255,255,255,0.1); border:none; color:white; width:38px; height:38px; border-radius:50%; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; margin-bottom:28px;">←</button>
-      <div style="font-size:52px; margin-bottom:12px;">✨</div>
-      <h1 style="font-size:32px; font-weight:900; margin-bottom:6px;">Join the Quest!</h1>
-      <p style="font-size:15px; opacity:0.6; margin-bottom:32px;">Create your account to get started</p>
-      <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:8px;">
-        <div style="position:relative;">
-          <span style="position:absolute; left:16px; top:50%; transform:translateY(-50%); font-size:18px;">😊</span>
-          <input type="text" id="newName" placeholder="Your name" style="width:100%; background:rgba(255,255,255,0.12); border:2px solid rgba(255,255,255,0.15); color:white; font-size:16px; border-radius:16px; padding:16px 16px 16px 48px;" onkeydown="if(event.key==='Enter') document.getElementById('newCode').focus()">
-        </div>
-        <div style="position:relative;">
-          <span style="position:absolute; left:16px; top:50%; transform:translateY(-50%); font-size:18px;">🔑</span>
-          <input type="password" id="newCode" placeholder="Make a secret code (4+ characters)" style="width:100%; background:rgba(255,255,255,0.12); border:2px solid rgba(255,255,255,0.15); color:white; font-size:16px; border-radius:16px; padding:16px 16px 16px 48px;" onkeydown="if(event.key==='Enter') trySignup()">
-        </div>
-      </div>
-      <p style="font-size:13px; opacity:0.5; margin-bottom:20px; padding-left:4px;">Remember your code — you'll need it to log back in!</p>
-      <button class="btn btn-green" onclick="trySignup()" style="width:100%; font-size:17px; padding:18px; box-shadow:0 6px 20px rgba(34,197,94,0.4);">Create Account 🎉</button>
-    </div>
-  </div>
+  <!-- Legacy IDs for go() compatibility -->
+  <div id="welcome" style="display:none;"></div>
+  <div id="login" style="display:none;"></div>
+  <div id="signup" style="display:none;"></div>
 
   <!-- SCREEN: Change Password (parents first login) -->
   <div id="changePassword" class="hide">
@@ -1971,6 +1934,9 @@ Make it exciting and something our whole family will enjoy playing!`
   }
 
   function go(id) {
+    // Hide auth container when going to any app screen
+    document.getElementById('authContainer').style.display = 'none';
+
     document.getElementById('studioScreen').classList.add('hide');
     document.getElementById('chat').classList.add('hide');
     document.getElementById('kickoffScreen').classList.add('hide');
@@ -1978,15 +1944,12 @@ Make it exciting and something our whole family will enjoy playing!`
     document.getElementById('parentKickoffScreen').classList.add('hide');
     document.getElementById('teamDash').classList.add('hide');
     document.getElementById('profileDash').classList.add('hide');
-    document.getElementById('welcome').style.display = 'none';
-    document.getElementById('login').style.display = 'none';
-    document.getElementById('signup').style.display = 'none';
 
     document.querySelectorAll('body > div').forEach(d => {
       if (!d.classList.contains('toast') && !d.classList.contains('xp')
         && d.id !== 'confettiContainer' && d.id !== 'modalContainer'
         && d.id !== 'ririPanel' && d.id !== 'teamPill' && d.id !== 'profilePill'
-        && d.id !== 'welcome' && d.id !== 'login' && d.id !== 'signup') {
+        && d.id !== 'authContainer' && d.id !== 'welcome' && d.id !== 'login' && d.id !== 'signup') {
         d.classList.add('hide');
       }
     });
