@@ -1311,21 +1311,29 @@
   <div id="modalContainer"></div>
 
   <script>
-    // Auth navigation — defined early so buttons work before main script loads
     function showWelcome() {
-      document.getElementById('welcome').style.display = 'flex';
-      document.getElementById('login').style.display = 'none';
-      document.getElementById('signup').style.display = 'none';
+      var w = document.getElementById('welcome');
+      var l = document.getElementById('login');
+      var s = document.getElementById('signup');
+      w.classList.remove('hide'); w.style.display = 'flex';
+      l.classList.add('hide');    l.style.display = 'none';
+      s.classList.add('hide');    s.style.display = 'none';
     }
     function showLogin() {
-      document.getElementById('welcome').style.display = 'none';
-      document.getElementById('login').style.display = 'flex';
-      document.getElementById('signup').style.display = 'none';
+      var w = document.getElementById('welcome');
+      var l = document.getElementById('login');
+      var s = document.getElementById('signup');
+      w.classList.add('hide');    w.style.display = 'none';
+      l.classList.remove('hide'); l.style.display = 'flex';
+      s.classList.add('hide');    s.style.display = 'none';
     }
     function showSignup() {
-      document.getElementById('welcome').style.display = 'none';
-      document.getElementById('login').style.display = 'none';
-      document.getElementById('signup').style.display = 'flex';
+      var w = document.getElementById('welcome');
+      var l = document.getElementById('login');
+      var s = document.getElementById('signup');
+      w.classList.add('hide');    w.style.display = 'none';
+      l.classList.add('hide');    l.style.display = 'none';
+      s.classList.remove('hide'); s.style.display = 'flex';
     }
   </script>
 
