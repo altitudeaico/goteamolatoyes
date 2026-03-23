@@ -541,6 +541,24 @@
       cursor: pointer; font-family:'Nunito',sans-serif;
       flex-shrink: 0;
     }
+    .studio-save-btn {
+      background: rgba(255,255,255,0.15);
+      border: 1.5px solid rgba(255,255,255,0.3);
+      color: white; border-radius: 100px;
+      padding: 6px 14px; font-size: 13px; font-weight: 800;
+      cursor: pointer; font-family: 'Nunito', sans-serif;
+      white-space: nowrap;
+    }
+    .studio-save-btn:hover { background: rgba(255,255,255,0.25); }
+    .studio-done-btn {
+      background: #22c55e;
+      border: none; color: white; border-radius: 100px;
+      padding: 6px 16px; font-size: 13px; font-weight: 900;
+      cursor: pointer; font-family: 'Nunito', sans-serif;
+      white-space: nowrap;
+      box-shadow: 0 3px 0 #16a34a;
+    }
+    .studio-done-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #16a34a; }
     .studio-title { flex: 1; }
     .studio-title strong { display: block; color: white; font-size: 15px; font-weight: 900; }
     .studio-title span { color: rgba(255,255,255,0.5); font-size: 11px; }
@@ -1125,7 +1143,7 @@
     <div style="margin-top:12px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.2); width:100%; max-width:420px;">
       <p style="font-size:13px; opacity:0.6; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:900;">Resources</p>
       <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
-        <button class="btn btn-small" onclick="go('studioScreen')" style="font-size:14px; padding:12px 16px; background:linear-gradient(135deg,#4f46e5,#7c3aed);">🤖 Claude Studio</button>
+        <button class="btn btn-small" onclick="openFreeStudio()" style="font-size:14px; padding:12px 16px; background:linear-gradient(135deg,#4f46e5,#7c3aed);">🤖 Claude Studio</button>
         <a href="prompts.html" class="btn btn-small" style="text-decoration:none; font-size:14px; padding:12px 16px;">✏️ Prompting Tips</a>
         <a href="hosting.html" class="btn btn-small" style="text-decoration:none; font-size:14px; padding:12px 16px;">🌐 How to Host</a>
         <a href="database.html" class="btn btn-small" style="text-decoration:none; font-size:14px; padding:12px 16px;">🎮 Build Quiz</a>
@@ -1242,16 +1260,28 @@
 
     <!-- Top bar -->
     <div class="studio-header">
-      <button class="studio-back" onclick="showHome()">←</button>
+      <button class="studio-back" onclick="studioGoBack()">←</button>
       <div class="studio-title">
-        <strong>🤖 Claude Studio</strong>
+        <strong id="studioTitle">🤖 Claude Studio</strong>
         <span id="studioSubtitle">Your AI workshop</span>
       </div>
-      <!-- Mobile: toggle chat/preview -->
+      <!-- Level mode: save + done buttons -->
+      <div id="studioLevelActions" style="display:none; align-items:center; gap:8px;">
+        <span id="studioSaveStatus" style="font-size:11px; color:rgba(255,255,255,0.5);"></span>
+        <button class="studio-save-btn" id="studioSaveBtn" onclick="saveStudioSession()">💾 Save</button>
+        <button class="studio-done-btn" id="studioDoneBtn" onclick="studioMarkDone()">✅ Done!</button>
+      </div>
+      <!-- Free mode: mobile toggle -->
       <div class="studio-toggle" id="studioToggle">
         <button class="studio-toggle-btn active" id="toggleChatBtn" onclick="studioShowPane('chat')">💬 Chat</button>
         <button class="studio-toggle-btn" id="togglePreviewBtn" onclick="studioShowPane('preview')">👁️ Preview</button>
       </div>
+    </div>
+
+    <!-- Level context bar (shown in level mode) -->
+    <div id="studioLevelBar" style="display:none; background:#1e1b4b; padding:10px 16px; border-bottom:1px solid #312e81; flex-shrink:0;">
+      <div style="font-size:12px; font-weight:900; color:#a5b4fc; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;" id="studioLevelName"></div>
+      <div style="font-size:13px; color:rgba(255,255,255,0.7); line-height:1.5; white-space:pre-line;" id="studioLevelInstr"></div>
     </div>
 
     <!-- Split body -->
@@ -1774,7 +1804,7 @@ Make it colorful and fun!`
         <div class="level-icon">${done ? '✅' : lvl.icon}</div>
         <div class="level-info">
           <h3>${lvl.name}${taskTypeBadge}</h3>
-          <span>${subtitle}</span>
+          <span id="levelcard-sub-${lvl.id}">${subtitle}</span>
         </div>
       `;
 
@@ -1786,13 +1816,34 @@ Make it colorful and fun!`
     });
     
     go('home');
+    // Check for saved sessions and show Continue badge
+    checkSavedSessionBadges();
+  }
+
+  async function checkSavedSessionBadges() {
+    try {
+      const { data } = await db.from('studio_sessions')
+        .select('level_id')
+        .eq('user_id', user.id);
+      if (!data?.length) return;
+      data.forEach(s => {
+        const el = document.getElementById(`levelcard-sub-${s.level_id}`);
+        if (el && !el.textContent.includes('Complete')) {
+          el.innerHTML = `<span style="color:#f59e0b; font-weight:900;">↩️ Continue session</span>`;
+        }
+      });
+    } catch(e) { /* silent */ }
   }
 
   // Start level
   function startLevel(id) {
     currentLevel = LEVELS.find(l => l.id === id);
     currentTask = 0;
-    showTask();
+    if (currentLevel.taskType === 'solo') {
+      openLevelStudio(currentLevel);
+    } else {
+      showTask();
+    }
   }
 
   // Show task
@@ -3189,6 +3240,203 @@ Keep explanations short and clear. Use emojis occasionally. Never be negative or
 
   let studioHistory = [];
   let currentPreviewCode = '';
+  let studioLevelMode = false;  // true when opened from a level
+  let studioLevelId = null;
+  let studioAutoSaveTimer = null;
+
+  // Open Studio from a solo level
+  async function openLevelStudio(lvl) {
+    studioLevelMode = true;
+    studioLevelId = lvl.id;
+    studioHistory = [];
+    currentPreviewCode = '';
+
+    // Set up level-mode UI
+    document.getElementById('studioTitle').textContent = `${lvl.icon} ${lvl.name}`;
+    document.getElementById('studioSubtitle').textContent = `Level ${lvl.id} · ${lvl.xp} XP`;
+    document.getElementById('studioLevelActions').style.display = 'flex';
+    document.getElementById('studioToggle').style.display = 'none';
+    document.getElementById('studioLevelBar').style.display = 'block';
+    document.getElementById('studioLevelName').textContent = `📋 Your task:`;
+    document.getElementById('studioLevelInstr').textContent = lvl.tasks[0]?.instruction || '';
+    document.getElementById('studioSuggestions').style.display = 'none';
+    document.getElementById('studioSaveStatus').textContent = '';
+
+    // Reset messages and preview
+    document.getElementById('studioMessages').innerHTML = '';
+    document.getElementById('previewFrame').classList.remove('visible');
+    document.getElementById('previewFrame').srcdoc = '';
+    document.getElementById('previewEmpty').style.display = 'flex';
+    document.getElementById('previewLabel').textContent = 'No preview yet';
+    document.getElementById('previewLabel').style.color = '#6b7280';
+    document.getElementById('previewCopyBtn').style.display = 'none';
+    document.getElementById('previewDeployBtn').style.display = 'none';
+    document.getElementById('previewRefreshBtn').style.display = 'none';
+
+    // Customise input placeholder
+    document.getElementById('studioInput').placeholder = lvl.tasks[0]?.prompt
+      ? 'Send the prompt below, or write your own...'
+      : 'Ask Claude for help with this task...';
+
+    document.getElementById('studioScreen').classList.remove('hide');
+    // Make sure it's visible (go() would hide other screens)
+    document.querySelectorAll('body > div').forEach(d => {
+      if (!d.classList.contains('toast') && !d.classList.contains('xp')
+        && d.id !== 'confettiContainer' && d.id !== 'modalContainer'
+        && d.id !== 'ririPanel' && d.id !== 'studioScreen') {
+        d.classList.add('hide');
+      }
+    });
+
+    // Try to load existing session
+    const loaded = await loadStudioSession(lvl.id);
+
+    if (!loaded) {
+      // Fresh start — show welcome message with the level prompt
+      const task = lvl.tasks[0];
+      let welcome = `Hey ${user.display_name}! 👋 Let's work on **${lvl.name}** together.\n\n`;
+      if (task?.instruction) welcome += `**Your task:** ${task.instruction.split('\n')[0]}\n\n`;
+      if (task?.prompt) {
+        welcome += `Here's a starter prompt you can use — just send it as-is or change it to make it yours! 👇`;
+        addStudioMsg('claude', welcome);
+        // Pre-fill input with the prompt
+        document.getElementById('studioInput').value = task.prompt;
+      } else {
+        welcome += `Type a message below and I'll help you complete it!`;
+        addStudioMsg('claude', welcome);
+      }
+    }
+
+    document.getElementById('studioInput').focus();
+  }
+
+  // Open Studio in free mode (from home Resources button)
+  function openFreeStudio() {
+    studioLevelMode = false;
+    studioLevelId = null;
+    studioHistory = [];
+    currentPreviewCode = '';
+
+    document.getElementById('studioTitle').textContent = '🤖 Claude Studio';
+    document.getElementById('studioSubtitle').textContent = 'Your AI workshop';
+    document.getElementById('studioLevelActions').style.display = 'none';
+    document.getElementById('studioToggle').style.display = 'flex';
+    document.getElementById('studioLevelBar').style.display = 'none';
+    document.getElementById('studioSuggestions').style.display = 'flex';
+    document.getElementById('studioInput').placeholder = 'Ask Claude to build something...';
+
+    document.getElementById('studioMessages').innerHTML = `
+      <div class="studio-empty">
+        <div class="big">🤖</div>
+        <p>Ask Claude to build anything!<br>A webpage, story, quiz, or game.<br>It appears live on the right ✨</p>
+      </div>`;
+    document.getElementById('previewFrame').classList.remove('visible');
+    document.getElementById('previewFrame').srcdoc = '';
+    document.getElementById('previewEmpty').style.display = 'flex';
+    document.getElementById('previewLabel').textContent = 'No preview yet';
+    document.getElementById('previewLabel').style.color = '#6b7280';
+    document.getElementById('previewCopyBtn').style.display = 'none';
+    document.getElementById('previewDeployBtn').style.display = 'none';
+    document.getElementById('previewRefreshBtn').style.display = 'none';
+
+    go('studioScreen');
+    document.getElementById('studioInput').focus();
+  }
+
+  function studioGoBack() {
+    if (studioLevelMode) {
+      showHome();
+    } else {
+      showHome();
+    }
+  }
+
+  // Save session to Supabase
+  async function saveStudioSession(silent) {
+    if (!studioLevelMode || !studioLevelId || !user) return;
+    const status = document.getElementById('studioSaveStatus');
+    if (!silent) { status.textContent = '💾 Saving...'; }
+
+    try {
+      await db.from('studio_sessions').upsert({
+        user_id: user.id,
+        level_id: studioLevelId,
+        history: studioHistory,
+        preview_html: currentPreviewCode,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'user_id,level_id' });
+
+      status.textContent = '✓ Saved';
+      setTimeout(() => { status.textContent = ''; }, 2000);
+    } catch(e) {
+      status.textContent = '⚠️ Save failed';
+    }
+  }
+
+  // Load session from Supabase
+  async function loadStudioSession(levelId) {
+    if (!user) return false;
+    try {
+      const { data } = await db.from('studio_sessions')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('level_id', levelId)
+        .single();
+
+      if (!data || !data.history?.length) return false;
+
+      studioHistory = data.history;
+      currentPreviewCode = data.preview_html || '';
+
+      // Restore messages
+      studioHistory.forEach(msg => {
+        addStudioMsg(msg.role === 'user' ? 'user' : 'claude', msg.content);
+      });
+
+      // Restore preview
+      if (currentPreviewCode) {
+        renderPreview(currentPreviewCode);
+      }
+
+      document.getElementById('studioSaveStatus').textContent = '↩️ Session restored';
+      setTimeout(() => { document.getElementById('studioSaveStatus').textContent = ''; }, 3000);
+      return true;
+    } catch(e) {
+      return false;
+    }
+  }
+
+  // Mark level done from Studio
+  async function studioMarkDone() {
+    if (!studioLevelMode || !currentLevel) return;
+
+    const btn = document.getElementById('studioDoneBtn');
+    btn.textContent = '⏳ Saving...';
+    btn.disabled = true;
+
+    // Save session first
+    await saveStudioSession(true);
+
+    // Award XP
+    const task = currentLevel.tasks[0];
+    const xp = user.xp + (task?.xp || currentLevel.xp);
+    let newMission = user.current_mission || 1;
+    if (currentLevel.id === newMission) newMission = currentLevel.id + 1;
+
+    try {
+      await db.from('hackathon_users').update({ xp, current_mission: newMission }).eq('id', user.id);
+      user.xp = xp;
+      user.current_mission = newMission;
+      localStorage.setItem('cq', JSON.stringify(user));
+    } catch(e) {
+      console.warn('XP save failed:', e);
+    }
+
+    showConfetti();
+    toast(`🎉 Level complete! +${task?.xp || currentLevel.xp} XP`);
+    studioLevelMode = false;
+    showHome();
+  }
 
   function studioShowPane(pane) {
     const chat = document.getElementById('studioChatPane');
@@ -3209,11 +3457,9 @@ Keep explanations short and clear. Use emojis occasionally. Never be negative or
   }
 
   function extractHTML(text) {
-    // Try to find a full HTML document
     const fullMatch = text.match(/<!DOCTYPE[\s\S]*<\/html>/i) ||
                       text.match(/<html[\s\S]*<\/html>/i);
     if (fullMatch) return fullMatch[0];
-    // Try code block
     const codeMatch = text.match(/```(?:html)?\n?([\s\S]*?)```/i);
     if (codeMatch) {
       const inner = codeMatch[1].trim();
@@ -3227,23 +3473,17 @@ Keep explanations short and clear. Use emojis occasionally. Never be negative or
     const frame = document.getElementById('previewFrame');
     const empty = document.getElementById('previewEmpty');
     const label = document.getElementById('previewLabel');
-    const copyBtn = document.getElementById('previewCopyBtn');
-    const deployBtn = document.getElementById('previewDeployBtn');
-    const refreshBtn = document.getElementById('previewRefreshBtn');
 
     empty.style.display = 'none';
     frame.classList.add('visible');
     frame.srcdoc = html;
     label.textContent = '✅ Live Preview';
     label.style.color = '#22c55e';
-    copyBtn.style.display = 'inline-block';
-    deployBtn.style.display = 'inline-block';
-    refreshBtn.style.display = 'inline-block';
+    document.getElementById('previewCopyBtn').style.display = 'inline-block';
+    document.getElementById('previewDeployBtn').style.display = 'inline-block';
+    document.getElementById('previewRefreshBtn').style.display = 'inline-block';
 
-    // On mobile, auto-switch to preview when something renders
-    if (window.innerWidth < 768) {
-      studioShowPane('preview');
-    }
+    if (window.innerWidth < 768) studioShowPane('preview');
   }
 
   function refreshPreview() {
@@ -3259,9 +3499,7 @@ Keep explanations short and clear. Use emojis occasionally. Never be negative or
   }
 
   function deployPreview() {
-    // Pre-fill the hosting guide flow — for now open a toast with instructions
     toast('To deploy: go to the How to Host guide! 🚀');
-    // Store the code so hosting guide can pick it up
     localStorage.setItem('studioDeployCode', currentPreviewCode);
   }
 
@@ -3281,7 +3519,6 @@ Keep explanations short and clear. Use emojis occasionally. Never be negative or
     msgs.appendChild(div);
     msgs.scrollTop = msgs.scrollHeight;
 
-    // Auto-render any HTML Claude returns
     if (from === 'claude') {
       const html = extractHTML(text);
       if (html) renderPreview(html);
@@ -3312,6 +3549,13 @@ Keep explanations short and clear. Use emojis occasionally. Never be negative or
       addStudioMsg('claude', reply);
       studioHistory.push({ role: 'assistant', content: reply });
       if (studioHistory.length > 20) studioHistory = studioHistory.slice(-20);
+
+      // Auto-save after every response in level mode
+      if (studioLevelMode) {
+        clearTimeout(studioAutoSaveTimer);
+        studioAutoSaveTimer = setTimeout(() => saveStudioSession(true), 1500);
+        document.getElementById('studioSaveStatus').textContent = '...';
+      }
     } catch(e) {
       addStudioMsg('claude', 'Connection hiccup! Try again 😅');
     }
