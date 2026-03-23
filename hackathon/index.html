@@ -988,7 +988,88 @@
       color: white;
     }
     
-    /* Task instruction highlight */
+    /* ── Kickoff alert banner ── */
+    .kickoff-banner {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #f59e0b 0%, #f97316 60%, #ef4444 100%);
+      box-shadow: 0 6px 24px rgba(245,158,11,0.5);
+      animation: kickoff-glow 2.5s ease-in-out infinite;
+    }
+    @keyframes kickoff-glow {
+      0%, 100% { box-shadow: 0 6px 24px rgba(245,158,11,0.5); }
+      50% { box-shadow: 0 8px 36px rgba(245,158,11,0.8), 0 0 0 4px rgba(245,158,11,0.2); }
+    }
+    .kickoff-banner-pulse {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%);
+      animation: shimmer 2s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    .kickoff-banner-inner {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 16px;
+      color: white;
+    }
+    .kickoff-new-badge {
+      background: white;
+      color: #f97316;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 2px 7px;
+      border-radius: 100px;
+      letter-spacing: 1px;
+      animation: pulse-badge 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse-badge {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    /* After review — subtle done state */
+    .kickoff-banner.done {
+      background: rgba(255,255,255,0.12);
+      box-shadow: none;
+      animation: none;
+    }
+    .kickoff-banner.done .kickoff-banner-pulse { display: none; }
+
+    /* Kickoff overlay confirm button */
+    .kickoff-confirm-bar {
+      position: sticky;
+      bottom: 0;
+      background: linear-gradient(0deg, #0f0e1a 60%, transparent 100%);
+      padding: 20px 20px 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .kickoff-confirm-btn {
+      background: linear-gradient(135deg, #f59e0b, #f97316);
+      border: none;
+      color: white;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 18px;
+      padding: 16px 40px;
+      border-radius: 100px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(245,158,11,0.5);
+      transition: transform 0.15s, box-shadow 0.15s;
+      width: 100%;
+      max-width: 400px;
+    }
+    .kickoff-confirm-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(245,158,11,0.6); }
+    .kickoff-confirm-btn:active { transform: translateY(0); }
+    .kickoff-confirm-btn:disabled { opacity: 0.5; }
     .instruction-box {
       background: rgba(255,255,255,0.15);
       border: 3px solid rgba(255,255,255,0.4);
@@ -1142,6 +1223,25 @@
     </div>
     <h1>Hey <span id="userName">Hero</span>! 👋</h1>
     <div id="teamBadge" class="hide" style="display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,0.2); border-radius:100px; padding:8px 18px; font-size:17px; font-weight:800; margin-bottom:10px;"></div>
+
+    <!-- Kickoff alert banner — hidden once reviewed -->
+    <div id="kickoffAlert" class="hide" onclick="openKickoff()" style="cursor:pointer; width:100%; max-width:420px; margin-bottom:16px;">
+      <div class="kickoff-banner">
+        <div class="kickoff-banner-pulse"></div>
+        <div class="kickoff-banner-inner">
+          <div style="font-size:32px; flex-shrink:0;">🎬</div>
+          <div style="flex:1; text-align:left;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:3px;">
+              <strong style="font-size:16px; font-weight:900;">Watch the Kickoff Recap!</strong>
+              <span class="kickoff-new-badge">NEW</span>
+            </div>
+            <div style="font-size:13px; opacity:0.85; line-height:1.4;">Watch the session video, see the highlights, then confirm you've reviewed it to earn <strong>+25 XP</strong> 🌟</div>
+          </div>
+          <div style="font-size:20px; flex-shrink:0; opacity:0.7;">›</div>
+        </div>
+      </div>
+    </div>
+
     <p>Pick a level to play</p>
     <div class="level-list" id="levelList"></div>
     <div style="display:flex; gap:10px; justify-content:center; margin-top:15px; flex-wrap:wrap; width:100%; max-width:420px;">
@@ -1156,7 +1256,7 @@
       <p style="font-size:13px; opacity:0.6; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:900;">Resources</p>
       <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
         <button class="btn btn-small" onclick="openFreeStudio()" style="font-size:14px; padding:12px 16px; background:linear-gradient(135deg,#4f46e5,#7c3aed);">🤖 Claude Studio</button>
-        <button class="btn btn-small" onclick="openKickoff()" style="font-size:14px; padding:12px 16px;">🎬 Kickoff Recap</button>
+        <button class="btn btn-small" id="kickoffResourceBtn" onclick="openKickoff()" style="font-size:14px; padding:12px 16px;">🎬 Kickoff Recap</button>
         <a href="prompts.html" class="btn btn-small" style="text-decoration:none; font-size:14px; padding:12px 16px;">✏️ Prompting Tips</a>
         <a href="hosting.html" class="btn btn-small" style="text-decoration:none; font-size:14px; padding:12px 16px;">🌐 How to Host</a>
         <a href="database.html" class="btn btn-small" style="text-decoration:none; font-size:14px; padding:12px 16px;">🎮 Build Quiz</a>
@@ -1559,6 +1659,13 @@ Make it exciting and something our whole family will enjoy playing!`
     if (!frame.src || frame.src === window.location.href) {
       frame.src = 'kickoff.html';
     }
+    // Show/hide confirm bar based on reviewed status
+    const reviewed = user?.kickoff_reviewed;
+    document.getElementById('kickoffConfirmBar').style.display = reviewed ? 'none' : 'flex';
+    document.getElementById('kickoffReviewedBadge').style.display = reviewed ? 'block' : 'none';
+    document.getElementById('kickoffConfirmBtn').disabled = false;
+    document.getElementById('kickoffConfirmBtn').textContent = '✅ I\'ve reviewed the kickoff! +25 XP';
+
     document.querySelectorAll('body > div').forEach(d => {
       if (!d.classList.contains('toast') && !d.classList.contains('xp')
         && d.id !== 'confettiContainer' && d.id !== 'modalContainer'
@@ -1572,6 +1679,60 @@ Make it exciting and something our whole family will enjoy playing!`
   function closeKickoff() {
     document.getElementById('kickoffScreen').classList.add('hide');
     showHome();
+  }
+
+  async function confirmKickoffReviewed() {
+    const btn = document.getElementById('kickoffConfirmBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ Saving...';
+
+    try {
+      const newXP = (user.xp || 0) + 25;
+      await db.from('hackathon_users')
+        .update({ kickoff_reviewed: true, xp: newXP })
+        .eq('id', user.id);
+
+      user.kickoff_reviewed = true;
+      user.xp = newXP;
+      localStorage.setItem('cq', JSON.stringify(user));
+
+      // Update overlay UI
+      document.getElementById('kickoffConfirmBar').style.display = 'none';
+      document.getElementById('kickoffReviewedBadge').style.display = 'block';
+
+      showConfetti();
+      toast('🎉 +25 XP! Kickoff reviewed!');
+
+      // Update home banner state for when they close
+      updateKickoffBanner();
+    } catch(e) {
+      btn.disabled = false;
+      btn.textContent = '✅ I\'ve reviewed the kickoff! +25 XP';
+      toast('Save failed — try again', true);
+    }
+  }
+
+  function updateKickoffBanner() {
+    const reviewed = user?.kickoff_reviewed;
+    const alert = document.getElementById('kickoffAlert');
+    const resourceBtn = document.getElementById('kickoffResourceBtn');
+
+    if (reviewed) {
+      // Hide the big alert
+      alert.classList.add('hide');
+      // Update resource button to show done state
+      if (resourceBtn) {
+        resourceBtn.innerHTML = '✅ Kickoff Recap';
+        resourceBtn.style.opacity = '0.7';
+      }
+    } else {
+      // Show the pulsing alert
+      alert.classList.remove('hide');
+      if (resourceBtn) {
+        resourceBtn.innerHTML = '🎬 Kickoff Recap';
+        resourceBtn.style.opacity = '';
+      }
+    }
   }
 
   // Toast
@@ -1794,6 +1955,7 @@ Make it exciting and something our whole family will enjoy playing!`
     renderAvatar(user.avatar || '🦸', document.getElementById('homeAvatar'));
     // Load team badge async
     loadUserTeam();
+    updateKickoffBanner();
     
     const list = document.getElementById('levelList');
     list.innerHTML = '';
@@ -2977,17 +3139,27 @@ Make it exciting and something our whole family will enjoy playing!`
       width:36px; height:36px; border-radius:50%; font-size:17px;
       cursor:pointer; font-family:'Nunito',sans-serif;
       display:flex; align-items:center; justify-content:center;">←</button>
-    <div>
+    <div style="flex:1;">
       <div style="font-weight:900; font-size:15px; color:white;">🎬 Kickoff Recap</div>
-      <div style="font-size:11px; color:rgba(255,255,255,0.5);">22nd March 2026</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.5);">22nd March 2026 · Watch, then confirm below</div>
     </div>
+    <div id="kickoffReviewedBadge" style="display:none; background:#22c55e; color:white; font-size:12px; font-weight:900; padding:4px 12px; border-radius:100px;">✓ Reviewed</div>
   </div>
   <iframe
     id="kickoffFrame"
     src=""
-    style="flex:1; border:none; width:100%;"
+    style="flex:1; border:none; width:100%; min-height:0;"
     allowfullscreen>
   </iframe>
+  <!-- Attestation bar — hidden once done -->
+  <div class="kickoff-confirm-bar" id="kickoffConfirmBar">
+    <p style="color:rgba(255,255,255,0.6); font-size:13px; font-weight:700; text-align:center; margin:0;">
+      Watched the video and read the recap?
+    </p>
+    <button class="kickoff-confirm-btn" id="kickoffConfirmBtn" onclick="confirmKickoffReviewed()">
+      ✅ I've reviewed the kickoff! +25 XP
+    </button>
+  </div>
 </div>
 
 <!-- SCREEN: Chat -->
