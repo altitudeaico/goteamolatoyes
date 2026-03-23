@@ -1322,8 +1322,8 @@
       <div style="font-family:'Nunito',sans-serif; font-size:13px; font-weight:900; letter-spacing:4px; text-transform:uppercase; color:rgba(255,255,255,0.5); margin-bottom:8px;">#GoTeamOlatoyes</div>
       <h1 style="font-size:48px; font-weight:900; margin-bottom:8px; background:linear-gradient(135deg,white,#c4b5fd); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">CODE QUEST</h1>
       <p style="font-size:16px; opacity:0.65; margin-bottom:40px; line-height:1.5;">Build real apps with AI.<br>Hackathon: Saturday 4th April 🚀</p>
-      <button class="btn btn-green" onclick="go('login')" style="width:100%; font-size:17px; padding:18px; margin-bottom:12px; box-shadow:0 6px 20px rgba(34,197,94,0.4);">👋 I Have an Account</button>
-      <button class="btn btn-white" onclick="go('signup')" style="width:100%; font-size:17px; padding:18px;">✨ I'm New Here!</button>
+      <button class="btn btn-green" onclick="showLogin()" style="width:100%; font-size:17px; padding:18px; margin-bottom:12px; box-shadow:0 6px 20px rgba(34,197,94,0.4);">👋 I Have an Account</button>
+      <button class="btn btn-white" onclick="showSignup()" style="width:100%; font-size:17px; padding:18px;">✨ I'm New Here!</button>
       <div style="margin-top:32px; display:flex; gap:24px; font-size:13px; color:rgba(255,255,255,0.4); font-weight:700;">
         <span>👧 Girls Team</span>
         <span>·</span>
@@ -1337,7 +1337,7 @@
   <!-- SCREEN: Login -->
   <div id="login" class="hide">
     <div style="position:relative; z-index:1; width:100%; max-width:380px; padding:24px;">
-      <button onclick="go('welcome')" style="background:rgba(255,255,255,0.1); border:none; color:white; width:38px; height:38px; border-radius:50%; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; margin-bottom:28px;">←</button>
+      <button onclick="showWelcome()" style="background:rgba(255,255,255,0.1); border:none; color:white; width:38px; height:38px; border-radius:50%; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; margin-bottom:28px;">←</button>
       <div style="font-size:52px; margin-bottom:12px;">👋</div>
       <h1 style="font-size:32px; font-weight:900; margin-bottom:6px;">Welcome Back!</h1>
       <p style="font-size:15px; opacity:0.6; margin-bottom:32px;">Enter your name and secret code</p>
@@ -1358,7 +1358,7 @@
   <!-- SCREEN: Signup -->
   <div id="signup" class="hide">
     <div style="position:relative; z-index:1; width:100%; max-width:380px; padding:24px;">
-      <button onclick="go('welcome')" style="background:rgba(255,255,255,0.1); border:none; color:white; width:38px; height:38px; border-radius:50%; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; margin-bottom:28px;">←</button>
+      <button onclick="showWelcome()" style="background:rgba(255,255,255,0.1); border:none; color:white; width:38px; height:38px; border-radius:50%; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; margin-bottom:28px;">←</button>
       <div style="font-size:52px; margin-bottom:12px;">✨</div>
       <h1 style="font-size:32px; font-weight:900; margin-bottom:6px;">Join the Quest!</h1>
       <p style="font-size:15px; opacity:0.6; margin-bottom:32px;">Create your account to get started</p>
@@ -1887,6 +1887,23 @@ Make it exciting and something our whole family will enjoy playing!`
   let currentTask = 0;
 
   // Show/hide screens
+  // ── Auth screen navigation (isolated from go()) ──
+  function showWelcome() {
+    document.getElementById('welcome').style.display = 'flex';
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('signup').style.display = 'none';
+  }
+  function showLogin() {
+    document.getElementById('welcome').style.display = 'none';
+    document.getElementById('login').style.display = 'flex';
+    document.getElementById('signup').style.display = 'none';
+  }
+  function showSignup() {
+    document.getElementById('welcome').style.display = 'none';
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('signup').style.display = 'flex';
+  }
+
   function go(id) {
     document.getElementById('studioScreen').classList.add('hide');
     document.getElementById('chat').classList.add('hide');
