@@ -34,7 +34,7 @@
     }
 
     /* App shell — caps width nicely on desktop */
-    body > div:not(.toast):not(.xp):not(#confettiContainer):not(#modalContainer):not(#ririPanel):not(#chat):not(#studioScreen):not(#kickoffScreen):not(#kickoffQuiz):not(#teamDash):not(#teamPill):not(#profilePill):not(#profileDash) {
+    body > div:not(.toast):not(.xp):not(#confettiContainer):not(#modalContainer):not(#ririPanel):not(#chat):not(#studioScreen):not(#kickoffScreen):not(#kickoffQuiz):not(#parentKickoffScreen):not(#teamDash):not(#teamPill):not(#profilePill):not(#profileDash) {
       width: 100%;
       max-width: 480px;
       display: flex;
@@ -49,7 +49,7 @@
         padding: 40px 20px;
         background: linear-gradient(160deg, #3730a3 0%, #6d28d9 100%);
       }
-      body > div:not(.toast):not(.xp):not(#confettiContainer):not(#modalContainer):not(#ririPanel):not(#chat):not(#studioScreen):not(#kickoffScreen):not(#kickoffQuiz):not(#teamDash):not(#teamPill):not(#profilePill):not(#profileDash) {
+      body > div:not(.toast):not(.xp):not(#confettiContainer):not(#modalContainer):not(#ririPanel):not(#chat):not(#studioScreen):not(#kickoffScreen):not(#kickoffQuiz):not(#parentKickoffScreen):not(#teamDash):not(#teamPill):not(#profilePill):not(#profileDash) {
         background: rgba(255,255,255,0.07);
         border-radius: 28px;
         padding: 40px 32px;
@@ -1488,6 +1488,24 @@
     <!-- Countdown -->
     <div id="parentCountdown" style="background:rgba(255,255,255,0.15); border-radius:16px; padding:14px 20px; margin-bottom:20px; font-size:22px; font-weight:900; width:100%; max-width:420px;"></div>
 
+    <!-- Parent kickoff banner -->
+    <div id="parentKickoffAlert" class="hide" onclick="openParentKickoff()" style="cursor:pointer; width:100%; max-width:420px; margin-bottom:16px;">
+      <div class="kickoff-banner">
+        <div class="kickoff-banner-pulse"></div>
+        <div class="kickoff-banner-inner">
+          <div style="font-size:28px; flex-shrink:0;">🎬</div>
+          <div style="flex:1; text-align:left;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:3px;">
+              <strong style="font-size:15px; font-weight:900;">Watch the Kickoff Recap</strong>
+              <span class="kickoff-new-badge">NEW</span>
+            </div>
+            <div style="font-size:13px; opacity:0.85; line-height:1.4;">See what the kids learned, what they're building, and how to support them.</div>
+          </div>
+          <div style="font-size:20px; flex-shrink:0; opacity:0.7;">›</div>
+        </div>
+      </div>
+    </div>
+
     <!-- Quick actions -->
     <div style="display:flex; gap:10px; width:100%; max-width:420px; margin-bottom:20px; flex-wrap:wrap; justify-content:center;">
       <button class="btn btn-yellow" style="flex:1; min-width:120px; padding:14px; font-size:16px;" onclick="openChat('everyone')">💬 Chat</button>
@@ -1503,6 +1521,7 @@
     </div>
 
     <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center; width:100%; max-width:420px;">
+      <button class="btn btn-small" onclick="openParentKickoff()" style="font-size:14px; padding:12px 16px;" id="parentKickoffResourceBtn">🎬 Kickoff Recap</button>
       <a href="hosting.html" class="btn btn-small" style="text-decoration:none; font-size:14px; padding:12px 16px;">🌐 Hosting Guide</a>
       <a href="database.html" class="btn btn-small" style="text-decoration:none; font-size:14px; padding:12px 16px;">🎮 Quiz Guide</a>
       <button class="btn btn-small" style="font-size:14px; padding:12px 16px; color:#fca5a5; border-color:#fca5a5;" onclick="logOut()">🚪 Log Out</button>
@@ -1861,6 +1880,7 @@ Make it exciting and something our whole family will enjoy playing!`
     document.getElementById('chat').classList.add('hide');
     document.getElementById('kickoffScreen').classList.add('hide');
     document.getElementById('kickoffQuiz').classList.add('hide');
+    document.getElementById('parentKickoffScreen').classList.add('hide');
     document.getElementById('teamDash').classList.add('hide');
     document.getElementById('profileDash').classList.add('hide');
     document.querySelectorAll('body > div').forEach(d => {
@@ -1873,7 +1893,62 @@ Make it exciting and something our whole family will enjoy playing!`
     document.getElementById(id).classList.remove('hide');
   }
 
-  function openKickoff() {
+  function openParentKickoff() {
+    const frame = document.getElementById('parentKickoffFrame');
+    if (!frame.src || !frame.src.includes('kickoff')) {
+      frame.src = 'kickoff.html?embedded=1';
+    }
+    const watched = user?.kickoff_reviewed;
+    document.getElementById('parentKickoffConfirmBar').style.display = watched ? 'none' : 'flex';
+    document.getElementById('parentKickoffViewedBadge').style.display = watched ? 'block' : 'none';
+
+    document.querySelectorAll('body > div').forEach(d => {
+      if (!d.classList.contains('toast') && !d.classList.contains('xp')
+        && d.id !== 'confettiContainer' && d.id !== 'modalContainer'
+        && d.id !== 'ririPanel' && d.id !== 'parentKickoffScreen') {
+        d.classList.add('hide');
+      }
+    });
+    document.getElementById('parentKickoffScreen').classList.remove('hide');
+  }
+
+  function closeParentKickoff() {
+    document.getElementById('parentKickoffScreen').classList.add('hide');
+    showHome();
+  }
+
+  async function markParentKickoffWatched() {
+    const btn = document.getElementById('parentKickoffConfirmBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ Saving...';
+    try {
+      await db.from('hackathon_users').update({ kickoff_reviewed: true }).eq('id', user.id);
+      user.kickoff_reviewed = true;
+      localStorage.setItem('cq', JSON.stringify(user));
+      document.getElementById('parentKickoffConfirmBar').style.display = 'none';
+      document.getElementById('parentKickoffViewedBadge').style.display = 'block';
+      updateParentKickoffBanner();
+      toast('✅ Kickoff marked as watched!');
+    } catch(e) {
+      btn.disabled = false;
+      btn.textContent = '✅ Mark as Watched';
+    }
+  }
+
+  function updateParentKickoffBanner() {
+    const watched = user?.kickoff_reviewed;
+    const alert = document.getElementById('parentKickoffAlert');
+    const btn = document.getElementById('parentKickoffResourceBtn');
+    if (alert) {
+      if (watched) {
+        alert.classList.add('hide');
+        if (btn) { btn.innerHTML = '✅ Kickoff Recap'; btn.style.opacity = '0.7'; }
+      } else {
+        alert.classList.remove('hide');
+        if (btn) { btn.innerHTML = '🎬 Kickoff Recap'; btn.style.opacity = ''; }
+      }
+    }
+  }
     const frame = document.getElementById('kickoffFrame');
     if (!frame.src || frame.src === window.location.href || !frame.src.includes('kickoff')) {
       frame.src = 'kickoff.html?embedded=1';
@@ -2741,6 +2816,7 @@ Make it exciting and something our whole family will enjoy playing!`
     go('parentDash');
     startParentCountdown();
     loadKidCards();
+    updateParentKickoffBanner();
   }
 
   function startParentCountdown() {
@@ -3705,6 +3781,32 @@ Make it exciting and something our whole family will enjoy playing!`
       🧠 Test My Knowledge! +25 XP
     </button>
     <div id="kickoffAttemptInfo" style="font-size:12px; color:rgba(255,255,255,0.4); font-family:'Nunito',sans-serif; text-align:center;"></div>
+  </div>
+
+</div>
+
+<!-- SCREEN: Parent Kickoff Recap -->
+<div id="parentKickoffScreen" class="hide" style="
+  position:fixed; inset:0; z-index:150;
+  display:flex; flex-direction:column;
+  background:#0f0e1a;">
+
+  <div style="display:flex; align-items:center; gap:12px; padding:12px 16px; background:rgba(255,255,255,0.05); border-bottom:1px solid rgba(255,255,255,0.1); flex-shrink:0;">
+    <button onclick="closeParentKickoff()" style="background:rgba(255,255,255,0.1); border:none; color:white; width:36px; height:36px; border-radius:50%; font-size:17px; cursor:pointer; font-family:'Nunito',sans-serif; display:flex; align-items:center; justify-content:center;">←</button>
+    <div style="flex:1;">
+      <div style="font-weight:900; font-size:15px; color:white; font-family:'Nunito',sans-serif;">🎬 Kickoff Recap</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.5); font-family:'Nunito',sans-serif;">22nd March 2026 · Parents' view</div>
+    </div>
+    <div id="parentKickoffViewedBadge" style="display:none; background:#22c55e; color:white; font-size:12px; font-weight:900; padding:4px 12px; border-radius:100px; font-family:'Nunito',sans-serif;">✓ Watched</div>
+  </div>
+
+  <iframe id="parentKickoffFrame" src="" style="flex:1; border:none; width:100%; min-height:0;" allowfullscreen></iframe>
+
+  <div id="parentKickoffConfirmBar" style="background:#1a1730; border-top:1px solid rgba(255,255,255,0.1); padding:14px 20px; display:flex; flex-direction:column; align-items:center; gap:8px; flex-shrink:0;">
+    <p style="color:rgba(255,255,255,0.55); font-size:13px; font-weight:700; text-align:center; margin:0; font-family:'Nunito',sans-serif;">Watched the session? Mark it so you can find it easily later.</p>
+    <button class="kickoff-confirm-btn" id="parentKickoffConfirmBtn" onclick="markParentKickoffWatched()">
+      ✅ Mark as Watched
+    </button>
   </div>
 
 </div>
