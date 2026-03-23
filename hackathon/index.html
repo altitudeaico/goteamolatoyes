@@ -34,7 +34,7 @@
     }
 
     /* App shell — caps width nicely on desktop */
-    body > div:not(.toast):not(.xp):not(#confettiContainer):not(#modalContainer):not(#ririPanel):not(#chat):not(#studioScreen):not(#kickoffScreen) {
+    body > div:not(.toast):not(.xp):not(#confettiContainer):not(#modalContainer):not(#ririPanel):not(#chat):not(#studioScreen):not(#kickoffScreen):not(#teamDash):not(#teamPill) {
       width: 100%;
       max-width: 480px;
       display: flex;
@@ -49,7 +49,7 @@
         padding: 40px 20px;
         background: linear-gradient(160deg, #3730a3 0%, #6d28d9 100%);
       }
-      body > div:not(.toast):not(.xp):not(#confettiContainer):not(#modalContainer):not(#ririPanel):not(#chat):not(#studioScreen):not(#kickoffScreen) {
+      body > div:not(.toast):not(.xp):not(#confettiContainer):not(#modalContainer):not(#ririPanel):not(#chat):not(#studioScreen):not(#kickoffScreen):not(#teamDash):not(#teamPill) {
         background: rgba(255,255,255,0.07);
         border-radius: 28px;
         padding: 40px 32px;
@@ -988,7 +988,77 @@
       color: white;
     }
     
-    /* ── Kickoff alert banner ── */
+    /* ── Team pill (top-left, mirrors XP pill) ── */
+    .team-pill {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      border: 1.5px solid rgba(255,255,255,0.25);
+      border-radius: 100px;
+      padding: 8px 16px 8px 12px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 14px;
+      color: white;
+      cursor: pointer;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s, transform 0.1s;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    }
+    .team-pill:hover { background: rgba(255,255,255,0.25); transform: scale(1.03); }
+    .team-pill:active { transform: scale(0.97); }
+
+    /* Team action buttons */
+    .team-action-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 16px 12px;
+      border: none;
+      border-radius: 18px;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 14px;
+      color: white;
+      transition: transform 0.15s, opacity 0.15s;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+    }
+    .team-action-btn:hover { transform: translateY(-2px); opacity: 0.95; }
+    .team-action-btn:active { transform: translateY(0); }
+
+    /* Team member card */
+    .team-member-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .team-member-card.is-me {
+      background: rgba(79,70,229,0.2);
+      border-color: rgba(99,102,241,0.4);
+    }
+    .team-member-avatar {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; flex-shrink: 0;
+    }
+    .team-member-info { flex: 1; }
+    .team-member-info strong { display:block; font-size:15px; font-weight:900; color:white; font-family:'Nunito',sans-serif; }
+    .team-member-info span { font-size:12px; color:rgba(255,255,255,0.5); font-family:'Nunito',sans-serif; }
+    .team-member-xp { font-size:15px; font-weight:900; color:#fbbf24; font-family:'Nunito',sans-serif; }
     .kickoff-banner {
       position: relative;
       border-radius: 20px;
@@ -1119,6 +1189,10 @@
 <body>
 
   <div class="xp hide" id="xpDisplay">⭐ 0</div>
+  <div class="team-pill hide" id="teamPill" onclick="openTeamDash()">
+    <span id="teamPillIcon">👥</span>
+    <span id="teamPillName">My Team</span>
+  </div>
   <div class="toast" id="toast"></div>
   <div id="confettiContainer"></div>
   <div id="modalContainer"></div>
@@ -1642,12 +1716,14 @@ Make it exciting and something our whole family will enjoy playing!`
 
   // Show/hide screens
   function go(id) {
-    // Always hide full-screen overlays when navigating
     document.getElementById('studioScreen').classList.add('hide');
     document.getElementById('chat').classList.add('hide');
     document.getElementById('kickoffScreen').classList.add('hide');
+    document.getElementById('teamDash').classList.add('hide');
     document.querySelectorAll('body > div').forEach(d => {
-      if (!d.classList.contains('toast') && !d.classList.contains('xp') && d.id !== 'confettiContainer' && d.id !== 'modalContainer' && d.id !== 'ririPanel') {
+      if (!d.classList.contains('toast') && !d.classList.contains('xp')
+        && d.id !== 'confettiContainer' && d.id !== 'modalContainer'
+        && d.id !== 'ririPanel' && d.id !== 'teamPill') {
         d.classList.add('hide');
       }
     });
@@ -2217,6 +2293,11 @@ Make it exciting and something our whole family will enjoy playing!`
       badge.classList.remove('hide');
       badge.style.display = 'inline-flex';
       document.getElementById('joinTeamBtn').style.display = 'none';
+      // Update team pill
+      const pill = document.getElementById('teamPill');
+      document.getElementById('teamPillIcon').textContent = team.icon;
+      document.getElementById('teamPillName').textContent = team.name;
+      pill.classList.remove('hide');
     }
   }
 
@@ -3173,6 +3254,85 @@ Make it exciting and something our whole family will enjoy playing!`
 
 </div>
 
+<!-- SCREEN: Team Dashboard -->
+<div id="teamDash" class="hide" style="
+  position:fixed; inset:0; z-index:150;
+  display:flex; flex-direction:column;
+  background:#0f0e1a; overflow-y:auto;">
+
+  <!-- Header -->
+  <div id="teamDashHeader" style="
+    padding:16px 16px 0;
+    flex-shrink:0;">
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+      <button onclick="closeTeamDash()" style="
+        background:rgba(255,255,255,0.1); border:none; color:white;
+        width:36px; height:36px; border-radius:50%; font-size:17px;
+        cursor:pointer; display:flex; align-items:center; justify-content:center;
+        font-family:'Nunito',sans-serif; flex-shrink:0;">←</button>
+      <div>
+        <div id="teamDashName" style="font-weight:900; font-size:20px; color:white; font-family:'Nunito',sans-serif;"></div>
+        <div style="font-size:12px; color:rgba(255,255,255,0.5); font-family:'Nunito',sans-serif;">Your team · Code Quest 2026</div>
+      </div>
+    </div>
+
+    <!-- Team XP bar -->
+    <div style="background:rgba(255,255,255,0.06); border-radius:16px; padding:16px; margin-bottom:16px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <span style="font-size:13px; font-weight:900; color:rgba(255,255,255,0.6); font-family:'Nunito',sans-serif; text-transform:uppercase; letter-spacing:1px;">Team XP</span>
+        <span id="teamDashXP" style="font-size:22px; font-weight:900; color:#fbbf24; font-family:'Nunito',sans-serif;">⭐ 0</span>
+      </div>
+      <div style="background:rgba(255,255,255,0.1); border-radius:100px; height:8px; overflow:hidden;">
+        <div id="teamDashXPBar" style="height:100%; background:linear-gradient(90deg,#fbbf24,#f97316); border-radius:100px; width:0%; transition:width 0.8s;"></div>
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;">
+      <button class="team-action-btn" onclick="openChat('everyone'); closeTeamDash();" style="background:linear-gradient(135deg,#4f46e5,#7c3aed);">
+        <span style="font-size:24px;">💬</span>
+        <span>Team Chat</span>
+      </button>
+      <button class="team-action-btn" id="meetingBtn" onclick="startMeeting()" style="background:linear-gradient(135deg,#059669,#10b981);">
+        <span style="font-size:24px;">📹</span>
+        <span>Start Meeting</span>
+      </button>
+      <button class="team-action-btn" onclick="openFreeStudio(); closeTeamDash();" style="background:linear-gradient(135deg,#7c3aed,#a855f7);">
+        <span style="font-size:24px;">🤖</span>
+        <span>Claude Studio</span>
+      </button>
+      <button class="team-action-btn" onclick="closeTeamDash(); go('leaders');" style="background:linear-gradient(135deg,#d97706,#f59e0b);">
+        <span style="font-size:24px;">🏆</span>
+        <span>Leaderboard</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Meeting link (shown after starting) -->
+  <div id="meetingLinkBox" style="display:none; margin:0 16px 16px; background:rgba(5,150,105,0.15); border:1.5px solid rgba(5,150,105,0.4); border-radius:16px; padding:14px 16px;">
+    <p style="font-size:13px; font-weight:900; color:#34d399; margin-bottom:8px; font-family:'Nunito',sans-serif;">📹 Meeting room ready! Share this with your team:</p>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <code id="meetingLinkText" style="flex:1; font-size:13px; color:white; background:rgba(0,0,0,0.3); padding:8px 12px; border-radius:10px; word-break:break-all;"></code>
+      <button onclick="copyMeetingLink()" style="background:#059669; border:none; color:white; padding:8px 14px; border-radius:10px; font-weight:900; font-size:13px; cursor:pointer; font-family:'Nunito',sans-serif; white-space:nowrap;">📋 Copy</button>
+    </div>
+    <a id="meetingLinkAnchor" href="" target="_blank" style="display:block; margin-top:10px; text-align:center; background:#059669; color:white; padding:10px; border-radius:12px; font-weight:900; font-size:15px; text-decoration:none; font-family:'Nunito',sans-serif;">🚀 Join Meeting</a>
+  </div>
+
+  <!-- Team members -->
+  <div style="padding:0 16px 16px; flex:1;">
+    <p style="font-size:12px; font-weight:900; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:12px; font-family:'Nunito',sans-serif;">Team Members</p>
+    <div id="teamMemberList" style="display:flex; flex-direction:column; gap:10px;"></div>
+  </div>
+
+  <!-- Hackathon countdown -->
+  <div style="margin:0 16px 32px; background:rgba(251,191,36,0.08); border:1.5px solid rgba(251,191,36,0.2); border-radius:16px; padding:14px 16px; text-align:center;">
+    <div style="font-size:12px; font-weight:900; color:#fbbf24; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; font-family:'Nunito',sans-serif;">Hackathon Countdown</div>
+    <div id="teamDashCountdown" style="font-size:28px; font-weight:900; color:white; font-family:'Nunito',sans-serif;"></div>
+    <div style="font-size:12px; color:rgba(255,255,255,0.5); margin-top:2px; font-family:'Nunito',sans-serif;">Saturday 4th April · 6:30pm</div>
+  </div>
+
+</div>
+
 <!-- SCREEN: Chat -->
 <div id="chat" class="hide">
   <div class="chat-header">
@@ -3630,7 +3790,112 @@ Keep explanations short and clear. Use emojis occasionally. Never be negative or
     document.getElementById('inlineClaudeInput').focus();
   }
 
-  // ── Claude Studio ──
+  // ── Team Dashboard ──────────────────────────────
+
+  async function openTeamDash() {
+    if (!user?.team_id) { toast('Join a team first!', true); return; }
+
+    // Show overlay
+    document.querySelectorAll('body > div').forEach(d => {
+      if (!d.classList.contains('toast') && !d.classList.contains('xp')
+        && d.id !== 'confettiContainer' && d.id !== 'modalContainer'
+        && d.id !== 'ririPanel' && d.id !== 'teamDash' && d.id !== 'teamPill') {
+        d.classList.add('hide');
+      }
+    });
+    document.getElementById('teamDash').classList.remove('hide');
+
+    // Header
+    const t = user.team;
+    document.getElementById('teamDashName').textContent = `${t?.icon || '👥'} ${t?.name || 'My Team'}`;
+
+    // Countdown
+    updateTeamCountdown();
+    if (!window._teamCountdownInterval) {
+      window._teamCountdownInterval = setInterval(updateTeamCountdown, 1000);
+    }
+
+    // Load members
+    await loadTeamMembers();
+
+    // Reset meeting box
+    document.getElementById('meetingLinkBox').style.display = 'none';
+  }
+
+  function closeTeamDash() {
+    document.getElementById('teamDash').classList.add('hide');
+    clearInterval(window._teamCountdownInterval);
+    window._teamCountdownInterval = null;
+    showHome();
+  }
+
+  async function loadTeamMembers() {
+    const { data: members } = await db.from('hackathon_users')
+      .select('id, display_name, avatar, xp, current_mission')
+      .eq('team_id', user.team_id)
+      .eq('role', 'kid')
+      .order('xp', { ascending: false });
+
+    if (!members?.length) return;
+
+    const totalXP = members.reduce((s, m) => s + (m.xp || 0), 0);
+    document.getElementById('teamDashXP').textContent = `⭐ ${totalXP}`;
+    // Bar relative to 1000 XP max
+    document.getElementById('teamDashXPBar').style.width = Math.min(100, totalXP / 10) + '%';
+
+    const list = document.getElementById('teamMemberList');
+    list.innerHTML = members.map(m => {
+      const isMe = m.id === user.id;
+      const levelDone = Math.max(0, (m.current_mission || 1) - 1);
+      const avatarHtml = m.avatar?.startsWith('data:')
+        ? `<img src="${m.avatar}" style="width:46px;height:46px;border-radius:50%;object-fit:cover;">`
+        : `<span style="font-size:26px;">${m.avatar || '🦸'}</span>`;
+      return `
+        <div class="team-member-card ${isMe ? 'is-me' : ''}">
+          <div class="team-member-avatar">${avatarHtml}</div>
+          <div class="team-member-info">
+            <strong>${m.display_name}${isMe ? ' 👈 you' : ''}</strong>
+            <span>Level ${levelDone} complete · ${levelDone} of 5 solo done</span>
+          </div>
+          <div class="team-member-xp">⭐ ${m.xp || 0}</div>
+        </div>`;
+    }).join('');
+  }
+
+  function startMeeting() {
+    const teamSlug = (user.team?.name || 'team').toLowerCase().replace(/\s+/g, '-');
+    const roomName = `codequest-olatoyes-${teamSlug}`;
+    const meetingUrl = `https://meet.jit.si/${roomName}`;
+
+    document.getElementById('meetingLinkText').textContent = meetingUrl;
+    document.getElementById('meetingLinkAnchor').href = meetingUrl;
+    document.getElementById('meetingLinkBox').style.display = 'block';
+
+    // Open automatically
+    window.open(meetingUrl, '_blank');
+  }
+
+  function copyMeetingLink() {
+    const link = document.getElementById('meetingLinkText').textContent;
+    navigator.clipboard.writeText(link).then(() => {
+      const btn = event.target;
+      btn.textContent = '✅ Copied!';
+      setTimeout(() => btn.textContent = '📋 Copy', 2000);
+    });
+  }
+
+  function updateTeamCountdown() {
+    const target = new Date('2026-04-04T18:30:00');
+    const now = new Date();
+    const diff = target - now;
+    if (diff <= 0) { document.getElementById('teamDashCountdown').textContent = "🎉 It's Hackathon Day!"; return; }
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    document.getElementById('teamDashCountdown').textContent =
+      `${d}d ${h}h ${m}m ${s}s`;
+  }
 
   let studioHistory = [];
   let currentPreviewCode = '';
