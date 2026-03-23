@@ -1389,134 +1389,145 @@
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3cHhhY2h5bnJobWtlb3d4bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0ODM4NTMsImV4cCI6MjA4OTA1OTg1M30.vMzH379AZ--rY-YJljDDOwJ5xpNnJcq4dH_WfX8Yy4U'
   );
 
-  // LEVELS - Updated with clearer instructions, task types, and simpler prompts
+  // LEVELS
   const LEVELS = [
     {
-      id: 1, 
-      name: "Say Hello", 
-      icon: "👋", 
+      id: 1,
+      name: "Say Hello",
+      icon: "👋",
       xp: 50,
-      taskType: "solo", // solo or team
+      taskType: "solo",
       tasks: [
-        { 
-          emoji: "🤖", 
-          title: "Meet Claude", 
-          instruction: "Go to claude.ai and type 'Hello Claude!' then press Enter.",
-          xp: 50 
+        {
+          emoji: "🤖",
+          title: "Meet Claude",
+          instruction: "You're about to meet Claude — the AI you'll be building with throughout Code Quest!\n\nThe prompt is ready below. Just hit Send and see what Claude says back.\n\nWhen you're happy, tap ✅ Done!",
+          xp: 50,
+          prompt: `Hello Claude! My name is [YOUR NAME]. I'm taking part in a coding hackathon called Code Quest. Can you introduce yourself and tell me one cool thing you can help me build?`
         }
       ]
     },
     {
-      id: 2, 
-      name: "Ask a Question", 
-      icon: "❓", 
+      id: 2,
+      name: "Ask a Question",
+      icon: "❓",
       xp: 75,
       taskType: "solo",
       tasks: [
-        { 
-          emoji: "💬", 
-          title: "Ask Claude Anything", 
-          instruction: "Copy the text below and paste it into Claude. Change the topic to something YOU want to learn about!",
+        {
+          emoji: "💬",
+          title: "Ask Claude Anything",
+          instruction: "Now let's see what Claude actually knows!\n\nEdit the prompt below — replace [SOMETHING YOU'RE CURIOUS ABOUT] with a topic YOU genuinely want to learn about. It can be anything: football, space, animals, music, whatever!\n\nHit Send and see what Claude says. Ask follow-up questions if you want to go deeper.\n\nWhen you're done exploring, tap ✅ Done!",
           xp: 75,
-          prompt: `Hi Claude! Can you explain how [PICK SOMETHING FUN - like video games, space, or animals] works? Keep it simple and fun!`
+          prompt: `Can you explain how [SOMETHING YOU'RE CURIOUS ABOUT - like black holes, the Premier League, or how planes fly] works? Keep it fun and simple, like you're explaining to a 10 year old. Use emojis!`
         }
       ]
     },
     {
-      id: 3, 
-      name: "Get Creative", 
-      icon: "📖", 
+      id: 3,
+      name: "Get Creative",
+      icon: "📖",
       xp: 75,
       taskType: "solo",
       tasks: [
-        { 
-          emoji: "✨", 
-          title: "Get a Story", 
-          instruction: "Step 1: Open claude.ai in a new tab.\nStep 2: Copy the text below using the button.\nStep 3: Paste it into Claude (tap the message box, then paste).\nStep 4: Change [YOUR NAME] to your actual name, and [YOUR FAVORITE THING] to something you love — like a dragon, football, or book.\nStep 5: Press Enter and read your story!\nStep 6: Come back here and tap ✅ I Did It!",
+        {
+          emoji: "✨",
+          title: "Get Your Story",
+          instruction: "Time to get creative! Claude is going to write you a personalised adventure story.\n\nEdit the prompt below — replace [YOUR NAME] and [YOUR FAVOURITE THING] with your actual details. The more specific you are, the better the story!\n\nOnce you have your story, try asking Claude to make it longer, add a twist, or change the ending. Keep going until you love it!\n\nTap ✅ Done when you're happy.",
           xp: 75,
-          prompt: `Write me a short 5-sentence adventure story where [YOUR NAME] discovers a magical [YOUR FAVORITE THING - like a dragon, computer, or book]. Make it exciting!`
+          prompt: `Write me a short adventure story (about 8 sentences) where [YOUR NAME] discovers a magical [YOUR FAVOURITE THING - like a horse, football, or computer]. Make it exciting with a surprise ending!`
         }
       ]
     },
     {
-      id: 4, 
-      name: "Build a Page", 
-      icon: "🎨", 
+      id: 4,
+      name: "Build a Page",
+      icon: "🎨",
       xp: 100,
       taskType: "solo",
       tasks: [
-        { 
-          emoji: "🖥️", 
-          title: "Make YOUR Webpage", 
-          instruction: "Step 1: Open claude.ai in a new tab.\nStep 2: Copy the text below.\nStep 3: Paste it into Claude.\nStep 4: Replace [TYPE YOUR NAME], [TYPE A COLOR], and [TYPE YOUR HOBBY] with your real answers.\nStep 5: Press Enter — Claude will write code for your webpage!\nStep 6: Come back here and tap ✅ I Did It!",
+        {
+          emoji: "🖥️",
+          title: "Build Your Webpage",
+          instruction: "This is where it gets real — you're going to build an actual webpage about YOU!\n\nEdit the prompt below and fill in YOUR details. The more personality you put in, the better it'll look.\n\nWatch the preview panel on the right — your page will appear as Claude builds it! Keep refining it: change colours, add sections, make it yours.\n\nTap ✅ Done when you love what you see in the preview.",
           xp: 100,
-          prompt: `Make me a fun webpage about me!
+          prompt: `Build me a fun personal webpage about me!
 
-My name is: [TYPE YOUR NAME]
-My favorite color is: [TYPE A COLOR]
-I love: [TYPE YOUR HOBBY]
+My name is: [YOUR NAME]
+My favourite colour is: [COLOUR]
+I love: [YOUR HOBBIES AND INTERESTS]
+My team is: [GIRLS or BOYS]
+My favourite thing about Code Quest: [ONE THING]
 
-Make it colorful with big text and emojis! Show me the code.`
+Make it colourful with big text, emojis, and a cool animated background. Include a section called "My Favourite Things" with a list. Make it look amazing on a phone screen.`
         }
       ]
     },
     {
-      id: 5, 
-      name: "Make it Cool", 
-      icon: "⚡", 
+      id: 5,
+      name: "Make it Cool",
+      icon: "⚡",
       xp: 100,
       taskType: "solo",
       tasks: [
-        { 
-          emoji: "🌟", 
-          title: "Upgrade Your Page", 
-          instruction: "Copy this text and paste it into the SAME Claude chat where you made your webpage!",
+        {
+          emoji: "🌟",
+          title: "Level Up Your Page",
+          instruction: "Your webpage is good — now let's make it AMAZING.\n\nThe prompt below gives Claude a list of upgrades to add. But here's the challenge: edit it! Replace or add things that feel like YOU. What would make YOUR page stand out?\n\nWatch the preview update in real time. If you don't like something, just tell Claude to change it.\n\nTap ✅ Done when your page looks genuinely impressive.",
           xp: 100,
-          prompt: `Make my webpage even cooler! Add:
-- Glowing text effects
-- A fun animated background
-- Some fun animations when I hover over things
+          prompt: `Can you make my webpage even better? I'd like you to:
 
-Update the code!`
+1. Add a stunning animated background (shooting stars, floating bubbles, or something creative)
+2. Make my name display in a big bold style with a glow or shadow effect
+3. Add smooth animations when the page loads — things should fade in
+4. Add a countdown timer to 4th April 2026 at 6:30pm labelled "Hackathon in..."
+5. Make sure it looks perfect on a phone
+
+Keep everything else the same and give me the full updated page.`
         }
       ]
     },
     {
-      id: 6, 
-      name: "Build a Game", 
-      icon: "🎮", 
+      id: 6,
+      name: "Build a Game",
+      icon: "🎮",
       xp: 150,
       taskType: "team",
       tasks: [
-        { 
-          emoji: "🎯", 
-          title: "Make a Quiz Game", 
-          instruction: "Work with your team! Copy this text to Claude and pick a topic your team agrees on.",
+        {
+          emoji: "🎯",
+          title: "Build Your Quiz Game",
+          instruction: "Work with your team! Agree on a topic your whole team loves — something the whole family can play on hackathon day.\n\nCopy the prompt below, customise it with your topic and team name, then use it in Claude Studio to build your quiz.\n\nKeep adding questions and improving it together until it's ready to show the family!\n\nTap ✅ Done when your quiz is built and working.",
           xp: 150,
-          prompt: `Make me a fun quiz game about [YOUR TEAM'S TOPIC - like football, movies, music, or animals].
+          prompt: `Build us a fun quiz game for our family hackathon!
 
-Include:
-- 5 multiple choice questions
-- Buttons to click for answers  
-- Tell me if I'm right or wrong
-- Keep score at the end
+Our team name is: [YOUR TEAM NAME]
+Our quiz topic is: [YOUR TOPIC - e.g. football, animals, movies]
 
-Make it colorful and fun!`
+Please make:
+- 10 multiple choice questions about our topic
+- 4 answer buttons per question (A, B, C, D)
+- Show immediately if the answer is right or wrong
+- A score that adds up as we play
+- A fun results screen at the end
+- Colourful design that looks great on a phone
+
+Make it exciting and something our whole family will enjoy playing!`
         }
       ]
     },
     {
-      id: 7, 
-      name: "Hackathon Ready!", 
-      icon: "🏆", 
+      id: 7,
+      name: "Hackathon Ready!",
+      icon: "🏆",
       xp: 200,
       taskType: "team",
       tasks: [
-        { 
-          emoji: "🚀", 
-          title: "You're Ready!", 
-          instruction: "Amazing work! You've learned all the skills for the hackathon. On April 4th, your team will build an awesome quiz game together!",
-          xp: 200 
+        {
+          emoji: "🚀",
+          title: "You're Ready!",
+          instruction: "You've built a real webpage and a real quiz game using AI. That's genuinely impressive!\n\nThe hackathon is Saturday 4th April at 6:30pm. Here's what to do before then:\n\n✅ Make sure your webpage looks great\n✅ Make sure your quiz works and has 10+ questions\n✅ Practice explaining what you built to the family\n✅ Think about what makes YOUR team's work special\n\nGood luck — may the best team win! 🏆",
+          xp: 200
         }
       ]
     }
