@@ -575,6 +575,7 @@
       flex: 1;
       display: flex;
       overflow: hidden;
+      min-height: 0;
     }
 
     /* Chat pane */
@@ -587,7 +588,8 @@
     }
     @media (min-width: 768px) {
       .studio-chat-pane {
-        width: 380px;
+        width: 420px;
+        min-width: 420px;
         border-right: 1px solid #312e81;
       }
     }
@@ -680,6 +682,7 @@
       flex-direction: column;
       background: #f9fafb;
       overflow: hidden;
+      min-width: 0;
     }
     @media (min-width: 768px) {
       .studio-preview-pane { display: flex; }
@@ -693,13 +696,14 @@
       display: flex; align-items: center; justify-content: space-between;
       border-bottom: 2px solid #e5e7eb;
       flex-shrink: 0;
+      gap: 8px;
     }
     .preview-btn {
       background: #f3f4f6; border: 2px solid #e5e7eb;
       border-radius: 100px; padding: 6px 14px;
       font-size: 13px; font-weight: 800;
       cursor: pointer; font-family: 'Nunito', sans-serif;
-      color: #374151;
+      color: #374151; white-space: nowrap;
     }
     .preview-btn:hover { background: #e5e7eb; }
     .preview-empty {
@@ -711,7 +715,8 @@
     .preview-empty p { font-size: 15px; line-height: 1.6; font-family: 'Nunito', sans-serif; font-weight: 700; }
     .preview-frame {
       flex: 1; border: none; display: none;
-      width: 100%; background: white;
+      width: 100%; height: 100%;
+      background: white;
     }
     .preview-frame.visible { display: block; }
 
