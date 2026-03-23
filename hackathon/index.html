@@ -34,7 +34,7 @@
     }
 
     /* App shell — caps width nicely on desktop */
-    body > div:not(.toast):not(.xp):not(#confettiContainer):not(#modalContainer):not(#ririPanel):not(#chat):not(#studioScreen):not(#kickoffScreen):not(#kickoffQuiz):not(#parentKickoffScreen):not(#teamDash):not(#teamPill):not(#profilePill):not(#profileDash) {
+    body > div:not(.toast):not(.xp):not(#confettiContainer):not(#modalContainer):not(#ririPanel):not(#chat):not(#studioScreen):not(#kickoffScreen):not(#kickoffQuiz):not(#parentKickoffScreen):not(#teamDash):not(#welcome):not(#login):not(#signup):not(#teamPill):not(#profilePill):not(#profileDash) {
       width: 100%;
       max-width: 480px;
       display: flex;
@@ -49,7 +49,7 @@
         padding: 40px 20px;
         background: linear-gradient(160deg, #3730a3 0%, #6d28d9 100%);
       }
-      body > div:not(.toast):not(.xp):not(#confettiContainer):not(#modalContainer):not(#ririPanel):not(#chat):not(#studioScreen):not(#kickoffScreen):not(#kickoffQuiz):not(#parentKickoffScreen):not(#teamDash):not(#teamPill):not(#profilePill):not(#profileDash) {
+      body > div:not(.toast):not(.xp):not(#confettiContainer):not(#modalContainer):not(#ririPanel):not(#chat):not(#studioScreen):not(#kickoffScreen):not(#kickoffQuiz):not(#parentKickoffScreen):not(#teamDash):not(#welcome):not(#login):not(#signup):not(#teamPill):not(#profilePill):not(#profileDash) {
         background: rgba(255,255,255,0.07);
         border-radius: 28px;
         padding: 40px 32px;
@@ -1890,7 +1890,12 @@ Make it exciting and something our whole family will enjoy playing!`
         d.classList.add('hide');
       }
     });
-    document.getElementById(id).classList.remove('hide');
+    const el = document.getElementById(id);
+    el.classList.remove('hide');
+    // Auth screens need display:flex restored explicitly
+    if (['welcome','login','signup'].includes(id)) {
+      el.style.display = 'flex';
+    }
   }
 
   function openParentKickoff() {
