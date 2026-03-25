@@ -1924,22 +1924,6 @@ Make it exciting and something our whole family will enjoy playing!`
       toast('Save failed — try again', true);
     }
   }
-  function showWelcome() {
-    document.getElementById('welcome').style.display = 'flex';
-    document.getElementById('login').style.display = 'none';
-    document.getElementById('signup').style.display = 'none';
-  }
-  function showLogin() {
-    document.getElementById('welcome').style.display = 'none';
-    document.getElementById('login').style.display = 'flex';
-    document.getElementById('signup').style.display = 'none';
-  }
-  function showSignup() {
-    document.getElementById('welcome').style.display = 'none';
-    document.getElementById('login').style.display = 'none';
-    document.getElementById('signup').style.display = 'flex';
-  }
-
   function go(id) {
     // Hide auth container for all app screens
     const authContainer = document.getElementById('authContainer');
