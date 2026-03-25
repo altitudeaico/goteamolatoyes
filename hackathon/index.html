@@ -1899,6 +1899,39 @@ Make it exciting and something our whole family will enjoy playing!`
   let currentLevel = null;
   let currentTask = 0;
 
+  // ── XP Helper ──────────────────────────────────────────────────────────────
+  // Gives XP to the current user with rate-limiting via localStorage.
+  // rateLimitKey: unique string (e.g. 'chat', 'meeting'); cooldownMs = 0 means no limit
+  async function giveXP(amount, reason, rateLimitKey, cooldownMs) {
+    cooldownMs = cooldownMs || 0;
+    if (!user || user.role === 'parent') return;
+    if (cooldownMs > 0 && rateLimitKey) {
+      var lsKey = 'cq_xp_' + rateLimitKey + '_' + user.id;
+      var last = parseInt(localStorage.getItem(lsKey) || '0');
+      if (Date.now() - last < cooldownMs) return;
+      localStorage.setItem(lsKey, Date.now());
+    }
+    var newXp = (user.xp || 0) + amount;
+    await db.from('hackathon_users').update({ xp: newXp }).eq('id', user.id);
+    user.xp = newXp;
+    localStorage.setItem('cq', JSON.stringify(user));
+    document.getElementById('xpDisplay').textContent = '\u2B50 ' + newXp;
+    showXpPop(amount, reason);
+  }
+
+  function showXpPop(amount, reason) {
+    var pop = document.createElement('div');
+    pop.textContent = '+' + amount + ' XP' + (reason ? ' \u00B7 ' + reason : '');
+    pop.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;font-weight:900;font-size:15px;padding:10px 20px;border-radius:30px;z-index:9999;pointer-events:none;font-family:Nunito,sans-serif;box-shadow:0 4px 20px rgba(245,158,11,0.5);';
+    document.body.appendChild(pop);
+    var anim = pop.animate(
+      [{opacity:1,transform:'translateX(-50%) translateY(0)'},{opacity:0,transform:'translateX(-50%) translateY(-40px)'}],
+      {duration:1800,easing:'ease-out',fill:'forwards'}
+    );
+    anim.onfinish = function() { pop.remove(); };
+  }
+  // ────────────────────────────────────────────────────────────────────────────
+
   // Show/hide screens
   function showChangePassword() {
     document.getElementById('changePwName').textContent = user.display_name;
@@ -3203,6 +3236,8 @@ Make it exciting and something our whole family will enjoy playing!`
 
     document.getElementById('chatSendBtn').disabled = false;
     input.focus();
+    // Award XP for chatting — 5 XP, max once every 5 minutes
+    giveXP(5, 'chatting', 'chat', 5 * 60 * 1000);
   }
 
   function subscribeToMessages() {
@@ -4694,6 +4729,8 @@ Keep explanations short and clear. Use emojis occasionally. Never be negative or
 
     // Open automatically
     window.open(meetingUrl, '_blank');
+    // Award XP for starting a meeting — 25 XP, max once every 24 hours
+    giveXP(25, 'team meeting!', 'meeting', 24 * 60 * 60 * 1000);
   }
 
   function copyMeetingLink() {
