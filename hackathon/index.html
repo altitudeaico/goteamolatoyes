@@ -72,12 +72,12 @@
       box-shadow: none !important;
       padding: 0 !important;
       backdrop-filter: none !important;
-      display: flex !important;
       align-items: center;
       justify-content: center;
       flex-direction: column;
       z-index: 10;
     }
+    #authContainer.hide { display: none !important; }
     #welcome, #login, #signup { display: none !important; }
     
     /* Big emoji at top */
@@ -1329,7 +1329,7 @@
   </script>
 
   <!-- SINGLE AUTH CONTAINER -->
-  <div id="authContainer" style="position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;flex-direction:column;">
+  <div id="authContainer" style="display:flex;position:fixed;inset:0;z-index:10;align-items:center;justify-content:center;flex-direction:column;">
 
     <!-- Welcome -->
     <div id="authWelcome" style="display:flex;flex-direction:column;align-items:center;text-align:center;padding:40px 24px;width:100%;max-width:380px;">
@@ -1938,12 +1938,14 @@ Make it exciting and something our whole family will enjoy playing!`
 
     // If navigating to welcome/login/signup, show auth container
     if (id === 'welcome' || id === 'login' || id === 'signup') {
+      authContainer.classList.remove('hide');
       authContainer.style.display = 'flex';
       authShow('authWelcome');
       return;
     }
 
     // Otherwise hide auth and show app screen
+    authContainer.classList.add('hide');
     authContainer.style.display = 'none';
 
     document.querySelectorAll('body > div').forEach(d => {
