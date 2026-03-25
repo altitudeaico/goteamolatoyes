@@ -1958,6 +1958,10 @@ Make it exciting and something our whole family will enjoy playing!`
     }
   }
   function go(id) {
+    // Hide inbox overlay whenever we navigate
+    const inboxOverlay = document.getElementById('inboxOverlay');
+    if (inboxOverlay && id !== 'inboxOverlay') inboxOverlay.classList.add('hide');
+
     // Hide auth container for all app screens
     const authContainer = document.getElementById('authContainer');
 
@@ -2620,6 +2624,9 @@ Make it exciting and something our whole family will enjoy playing!`
     go('home');
     // Check for saved sessions and show Continue badge
     checkSavedSessionBadges();
+    // Show message inbox if there are unread messages
+    // Small delay so team info loads first
+    setTimeout(showInboxIfNeeded, 600);
   }
 
   async function checkSavedSessionBadges() {
@@ -3484,6 +3491,120 @@ Make it exciting and something our whole family will enjoy playing!`
     area.innerHTML = pills.join('');
   }
 
+  // ── Inbox overlay ─────────────────────────────────────────────────────────
+  let inboxFirstChannel = 'everyone';
+
+  async function showInboxIfNeeded() {
+    if (!user || user.role === 'parent') return;
+
+    // Collect ALL unread messages across all channels
+    const channels = ['everyone'];
+    if (user.team_id) channels.push('team:' + user.team_id);
+
+    const allMessages = []; // { channel, channelLabel, channelClass, msgs[] }
+
+    // Everyone + team channels
+    for (const ch of channels) {
+      const since = lastSeen[ch] || '2000-01-01';
+      const { data: msgs } = await db.from('hackathon_messages')
+        .select('id, sender_id, sender_name, sender_avatar, body, created_at')
+        .eq('channel', ch)
+        .neq('sender_id', user.id)
+        .gt('created_at', since)
+        .order('created_at', { ascending: false })
+        .limit(20);
+      if (msgs && msgs.length > 0) {
+        allMessages.push({
+          channel: ch,
+          channelLabel: ch === 'everyone' ? '🌍 Everyone' : ('👥 ' + (user.team ? user.team.name : 'Team')),
+          channelClass: ch === 'everyone' ? 'channel-everyone' : 'channel-team',
+          msgs
+        });
+      }
+    }
+
+    // DMs
+    const { data: dmMsgs } = await db.from('hackathon_messages')
+      .select('channel, sender_id, sender_name, sender_avatar, body, created_at')
+      .like('channel', 'dm:%')
+      .neq('sender_id', user.id)
+      .gt('created_at', lastSeen['dm'] || '2000-01-01')
+      .order('created_at', { ascending: false })
+      .limit(20);
+    if (dmMsgs && dmMsgs.length) {
+      var dmByChannel = {};
+      dmMsgs.forEach(function(m) {
+        if (!m.channel.includes(user.id)) return;
+        if (!dmByChannel[m.channel]) dmByChannel[m.channel] = [];
+        dmByChannel[m.channel].push(m);
+      });
+      Object.entries(dmByChannel).forEach(function([ch, msgs]) {
+        allMessages.push({
+          channel: ch,
+          channelLabel: '💌 Direct Message',
+          channelClass: 'channel-dm',
+          msgs
+        });
+      });
+    }
+
+    if (allMessages.length === 0) return; // nothing to show
+
+    // Build inbox body
+    var totalCount = allMessages.reduce(function(a, g) { return a + g.msgs.length; }, 0);
+    document.getElementById('inboxSubtitle').textContent =
+      totalCount + ' new message' + (totalCount !== 1 ? 's' : '') + ' while you were away';
+
+    var bodyHtml = '';
+    allMessages.forEach(function(group) {
+      bodyHtml += '<div class="inbox-group-label">' + group.channelLabel + ' · ' + group.msgs.length + ' new</div>';
+      group.msgs.slice(0, 5).forEach(function(m) {
+        var avatarHtml = m.sender_avatar && m.sender_avatar.startsWith('data:')
+          ? '<img src="' + m.sender_avatar + '" style="width:44px;height:44px;border-radius:50%;object-fit:cover;">'
+          : '<span style="font-size:26px;">' + (m.sender_avatar || '💬') + '</span>';
+        var timeStr = new Date(m.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        var dateStr = new Date(m.created_at).toLocaleDateString([], {weekday:'short', month:'short', day:'numeric'});
+        bodyHtml += '<button class="inbox-msg-card ' + group.channelClass + '" onclick="openInboxMsg('' + group.channel + '')">'
+          + '<div class="inbox-msg-avatar">' + avatarHtml + '</div>'
+          + '<div class="inbox-msg-meta">'
+          + '<div class="inbox-msg-sender">' + m.sender_name + '</div>'
+          + '<div class="inbox-msg-body">' + m.body.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>'
+          + '<div class="inbox-msg-time">' + dateStr + ' at ' + timeStr + '</div>'
+          + '</div>'
+          + '<div class="inbox-msg-count-badge">' + group.msgs.length + '</div>'
+          + '</button>';
+      });
+      if (group.msgs.length > 5) {
+        bodyHtml += '<p style="text-align:center;font-size:13px;color:rgba(255,255,255,0.4);font-family:Nunito,sans-serif;margin:4px 0 8px;">+ ' + (group.msgs.length - 5) + ' more messages</p>';
+      }
+    });
+    document.getElementById('inboxBody').innerHTML = bodyHtml;
+
+    // Set the CTA button to open the first channel with messages
+    inboxFirstChannel = allMessages[0].channel;
+    document.getElementById('inboxOpenBtn').textContent = '💬 Read Messages (' + totalCount + ')';
+
+    // Show the overlay
+    document.getElementById('inboxOverlay').classList.remove('hide');
+  }
+
+  function openInboxMsg(channel) {
+    dismissInbox();
+    if (channel === 'everyone' || channel.startsWith('team:') || channel.startsWith('dm:')) {
+      openChat(channel);
+    }
+  }
+
+  function openInboxChat() {
+    dismissInbox();
+    openChat(inboxFirstChannel);
+  }
+
+  function dismissInbox() {
+    document.getElementById('inboxOverlay').classList.add('hide');
+  }
+  // ──────────────────────────────────────────────────────────────────────────
+
   // Subscribe to unread notifications globally (even when not in chat)
   function subscribeToUnreadNotifications() {
     db.channel('chat-notify')
@@ -3518,6 +3639,155 @@ Make it exciting and something our whole family will enjoy playing!`
       .subscribe();
   }
 </script>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  MESSAGE INBOX OVERLAY                          -->
+<!-- ═══════════════════════════════════════════════ -->
+<style>
+  #inboxOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    background: linear-gradient(160deg, #1e1b4b 0%, #4c1d95 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0;
+    overflow: hidden;
+  }
+  #inboxOverlay.hide { display: none !important; }
+  .inbox-header {
+    width: 100%;
+    background: rgba(0,0,0,0.3);
+    padding: 20px 24px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+  }
+  .inbox-header-icon {
+    font-size: 36px;
+    animation: inbox-bounce 0.8s ease infinite alternate;
+  }
+  @keyframes inbox-bounce {
+    from { transform: scale(1) rotate(-5deg); }
+    to   { transform: scale(1.15) rotate(5deg); }
+  }
+  .inbox-header-text { flex: 1; }
+  .inbox-header-text h2 {
+    font-size: 22px; font-weight: 900; color: white;
+    font-family: 'Nunito', sans-serif; margin: 0 0 2px;
+  }
+  .inbox-header-text p {
+    font-size: 13px; color: rgba(255,255,255,0.6);
+    font-family: 'Nunito', sans-serif; margin: 0;
+  }
+  .inbox-close-btn {
+    background: rgba(255,255,255,0.15);
+    border: none; color: white; font-size: 14px; font-weight: 900;
+    font-family: 'Nunito', sans-serif;
+    padding: 8px 16px; border-radius: 100px; cursor: pointer;
+    flex-shrink: 0;
+  }
+  .inbox-close-btn:hover { background: rgba(255,255,255,0.25); }
+  .inbox-body {
+    flex: 1;
+    overflow-y: auto;
+    width: 100%;
+    padding: 16px 16px 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .inbox-group-label {
+    font-size: 11px; font-weight: 900; letter-spacing: 2px;
+    text-transform: uppercase; color: rgba(255,255,255,0.4);
+    font-family: 'Nunito', sans-serif;
+    padding: 0 4px; margin-top: 8px;
+  }
+  .inbox-msg-card {
+    background: rgba(255,255,255,0.1);
+    border: 1.5px solid rgba(255,255,255,0.15);
+    border-radius: 18px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    width: 100%;
+    text-align: left;
+    font-family: 'Nunito', sans-serif;
+  }
+  .inbox-msg-card:hover  { background: rgba(255,255,255,0.18); transform: scale(1.01); }
+  .inbox-msg-card:active { transform: scale(0.98); }
+  .inbox-msg-card.channel-everyone { border-color: rgba(99,102,241,0.6); background: rgba(99,102,241,0.15); }
+  .inbox-msg-card.channel-team     { border-color: rgba(236,72,153,0.6); background: rgba(236,72,153,0.12); }
+  .inbox-msg-card.channel-dm       { border-color: rgba(245,158,11,0.5); background: rgba(245,158,11,0.1); }
+  .inbox-msg-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; flex-shrink: 0;
+  }
+  .inbox-msg-meta { flex: 1; min-width: 0; }
+  .inbox-msg-channel { font-size: 11px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.55); margin-bottom: 3px; }
+  .inbox-msg-sender  { font-size: 15px; font-weight: 900; color: white; margin-bottom: 2px; }
+  .inbox-msg-body    { font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .inbox-msg-time    { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 4px; }
+  .inbox-msg-count-badge {
+    background: #ef4444; color: white;
+    border-radius: 100px; min-width: 24px; height: 24px;
+    padding: 0 7px; font-size: 13px; font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-family: 'Nunito', sans-serif;
+  }
+  .inbox-cta {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    padding: 20px 24px 32px;
+    background: linear-gradient(to top, rgba(30,27,75,1) 70%, transparent);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    z-index: 501;
+  }
+  .inbox-cta-btn {
+    width: 100%; max-width: 380px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: white; border: none; font-size: 17px; font-weight: 900;
+    font-family: 'Nunito', sans-serif;
+    padding: 18px 24px; border-radius: 18px; cursor: pointer;
+    box-shadow: 0 6px 24px rgba(79,70,229,0.5);
+    transition: transform 0.1s;
+  }
+  .inbox-cta-btn:active { transform: scale(0.97); }
+  .inbox-dismiss-btn {
+    background: none; border: none; color: rgba(255,255,255,0.4);
+    font-size: 14px; font-weight: 700; font-family: 'Nunito', sans-serif;
+    cursor: pointer; padding: 4px;
+  }
+  .inbox-dismiss-btn:hover { color: rgba(255,255,255,0.7); }
+</style>
+
+<div id="inboxOverlay" class="hide">
+  <div class="inbox-header">
+    <div class="inbox-header-icon">💬</div>
+    <div class="inbox-header-text">
+      <h2>You have messages!</h2>
+      <p id="inboxSubtitle">New messages while you were away</p>
+    </div>
+    <button class="inbox-close-btn" onclick="dismissInbox()">Skip →</button>
+  </div>
+  <div class="inbox-body" id="inboxBody"></div>
+  <div class="inbox-cta">
+    <button class="inbox-cta-btn" id="inboxOpenBtn" onclick="openInboxChat()">💬 Open Chat</button>
+    <button class="inbox-dismiss-btn" onclick="dismissInbox()">I'll check later</button>
+  </div>
+</div>
 
 <!-- ═══════════════════════════════════════════════ -->
 <!--  CHAT                                           -->
