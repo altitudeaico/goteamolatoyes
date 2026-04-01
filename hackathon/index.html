@@ -2380,12 +2380,20 @@ Make it exciting and something our whole family will enjoy playing!`
   async function tryLogin() {
     const name = document.getElementById('nameInput').value.trim();
     const code = document.getElementById('codeInput').value;
-    if (!name || !code) { toast('Fill in both!', true); return; }
-    
-    const { data } = await db.from('hackathon_users')
-      .select('*').eq('name', name.toLowerCase()).eq('secret_code', code).single();
-    
-    if (!data) { toast('Wrong name or code!', true); return; }
+    if (!name || !code) { toast('Fill in both fields!', true); return; }
+
+    // Try matching on display_name (case-insensitive) first, then name field
+    let { data } = await db.from('hackathon_users')
+      .select('*').ilike('display_name', name).eq('secret_code', code).maybeSingle();
+
+    // Fallback: try lowercase name field
+    if (!data) {
+      const res2 = await db.from('hackathon_users')
+        .select('*').eq('name', name.toLowerCase()).eq('secret_code', code).maybeSingle();
+      data = res2.data;
+    }
+
+    if (!data) { toast('Name or code not right — try again!', true); return; }
     
     user = data;
     localStorage.setItem('cq', JSON.stringify(user));
@@ -2410,7 +2418,7 @@ Make it exciting and something our whole family will enjoy playing!`
     if (code.length < 4) { toast('Code needs 4+ letters!', true); return; }
     
     const { data: exists } = await db.from('hackathon_users')
-      .select('id').eq('name', name.toLowerCase()).single();
+      .select('id').ilike('display_name', name).maybeSingle();
     
     if (exists) { toast('Name taken!', true); return; }
     
