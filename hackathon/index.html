@@ -2382,18 +2382,32 @@ Make it exciting and something our whole family will enjoy playing!`
     const code = document.getElementById('codeInput').value;
     if (!name || !code) { toast('Fill in both fields!', true); return; }
 
-    // Try matching on display_name (case-insensitive) first, then name field
-    let { data } = await db.from('hackathon_users')
+    toast('Checking... ⏳');
+    console.log('[Login] Attempting:', name, '/ code length:', code.length);
+
+    // Step 1: does the user exist at all?
+    const { data: allUsers, error: e0 } = await db.from('hackathon_users').select('id, name, display_name, secret_code').limit(50);
+    console.log('[Login] All users in DB:', allUsers, 'error:', e0);
+
+    // Step 2: try ilike on display_name + code
+    const { data: d1, error: e1 } = await db.from('hackathon_users')
       .select('*').ilike('display_name', name).eq('secret_code', code).maybeSingle();
+    console.log('[Login] ilike display_name match:', d1, 'error:', e1);
 
-    // Fallback: try lowercase name field
+    // Step 3: fallback — name field
+    const { data: d2, error: e2 } = await db.from('hackathon_users')
+      .select('*').eq('name', name.toLowerCase()).eq('secret_code', code).maybeSingle();
+    console.log('[Login] name field match:', d2, 'error:', e2);
+
+    const data = d1 || d2;
+    console.log('[Login] Final result:', data);
+
     if (!data) {
-      const res2 = await db.from('hackathon_users')
-        .select('*').eq('name', name.toLowerCase()).eq('secret_code', code).maybeSingle();
-      data = res2.data;
+      // Show what names ARE in the DB to help diagnose
+      const names = (allUsers || []).map(u => u.display_name || u.name).join(', ');
+      toast('Not found. DB has: ' + (names || 'nobody'), true);
+      return;
     }
-
-    if (!data) { toast('Name or code not right — try again!', true); return; }
     
     user = data;
     localStorage.setItem('cq', JSON.stringify(user));
