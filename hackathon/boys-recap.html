@@ -548,6 +548,27 @@
     </div>
   </div>
 
+  <!-- Video -->
+  <div style="padding: 80px 20px; background: linear-gradient(180deg, #0f0e1a 0%, #0f1e35 100%);">
+    <div class="container">
+      <div class="section-label">Watch it back</div>
+      <h2 class="section-title">The Full Recording 🎥</h2>
+      <p class="section-desc">The session where the Tech Bros shipped their first live web app. GitHub, tokens, deployment — all of it captured.</p>
+      <div style="position:relative; padding-bottom:56.25%; border-radius:20px; overflow:hidden; border:2px solid rgba(255,255,255,0.1); box-shadow:0 30px 80px rgba(0,0,0,0.5);" id="videoWrapper" onclick="playVideo()" style="cursor:pointer;">
+        <div id="videoThumb" style="position:absolute;inset:0;background:linear-gradient(135deg,#0f2040,#0a3060);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+          <div style="text-align:center;">
+            <div style="width:80px;height:80px;background:rgba(255,255,255,0.95);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+              <div style="width:0;height:0;border-top:22px solid transparent;border-bottom:22px solid transparent;border-left:36px solid #1d4ed8;margin-left:6px;"></div>
+            </div>
+            <div style="background:rgba(0,0,0,0.6);color:white;padding:8px 20px;border-radius:100px;font-size:14px;font-weight:800;font-family:'Nunito',sans-serif;">▶ Watch the session · Boys Team Check-In</div>
+          </div>
+        </div>
+        <iframe id="videoFrame" src="" data-src="https://drive.google.com/file/d/1sB3tPofaNOzpsbIXTkvzcQYwy8JjZki9/preview" allow="autoplay" allowfullscreen style="display:none;position:absolute;inset:0;width:100%;height:100%;border:none;"></iframe>
+      </div>
+      <p style="margin-top:16px;font-size:14px;opacity:0.5;text-align:center;">Recording from Google Meet · 1st April 2026</p>
+    </div>
+  </div>
+
   <!-- Timeline -->
   <div class="timeline-section">
     <div class="container">
@@ -751,6 +772,17 @@
     if (isEmbedded) {
       document.querySelector('.back-bar').style.display = 'none';
       document.querySelector('.scroll-hint').style.display = 'none';
+    }
+
+    function playVideo() {
+      const thumb = document.getElementById('videoThumb');
+      const frame = document.getElementById('videoFrame');
+      const wrapper = document.getElementById('videoWrapper');
+      frame.src = frame.dataset.src;
+      frame.style.display = 'block';
+      thumb.style.display = 'none';
+      wrapper.style.cursor = 'default';
+      wrapper.onclick = null;
     }
 
     // Stars

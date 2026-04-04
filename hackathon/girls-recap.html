@@ -540,6 +540,61 @@
     </div>
   </div>
 
+  <!-- Videos -->
+  <div style="padding: 80px 20px; background: linear-gradient(180deg, #0f0e1a 0%, #1a0a20 100%);">
+    <div class="container">
+      <div class="section-label">Watch it back</div>
+      <h2 class="section-title">The Recordings 🎥</h2>
+      <p class="section-desc">Two sessions, two recordings. The full Girl Power build day — captured.</p>
+
+      <!-- Session 1 video -->
+      <div style="margin-bottom: 48px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#be185d,#9333ea);display:flex;align-items:center;justify-content:center;font-size:18px;">☀️</div>
+          <div>
+            <div style="font-weight:900;font-size:16px;">Session 1 — Elsie &amp; Uncle B</div>
+            <div style="font-size:13px;opacity:0.5;">Thursday 2nd April · 9:17am BST</div>
+          </div>
+        </div>
+        <div style="position:relative;padding-bottom:56.25%;border-radius:20px;overflow:hidden;border:2px solid rgba(255,255,255,0.1);box-shadow:0 30px 80px rgba(0,0,0,0.5);" id="videoWrapper1" onclick="playVideo(1)">
+          <div id="videoThumb1" style="position:absolute;inset:0;background:linear-gradient(135deg,#2d0a2e,#1a0a30);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+            <div style="text-align:center;">
+              <div style="width:80px;height:80px;background:rgba(255,255,255,0.95);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+                <div style="width:0;height:0;border-top:22px solid transparent;border-bottom:22px solid transparent;border-left:36px solid #be185d;margin-left:6px;"></div>
+              </div>
+              <div style="background:rgba(0,0,0,0.6);color:white;padding:8px 20px;border-radius:100px;font-size:14px;font-weight:800;font-family:'Nunito',sans-serif;">▶ Watch · Elsie &amp; Uncle B Build Session</div>
+            </div>
+          </div>
+          <iframe id="videoFrame1" src="" data-src="https://drive.google.com/file/d/1HQ1_m3VPL0BT_TZ-Lq1yZyvTEibV7iTm/preview" allow="autoplay" allowfullscreen style="display:none;position:absolute;inset:0;width:100%;height:100%;border:none;"></iframe>
+        </div>
+        <p style="margin-top:12px;font-size:14px;opacity:0.5;text-align:center;">Recording from Google Meet · 2nd April 2026 · Morning</p>
+      </div>
+
+      <!-- Session 2 video -->
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#9333ea,#be185d);display:flex;align-items:center;justify-content:center;font-size:18px;">🌙</div>
+          <div>
+            <div style="font-weight:900;font-size:16px;">Session 2 — Full Girls Team</div>
+            <div style="font-size:13px;opacity:0.5;">Thursday 2nd April · 5:55pm BST</div>
+          </div>
+        </div>
+        <div style="position:relative;padding-bottom:56.25%;border-radius:20px;overflow:hidden;border:2px solid rgba(255,255,255,0.1);box-shadow:0 30px 80px rgba(0,0,0,0.5);" id="videoWrapper2" onclick="playVideo(2)">
+          <div id="videoThumb2" style="position:absolute;inset:0;background:linear-gradient(135deg,#1a0a30,#2d0a2e);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+            <div style="text-align:center;">
+              <div style="width:80px;height:80px;background:rgba(255,255,255,0.95);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+                <div style="width:0;height:0;border-top:22px solid transparent;border-bottom:22px solid transparent;border-left:36px solid #9333ea;margin-left:6px;"></div>
+              </div>
+              <div style="background:rgba(0,0,0,0.6);color:white;padding:8px 20px;border-radius:100px;font-size:14px;font-weight:800;font-family:'Nunito',sans-serif;">▶ Watch · Elsie, Hannah &amp; Sophia Team Review</div>
+            </div>
+          </div>
+          <iframe id="videoFrame2" src="" data-src="https://drive.google.com/file/d/1Ttbhw1V7cowFfp0tjUoy_ADgq2En21V_/preview" allow="autoplay" allowfullscreen style="display:none;position:absolute;inset:0;width:100%;height:100%;border:none;"></iframe>
+        </div>
+        <p style="margin-top:12px;font-size:14px;opacity:0.5;text-align:center;">Recording from Google Meet · 2nd April 2026 · Evening</p>
+      </div>
+    </div>
+  </div>
+
   <!-- Sessions -->
   <div class="sessions-section">
     <div class="container">
@@ -751,6 +806,17 @@
     if (isEmbedded) {
       document.querySelector('.back-bar').style.display = 'none';
       document.querySelector('.scroll-hint').style.display = 'none';
+    }
+
+    function playVideo(n) {
+      const thumb = document.getElementById('videoThumb' + n);
+      const frame = document.getElementById('videoFrame' + n);
+      const wrapper = document.getElementById('videoWrapper' + n);
+      frame.src = frame.dataset.src;
+      frame.style.display = 'block';
+      thumb.style.display = 'none';
+      wrapper.style.cursor = 'default';
+      wrapper.onclick = null;
     }
 
     // Stars
