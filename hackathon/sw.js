@@ -1,4 +1,4 @@
-const CACHE = 'codequest-v10';
+const CACHE = 'codequest-v11';
 const OFFLINE_URLS = [
   '/goteamolatoyes/hackathon/index.html',
   '/goteamolatoyes/hackathon/manifest.json',
