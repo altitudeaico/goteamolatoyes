@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hackathon Night Recap 🏆 | CODE QUEST</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --yellow: #fbbf24;
+      --purple: #7c3aed;
+      --pink: #ec4899;
+      --dark: #0f0e1a;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--dark);
+      color: white;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+    .star {
+      position: absolute; width: 2px; height: 2px;
+      background: white; border-radius: 50%; opacity: 0;
+      animation: twinkle var(--d) ease-in-out infinite var(--delay);
+    }
+    @keyframes twinkle { 0%,100%{opacity:0} 50%{opacity:var(--op)} }
+
+    .back-bar {
+      background: rgba(255,255,255,0.05);
+      padding: 16px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      position: sticky; top: 0; z-index: 50;
+      backdrop-filter: blur(20px);
+    }
+    .back-bar a { color: white; text-decoration: none; font-weight: 800; font-size: 15px; opacity: 0.7; }
+    .back-bar a:hover { opacity: 1; }
+    .back-bar span { font-size: 14px; opacity: 0.4; }
+
+    .container { max-width: 780px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f0e1a 0%, #1e1b4b 40%, #2d1b69 100%);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 40px 20px;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(124,58,237,0.3) 0%, transparent 70%);
+      top: -100px; right: -100px; border-radius: 50%;
+    }
+    .hero::after {
+      content: ''; position: absolute;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(251,191,36,0.15) 0%, transparent 70%);
+      bottom: -50px; left: -50px; border-radius: 50%;
+    }
+    .hero-badge {
+      background: rgba(251,191,36,0.15);
+      border: 2px solid rgba(251,191,36,0.4);
+      color: var(--yellow); padding: 8px 20px;
+      border-radius: 100px; font-size: 13px; font-weight: 900;
+      text-transform: uppercase; letter-spacing: 2px;
+      margin-bottom: 24px; position: relative;
+    }
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(64px, 14vw, 130px); line-height: 0.88;
+      background: linear-gradient(135deg, white 0%, #fbbf24 50%, #f97316 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; margin-bottom: 24px; position: relative;
+    }
+    .hero-sub {
+      font-size: clamp(16px, 3vw, 21px); opacity: 0.7;
+      max-width: 560px; margin: 0 auto 36px; line-height: 1.6; position: relative;
+    }
+    .hero-stats {
+      display: flex; gap: 16px; justify-content: center;
+      flex-wrap: wrap; position: relative;
+    }
+    .hero-stat {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 12px 22px; border-radius: 100px;
+      font-weight: 900; font-size: 15px;
+    }
+    .scroll-hint {
+      position: absolute; bottom: 30px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center;
+      gap: 8px; opacity: 0.35; font-size: 13px;
+      animation: bob 2s ease-in-out infinite;
+    }
+    @keyframes bob { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)} }
+
+    /* ── Sections ── */
+    .section { padding: 80px 20px; }
+    .section-label {
+      font-size: 12px; font-weight: 900;
+      text-transform: uppercase; letter-spacing: 3px;
+      color: var(--yellow); margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 900; margin-bottom: 16px; line-height: 1.1;
+    }
+    .section-desc {
+      font-size: 17px; opacity: 0.65;
+      max-width: 560px; margin-bottom: 32px; line-height: 1.7;
+    }
+
+    /* ── Video ── */
+    .video-section { background: linear-gradient(180deg, var(--dark) 0%, #1a1730 100%); }
+    .video-wrapper {
+      position: relative; padding-bottom: 56.25%;
+      border-radius: 20px; overflow: hidden;
+      border: 2px solid rgba(255,255,255,0.1);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+      cursor: pointer;
+    }
+    .video-thumb {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, #1e1b4b, #2d1b69);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .play-btn-wrap { text-align: center; }
+    .play-circle {
+      width: 90px; height: 90px; border-radius: 50%;
+      background: linear-gradient(135deg, #fbbf24, #f97316);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+      box-shadow: 0 8px 32px rgba(251,191,36,0.4);
+      transition: transform 0.15s;
+    }
+    .video-wrapper:hover .play-circle { transform: scale(1.08); }
+    .play-arrow { width:0; height:0; border-top:22px solid transparent; border-bottom:22px solid transparent; border-left:36px solid #1f2937; margin-left:6px; }
+    .play-label { font-weight: 900; font-size: 14px; opacity: 0.7; }
+    .video-wrapper iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; display: none; }
+    .video-note { margin-top: 16px; font-size: 14px; opacity: 0.45; text-align: center; }
+
+    /* ── Moments grid ── */
+    .moments-section { background: #0f0e1a; }
+    .moments-grid {
+      display: grid; grid-template-columns: 1fr;
+      gap: 16px; margin-top: 40px;
+    }
+    @media (min-width: 600px) { .moments-grid { grid-template-columns: 1fr 1fr; } }
+
+    .moment-card {
+      background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px; padding: 24px;
+      transition: transform 0.2s; position: relative; overflow: hidden;
+    }
+    .moment-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: var(--accent);
+    }
+    .moment-card:hover { transform: translateY(-4px); }
+    .moment-icon { font-size: 36px; margin-bottom: 12px; }
+    .moment-card h3 { font-size: 18px; font-weight: 900; margin-bottom: 8px; }
+    .moment-card p { font-size: 14px; opacity: 0.65; line-height: 1.6; }
+    .moment-quote {
+      margin-top: 12px;
+      background: rgba(255,255,255,0.06);
+      border-left: 3px solid var(--accent);
+      padding: 10px 14px; border-radius: 0 10px 10px 0;
+      font-size: 14px; font-style: italic; opacity: 0.85;
+    }
+
+    /* ── Apps section ── */
+    .apps-section { background: linear-gradient(180deg, #12102a 0%, #0f0e1a 100%); }
+    .apps-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px; margin-top: 40px;
+    }
+    @media (max-width: 560px) { .apps-grid { grid-template-columns: 1fr; } }
+
+    .app-card {
+      border-radius: 22px; padding: 24px;
+      text-decoration: none; color: white;
+      display: block; transition: transform 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .app-card:hover { transform: translateY(-4px); }
+    .app-card::before {
+      content: ''; position: absolute;
+      top: -30px; right: -30px;
+      width: 100px; height: 100px;
+      background: rgba(255,255,255,0.08); border-radius: 50%;
+    }
+    .app-card-boys  { background: linear-gradient(135deg, #1d4ed8, #0891b2); }
+    .app-card-girls { background: linear-gradient(135deg, #be185d, #7c3aed); }
+    .app-emoji { font-size: 36px; margin-bottom: 10px; }
+    .app-card h3 { font-size: 18px; font-weight: 900; margin-bottom: 6px; }
+    .app-card p { font-size: 13px; opacity: 0.8; line-height: 1.5; margin-bottom: 12px; }
+    .app-link {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 100px; padding: 6px 16px;
+      font-size: 12px; font-weight: 900;
+      transition: background 0.15s;
+    }
+    .app-link:hover { background: rgba(255,255,255,0.3); }
+
+    /* ── What they learned ── */
+    .learned-section { background: #0f0e1a; }
+    .learned-list { margin-top: 40px; display: flex; flex-direction: column; gap: 16px; }
+    .learned-item {
+      display: flex; gap: 20px; align-items: flex-start;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px; padding: 20px 22px;
+    }
+    .learned-num {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+    .learned-item h4 { font-size: 17px; font-weight: 900; margin-bottom: 4px; }
+    .learned-item p { font-size: 14px; opacity: 0.6; line-height: 1.6; }
+
+    /* ── Badges ── */
+    .badges-section { background: linear-gradient(180deg, #1a0a30, #0f0e1a); }
+
+    /* ── What's next ── */
+    .next-section { background: linear-gradient(180deg, #0f0e1a, #1e1b4b); }
+    .next-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px; margin-top: 40px;
+    }
+    @media (max-width: 480px) { .next-grid { grid-template-columns: 1fr; } }
+    .next-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 20px; padding: 22px 20px;
+      position: relative; overflow: hidden;
+    }
+    .next-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: var(--accent);
+    }
+    .next-icon { font-size: 30px; margin-bottom: 10px; }
+    .next-card h4 { font-size: 17px; font-weight: 900; margin-bottom: 6px; }
+    .next-card p { font-size: 13px; opacity: 0.6; line-height: 1.6; }
+
+    /* ── CTA ── */
+    .cta-section {
+      padding: 100px 20px;
+      background: linear-gradient(135deg, #1e1b4b, #2d1b69, #1e1b4b);
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .cta-section::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(251,191,36,0.12) 0%, transparent 60%);
+    }
+    .cta-big {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(50px, 12vw, 100px);
+      line-height: 1; color: var(--yellow);
+      position: relative; margin-bottom: 8px;
+    }
+    .cta-sub { font-size: 20px; font-weight: 900; opacity: 0.7; position: relative; margin-bottom: 40px; }
+    .cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; position: relative; }
+    .cta-btn {
+      display: inline-block; padding: 16px 32px; border-radius: 100px;
+      font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 17px;
+      text-decoration: none; transition: transform 0.15s;
+    }
+    .cta-btn:hover { transform: scale(1.04); }
+    .cta-btn.primary { background: var(--yellow); color: #1f2937; }
+    .cta-btn.girls { background: linear-gradient(135deg, #be185d, #7c3aed); color: white; }
+    .cta-btn.boys  { background: linear-gradient(135deg, #1d4ed8, #0891b2); color: white; }
+    .cta-btn.secondary { background: rgba(255,255,255,0.12); color: white; border: 2px solid rgba(255,255,255,0.3); }
+
+    /* ── Team divider ── */
+    .team-divider {
+      display: flex; align-items: center; gap: 14px; margin: 28px 0 18px;
+    }
+    .team-divider-line { flex: 1; height: 1px; background: rgba(255,255,255,0.1); }
+    .team-divider-label { font-size: 11px; font-weight: 900; letter-spacing: 3px; opacity: 0.4; white-space: nowrap; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+
+  <div class="stars" id="stars"></div>
+
+  <div class="back-bar">
+    <a href="index.html">← Back to Code Quest</a>
+    <span>Hackathon Night Recap · 4th April 2026</span>
+  </div>
+
+  <!-- ── HERO ── -->
+  <div class="hero">
+    <div class="hero-badge">4th April 2026 · The Night It All Came Together</div>
+    <h1>IT<br>HAPPENED.</h1>
+    <p class="hero-sub">Six kids. Three cities. Four apps. One family. On the night of Saturday 4th April 2026 — Code Quest came alive. Here's how it went. 🏆</p>
+    <div class="hero-stats">
+      <div class="hero-stat">🕕 6:00pm kick off</div>
+      <div class="hero-stat">4 apps demoed</div>
+      <div class="hero-stat">6 badges awarded</div>
+      <div class="hero-stat">👧 Girls vs Boys 👦</div>
+    </div>
+    <div class="scroll-hint"><span>Scroll to relive it</span><span>↓</span></div>
+  </div>
+
+  <!-- ── VIDEO ── -->
+  <div class="section video-section">
+    <div class="container">
+      <div class="section-label">Watch it back</div>
+      <h2 class="section-title">The Full Recording 🎥</h2>
+      <p class="section-desc">The whole night — the demos, the badges, the kids speaking about what they learned, the bragging rights debate. All of it right here.</p>
+      <div class="video-wrapper" id="videoWrapper" onclick="playVideo()">
+        <div class="video-thumb" id="videoThumb">
+          <div class="play-btn-wrap">
+            <div class="play-circle"><div class="play-arrow"></div></div>
+            <div class="play-label">▶ Watch the Hackathon Night · 4th April 2026</div>
+          </div>
+        </div>
+        <iframe id="videoFrame" src="" data-src="https://drive.google.com/file/d/1UuJlYhYLeFnQhQybyMzi7x--OkQv7YUe/preview" allow="autoplay" allowfullscreen></iframe>
+      </div>
+      <p class="video-note">Recorded on Google Meet · Saturday 4th April 2026</p>
+    </div>
+  </div>
+
+  <!-- ── MOMENTS ── -->
+  <div class="section moments-section">
+    <div class="container">
+      <div class="section-label">The highlights</div>
+      <h2 class="section-title">The Best Moments 🌟</h2>
+
+      <div class="moments-grid">
+
+        <div class="moment-card" style="--accent:#fbbf24;">
+          <div class="moment-icon">🎉</div>
+          <h3>Four Apps. One Night.</h3>
+          <p>The Tech Bros showed two apps — Ezekiel's F1 quiz and the Tech Bros multiplayer quiz. The Girl Power team showed two apps — Elsie's quiz and Hannah & Sophia's Cousin Quiz. Four builds. In front of the whole family. All working.</p>
+        </div>
+
+        <div class="moment-card" style="--accent:#f783ac;">
+          <div class="moment-icon">🦋</div>
+          <h3>Elsie on Confidence</h3>
+          <p>When the kids shared what they learned, Elsie went beyond the technical. She talked about the importance of confidence and clear presentation for making a project succeed. That's not a coding lesson — that's a life lesson.</p>
+          <div class="moment-quote">"You need confidence and to present clearly." — Elsie</div>
+        </div>
+
+        <div class="moment-card" style="--accent:#85B7EB;">
+          <div class="moment-icon">🧠</div>
+          <h3>They Actually Got It</h3>
+          <p>The kids explained what they learned in their own words — clear prompts for AI, what a database does, how to deploy to GitHub. Two weeks ago most of them couldn't define these things. Tonight they explained them to the family.</p>
+        </div>
+
+        <div class="moment-card" style="--accent:#86efac;">
+          <div class="moment-icon">🐛</div>
+          <h3>The Bug on Demo Night</h3>
+          <p>Hannah & Sophia's Cousin Quiz hit a bug live — questions froze and wouldn't advance. Gutting timing. But also? That's exactly what happens in real software. Every developer has had a demo go wrong. They're in good company.</p>
+          <div class="moment-quote">"Even on demo night, bugs happen. That's real software." — The lesson</div>
+        </div>
+
+        <div class="moment-card" style="--accent:#fbbf24;">
+          <div class="moment-icon">⚔️</div>
+          <h3>The Goku vs Superman Debate</h3>
+          <p>Theodore sparked an unresolved debate about Goku vs Superman that apparently couldn't be settled on the night. Uncle B and Theodore have a scheduled offline discussion pending. The most important item on the Code Quest v2 agenda.</p>
+          <div class="moment-quote">"[Offline chat with Theodore re: Goku vs Superman]" — Official action item 😂</div>
+        </div>
+
+        <div class="moment-card" style="--accent:#cc5de8;">
+          <div class="moment-icon">⭐</div>
+          <h3>Emma's Trophy Mission</h3>
+          <p>Emma — age 4 — got a digital trophy on the night. Elsie was officially tasked with making sure Emma knew she received it. The youngest Olatoye coder (in spirit) didn't go unrecognised. 🌟</p>
+          <div class="moment-quote">"Let Emma know she received a digital trophy." — Official action item</div>
+        </div>
+
+        <div class="moment-card" style="--accent:#7c3aed;">
+          <div class="moment-icon">🏆</div>
+          <h3>Bragging Rights</h3>
+          <p>The parents deliberated and the verdict came in. Design, questions, gameplay, features, presentation — all judged. One team walked away with the most important prize in the Olatoye family. The kind you never let the other side forget.</p>
+        </div>
+
+        <div class="moment-card" style="--accent:#f97316;">
+          <div class="moment-icon">🚀</div>
+          <h3>Code Quest v2 — It's Happening</h3>
+          <p>Before the night was over, Code Quest v2 was officially proposed. Bigger challenges. Apps that solve real problems. The seed was planted — and this family is going to water it.</p>
+          <div class="moment-quote">"Harder challenges focused on building apps that solve real-life problems." — The vision</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── THE APPS ── -->
+  <div class="section apps-section">
+    <div class="container">
+      <div class="section-label">What they built</div>
+      <h2 class="section-title">Four Apps, Live on the Internet 🌍</h2>
+      <p class="section-desc">Every single one of these is real. Not a school project. Not a mock-up. Real apps, live URLs, anyone in the world can play them right now.</p>
+
+      <div class="team-divider">
+        <div class="team-divider-line"></div>
+        <div class="team-divider-label">🔵 Tech Bros</div>
+        <div class="team-divider-line"></div>
+      </div>
+      <div class="apps-grid">
+        <a href="https://techbros3.github.io/Tech-Bros-Quiz/f1-quiz.html" target="_blank" class="app-card app-card-boys">
+          <div class="app-emoji">🏎️</div>
+          <h3>Ezekiel's F1 Quiz</h3>
+          <p>20 F1 questions, animated race track, qualifying grid scoring. Built solo by Ezekiel.</p>
+          <span class="app-link">Play →</span>
+        </a>
+        <a href="https://techbros3.github.io/Tech-Bros-Quiz/" target="_blank" class="app-card app-card-boys">
+          <div class="app-emoji">🌌</div>
+          <h3>Tech Bros Quiz</h3>
+          <p>Multiplayer. Tech, F1 and Ninjago. Deep space background. Game code: BROS.</p>
+          <span class="app-link">Play →</span>
+        </a>
+      </div>
+
+      <div class="team-divider">
+        <div class="team-divider-line"></div>
+        <div class="team-divider-label">💖 Girl Power</div>
+        <div class="team-divider-line"></div>
+      </div>
+      <div class="apps-grid">
+        <a href="https://girlpowercoders.github.io/girlpowerquiz" target="_blank" class="app-card app-card-girls">
+          <div class="app-emoji">🦋</div>
+          <h3>Elsie's Girl Power Quiz</h3>
+          <p>Fashion, art, makeup, cheerleading. Butterflies, sparkles, confetti. Game code: GIRL.</p>
+          <span class="app-link">Play →</span>
+        </a>
+        <a href="https://girlpowercoders.github.io/girlpowerquiz/cousin-quiz.html" target="_blank" class="app-card app-card-girls">
+          <div class="app-emoji">💎</div>
+          <h3>Hannah & Sophia's Cousin Quiz</h3>
+          <p>Built independently by Hannah and Sophia together. Game code: QUIZ.</p>
+          <span class="app-link">Play →</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── WHAT THEY LEARNED ── -->
+  <div class="section learned-section">
+    <div class="container">
+      <div class="section-label">In their own words</div>
+      <h2 class="section-title">What They Learned 🧠</h2>
+      <p class="section-desc">On the night, each kid answered one question: "What's one thing you know now that you didn't know two weeks ago?" Here's what they said.</p>
+
+      <div class="learned-list">
+        <div class="learned-item">
+          <div class="learned-num">💬</div>
+          <div>
+            <h4>How to prompt AI clearly</h4>
+            <p>The most important skill of the whole bootcamp. Not code — words. Clear, specific, detailed prompts get results. Vague prompts get vague results. Every kid learned this the hard way at least once.</p>
+          </div>
+        </div>
+        <div class="learned-item">
+          <div class="learned-num">🗄️</div>
+          <div>
+            <h4>What a database actually is</h4>
+            <p>Two weeks ago Hannah asked "what is a database?" Tonight she has one running behind a live multiplayer quiz. That's the journey in one sentence.</p>
+          </div>
+        </div>
+        <div class="learned-item">
+          <div class="learned-num">🌐</div>
+          <div>
+            <h4>How to put something on the internet</h4>
+            <p>GitHub Pages, repositories, pushing code, live URLs. They understand the difference between something that lives on your screen and something that lives on the internet. That's a real skill.</p>
+          </div>
+        </div>
+        <div class="learned-item">
+          <div class="learned-num">👑</div>
+          <div>
+            <h4>Confidence and clear presentation</h4>
+            <p>Elsie said it best — it's not enough to build something good. You have to be able to show it and talk about it with confidence. That lesson will go way beyond coding.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── WHAT'S NEXT ── -->
+  <div class="section next-section">
+    <div class="container">
+      <div class="section-label">This is just the beginning</div>
+      <h2 class="section-title">What's Next 🔮</h2>
+      <p class="section-desc">Code Quest v2 was officially proposed on the night. Here's where this family is headed.</p>
+
+      <div class="next-grid">
+        <div class="next-card" style="--accent:linear-gradient(90deg,#7c3aed,#ec4899);">
+          <div class="next-icon">🚀</div>
+          <h4>Code Quest v2</h4>
+          <p>Bigger levels, harder challenges. The focus: building apps that solve real-life problems. Not just quizzes — real products.</p>
+        </div>
+        <div class="next-card" style="--accent:linear-gradient(90deg,#1d4ed8,#0891b2);">
+          <div class="next-icon">🛠️</div>
+          <h4>Fix the Cousin Quiz Bug</h4>
+          <p>Hannah & Sophia's quiz froze on demo night. That bug is getting fixed. Their app deserves a clean run.</p>
+        </div>
+        <div class="next-card" style="--accent:linear-gradient(90deg,#22c55e,#0891b2);">
+          <div class="next-icon">👨‍👩‍👧‍👦</div>
+          <h4>Family Hackathon 2027</h4>
+          <p>Annual Olatoye tradition. More kids, more parents, more ambition. The bar has been set — now we raise it.</p>
+        </div>
+        <div class="next-card" style="--accent:linear-gradient(90deg,#fbbf24,#f97316);">
+          <div class="next-icon">⚔️</div>
+          <h4>Goku vs Superman</h4>
+          <p>Theodore and Uncle B have an unresolved debate to settle offline. The most pressing item on the Code Quest v2 agenda. Obviously. 😂</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CTA ── -->
+  <div class="cta-section">
+    <div class="container" style="position:relative;z-index:1;text-align:center;">
+      <div class="section-label" style="margin-bottom:16px;">Still want to play?</div>
+      <div class="cta-big">KEEP PLAYING</div>
+      <div class="cta-sub">All four apps are still live — go show someone! 🌍</div>
+      <div class="cta-btns">
+        <a href="https://girlpowercoders.github.io/girlpowerquiz" target="_blank" class="cta-btn girls">🦋 Elsie's Quiz</a>
+        <a href="https://girlpowercoders.github.io/girlpowerquiz/cousin-quiz.html" target="_blank" class="cta-btn girls">💎 Cousin Quiz</a>
+        <a href="https://techbros3.github.io/Tech-Bros-Quiz/f1-quiz.html" target="_blank" class="cta-btn boys">🏎️ F1 Quiz</a>
+        <a href="https://techbros3.github.io/Tech-Bros-Quiz/" target="_blank" class="cta-btn boys">🌌 Tech Bros Quiz</a>
+        <a href="badges.html" class="cta-btn secondary">🏅 See the Badges</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="riri-widget.js"></script>
+  <script>
+    const isEmbedded = new URLSearchParams(window.location.search).get('embedded') === '1';
+    if (isEmbedded) {
+      document.querySelector('.back-bar').style.display = 'none';
+      document.querySelector('.scroll-hint').style.display = 'none';
+    }
+
+    function playVideo() {
+      const thumb = document.getElementById('videoThumb');
+      const frame = document.getElementById('videoFrame');
+      const wrap  = document.getElementById('videoWrapper');
+      frame.src = frame.dataset.src;
+      frame.style.display = 'block';
+      thumb.style.display = 'none';
+      wrap.style.cursor = 'default';
+      wrap.onclick = null;
+    }
+
+    // Stars
+    const starsEl = document.getElementById('stars');
+    for (let i = 0; i < 100; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*5}s;--delay:${Math.random()*5}s;--op:${0.15+Math.random()*0.5};`;
+      starsEl.appendChild(s);
+    }
+
+    if (!isEmbedded) {
+      initRiri({
+        context: `The kid is on the HACKATHON NIGHT RECAP page for Olatoye Academy Code Quest 2026.
+What happened on the night (4th April 2026):
+- Four apps were demoed: Ezekiel's F1 Quiz, Tech Bros Quiz (BROS), Elsie's Girl Power Quiz (GIRL), Hannah & Sophia's Cousin Quiz (QUIZ)
+- Kids shared what they learned: clear AI prompts, what a database is, how to deploy to GitHub
+- Elsie spoke about confidence and clear presentation
+- Hannah & Sophia's quiz had a bug on demo night — questions froze. Gets fixed in v2.
+- Theodore sparked the Goku vs Superman debate with Uncle B — unresolved, offline chat pending
+- Emma (age 4) got a digital honorary trophy — Elsie is tasked with telling her
+- Code Quest v2 was officially proposed — bigger challenges, real-life problem solving apps
+- Annual family hackathon idea floated for 2027
+
+Your job: help them relive the night, answer questions about what was built, hype up Code Quest v2.`,
+        greeting: `What a night! 🏆 You actually did it — four apps, in front of the whole family. How are you feeling? What was YOUR favourite moment? 🎉`,
+        suggestions: [
+          '🏆 Who won the bragging rights?',
+          '🦋 Play Elsie\'s quiz',
+          '🌌 Play the Tech Bros quiz',
+          '🧠 What did the kids learn?',
+          '🚀 What is Code Quest v2?',
+          '⚔️ Goku vs Superman — who wins?'
+        ]
+      });
+    }
+  </script>
+
+</body>
+</html>
