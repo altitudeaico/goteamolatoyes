@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#150820"/>
+      <stop offset="100%" stop-color="#2d0a2e"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="75%" cy="25%" r="50%">
+      <stop offset="0%" stop-color="rgba(190,24,93,0.3)" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#150820" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="20%" cy="80%" r="40%">
+      <stop offset="0%" stop-color="rgba(190,24,93,0.3)" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#150820" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <rect width="1280" height="720" fill="url(#glow1)"/>
+  <rect width="1280" height="720" fill="url(#glow2)"/>
+
+  <!-- Grid lines -->
+  <g opacity="0.04" stroke="white" stroke-width="1">
+    <line x1="0" y1="180" x2="1280" y2="180"/>
+    <line x1="0" y1="360" x2="1280" y2="360"/>
+    <line x1="0" y1="540" x2="1280" y2="540"/>
+    <line x1="320" y1="0" x2="320" y2="720"/>
+    <line x1="640" y1="0" x2="640" y2="720"/>
+    <line x1="960" y1="0" x2="960" y2="720"/>
+  </g>
+
+  <!-- Accent bar left -->
+  <rect x="0" y="0" width="8" height="720" fill="#be185d"/>
+
+  <!-- Top accent line -->
+  <rect x="8" y="0" width="1272" height="3" fill="#be185d" opacity="0.4"/>
+
+  <!-- Bottom accent line -->
+  <rect x="8" y="717" width="1272" height="3" fill="#be185d" opacity="0.4"/>
+
+  <!-- Corner decoration top right -->
+  <rect x="1180" y="0" width="100" height="8" fill="#be185d" opacity="0.4"/>
+  <rect x="1272" y="0" width="8" height="100" fill="#be185d" opacity="0.4"/>
+
+  <!-- Corner decoration bottom left -->
+  <rect x="8" y="712" width="100" height="8" fill="#be185d" opacity="0.4"/>
+  <rect x="8" y="620" width="8" height="100" fill="#be185d" opacity="0.4"/>
+
+  <!-- OLATOYE ACADEMY label top -->
+  <text x="60" y="52" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="900" fill="#be185d" letter-spacing="4" text-anchor="start" opacity="0.9">OLATOYE ACADEMY · CODE QUEST 2026</text>
+
+  <!-- Date top right -->
+  <text x="1220" y="52" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="700" fill="white" letter-spacing="2" text-anchor="end" opacity="0.5">2ND APRIL 2026 · 9AM</text>
+
+  <!-- Session pill -->
+  <rect x="60" y="90" width="220" height="38" rx="19" fill="#be185d" opacity="0.15"/>
+  <rect x="60" y="90" width="220" height="38" rx="19" fill="none" stroke="#be185d" stroke-width="1.5" opacity="0.5"/>
+  <text x="170" y="115" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="900" fill="#be185d" letter-spacing="3" text-anchor="middle">GIRLS TEAM</text>
+
+  <!-- Emoji large -->
+  <text x="980" y="440" font-size="220" text-anchor="middle" opacity="0.15">🦋</text>
+
+  <!-- Main title line 1 -->
+  <text x="60" y="340" font-family="'Helvetica Neue', Arial, sans-serif" font-size="130" font-weight="900" fill="white" letter-spacing="-2" text-anchor="start" opacity="0.95">ELSIE &</text>
+
+  <!-- Main title line 2 -->
+  <text x="60" y="500" font-family="'Helvetica Neue', Arial, sans-serif" font-size="130" font-weight="900" fill="#c084fc" letter-spacing="-2" text-anchor="start" opacity="0.95">UNCLE B</text>
+
+  <!-- Divider line -->
+  <rect x="60" y="560" width="500" height="3" fill="#be185d" opacity="0.5"/>
+
+  <!-- Bottom label -->
+  <text x="60" y="608" font-family="'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="800" fill="white" letter-spacing="4" text-anchor="start" opacity="0.5">GIRL POWER · GITHUB · SUPABASE</text>
+
+  <!-- Play button hint -->
+  <circle cx="1180" cy="600" r="48" fill="#be185d" opacity="0.15"/>
+  <circle cx="1180" cy="600" r="48" fill="none" stroke="#be185d" stroke-width="2" opacity="0.4"/>
+  <polygon points="1170,582 1170,618 1202,600" fill="white" opacity="0.6"/>
+
+</svg>
