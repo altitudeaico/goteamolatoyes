@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tech Bros Recap 🔵 | CODE QUEST</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --blue: #1d4ed8;
+      --cyan: #0891b2;
+      --yellow: #fbbf24;
+      --green: #22c55e;
+      --red: #ef4444;
+      --dark: #0f0e1a;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--dark);
+      color: white;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f0e1a 0%, #0f2040 50%, #0a3060 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(29,78,216,0.35) 0%, transparent 70%);
+      top: -100px; right: -100px;
+      border-radius: 50%;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(8,145,178,0.25) 0%, transparent 70%);
+      bottom: -50px; left: -50px;
+      border-radius: 50%;
+    }
+
+    .hero-badge {
+      background: rgba(251,191,36,0.15);
+      border: 2px solid rgba(251,191,36,0.4);
+      color: var(--yellow);
+      padding: 8px 20px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(60px, 12vw, 120px);
+      line-height: 0.9;
+      background: linear-gradient(135deg, white 0%, #93c5fd 50%, #22d3ee 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 3vw, 22px);
+      opacity: 0.7;
+      max-width: 500px;
+      margin: 0 auto 36px;
+      position: relative;
+    }
+
+    .hero-date {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 12px 24px;
+      border-radius: 100px;
+      font-weight: 800;
+      font-size: 16px;
+      position: relative;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0.4;
+      font-size: 13px;
+      animation: bob 2s ease-in-out infinite;
+    }
+    @keyframes bob {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    .stars {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .star {
+      position: absolute;
+      width: 2px; height: 2px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0;
+      animation: twinkle var(--d) ease-in-out infinite var(--delay);
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0; }
+      50% { opacity: var(--op); }
+    }
+
+    /* ── Container ── */
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ── Section shared ── */
+    .section-label {
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--yellow);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 900;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+    .section-desc {
+      font-size: 17px;
+      opacity: 0.65;
+      max-width: 560px;
+      margin-bottom: 32px;
+    }
+
+    /* ── Timeline ── */
+    .timeline-section {
+      padding: 80px 20px;
+      background: linear-gradient(180deg, var(--dark) 0%, #0f1e35 100%);
+    }
+
+    .timeline {
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 24px;
+      top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--blue), var(--cyan), transparent);
+    }
+    @media (min-width: 600px) {
+      .timeline::before { left: 32px; }
+    }
+
+    .tl-item {
+      display: flex;
+      gap: 20px;
+      padding-bottom: 36px;
+      position: relative;
+    }
+    .tl-dot {
+      width: 50px; height: 50px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      box-shadow: 0 0 0 4px rgba(29,78,216,0.2);
+    }
+    .tl-content {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 20px 22px;
+      flex: 1;
+      border-left: 3px solid var(--blue);
+    }
+    .tl-content h3 { font-size: 17px; font-weight: 900; margin-bottom: 6px; }
+    .tl-content p { font-size: 14px; opacity: 0.65; line-height: 1.6; }
+    .tl-tag {
+      display: inline-block;
+      background: rgba(29,78,216,0.2);
+      border: 1px solid rgba(29,78,216,0.4);
+      color: #93c5fd;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 3px 10px;
+      border-radius: 100px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .tl-tag.win { background: rgba(34,197,94,0.2); border-color: rgba(34,197,94,0.4); color: #86efac; }
+    .tl-tag.blocked { background: rgba(239,68,68,0.2); border-color: rgba(239,68,68,0.4); color: #fca5a5; }
+
+    /* ── Moments ── */
+    .moments-section {
+      padding: 80px 20px;
+      background: #0f0e1a;
+    }
+
+    .moments-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-top: 40px;
+    }
+    @media (min-width: 600px) {
+      .moments-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .moment-card {
+      background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 24px;
+      transition: transform 0.2s, border-color 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .moment-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent);
+    }
+    .moment-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255,255,255,0.2);
+    }
+    .moment-icon { font-size: 36px; margin-bottom: 12px; }
+    .moment-card h3 { font-size: 18px; font-weight: 900; margin-bottom: 8px; }
+    .moment-card p { font-size: 14px; opacity: 0.65; line-height: 1.6; }
+    .moment-quote {
+      margin-top: 12px;
+      background: rgba(255,255,255,0.06);
+      border-left: 3px solid var(--accent);
+      padding: 10px 14px;
+      border-radius: 0 10px 10px 0;
+      font-size: 14px;
+      font-style: italic;
+      opacity: 0.85;
+    }
+
+    /* ── Skills unlocked ── */
+    .skills-section {
+      padding: 80px 20px;
+      background: linear-gradient(180deg, #0f1e35 0%, #0f0e1a 100%);
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 40px;
+    }
+    @media (min-width: 600px) {
+      .skills-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .skill-card {
+      background: linear-gradient(135deg, rgba(29,78,216,0.15) 0%, rgba(8,145,178,0.1) 100%);
+      border: 1px solid rgba(29,78,216,0.3);
+      border-radius: 16px;
+      padding: 20px 16px;
+      text-align: center;
+    }
+    .skill-icon { font-size: 32px; margin-bottom: 8px; }
+    .skill-card h4 { font-size: 15px; font-weight: 900; margin-bottom: 4px; }
+    .skill-card p { font-size: 12px; opacity: 0.55; }
+
+    /* ── Quiz ── */
+    .quiz-section {
+      padding: 80px 20px;
+      background: #0f0e1a;
+    }
+
+    .quiz-box {
+      background: linear-gradient(135deg, rgba(29,78,216,0.15), rgba(8,145,178,0.1));
+      border: 1px solid rgba(29,78,216,0.3);
+      border-radius: 24px;
+      padding: 36px 28px;
+      margin-top: 40px;
+    }
+
+    .quiz-progress {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 28px;
+    }
+    .quiz-pip {
+      height: 6px;
+      flex: 1;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.1);
+      transition: background 0.3s;
+    }
+    .quiz-pip.done { background: var(--green); }
+    .quiz-pip.active { background: var(--yellow); }
+
+    .quiz-q {
+      font-size: clamp(18px, 3vw, 22px);
+      font-weight: 900;
+      margin-bottom: 24px;
+      line-height: 1.4;
+    }
+    .quiz-q span {
+      display: inline-block;
+      background: rgba(251,191,36,0.15);
+      color: var(--yellow);
+      font-size: 13px;
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 12px;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .quiz-opt {
+      background: rgba(255,255,255,0.06);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 14px 18px;
+      text-align: left;
+      font-family: 'Nunito', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: white;
+      cursor: pointer;
+      transition: all 0.15s;
+      width: 100%;
+    }
+    .quiz-opt:hover:not(:disabled) {
+      border-color: rgba(29,78,216,0.6);
+      background: rgba(29,78,216,0.15);
+      transform: translateX(4px);
+    }
+    .quiz-opt.correct { background: rgba(34,197,94,0.2); border-color: #22c55e; }
+    .quiz-opt.wrong { background: rgba(239,68,68,0.15); border-color: #ef4444; opacity: 0.7; }
+    .quiz-opt:disabled { cursor: default; }
+
+    .quiz-feedback {
+      min-height: 50px;
+      font-size: 15px;
+      font-weight: 800;
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .quiz-feedback.correct { background: rgba(34,197,94,0.15); color: #86efac; display: block; }
+    .quiz-feedback.wrong { background: rgba(239,68,68,0.1); color: #fca5a5; display: block; }
+
+    .quiz-next {
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      border: none;
+      border-radius: 14px;
+      padding: 14px 28px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 16px;
+      font-weight: 900;
+      color: white;
+      cursor: pointer;
+      display: none;
+      transition: transform 0.1s;
+    }
+    .quiz-next:hover { transform: scale(1.03); }
+    .quiz-next.visible { display: inline-block; }
+
+    .quiz-result {
+      text-align: center;
+      display: none;
+      padding: 20px 0;
+    }
+    .quiz-result.show { display: block; }
+    .result-score {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 80px;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--yellow), #f97316);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+    .result-msg { font-size: 20px; font-weight: 900; margin-bottom: 8px; }
+    .result-sub { font-size: 15px; opacity: 0.6; margin-bottom: 24px; }
+    .quiz-retry {
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 14px;
+      padding: 12px 24px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 15px;
+      font-weight: 900;
+      color: white;
+      cursor: pointer;
+    }
+
+    /* ── CTA ── */
+    .cta-section {
+      padding: 100px 20px;
+      background: linear-gradient(135deg, #0f2040 0%, #0a3060 50%, #0f2040 100%);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(29,78,216,0.2) 0%, transparent 60%);
+    }
+    .cta-date {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(50px, 10vw, 90px);
+      line-height: 1;
+      color: var(--yellow);
+      position: relative;
+      margin-bottom: 8px;
+    }
+    .cta-time {
+      font-size: 24px;
+      font-weight: 900;
+      opacity: 0.7;
+      position: relative;
+      margin-bottom: 40px;
+    }
+    .cta-btns {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      position: relative;
+    }
+    .cta-btn {
+      display: inline-block;
+      padding: 16px 32px;
+      border-radius: 100px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 17px;
+      text-decoration: none;
+      transition: transform 0.15s;
+    }
+    .cta-btn:hover { transform: scale(1.04); }
+    .cta-btn.primary { background: var(--yellow); color: #1f2937; }
+    .cta-btn.secondary { background: rgba(255,255,255,0.12); color: white; border: 2px solid rgba(255,255,255,0.3); }
+
+    /* ── Back bar ── */
+    .back-bar {
+      background: rgba(255,255,255,0.05);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(20px);
+    }
+    .back-bar a {
+      color: white;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 15px;
+      opacity: 0.7;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .back-bar a:hover { opacity: 1; }
+    .back-bar span { font-size: 14px; opacity: 0.4; }
+  </style>
+</head>
+<body>
+
+  <!-- Back bar -->
+  <div class="back-bar">
+    <a href="index.html">← Back to Code Quest</a>
+    <span>Tech Bros · Check-In Recap</span>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="stars" id="stars"></div>
+    <div class="hero-badge">1st April 2026 · Boys Team Check-In</div>
+    <h1>TECH BROS<br>REPORT</h1>
+    <p class="hero-sub">Theodore. Ezekiel. Arthur. Three cousins across New York and Middleton — building, debugging, shipping. Here's what went down. 🔵</p>
+    <div class="hero-date">
+      🏁 Hackathon Day · Saturday 4th April · 6:30pm
+    </div>
+    <div class="scroll-hint">
+      <span>Scroll to relive it</span>
+      <span>↓</span>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="timeline-section">
+    <div class="container">
+      <div class="section-label">What happened</div>
+      <h2 class="section-title">The Session Timeline 🕹️</h2>
+      <p class="section-desc">One evening. Three boys. A lot of code, a token error, and a quiz that went live on the internet.</p>
+
+      <div class="timeline">
+
+        <div class="tl-item">
+          <div class="tl-dot">🏎️</div>
+          <div class="tl-content">
+            <div class="tl-tag">Ezekiel</div>
+            <h3>Race Engineer Simulator — Reviewed</h3>
+            <p>Ezekiel's Race Engineer Simulator P1 project got its first proper review with Uncle B. The verdict: impressive. The only hiccup — the music feature wasn't working because Claude's preview environment has hosting limitations. But the build itself? Solid.</p>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot">💡</div>
+          <div class="tl-content">
+            <div class="tl-tag">Team Decision</div>
+            <h3>The Merge Plan</h3>
+            <p>The team agreed on a strategy: take all three individual projects and merge their best ideas into one powerful combined prompt. One quiz to rule them all.</p>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot">📧</div>
+          <div class="tl-content">
+            <div class="tl-tag">Theodore & Arthur</div>
+            <h3>Code Shared via Email</h3>
+            <p>Ezekiel sent the Code Quest file to Theodore and Arthur via email so they could review it and understand the codebase before the merge. Real developer workflow.</p>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot">⚙️</div>
+          <div class="tl-content">
+            <div class="tl-tag blocked">Challenge</div>
+            <h3>GitHub Setup — Token Trouble</h3>
+            <p>The team set up a shared GitHub account (Tech Bros 3) and tried to push their code. Hit a wall: GitHub required a Personal Access Token, not just a password. Had to troubleshoot on the fly.</p>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot">🔑</div>
+          <div class="tl-content">
+            <div class="tl-tag win">Win</div>
+            <h3>Token Generated — Problem Solved</h3>
+            <p>Ezekiel generated the Personal Access Token, corrected the repository URL, and the push went through. That right there is real engineering problem-solving under pressure.</p>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot">🚀</div>
+          <div class="tl-content">
+            <div class="tl-tag win">Major Win</div>
+            <h3>GitHub Pages — Gone Live!</h3>
+            <p>GitHub Pages activated. The F1 quiz was live on a real public URL that anyone in the world could visit. The boys shipped their first real web app. That's not a small thing.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Moments -->
+  <div class="moments-section">
+    <div class="container">
+      <div class="section-label">Highlights</div>
+      <h2 class="section-title">The Best Moments 🌟</h2>
+
+      <div class="moments-grid">
+
+        <div class="moment-card" style="--accent: #3b82f6;">
+          <div class="moment-icon">🏎️</div>
+          <h3>Ezekiel's Simulator</h3>
+          <p>Before anything else was built, Ezekiel already had a Race Engineer Simulator running. Not just a quiz — a simulator. The level of imagination in that prompt was impressive.</p>
+          <div class="moment-quote">"The music feature wasn't working — but the build itself? Solid." — Uncle B</div>
+        </div>
+
+        <div class="moment-card" style="--accent: #22c55e;">
+          <div class="moment-icon">🚀</div>
+          <h3>First Live Deployment</h3>
+          <p>The moment GitHub Pages activated and the F1 quiz appeared on a real URL — that was the moment the Tech Bros stopped being students and became builders.</p>
+          <div class="moment-quote">"Anyone in the world can visit this link now." — Uncle B</div>
+        </div>
+
+        <div class="moment-card" style="--accent: #fbbf24;">
+          <div class="moment-icon">🔑</div>
+          <h3>The Token Problem</h3>
+          <p>GitHub threw a Personal Access Token error at exactly the wrong moment. Instead of giving up, the team debugged it live and pushed through. That's what real developers do.</p>
+          <div class="moment-quote">"All we need is iPads and internet." — Arthur (at kickoff, and it turned out to be true)</div>
+        </div>
+
+        <div class="moment-card" style="--accent: #a855f7;">
+          <div class="moment-icon">🤝</div>
+          <h3>The Merge Strategy</h3>
+          <p>Three separate projects. Three different ideas. One decision: combine them all into one mega-prompt. That's thinking like a team, not just three individuals.</p>
+          <div class="moment-quote">"Merge all the prompts into one big one." — Team decision</div>
+        </div>
+
+        <div class="moment-card" style="--accent: #0891b2;">
+          <div class="moment-icon">📧</div>
+          <h3>Developer Workflow</h3>
+          <p>Ezekiel emailed the code to Theodore and Arthur before the session so everyone could review it. Sharing code, reviewing together, building on each other's work — that's how real dev teams operate.</p>
+          <div class="moment-quote">"Review the Code Quest file that Ezekiel sent." — Meeting action items</div>
+        </div>
+
+        <div class="moment-card" style="--accent: #ef4444;">
+          <div class="moment-icon">🌍</div>
+          <h3>Three Cities, One Team</h3>
+          <p>New York. Middleton. On a Google Meet, after school on a Wednesday evening, building a live web app together. The Tech Bros don't let geography get in the way.</p>
+          <div class="moment-quote">"All we need is iPads and internet." — Arthur</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Skills unlocked -->
+  <div class="skills-section">
+    <div class="container">
+      <div class="section-label">What you proved</div>
+      <h2 class="section-title">Skills Unlocked 🔓</h2>
+      <p class="section-desc">These aren't just checkboxes. These are real things the Tech Bros did in one session.</p>
+
+      <div class="skills-grid">
+        <div class="skill-card">
+          <div class="skill-icon">🗂️</div>
+          <h4>Version Control</h4>
+          <p>Pushed code to GitHub like a pro</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">🌐</div>
+          <h4>Web Deployment</h4>
+          <p>Made a live URL anyone can visit</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">🔑</div>
+          <h4>Auth Tokens</h4>
+          <p>Generated a GitHub PAT and fixed the error</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">🛠️</div>
+          <h4>Debugging</h4>
+          <p>Hit a wall, diagnosed it, fixed it</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">🤝</div>
+          <h4>Collaboration</h4>
+          <p>Shared code via email across cities</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">🧠</div>
+          <h4>Product Thinking</h4>
+          <p>Decided to merge prompts strategically</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <div class="quiz-section">
+    <div class="container">
+      <div class="section-label">Test yourself</div>
+      <h2 class="section-title">Tech Bros Quiz ⚡</h2>
+      <p class="section-desc">How well do you know what went down? Prove you were paying attention.</p>
+
+      <div class="quiz-box">
+        <div class="quiz-progress" id="quizProgress"></div>
+        <div id="quizArea"></div>
+        <div class="quiz-result" id="quizResult">
+          <div class="result-score" id="resultScore"></div>
+          <div class="result-msg" id="resultMsg"></div>
+          <div class="result-sub" id="resultSub"></div>
+          <button class="quiz-retry" onclick="startQuiz()">Try Again 🔄</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <div class="container">
+      <p class="section-label">The big day</p>
+      <div class="cta-date">4TH APRIL 2026</div>
+      <div class="cta-time">6:30pm · Hackathon Day 🏁</div>
+      <p style="opacity:0.6; margin-bottom:40px; font-size:17px; position:relative;">The Tech Bros built something real. Tonight they show the world. 💪</p>
+      <div class="cta-btns">
+        <a href="index.html" class="cta-btn primary">Back to Code Quest →</a>
+        <a href="girls-recap.html" class="cta-btn secondary">👧 Girls Recap</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="riri-widget.js"></script>
+  <script>
+    const isEmbedded = new URLSearchParams(window.location.search).get('embedded') === '1';
+    if (isEmbedded) {
+      document.querySelector('.back-bar').style.display = 'none';
+      document.querySelector('.scroll-hint').style.display = 'none';
+    }
+
+    // Stars
+    const container = document.getElementById('stars');
+    for (let i = 0; i < 80; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--delay:${Math.random()*4}s;--op:${0.3+Math.random()*0.7};`;
+      container.appendChild(star);
+    }
+
+    // Quiz
+    const QUESTIONS = [
+      {
+        q: "What was the name of Ezekiel's project that got reviewed in the session?",
+        opts: ["F1 Quiz Master", "Race Engineer Simulator P1", "Speed Zone 3000", "Grand Prix Builder"],
+        ans: 1,
+        explain: "Ezekiel's Race Engineer Simulator P1 was reviewed and praised — the music wasn't working due to hosting limits, but the build itself was solid."
+      },
+      {
+        q: "Why wasn't the music feature working in Ezekiel's project?",
+        opts: ["The code had a bug", "The internet was too slow", "Claude's preview environment has hosting limitations", "Arthur accidentally deleted it"],
+        ans: 2,
+        explain: "Claude's built-in preview can't host audio files — you need external hosting like GitHub Pages for features like that."
+      },
+      {
+        q: "What did the team decide to do with their three individual projects?",
+        opts: ["Keep them separate and present all three", "Delete two and keep the best one", "Merge all prompts into one large combined prompt", "Ask Uncle B to pick the best one"],
+        ans: 2,
+        explain: "Smart team thinking — merge all the best ideas from each project into one powerful combined prompt."
+      },
+      {
+        q: "What problem did the team hit when trying to push code to GitHub?",
+        opts: ["Wrong password", "Internet disconnected", "GitHub required a Personal Access Token", "The repo was too large"],
+        ans: 2,
+        explain: "GitHub now requires a Personal Access Token (PAT) instead of a regular password for pushing code. The team had to generate one on the spot."
+      },
+      {
+        q: "What is GitHub Pages?",
+        opts: ["A coding tutorial website", "A way to make your code live on a real public URL", "A private backup system", "A messaging app for developers"],
+        ans: 1,
+        explain: "GitHub Pages turns your code repository into a live website that anyone in the world can visit. The boys activated it and their F1 quiz went live!"
+      },
+      {
+        q: "How did Ezekiel share the project code with Theodore and Arthur?",
+        opts: ["WhatsApp", "Shared Google Drive", "Sent it via email", "Showed them on screen share"],
+        ans: 2,
+        explain: "Ezekiel emailed the Code Quest file to Theodore and Arthur so they could review it before the merge — proper dev team workflow!"
+      },
+      {
+        q: "What was the big achievement at the end of the session?",
+        opts: ["They finished all 7 levels", "Their F1 quiz went live on a real public URL", "They beat the girls' score", "They won a coding competition"],
+        ans: 1,
+        explain: "GitHub Pages activated and the F1 quiz was live — anyone in the world could visit the link. That's a real deployment!"
+      }
+    ];
+
+    let current = 0;
+    let score = 0;
+    let answered = false;
+
+    function startQuiz() {
+      current = 0;
+      score = 0;
+      answered = false;
+      document.getElementById('quizResult').classList.remove('show');
+      document.getElementById('quizArea').style.display = 'block';
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      answered = false;
+      const q = QUESTIONS[current];
+
+      // Progress pips
+      const prog = document.getElementById('quizProgress');
+      prog.innerHTML = QUESTIONS.map((_, i) =>
+        `<div class="quiz-pip ${i < current ? 'done' : i === current ? 'active' : ''}"></div>`
+      ).join('');
+
+      document.getElementById('quizArea').innerHTML = `
+        <div class="quiz-q">
+          <span>Q${current + 1} of ${QUESTIONS.length}</span><br>
+          ${q.q}
+        </div>
+        <div class="quiz-options">
+          ${q.opts.map((opt, i) =>
+            `<button class="quiz-opt" onclick="answer(${i})" id="opt-${i}">${opt}</button>`
+          ).join('')}
+        </div>
+        <div class="quiz-feedback" id="feedback"></div>
+        <button class="quiz-next" id="nextBtn" onclick="nextQ()">
+          ${current === QUESTIONS.length - 1 ? 'See Results 🏁' : 'Next Question →'}
+        </button>
+      `;
+    }
+
+    function answer(idx) {
+      if (answered) return;
+      answered = true;
+      const q = QUESTIONS[current];
+      const isCorrect = idx === q.ans;
+      if (isCorrect) score++;
+
+      QUESTIONS[current].opts.forEach((_, i) => {
+        const btn = document.getElementById('opt-' + i);
+        btn.disabled = true;
+        if (i === q.ans) btn.classList.add('correct');
+        else if (i === idx && !isCorrect) btn.classList.add('wrong');
+      });
+
+      const fb = document.getElementById('feedback');
+      fb.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'wrong');
+      fb.textContent = isCorrect
+        ? '✅ Correct! ' + q.explain
+        : '❌ Not quite. ' + q.explain;
+
+      document.getElementById('nextBtn').classList.add('visible');
+    }
+
+    function nextQ() {
+      current++;
+      if (current >= QUESTIONS.length) {
+        showResult();
+      } else {
+        renderQuestion();
+      }
+    }
+
+    function showResult() {
+      document.getElementById('quizArea').style.display = 'none';
+      const result = document.getElementById('quizResult');
+      result.classList.add('show');
+
+      const pct = Math.round((score / QUESTIONS.length) * 100);
+      document.getElementById('resultScore').textContent = score + '/' + QUESTIONS.length;
+
+      let msg, sub;
+      if (pct === 100) {
+        msg = '🏆 PERFECT SCORE!';
+        sub = 'You were 100% locked in. Tech Bros certified! 💪';
+      } else if (pct >= 70) {
+        msg = '🔥 Solid work!';
+        sub = 'You know your team\'s story. One more run for the perfect score?';
+      } else if (pct >= 50) {
+        msg = '👍 Getting there!';
+        sub = 'Not bad — go back and read the highlights, then try again.';
+      } else {
+        msg = '😅 Time to review!';
+        sub = 'Read through the recap above, then come back for another go.';
+      }
+
+      document.getElementById('resultMsg').textContent = msg;
+      document.getElementById('resultSub').textContent = sub;
+    }
+
+    startQuiz();
+
+    if (!isEmbedded) {
+      initRiri({
+        context: `The kid is on the TECH BROS RECAP page. This covers the Boys Team Check-In session on 1st April 2026.
+Key facts:
+- Ezekiel built a Race Engineer Simulator P1 — it was reviewed and praised, but music didn't work due to Claude hosting limits
+- Team decided to merge all individual prompts into one combined quiz
+- They set up a shared GitHub account called "Tech Bros 3"
+- Hit a Personal Access Token error on GitHub and solved it
+- Pushed code to GitHub Pages — their F1 quiz went LIVE on a real public URL
+- Ezekiel sent the code to Theodore and Arthur via email
+- Theodore and Arthur's job: review the code before the merge
+- Action pending: Ezekiel's quiz link still needed activating (Uncle B to contact parents)
+
+Your job: quiz them on what happened, celebrate the wins, explain anything technical they don't understand (GitHub, tokens, deployment), hype them up for tonight's hackathon.`,
+        greeting: `Yo! 👋 The Tech Bros had a proper session. Did you get to review the recap? What was your favourite part? 🏎️`,
+        suggestions: [
+          '🏎️ Tell me about Ezekiel\'s simulator',
+          '🌐 What is GitHub Pages?',
+          '🔑 What\'s a Personal Access Token?',
+          '🤝 What\'s the merge plan?',
+          '🚀 What did we actually ship?',
+          '🏁 What happens tonight?'
+        ]
+      });
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Girl Power Recap 💖 | CODE QUEST</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --pink: #be185d;
+      --purple: #9333ea;
+      --violet: #7c3aed;
+      --yellow: #fbbf24;
+      --green: #22c55e;
+      --red: #ef4444;
+      --dark: #0f0e1a;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--dark);
+      color: white;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f0e1a 0%, #2d0a2e 50%, #1a0a30 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(190,24,93,0.3) 0%, transparent 70%);
+      top: -100px; right: -100px;
+      border-radius: 50%;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(147,51,234,0.25) 0%, transparent 70%);
+      bottom: -50px; left: -50px;
+      border-radius: 50%;
+    }
+
+    .hero-badge {
+      background: rgba(251,191,36,0.15);
+      border: 2px solid rgba(251,191,36,0.4);
+      color: var(--yellow);
+      padding: 8px 20px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(60px, 12vw, 120px);
+      line-height: 0.9;
+      background: linear-gradient(135deg, white 0%, #f9a8d4 50%, #c084fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 3vw, 22px);
+      opacity: 0.7;
+      max-width: 520px;
+      margin: 0 auto 36px;
+      position: relative;
+    }
+
+    .hero-date {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 12px 24px;
+      border-radius: 100px;
+      font-weight: 800;
+      font-size: 16px;
+      position: relative;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0.4;
+      font-size: 13px;
+      animation: bob 2s ease-in-out infinite;
+    }
+    @keyframes bob {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    .stars {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .star {
+      position: absolute;
+      width: 2px; height: 2px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0;
+      animation: twinkle var(--d) ease-in-out infinite var(--delay);
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0; }
+      50% { opacity: var(--op); }
+    }
+
+    /* ── Container ── */
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ── Section shared ── */
+    .section-label {
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--yellow);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 900;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+    .section-desc {
+      font-size: 17px;
+      opacity: 0.65;
+      max-width: 560px;
+      margin-bottom: 32px;
+    }
+
+    /* ── Session cards ── */
+    .sessions-section {
+      padding: 80px 20px;
+      background: linear-gradient(180deg, var(--dark) 0%, #1a0a20 100%);
+    }
+
+    .session-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 28px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .session-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent);
+    }
+    .session-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .session-icon {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+      background: var(--accent-bg);
+    }
+    .session-meta h3 { font-size: 18px; font-weight: 900; margin-bottom: 3px; }
+    .session-meta p { font-size: 13px; opacity: 0.5; }
+
+    .session-points {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .session-point {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .session-point-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+      margin-top: 7px;
+    }
+
+    /* ── Moments ── */
+    .moments-section {
+      padding: 80px 20px;
+      background: #0f0e1a;
+    }
+
+    .moments-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-top: 40px;
+    }
+    @media (min-width: 600px) {
+      .moments-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .moment-card {
+      background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 24px;
+      transition: transform 0.2s, border-color 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .moment-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent);
+    }
+    .moment-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255,255,255,0.2);
+    }
+    .moment-icon { font-size: 36px; margin-bottom: 12px; }
+    .moment-card h3 { font-size: 18px; font-weight: 900; margin-bottom: 8px; }
+    .moment-card p { font-size: 14px; opacity: 0.65; line-height: 1.6; }
+    .moment-quote {
+      margin-top: 12px;
+      background: rgba(255,255,255,0.06);
+      border-left: 3px solid var(--accent);
+      padding: 10px 14px;
+      border-radius: 0 10px 10px 0;
+      font-size: 14px;
+      font-style: italic;
+      opacity: 0.85;
+    }
+
+    /* ── Design choices ── */
+    .design-section {
+      padding: 80px 20px;
+      background: linear-gradient(180deg, #1a0a20 0%, #0f0e1a 100%);
+    }
+
+    .design-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 40px;
+    }
+    @media (min-width: 600px) {
+      .design-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .design-card {
+      background: linear-gradient(135deg, rgba(190,24,93,0.15) 0%, rgba(147,51,234,0.1) 100%);
+      border: 1px solid rgba(190,24,93,0.3);
+      border-radius: 16px;
+      padding: 20px 16px;
+      text-align: center;
+    }
+    .design-icon { font-size: 32px; margin-bottom: 8px; }
+    .design-card h4 { font-size: 15px; font-weight: 900; margin-bottom: 4px; }
+    .design-card p { font-size: 12px; opacity: 0.55; }
+
+    /* ── Quiz ── */
+    .quiz-section {
+      padding: 80px 20px;
+      background: #0f0e1a;
+    }
+
+    .quiz-box {
+      background: linear-gradient(135deg, rgba(190,24,93,0.15), rgba(147,51,234,0.1));
+      border: 1px solid rgba(190,24,93,0.3);
+      border-radius: 24px;
+      padding: 36px 28px;
+      margin-top: 40px;
+    }
+
+    .quiz-progress {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 28px;
+    }
+    .quiz-pip {
+      height: 6px;
+      flex: 1;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.1);
+      transition: background 0.3s;
+    }
+    .quiz-pip.done { background: var(--green); }
+    .quiz-pip.active { background: var(--yellow); }
+
+    .quiz-q {
+      font-size: clamp(18px, 3vw, 22px);
+      font-weight: 900;
+      margin-bottom: 24px;
+      line-height: 1.4;
+    }
+    .quiz-q span {
+      display: inline-block;
+      background: rgba(251,191,36,0.15);
+      color: var(--yellow);
+      font-size: 13px;
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 12px;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .quiz-opt {
+      background: rgba(255,255,255,0.06);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 14px 18px;
+      text-align: left;
+      font-family: 'Nunito', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: white;
+      cursor: pointer;
+      transition: all 0.15s;
+      width: 100%;
+    }
+    .quiz-opt:hover:not(:disabled) {
+      border-color: rgba(190,24,93,0.6);
+      background: rgba(190,24,93,0.15);
+      transform: translateX(4px);
+    }
+    .quiz-opt.correct { background: rgba(34,197,94,0.2); border-color: #22c55e; }
+    .quiz-opt.wrong { background: rgba(239,68,68,0.15); border-color: #ef4444; opacity: 0.7; }
+    .quiz-opt:disabled { cursor: default; }
+
+    .quiz-feedback {
+      min-height: 50px;
+      font-size: 15px;
+      font-weight: 800;
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .quiz-feedback.correct { background: rgba(34,197,94,0.15); color: #86efac; display: block; }
+    .quiz-feedback.wrong { background: rgba(239,68,68,0.1); color: #fca5a5; display: block; }
+
+    .quiz-next {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      border: none;
+      border-radius: 14px;
+      padding: 14px 28px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 16px;
+      font-weight: 900;
+      color: white;
+      cursor: pointer;
+      display: none;
+      transition: transform 0.1s;
+    }
+    .quiz-next:hover { transform: scale(1.03); }
+    .quiz-next.visible { display: inline-block; }
+
+    .quiz-result {
+      text-align: center;
+      display: none;
+      padding: 20px 0;
+    }
+    .quiz-result.show { display: block; }
+    .result-score {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 80px;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--yellow), #f97316);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+    .result-msg { font-size: 20px; font-weight: 900; margin-bottom: 8px; }
+    .result-sub { font-size: 15px; opacity: 0.6; margin-bottom: 24px; }
+    .quiz-retry {
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 14px;
+      padding: 12px 24px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 15px;
+      font-weight: 900;
+      color: white;
+      cursor: pointer;
+    }
+
+    /* ── CTA ── */
+    .cta-section {
+      padding: 100px 20px;
+      background: linear-gradient(135deg, #2d0a2e 0%, #1a0a30 50%, #2d0a2e 100%);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(190,24,93,0.15) 0%, transparent 60%);
+    }
+    .cta-date {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(50px, 10vw, 90px);
+      line-height: 1;
+      color: var(--yellow);
+      position: relative;
+      margin-bottom: 8px;
+    }
+    .cta-time {
+      font-size: 24px;
+      font-weight: 900;
+      opacity: 0.7;
+      position: relative;
+      margin-bottom: 40px;
+    }
+    .cta-btns {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      position: relative;
+    }
+    .cta-btn {
+      display: inline-block;
+      padding: 16px 32px;
+      border-radius: 100px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 17px;
+      text-decoration: none;
+      transition: transform 0.15s;
+    }
+    .cta-btn:hover { transform: scale(1.04); }
+    .cta-btn.primary { background: var(--yellow); color: #1f2937; }
+    .cta-btn.secondary { background: rgba(255,255,255,0.12); color: white; border: 2px solid rgba(255,255,255,0.3); }
+
+    /* ── Back bar ── */
+    .back-bar {
+      background: rgba(255,255,255,0.05);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(20px);
+    }
+    .back-bar a {
+      color: white;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 15px;
+      opacity: 0.7;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .back-bar a:hover { opacity: 1; }
+    .back-bar span { font-size: 14px; opacity: 0.4; }
+  </style>
+</head>
+<body>
+
+  <!-- Back bar -->
+  <div class="back-bar">
+    <a href="index.html">← Back to Code Quest</a>
+    <span>Girl Power · Sessions Recap</span>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="stars" id="stars"></div>
+    <div class="hero-badge">2nd April 2026 · Two Sessions, One Vision</div>
+    <h1>GIRL POWER<br>REPORT</h1>
+    <p class="hero-sub">Elsie. Hannah. Sophia. From setting up the tech stack to designing a quiz that's unmistakably them — here's the full story. 💖</p>
+    <div class="hero-date">
+      🏁 Hackathon Day · Saturday 4th April · 6:30pm
+    </div>
+    <div class="scroll-hint">
+      <span>Scroll to relive it</span>
+      <span>↓</span>
+    </div>
+  </div>
+
+  <!-- Sessions -->
+  <div class="sessions-section">
+    <div class="container">
+      <div class="section-label">The Sessions</div>
+      <h2 class="section-title">Two Sessions — Full Build Day 🛠️</h2>
+      <p class="section-desc">The girls had the most productive day of the whole bootcamp. Two meetings on the same day — morning and evening — and they came out with a live, working quiz.</p>
+
+      <!-- Session 1 -->
+      <div class="session-card" style="--accent: linear-gradient(90deg, #be185d, #9333ea); --accent-bg: linear-gradient(135deg, #be185d, #9333ea);">
+        <div class="session-header">
+          <div class="session-icon" style="background: linear-gradient(135deg, #be185d, #9333ea);">☀️</div>
+          <div class="session-meta">
+            <h3>Session 1 — Elsie &amp; Uncle B</h3>
+            <p>Thursday 2nd April · 9:17am BST · 1-on-1 Build Session</p>
+          </div>
+        </div>
+        <div class="session-points">
+          <div class="session-point">
+            <div class="session-point-dot" style="background:#be185d;"></div>
+            <div>Set up the full tech stack from scratch — GitHub for hosting, Supabase for the database. Both accounts live.</div>
+          </div>
+          <div class="session-point">
+            <div class="session-point-dot" style="background:#be185d;"></div>
+            <div>Team name confirmed: <strong>Girl Power</strong>. Brand identity locked in from the start.</div>
+          </div>
+          <div class="session-point">
+            <div class="session-point-dot" style="background:#9333ea;"></div>
+            <div>Used Claude to design the quiz vision — pastel colours, glitter, sparkles, butterflies, confetti on correct answers.</div>
+          </div>
+          <div class="session-point">
+            <div class="session-point-dot" style="background:#9333ea;"></div>
+            <div>Rejected Claude's first output for being too dark. Asked specifically for brighter blues, purples, fashion imagery and sparkles. That's product thinking.</div>
+          </div>
+          <div class="session-point">
+            <div class="session-point-dot" style="background:#be185d;"></div>
+            <div>Customised quiz topics to things Elsie actually knows and loves: fashion, art, makeup, cheerleading.</div>
+          </div>
+          <div class="session-point">
+            <div class="session-point-dot" style="background:#9333ea;"></div>
+            <div>Action items: share credentials with Hannah, verify Hannah's email, update Claude thread description.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Session 2 -->
+      <div class="session-card" style="--accent: linear-gradient(90deg, #9333ea, #be185d); --accent-bg: linear-gradient(135deg, #9333ea, #be185d);">
+        <div class="session-header">
+          <div class="session-icon" style="background: linear-gradient(135deg, #9333ea, #be185d);">🌙</div>
+          <div class="session-meta">
+            <h3>Session 2 — Full Girls Team</h3>
+            <p>Thursday 2nd April · 5:55pm BST · Team Review Session</p>
+          </div>
+        </div>
+        <div class="session-points">
+          <div class="session-point">
+            <div class="session-point-dot" style="background:#9333ea;"></div>
+            <div>Audio chaos at the start — but they pushed through and got everyone connected. Classic remote teamwork.</div>
+          </div>
+          <div class="session-point">
+            <div class="session-point-dot" style="background:#9333ea;"></div>
+            <div>Reviewed the quiz live — it was working and connected to the database. A fully functional multiplayer quiz.</div>
+          </div>
+          <div class="session-point">
+            <div class="session-point-dot" style="background:#be185d;"></div>
+            <div>Made a key product decision: the time limit was too short, so they eliminated it entirely. The quiz runs until everyone finishes.</div>
+          </div>
+          <div class="session-point">
+            <div class="session-point-dot" style="background:#be185d;"></div>
+            <div>Elsie tasked with final adjustments to both her quiz and the shared team version for Sophia and Hannah.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Moments -->
+  <div class="moments-section">
+    <div class="container">
+      <div class="section-label">Highlights</div>
+      <h2 class="section-title">The Best Moments 🌟</h2>
+
+      <div class="moments-grid">
+
+        <div class="moment-card" style="--accent: #ec4899;">
+          <div class="moment-icon">🎨</div>
+          <h3>Elsie Rejected Claude</h3>
+          <p>Claude's first quiz design came back too dark. Elsie didn't accept it — she went back with specific feedback: brighter colours, fashion imagery, sparkles. The second version was hers.</p>
+          <div class="moment-quote">"Too dark. Make it brighter — blue and purple with fashion and sparkles." — Elsie's direction to Claude</div>
+        </div>
+
+        <div class="moment-card" style="--accent: #a855f7;">
+          <div class="moment-icon">✨</div>
+          <h3>The Girl Power Vision</h3>
+          <p>Pastel colours. Glitter. Butterflies. Confetti on correct answers. "Real sayings" as end messages. Elsie didn't just ask for a quiz — she designed an experience.</p>
+          <div class="moment-quote">"Pastel colours, glitter, sparkles, butterfly themes and confetti animations." — The Girl Power brief</div>
+        </div>
+
+        <div class="moment-card" style="--accent: #be185d;">
+          <div class="moment-icon">🗂️</div>
+          <h3>Full Stack Setup</h3>
+          <p>In one morning session, Elsie set up GitHub AND Supabase — the two technical pillars that make a real web app work. That's more than most adults have done.</p>
+          <div class="moment-quote">"GitHub for hosting, Supabase for the database — both accounts live." — Session outcome</div>
+        </div>
+
+        <div class="moment-card" style="--accent: #22c55e;">
+          <div class="moment-icon">🔗</div>
+          <h3>Connected to the Database</h3>
+          <p>By the evening session, the quiz was live AND connected to Supabase. Real data being saved. Real multiplayer. That's not a demo — that's a working product.</p>
+          <div class="moment-quote">"A functional quiz hosted and connected to the database was reviewed." — Session notes</div>
+        </div>
+
+        <div class="moment-card" style="--accent: #fbbf24;">
+          <div class="moment-icon">⏱️</div>
+          <h3>The Timer Decision</h3>
+          <p>The team tested the quiz and felt the time limit was too short. So they killed it. That's a product decision made by a real user test — not just a gut feeling.</p>
+          <div class="moment-quote">"Eliminate the time limit entirely — let the quiz run until players finish." — Team decision</div>
+        </div>
+
+        <div class="moment-card" style="--accent: #9333ea;">
+          <div class="moment-icon">👭</div>
+          <h3>Two Sessions in One Day</h3>
+          <p>Morning with Uncle B. Evening with the full team. The girls had the most productive day of the whole bootcamp — and they did it the day before the hackathon.</p>
+          <div class="moment-quote">"Two meetings. One day. One working quiz." — The Girl Power way</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Design choices -->
+  <div class="design-section">
+    <div class="container">
+      <div class="section-label">The vision</div>
+      <h2 class="section-title">Design Choices 🎨</h2>
+      <p class="section-desc">These weren't random — every element of the Girl Power quiz was a deliberate creative decision.</p>
+
+      <div class="design-grid">
+        <div class="design-card">
+          <div class="design-icon">🦋</div>
+          <h4>Butterfly Theme</h4>
+          <p>The central visual identity of the quiz</p>
+        </div>
+        <div class="design-card">
+          <div class="design-icon">✨</div>
+          <h4>Glitter & Sparkles</h4>
+          <p>Throughout the UI — not just decorations</p>
+        </div>
+        <div class="design-card">
+          <div class="design-icon">🎊</div>
+          <h4>Confetti on Correct</h4>
+          <p>Every right answer gets a celebration</p>
+        </div>
+        <div class="design-card">
+          <div class="design-icon">💜</div>
+          <h4>Pastel Palette</h4>
+          <p>Bright blues and purples — not dark</p>
+        </div>
+        <div class="design-card">
+          <div class="design-icon">👗</div>
+          <h4>Fashion Imagery</h4>
+          <p>Quiz topics: fashion, art, makeup, cheerleading</p>
+        </div>
+        <div class="design-card">
+          <div class="design-icon">💬</div>
+          <h4>Real Sayings</h4>
+          <p>Custom end messages — not generic text</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <div class="quiz-section">
+    <div class="container">
+      <div class="section-label">Test yourself</div>
+      <h2 class="section-title">Girl Power Quiz 💖</h2>
+      <p class="section-desc">How well do you know what the team achieved? Let's find out.</p>
+
+      <div class="quiz-box">
+        <div class="quiz-progress" id="quizProgress"></div>
+        <div id="quizArea"></div>
+        <div class="quiz-result" id="quizResult">
+          <div class="result-score" id="resultScore"></div>
+          <div class="result-msg" id="resultMsg"></div>
+          <div class="result-sub" id="resultSub"></div>
+          <button class="quiz-retry" onclick="startQuiz()">Try Again 🔄</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <div class="container">
+      <p class="section-label">The big day</p>
+      <div class="cta-date">4TH APRIL 2026</div>
+      <div class="cta-time">6:30pm · Hackathon Day 💖</div>
+      <p style="opacity:0.6; margin-bottom:40px; font-size:17px; position:relative;">Two sessions. One day. A live quiz. The Girl Power team came to win. 👑</p>
+      <div class="cta-btns">
+        <a href="index.html" class="cta-btn primary">Back to Code Quest →</a>
+        <a href="boys-recap.html" class="cta-btn secondary">🔵 Boys Recap</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="riri-widget.js"></script>
+  <script>
+    const isEmbedded = new URLSearchParams(window.location.search).get('embedded') === '1';
+    if (isEmbedded) {
+      document.querySelector('.back-bar').style.display = 'none';
+      document.querySelector('.scroll-hint').style.display = 'none';
+    }
+
+    // Stars
+    const container = document.getElementById('stars');
+    for (let i = 0; i < 80; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--delay:${Math.random()*4}s;--op:${0.3+Math.random()*0.7};`;
+      container.appendChild(star);
+    }
+
+    // Quiz
+    const QUESTIONS = [
+      {
+        q: "What is the name the girls chose for their team?",
+        opts: ["Pink Squad", "Girl Power", "Sparkle Crew", "The Butterflies"],
+        ans: 1,
+        explain: "Girl Power — locked in from the very first session with Uncle B."
+      },
+      {
+        q: "Elsie rejected Claude's first quiz design. Why?",
+        opts: ["The font was wrong", "It was too dark — she wanted brighter colours", "It had the wrong questions", "The buttons weren't working"],
+        ans: 1,
+        explain: "Claude's first output was too dark. Elsie sent specific feedback: brighter blue and purple backgrounds with fashion imagery and sparkles. That's real product direction."
+      },
+      {
+        q: "What two platforms did the girls set up to make their quiz work?",
+        opts: ["YouTube and TikTok", "GitHub and Supabase", "Google Drive and Notion", "Replit and Firebase"],
+        ans: 1,
+        explain: "GitHub for hosting the code, Supabase for the database. Both set up in one morning session."
+      },
+      {
+        q: "What topics does the Girl Power quiz cover?",
+        opts: ["Maths, Science, History, Geography", "Football, F1, Gaming, Movies", "Fashion, Art, Makeup, Cheerleading", "Animals, Nature, Space, Food"],
+        ans: 2,
+        explain: "Elsie chose topics she actually knows and loves — fashion, art, makeup, and cheerleading. No generic questions here."
+      },
+      {
+        q: "What key product decision did the team make in the evening session?",
+        opts: ["Add a leaderboard", "Change the colour scheme", "Eliminate the time limit entirely", "Add a video intro"],
+        ans: 2,
+        explain: "The time limit was too short. After testing it live, the team decided to remove it completely — the quiz now runs until everyone finishes."
+      },
+      {
+        q: "What happens when you get a correct answer in the Girl Power quiz?",
+        opts: ["A sound effect plays", "Nothing — just moves to next question", "Confetti animation", "The screen turns green"],
+        ans: 2,
+        explain: "Confetti animations for correct answers — one of Elsie's specific creative decisions from the very first session."
+      },
+      {
+        q: "How many sessions did the girls have on April 2nd?",
+        opts: ["One long session", "Two sessions — morning and evening", "Three sessions", "None — they worked independently"],
+        ans: 1,
+        explain: "Morning: Elsie 1-on-1 with Uncle B to build. Evening: full team review with all three girls. The most productive day of the bootcamp."
+      }
+    ];
+
+    let current = 0;
+    let score = 0;
+    let answered = false;
+
+    function startQuiz() {
+      current = 0;
+      score = 0;
+      answered = false;
+      document.getElementById('quizResult').classList.remove('show');
+      document.getElementById('quizArea').style.display = 'block';
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      answered = false;
+      const q = QUESTIONS[current];
+
+      const prog = document.getElementById('quizProgress');
+      prog.innerHTML = QUESTIONS.map((_, i) =>
+        `<div class="quiz-pip ${i < current ? 'done' : i === current ? 'active' : ''}"></div>`
+      ).join('');
+
+      document.getElementById('quizArea').innerHTML = `
+        <div class="quiz-q">
+          <span>Q${current + 1} of ${QUESTIONS.length}</span><br>
+          ${q.q}
+        </div>
+        <div class="quiz-options">
+          ${q.opts.map((opt, i) =>
+            `<button class="quiz-opt" onclick="answer(${i})" id="opt-${i}">${opt}</button>`
+          ).join('')}
+        </div>
+        <div class="quiz-feedback" id="feedback"></div>
+        <button class="quiz-next" id="nextBtn" onclick="nextQ()">
+          ${current === QUESTIONS.length - 1 ? 'See Results 🏁' : 'Next Question →'}
+        </button>
+      `;
+    }
+
+    function answer(idx) {
+      if (answered) return;
+      answered = true;
+      const q = QUESTIONS[current];
+      const isCorrect = idx === q.ans;
+      if (isCorrect) score++;
+
+      QUESTIONS[current].opts.forEach((_, i) => {
+        const btn = document.getElementById('opt-' + i);
+        btn.disabled = true;
+        if (i === q.ans) btn.classList.add('correct');
+        else if (i === idx && !isCorrect) btn.classList.add('wrong');
+      });
+
+      const fb = document.getElementById('feedback');
+      fb.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'wrong');
+      fb.textContent = isCorrect
+        ? '✅ Correct! ' + q.explain
+        : '❌ Not quite. ' + q.explain;
+
+      document.getElementById('nextBtn').classList.add('visible');
+    }
+
+    function nextQ() {
+      current++;
+      if (current >= QUESTIONS.length) {
+        showResult();
+      } else {
+        renderQuestion();
+      }
+    }
+
+    function showResult() {
+      document.getElementById('quizArea').style.display = 'none';
+      const result = document.getElementById('quizResult');
+      result.classList.add('show');
+
+      const pct = Math.round((score / QUESTIONS.length) * 100);
+      document.getElementById('resultScore').textContent = score + '/' + QUESTIONS.length;
+
+      let msg, sub;
+      if (pct === 100) {
+        msg = '👑 QUEEN BEHAVIOUR!';
+        sub = 'Perfect score. You know the Girl Power story inside out. 💖';
+      } else if (pct >= 70) {
+        msg = '💅 Serving!';
+        sub = 'Strong performance. One more go for the perfect crown?';
+      } else if (pct >= 50) {
+        msg = '✨ Getting there!';
+        sub = 'Read the highlights above, then come back for another run.';
+      } else {
+        msg = '🦋 Keep going!';
+        sub = 'Go back through the recap — all the answers are in there!';
+      }
+
+      document.getElementById('resultMsg').textContent = msg;
+      document.getElementById('resultSub').textContent = sub;
+    }
+
+    startQuiz();
+
+    if (!isEmbedded) {
+      initRiri({
+        context: `The kid is on the GIRL POWER RECAP page. This covers two sessions on 2nd April 2026.
+Session 1 (9am, Elsie + Uncle B): Set up GitHub and Supabase, designed the Girl Power quiz vision with Claude — pastel colours, glitter, sparkles, butterflies, confetti on correct answers. Elsie rejected Claude's first dark output and asked for brighter blues/purples with fashion imagery. Topics: fashion, art, makeup, cheerleading.
+Session 2 (5:55pm, full girls team — Elsie, Hannah, Sophia): Audio issues but pushed through. Reviewed the live working quiz connected to the database. Made the decision to eliminate the time limit entirely. Elsie to make final adjustments to both her quiz and the team version.
+
+Your job: celebrate what they built, quiz them on the sessions, explain anything technical (GitHub, Supabase, databases), hype them up for tonight's hackathon. The girls had the most productive day of the bootcamp.`,
+        greeting: `Hey Girl Power! 💖 You two had the most productive day of the ENTIRE bootcamp. Two sessions in one day — how are you feeling about tonight? 🦋`,
+        suggestions: [
+          '🎨 Tell me about the quiz design',
+          '🗂️ What is Supabase?',
+          '✨ Why did Elsie reject Claude\'s first design?',
+          '⏱️ Why did we remove the timer?',
+          '🌐 What is GitHub for?',
+          '🏁 What happens tonight?'
+        ]
+      });
+    }
+  </script>
+
+</body>
+</html>
