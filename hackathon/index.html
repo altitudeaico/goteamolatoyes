@@ -75,7 +75,7 @@
       align-items: center;
       justify-content: center;
       flex-direction: column;
-      z-index: 10;
+      z-index: 1000 !important;
     }
     #authContainer.hide { display: none !important; }
     #welcome, #login, #signup { display: none !important; }
@@ -1329,7 +1329,7 @@
   </script>
 
   <!-- SINGLE AUTH CONTAINER -->
-  <div id="authContainer" style="display:flex;position:fixed;inset:0;z-index:10;align-items:center;justify-content:center;flex-direction:column;">
+  <div id="authContainer" style="display:flex;position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center;flex-direction:column;">
 
     <!-- Welcome -->
     <div id="authWelcome" style="display:flex;flex-direction:column;align-items:center;text-align:center;padding:40px 24px;width:100%;max-width:380px;">
@@ -2378,49 +2378,47 @@ Make it exciting and something our whole family will enjoy playing!`
 
   // Login
   async function tryLogin() {
-    const name = document.getElementById('nameInput').value.trim();
-    const code = document.getElementById('codeInput').value;
-    if (!name || !code) { toast('Fill in both fields!', true); return; }
+    const nameVal = document.getElementById('nameInput').value.trim();
+    const codeVal = document.getElementById('codeInput').value.trim();
+    if (!nameVal || !codeVal) { toast('Enter your name and code!', true); return; }
 
-    toast('Checking... ⏳');
-    console.log('[Login] Attempting:', name, '/ code length:', code.length);
+    const btn = document.querySelector('#authLogin .btn-green');
+    if (btn) btn.textContent = 'Checking...';
 
-    // Step 1: does the user exist at all?
-    const { data: allUsers, error: e0 } = await db.from('hackathon_users').select('id, name, display_name, secret_code').limit(50);
-    console.log('[Login] All users in DB:', allUsers, 'error:', e0);
+    try {
+      // Try display_name match (case-insensitive)
+      let { data } = await db.from('hackathon_users')
+        .select('*').ilike('display_name', nameVal).eq('secret_code', codeVal).maybeSingle();
 
-    // Step 2: try ilike on display_name + code
-    const { data: d1, error: e1 } = await db.from('hackathon_users')
-      .select('*').ilike('display_name', name).eq('secret_code', code).maybeSingle();
-    console.log('[Login] ilike display_name match:', d1, 'error:', e1);
+      // Fallback: lowercase name field
+      if (!data) {
+        const r2 = await db.from('hackathon_users')
+          .select('*').eq('name', nameVal.toLowerCase()).eq('secret_code', codeVal).maybeSingle();
+        data = r2.data;
+      }
 
-    // Step 3: fallback — name field
-    const { data: d2, error: e2 } = await db.from('hackathon_users')
-      .select('*').eq('name', name.toLowerCase()).eq('secret_code', code).maybeSingle();
-    console.log('[Login] name field match:', d2, 'error:', e2);
+      if (!data) {
+        toast('Name or code not right — try again! 🤔', true);
+        if (btn) btn.textContent = "Let's Go! 🚀";
+        return;
+      }
 
-    const data = d1 || d2;
-    console.log('[Login] Final result:', data);
+      user = data;
+      localStorage.setItem('cq', JSON.stringify(user));
 
-    if (!data) {
-      // Show what names ARE in the DB to help diagnose
-      const names = (allUsers || []).map(u => u.display_name || u.name).join(', ');
-      toast('Not found. DB has: ' + (names || 'nobody'), true);
-      return;
+      if (data.role === 'parent' && data.name !== 'uncle_b' && codeVal === 'codequestparent') {
+        showChangePassword();
+        return;
+      }
+
+      subscribeToUnreadNotifications();
+      updateUnreadBadges();
+      showHome();
+    } catch(err) {
+      console.error('[Login] Error:', err);
+      toast('Something went wrong — try again!', true);
+      if (btn) btn.textContent = "Let's Go! 🚀";
     }
-    
-    user = data;
-    localStorage.setItem('cq', JSON.stringify(user));
-
-    // Parent using default code (not Uncle B) must change password first
-    if (data.role === 'parent' && data.name !== 'uncle_b' && code === 'codequestparent') {
-      showChangePassword();
-      return;
-    }
-
-    subscribeToUnreadNotifications();
-    updateUnreadBadges();
-    showHome();
   }
 
   // Signup
@@ -2913,7 +2911,7 @@ Make it exciting and something our whole family will enjoy playing!`
 
     try {
       user = JSON.parse(saved);
-      const { data } = await db.from('hackathon_users').select('*').eq('id', user.id).single();
+      const { data } = await db.from('hackathon_users').select('*').eq('id', user.id).maybeSingle();
       if (data) {
         user = data;
         localStorage.setItem('cq', JSON.stringify(user));
