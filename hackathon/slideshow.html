@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hackathon Night 🚀 | CODE QUEST</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #0f0e1a;
+      color: white;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      user-select: none;
+    }
+
+    /* ── Slides container ── */
+    #slides {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 60px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+    .slide.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* ── Stars bg ── */
+    .stars-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .star {
+      position: absolute;
+      width: 2px; height: 2px;
+      background: white; border-radius: 50%; opacity: 0;
+      animation: twinkle var(--d) ease-in-out infinite var(--delay);
+    }
+    @keyframes twinkle { 0%,100%{opacity:0} 50%{opacity:var(--op)} }
+
+    /* ── Navigation ── */
+    #nav {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      z-index: 100;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(20px);
+      border-radius: 100px;
+      padding: 10px 20px;
+    }
+    .nav-btn {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 16px;
+      padding: 10px 24px;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .nav-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.04); }
+    .nav-btn:disabled { opacity: 0.25; cursor: default; transform: none; }
+    #slideCounter {
+      font-size: 13px;
+      font-weight: 800;
+      opacity: 0.5;
+      min-width: 60px;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    /* ── Dots ── */
+    #dots {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      z-index: 100;
+    }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .dot.active { background: #fbbf24; transform: scale(1.4); }
+
+    /* ── Fullscreen btn ── */
+    #fsBtn {
+      position: fixed;
+      top: 16px; right: 20px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: white; font-family: 'Nunito', sans-serif;
+      font-weight: 800; font-size: 13px;
+      padding: 8px 16px; border-radius: 100px;
+      cursor: pointer; z-index: 100;
+      transition: background 0.15s;
+    }
+    #fsBtn:hover { background: rgba(255,255,255,0.15); }
+
+    /* ── Back link ── */
+    #backBtn {
+      position: fixed;
+      top: 16px; left: 20px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: white; font-family: 'Nunito', sans-serif;
+      font-weight: 800; font-size: 13px;
+      padding: 8px 16px; border-radius: 100px;
+      cursor: pointer; z-index: 100;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    #backBtn:hover { background: rgba(255,255,255,0.15); }
+
+    /* ════════════════════════════════════
+       SLIDE STYLES
+    ════════════════════════════════════ */
+
+    /* shared */
+    .label {
+      font-size: 13px; font-weight: 900;
+      text-transform: uppercase; letter-spacing: 3px;
+      color: #fbbf24; margin-bottom: 16px;
+    }
+    .big-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(70px, 14vw, 140px);
+      line-height: 0.9;
+      margin-bottom: 24px;
+    }
+    .sub {
+      font-size: clamp(16px, 2.5vw, 22px);
+      opacity: 0.7; max-width: 680px;
+      line-height: 1.6; margin: 0 auto;
+    }
+    .pill {
+      display: inline-block;
+      padding: 8px 22px; border-radius: 100px;
+      font-size: 15px; font-weight: 900;
+      margin: 6px 4px;
+    }
+
+    /* ── Slide 1: Title ── */
+    #s1 { background: linear-gradient(135deg, #0f0e1a 0%, #1e1b4b 50%, #2d1b69 100%); }
+    #s1 .big-title {
+      background: linear-gradient(135deg, white 0%, #c4b5fd 50%, #f9a8d4 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    #s1 .time-badge {
+      display: inline-flex; align-items: center; gap: 12px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 14px 28px; border-radius: 100px;
+      font-weight: 900; font-size: 18px; margin-top: 20px;
+    }
+    #s1 .time-badge span { opacity: 0.4; }
+    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.03)} }
+    #s1 .big-title { animation: pulse 3s ease-in-out infinite; }
+
+    /* ── Slide 2: Journey ── */
+    #s2 { background: linear-gradient(135deg, #0f0e1a, #1a0a30); }
+    .stats-row {
+      display: flex; gap: 24px; justify-content: center;
+      flex-wrap: wrap; margin: 32px 0;
+    }
+    .stat-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px; padding: 28px 32px;
+      min-width: 160px;
+    }
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 72px; line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-label { font-size: 13px; font-weight: 800; opacity: 0.55; letter-spacing: 1px; text-transform: uppercase; }
+
+    /* ── Slide 3: Boys intro ── */
+    #s3 { background: linear-gradient(135deg, #0f2040, #0a3060, #0f2040); }
+    .team-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(60px, 12vw, 110px);
+      background: linear-gradient(135deg, white, #93c5fd, #22d3ee);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; line-height: 0.9; margin-bottom: 20px;
+    }
+    .members-row {
+      display: flex; gap: 20px; justify-content: center;
+      flex-wrap: wrap; margin: 24px 0;
+    }
+    .member-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px; padding: 20px 24px;
+      min-width: 140px; text-align: center;
+    }
+    .member-emoji { font-size: 40px; margin-bottom: 8px; }
+    .member-name { font-size: 18px; font-weight: 900; margin-bottom: 4px; }
+    .member-loc { font-size: 12px; opacity: 0.45; }
+    .member-badge-name { font-size: 11px; font-weight: 800; margin-top: 8px; letter-spacing: 0.5px; }
+
+    /* ── Slide 4 & 5: Demo slides ── */
+    #s4 { background: linear-gradient(135deg, #0a3060, #042C53); }
+    #s5 { background: linear-gradient(135deg, #0a3060, #042C53); }
+    #s7 { background: linear-gradient(135deg, #2d0a2e, #1a0a30); }
+    #s8 { background: linear-gradient(135deg, #2d0a2e, #1a0a30); }
+
+    .demo-emoji { font-size: 80px; margin-bottom: 16px; animation: pulse 2s ease-in-out infinite; }
+    .demo-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(48px, 9vw, 88px);
+      line-height: 1; margin-bottom: 16px;
+    }
+    .code-box {
+      background: rgba(0,0,0,0.4);
+      border: 2px solid rgba(255,255,255,0.15);
+      border-radius: 20px; padding: 20px 32px;
+      display: inline-flex; flex-direction: column;
+      gap: 10px; margin: 16px auto;
+      min-width: 320px;
+    }
+    .code-row {
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 24px;
+    }
+    .code-key { font-size: 14px; font-weight: 800; opacity: 0.55; text-transform: uppercase; letter-spacing: 1px; }
+    .code-val {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px; letter-spacing: 4px; color: #fbbf24;
+    }
+    .code-val.small { font-size: 22px; letter-spacing: 2px; }
+    .play-btn {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      border: 2px solid rgba(255,255,255,0.3);
+      color: white; font-family: 'Nunito', sans-serif;
+      font-weight: 900; font-size: 16px;
+      padding: 14px 32px; border-radius: 100px;
+      text-decoration: none; margin-top: 12px;
+      transition: all 0.15s;
+    }
+    .play-btn:hover { background: rgba(255,255,255,0.25); transform: scale(1.04); }
+
+    /* ── Slide 6: Girls intro ── */
+    #s6 { background: linear-gradient(135deg, #2d0a2e, #1a0a30, #2d0a2e); }
+    .team-title-girls {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(60px, 12vw, 110px);
+      background: linear-gradient(135deg, white, #f9a8d4, #c084fc);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; line-height: 0.9; margin-bottom: 20px;
+    }
+
+    /* ── Slide 9: What did you learn ── */
+    #s9 { background: linear-gradient(135deg, #0f0e1a, #12102a); }
+    .question-card {
+      background: rgba(255,255,255,0.05);
+      border: 2px solid rgba(124,58,237,0.4);
+      border-radius: 28px; padding: 36px 48px;
+      max-width: 700px; margin: 24px auto;
+    }
+    .question-text {
+      font-size: clamp(22px, 4vw, 36px);
+      font-weight: 900; line-height: 1.4;
+      color: white;
+    }
+    .question-text em { color: #fbbf24; font-style: normal; }
+
+    /* ── Slides 10-16: Badges ── */
+    .badge-slide { background: linear-gradient(135deg, #0f0e1a, #1a0a30); }
+
+    @keyframes badgePopIn {
+      0%   { transform: scale(0) rotate(-20deg); opacity: 0; }
+      60%  { transform: scale(1.15) rotate(4deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+    @keyframes badgeFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    @keyframes badgeSpinCW  { to{transform:rotate(360deg)} }
+    @keyframes badgeSpinCCW { to{transform:rotate(-360deg)} }
+    @keyframes badgePulse   { 0%,100%{transform:scale(1)} 50%{transform:scale(1.18)} }
+    @keyframes badgeTwinkle { 0%,100%{opacity:0.1} 50%{opacity:1} }
+    @keyframes rainbowBorder {
+      0%{border-color:#ff6b6b} 16%{border-color:#ffa94d} 33%{border-color:#ffe066}
+      50%{border-color:#69db7c} 66%{border-color:#74c0fc} 83%{border-color:#cc5de8} 100%{border-color:#ff6b6b}
+    }
+    @keyframes rainbowBorderR {
+      0%{border-color:#cc5de8} 16%{border-color:#ff6b6b} 33%{border-color:#ffa94d}
+      50%{border-color:#ffe066} 66%{border-color:#69db7c} 83%{border-color:#74c0fc} 100%{border-color:#cc5de8}
+    }
+    @keyframes emmaPulse { 0%,100%{transform:scale(1);filter:brightness(1)} 50%{transform:scale(1.22);filter:brightness(1.4)} }
+    @keyframes emmaSparkle { 0%,100%{opacity:0;transform:scale(0.3)} 50%{opacity:1;transform:scale(1.4)} }
+
+    .badge-reveal {
+      display: flex; flex-direction: column; align-items: center;
+      animation: badgePopIn 0.8s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    .badge-float-wrap {
+      display: flex; flex-direction: column; align-items: center;
+      animation: badgeFloat 3s ease-in-out infinite;
+    }
+    .b-ring-wrap { position: relative; }
+    .b-ring-outer {
+      position: absolute; inset: 0; border-radius: 50%;
+      border-style: dashed; border-width: 2.5px;
+      animation: badgeSpinCW 8s linear infinite;
+    }
+    .b-ring-inner {
+      position: absolute; border-radius: 50%;
+      border-style: dashed; border-width: 1.5px;
+      animation: badgeSpinCCW 6s linear infinite;
+    }
+    .b-ring-core {
+      position: absolute; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      border-width: 2.5px; border-style: solid;
+    }
+    .b-icon { display: block; animation: badgePulse 2s ease-in-out infinite; }
+    .b-star {
+      position: absolute; line-height: 1;
+      animation: badgeTwinkle 1.8s ease-in-out infinite;
+    }
+    .b-star:nth-child(2){animation-delay:0.45s}
+    .b-star:nth-child(3){animation-delay:0.9s}
+    .b-star:nth-child(4){animation-delay:1.35s}
+
+    .badge-kid-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(36px, 7vw, 64px);
+      margin-top: 20px; letter-spacing: 4px;
+      text-shadow: 0 0 30px rgba(255,255,255,0.3);
+    }
+    .badge-title-name {
+      font-size: clamp(14px, 2.5vw, 20px);
+      font-weight: 900; letter-spacing: 2px;
+      margin-top: 6px; text-transform: uppercase;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    }
+    .badge-why {
+      max-width: 560px; margin: 16px auto 0;
+      font-size: clamp(14px, 1.8vw, 18px);
+      opacity: 0.65; line-height: 1.7;
+    }
+
+    /* Emma special */
+    .emma-outer {
+      position: absolute; inset: 0; border-radius: 50%;
+      border-width: 3px; border-style: dashed;
+      animation: badgeSpinCW 3s linear infinite, rainbowBorder 2s linear infinite;
+    }
+    .emma-inner {
+      position: absolute; border-radius: 50%;
+      border-width: 2px; border-style: dashed;
+      animation: badgeSpinCCW 2.5s linear infinite, rainbowBorderR 2s linear infinite;
+    }
+    .emma-core {
+      position: absolute; border-radius: 50%;
+      background: radial-gradient(circle at 40% 35%, #2d0a4e, #0a0020);
+      border: 3px solid #cc5de8;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .e-sparkle {
+      position: absolute; line-height: 1;
+      animation: emmaSparkle 1.3s ease-in-out infinite;
+    }
+    .e-sparkle:nth-child(2){animation-delay:0.22s}
+    .e-sparkle:nth-child(3){animation-delay:0.44s}
+    .e-sparkle:nth-child(4){animation-delay:0.66s}
+    .e-sparkle:nth-child(5){animation-delay:0.88s}
+    .e-sparkle:nth-child(6){animation-delay:1.10s}
+    .emma-icon { font-size: 44px; animation: emmaPulse 1.4s ease-in-out infinite; display: block; }
+    .emma-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(36px, 7vw, 64px);
+      margin-top: 20px; letter-spacing: 4px;
+      background: linear-gradient(90deg,#ff6b6b,#ffa94d,#ffe066,#69db7c,#74c0fc,#cc5de8);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .honorary {
+      font-size: 13px; font-weight: 900; letter-spacing: 2px;
+      color: #fbbf24; margin-top: 6px; text-transform: uppercase;
+    }
+
+    /* ── Slide 17: What's next ── */
+    #s17 { background: linear-gradient(135deg, #0f0e1a, #1e1b4b); }
+    .next-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px; margin: 24px auto; max-width: 720px;
+    }
+    .next-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px; padding: 20px 22px;
+      text-align: left; position: relative; overflow: hidden;
+    }
+    .next-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: var(--accent);
+    }
+    .next-icon { font-size: 28px; margin-bottom: 8px; }
+    .next-card h4 { font-size: 16px; font-weight: 900; margin-bottom: 4px; }
+    .next-card p { font-size: 13px; opacity: 0.6; line-height: 1.5; }
+
+    /* ── Slide 18: Judging ── */
+    #s18 { background: linear-gradient(135deg, #1a0a30, #2d1b69); }
+
+    /* ── Slide 19: Celebrate ── */
+    #s19 { background: linear-gradient(135deg, #1e1b4b, #2d1b69, #1e1b4b); }
+    @keyframes celebBounce { 0%,100%{transform:scale(1) rotate(0deg)} 25%{transform:scale(1.1) rotate(-3deg)} 75%{transform:scale(1.1) rotate(3deg)} }
+    #s19 .big-emoji { font-size: 100px; animation: celebBounce 1s ease-in-out infinite; margin-bottom: 20px; }
+    #s19 .big-title {
+      background: linear-gradient(135deg, #fbbf24, #f97316, #ec4899);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="stars-bg" id="starsBg"></div>
+
+  <a href="tonight.html" id="backBtn">← Back</a>
+  <button id="fsBtn" onclick="toggleFS()">⛶ Fullscreen</button>
+
+  <div id="dots"></div>
+
+  <div id="slides">
+
+    <!-- ══ SLIDE 1: Title ══ -->
+    <div class="slide active" id="s1">
+      <div class="label">Olatoye Academy · Code Quest 2026</div>
+      <div class="big-title">HACKATHON<br>NIGHT</div>
+      <div class="sub">Six kids. Three cities. Two weeks. Four apps.<br>Tonight we celebrate what they built.</div>
+      <div class="time-badge">
+        📅 Saturday 4th April 2026
+        <span>·</span>
+        🕕 6:00pm
+        <span>·</span>
+        👧 Girls vs Boys 👦
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 2: The Journey ══ -->
+    <div class="slide" id="s2">
+      <div class="label">The story so far</div>
+      <div class="big-title" style="background:linear-gradient(135deg,white,#c4b5fd,#f9a8d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-family:'Bebas Neue',sans-serif;font-size:clamp(70px,14vw,140px);line-height:0.9;margin-bottom:24px;">TWO<br>WEEKS</div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-num" style="color:#85B7EB;">6</div>
+          <div class="stat-label">Kids</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" style="color:#f9a8d4;">3</div>
+          <div class="stat-label">Cities</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" style="color:#fbbf24;">4</div>
+          <div class="stat-label">Apps Built</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" style="color:#86efac;">16</div>
+          <div class="stat-label">Bugs Fixed</div>
+        </div>
+      </div>
+      <div class="sub">From not knowing what a database was — to building one into a live multiplayer quiz. In two weeks.</div>
+    </div>
+
+    <!-- ══ SLIDE 3: Boys Intro ══ -->
+    <div class="slide" id="s3">
+      <div class="label">First up</div>
+      <div class="team-title">TECH BROS 🔵</div>
+      <div class="members-row">
+        <div class="member-card" style="border-color:rgba(56,132,221,0.3);">
+          <div class="member-emoji">🏎️</div>
+          <div class="member-name">Ezekiel</div>
+          <div class="member-loc">Middleton</div>
+          <div class="member-badge-name" style="color:#85B7EB;">The Engineer</div>
+        </div>
+        <div class="member-card" style="border-color:rgba(127,119,221,0.3);">
+          <div class="member-emoji">💡</div>
+          <div class="member-name">Theodore</div>
+          <div class="member-loc">New York</div>
+          <div class="member-badge-name" style="color:#AFA9EC;">The Visionary</div>
+        </div>
+        <div class="member-card" style="border-color:rgba(186,117,23,0.3);">
+          <div class="member-emoji">⚡</div>
+          <div class="member-name">Arthur</div>
+          <div class="member-loc">New York</div>
+          <div class="member-badge-name" style="color:#FAC775;">First to Launch</div>
+        </div>
+      </div>
+      <div class="sub">Three cousins. Two cities. They built TWO apps — a solo F1 quiz and a multiplayer team quiz. Let's see them!</div>
+    </div>
+
+    <!-- ══ SLIDE 4: Ezekiel's F1 Quiz ══ -->
+    <div class="slide" id="s4">
+      <div class="label">Tech Bros · App 1 of 2</div>
+      <div class="demo-emoji">🏎️</div>
+      <div class="demo-title" style="color:white;">Ezekiel's F1 Quiz</div>
+      <div class="sub" style="margin-bottom:16px;">Built by Ezekiel — solo. 20 F1 questions, animated race track, qualifying grid scoring. Get them all right and you're P1!</div>
+      <div class="code-box">
+        <div class="code-row">
+          <span class="code-key">Type</span>
+          <span class="code-val small">Single Player</span>
+        </div>
+        <div class="code-row">
+          <span class="code-key">Link</span>
+          <span style="font-size:13px;font-weight:800;color:#93c5fd;word-break:break-all;">techbros3.github.io/Tech-Bros-Quiz/f1-quiz.html</span>
+        </div>
+      </div>
+      <a href="https://techbros3.github.io/Tech-Bros-Quiz/f1-quiz.html" target="_blank" class="play-btn">▶ Play Ezekiel's F1 Quiz</a>
+    </div>
+
+    <!-- ══ SLIDE 5: Tech Bros Quiz ══ -->
+    <div class="slide" id="s5">
+      <div class="label">Tech Bros · App 2 of 2</div>
+      <div class="demo-emoji">🌌</div>
+      <div class="demo-title" style="color:white;">Tech Bros Quiz</div>
+      <div class="sub" style="margin-bottom:16px;">Multiplayer! Tech, F1 and Ninjago. 20 questions. Deep space background with meteors and lightning. Everyone plays together.</div>
+      <div class="code-box">
+        <div class="code-row">
+          <span class="code-key">Game Code</span>
+          <span class="code-val">BROS</span>
+        </div>
+        <div class="code-row">
+          <span class="code-key">Host Password</span>
+          <span class="code-val small">GoTeamOlatoyes</span>
+        </div>
+        <div class="code-row">
+          <span class="code-key">Link</span>
+          <span style="font-size:13px;font-weight:800;color:#93c5fd;">techbros3.github.io/Tech-Bros-Quiz</span>
+        </div>
+      </div>
+      <a href="https://techbros3.github.io/Tech-Bros-Quiz/" target="_blank" class="play-btn">▶ Play Tech Bros Quiz</a>
+    </div>
+
+    <!-- ══ SLIDE 6: Girls Intro ══ -->
+    <div class="slide" id="s6">
+      <div class="label">Now</div>
+      <div class="team-title-girls">GIRL POWER 💖</div>
+      <div class="members-row">
+        <div class="member-card" style="border-color:rgba(124,58,237,0.3);">
+          <div class="member-emoji">🦋</div>
+          <div class="member-name">Elsie</div>
+          <div class="member-loc">Gravesend</div>
+          <div class="member-badge-name" style="color:#c084fc;">The Creative Director</div>
+        </div>
+        <div class="member-card" style="border-color:rgba(29,158,117,0.3);">
+          <div class="member-emoji">🤸</div>
+          <div class="member-name">Hannah</div>
+          <div class="member-loc">Middleton</div>
+          <div class="member-badge-name" style="color:#5DCAA5;">The Independent Builder</div>
+        </div>
+        <div class="member-card" style="border-color:rgba(230,73,128,0.3);">
+          <div class="member-emoji">🎵</div>
+          <div class="member-name">Sophia</div>
+          <div class="member-loc">Middleton</div>
+          <div class="member-badge-name" style="color:#f783ac;">The Rhythm Maker</div>
+        </div>
+      </div>
+      <div class="sub">Three cousins. Three cities. They also built TWO apps — Elsie's quiz and Hannah & Sophia's own quiz. Let's see them!</div>
+    </div>
+
+    <!-- ══ SLIDE 7: Elsie's Quiz ══ -->
+    <div class="slide" id="s7">
+      <div class="label">Girl Power · App 1 of 2</div>
+      <div class="demo-emoji">🦋</div>
+      <div class="demo-title" style="color:white;">Elsie's Girl Power Quiz</div>
+      <div class="sub" style="margin-bottom:16px;">Fashion, art, makeup and cheerleading — with butterflies, sparkles and confetti on every right answer. Elsie designed every detail herself.</div>
+      <div class="code-box">
+        <div class="code-row">
+          <span class="code-key">Game Code</span>
+          <span class="code-val">GIRL</span>
+        </div>
+        <div class="code-row">
+          <span class="code-key">Host Password</span>
+          <span class="code-val small">girlpower2026</span>
+        </div>
+        <div class="code-row">
+          <span class="code-key">Link</span>
+          <span style="font-size:13px;font-weight:800;color:#f9a8d4;">girlpowercoders.github.io/girlpowerquiz</span>
+        </div>
+      </div>
+      <a href="https://girlpowercoders.github.io/girlpowerquiz" target="_blank" class="play-btn" style="border-color:rgba(190,24,93,0.5);">▶ Play Elsie's Girl Power Quiz</a>
+    </div>
+
+    <!-- ══ SLIDE 8: Hannah & Sophia's Quiz ══ -->
+    <div class="slide" id="s8">
+      <div class="label">Girl Power · App 2 of 2</div>
+      <div class="demo-emoji">💎</div>
+      <div class="demo-title" style="color:white;">Hannah &amp; Sophia's Cousin Quiz</div>
+      <div class="sub" style="margin-bottom:16px;">Built independently — Hannah and Sophia made this themselves. Their questions. Their design. Nobody showed them how. They just did it.</div>
+      <div class="code-box">
+        <div class="code-row">
+          <span class="code-key">Game Code</span>
+          <span class="code-val">QUIZ</span>
+        </div>
+        <div class="code-row">
+          <span class="code-key">Host Password</span>
+          <span class="code-val small">girlpower2026</span>
+        </div>
+        <div class="code-row">
+          <span class="code-key">Link</span>
+          <span style="font-size:13px;font-weight:800;color:#f9a8d4;">girlpowercoders.github.io/girlpowerquiz/cousin-quiz.html</span>
+        </div>
+      </div>
+      <a href="https://girlpowercoders.github.io/girlpowerquiz/cousin-quiz.html" target="_blank" class="play-btn" style="border-color:rgba(190,24,93,0.5);">▶ Play the Cousin Quiz</a>
+    </div>
+
+    <!-- ══ SLIDE 9: What Did You Learn ══ -->
+    <div class="slide" id="s9">
+      <div class="label">Kids — your turn</div>
+      <div class="big-title" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,10vw,96px);background:linear-gradient(135deg,white,#86efac);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:0.9;margin-bottom:28px;">WHAT DID<br>YOU LEARN?</div>
+      <div class="question-card">
+        <div class="question-text">"What's <em>one thing</em> you know now<br>that you didn't know two weeks ago?"</div>
+      </div>
+      <div class="sub" style="margin-top:16px;">Could be technical. Could be about teamwork. Could be anything. No wrong answers — we just want to hear it in your own words. 🎤</div>
+    </div>
+
+    <!-- ══ SLIDE 10: Badge Ceremony Intro ══ -->
+    <div class="slide badge-slide" id="s10" style="background:linear-gradient(135deg,#0f0e1a,#1a0a30);">
+      <div class="label">The moment you've been waiting for</div>
+      <div class="big-title" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(60px,12vw,120px);background:linear-gradient(135deg,#fbbf24,#f97316,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:0.9;margin-bottom:24px;">BADGE<br>CEREMONY</div>
+      <div class="sub">Every single one of you earned something specific. Not a participation trophy — a badge that describes exactly what YOU brought to this bootcamp. 🏅</div>
+      <div class="stats-row" style="margin-top:28px;">
+        <div class="pill" style="background:rgba(56,138,221,0.2);color:#93c5fd;border:1px solid rgba(56,138,221,0.3);">🏎️ Ezekiel</div>
+        <div class="pill" style="background:rgba(127,119,221,0.2);color:#AFA9EC;border:1px solid rgba(127,119,221,0.3);">💡 Theodore</div>
+        <div class="pill" style="background:rgba(29,158,117,0.2);color:#5DCAA5;border:1px solid rgba(29,158,117,0.3);">🤸 Hannah</div>
+        <div class="pill" style="background:rgba(230,73,128,0.2);color:#f783ac;border:1px solid rgba(230,73,128,0.3);">🎵 Sophia</div>
+        <div class="pill" style="background:rgba(124,58,237,0.2);color:#c084fc;border:1px solid rgba(124,58,237,0.3);">🦋 Elsie</div>
+        <div class="pill" style="background:rgba(186,117,23,0.2);color:#FAC775;border:1px solid rgba(186,117,23,0.3);">⚡ Arthur</div>
+        <div class="pill" style="background:rgba(204,93,232,0.2);color:#cc5de8;border:1px solid rgba(204,93,232,0.3);">⭐ Emma</div>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 11: EZEKIEL badge ══ -->
+    <div class="slide badge-slide" id="s11">
+      <div class="badge-reveal">
+        <div class="badge-float-wrap">
+          <div class="b-ring-wrap" style="width:200px;height:200px;">
+            <div class="b-ring-outer" style="border-color:#378ADD;"></div>
+            <div class="b-ring-inner" style="inset:14px;border-color:#85B7EB;"></div>
+            <div class="b-ring-core" style="inset:26px;background:#042C53;border-color:#85B7EB;">
+              <span class="b-star" style="top:6px;left:6px;font-size:11px;color:#fbbf24;">★</span>
+              <span class="b-star" style="top:6px;right:6px;font-size:11px;color:#fbbf24;">★</span>
+              <span class="b-star" style="bottom:6px;left:14px;font-size:8px;color:#fbbf24;">★</span>
+              <span class="b-star" style="bottom:6px;right:14px;font-size:8px;color:#fbbf24;">★</span>
+              <span class="b-icon" style="font-size:52px;">🏎️</span>
+            </div>
+          </div>
+        </div>
+        <div class="badge-kid-name" style="color:#85B7EB;">EZEKIEL</div>
+        <div class="badge-title-name" style="color:#378ADD;">🔧 The Engineer</div>
+        <div class="badge-why">Built the Race Engineer Simulator AND the F1 quiz before anyone asked. Led the GitHub setup. Fixed the token error under pressure. He just quietly ships things that work.</div>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 12: THEODORE badge ══ -->
+    <div class="slide badge-slide" id="s12">
+      <div class="badge-reveal">
+        <div class="badge-float-wrap">
+          <div class="b-ring-wrap" style="width:200px;height:200px;">
+            <div class="b-ring-outer" style="border-color:#7F77DD;"></div>
+            <div class="b-ring-inner" style="inset:14px;border-color:#AFA9EC;"></div>
+            <div class="b-ring-core" style="inset:26px;background:#26215C;border-color:#AFA9EC;">
+              <span class="b-star" style="top:6px;left:6px;font-size:11px;color:#fbbf24;">★</span>
+              <span class="b-star" style="top:6px;right:6px;font-size:11px;color:#fbbf24;">★</span>
+              <span class="b-star" style="bottom:6px;left:14px;font-size:8px;color:#fbbf24;">★</span>
+              <span class="b-star" style="bottom:6px;right:14px;font-size:8px;color:#fbbf24;">★</span>
+              <span class="b-icon" style="font-size:52px;">💡</span>
+            </div>
+          </div>
+        </div>
+        <div class="badge-kid-name" style="color:#AFA9EC;">THEODORE</div>
+        <div class="badge-title-name" style="color:#7F77DD;">💡 The Visionary</div>
+        <div class="badge-why">Was building games at home before the bootcamp even started — just for fun. When his screen share broke mid-session he fixed it on the spot and kept going. He sees the tech and he builds the future.</div>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 13: HANNAH badge ══ -->
+    <div class="slide badge-slide" id="s13">
+      <div class="badge-reveal">
+        <div class="badge-float-wrap">
+          <div class="b-ring-wrap" style="width:200px;height:200px;">
+            <div class="b-ring-outer" style="border-color:#1D9E75;"></div>
+            <div class="b-ring-inner" style="inset:14px;border-color:#5DCAA5;"></div>
+            <div class="b-ring-core" style="inset:26px;background:#04342C;border-color:#5DCAA5;">
+              <span class="b-star" style="top:6px;left:6px;font-size:11px;color:#fbbf24;">★</span>
+              <span class="b-star" style="top:6px;right:6px;font-size:11px;color:#fbbf24;">★</span>
+              <span class="b-star" style="bottom:6px;left:14px;font-size:8px;color:#fbbf24;">★</span>
+              <span class="b-star" style="bottom:6px;right:14px;font-size:8px;color:#fbbf24;">★</span>
+              <span class="b-icon" style="font-size:52px;">🤸</span>
+            </div>
+          </div>
+        </div>
+        <div class="badge-kid-name" style="color:#5DCAA5;">HANNAH</div>
+        <div class="badge-title-name" style="color:#1D9E75;">💎 The Independent Builder</div>
+        <div class="badge-why">Went away and built a quiz all by herself using Claude. Nobody asked her to. Nobody helped her. She just did it. That quiz was good enough to demo tonight. That's what independent looks like.</div>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 14: SOPHIA badge ══ -->
+    <div class="slide badge-slide" id="s14">
+      <div class="badge-reveal">
+        <div class="badge-float-wrap">
+          <div class="b-ring-wrap" style="width:200px;height:200px;">
+            <div class="b-ring-outer" style="border-color:#e64980;"></div>
+            <div class="b-ring-inner" style="inset:14px;border-color:#f783ac;"></div>
+            <div class="b-ring-core" style="inset:26px;background:#4a0820;border-color:#f783ac;">
+              <span class="b-star" style="top:6px;left:6px;font-size:11px;color:#fbbf24;">★</span>
+              <span class="b-star" style="top:6px;right:6px;font-size:11px;color:#fbbf24;">★</span>
+              <span class="b-star" style="bottom:6px;left:14px;font-size:8px;color:#fbbf24;">★</span>
+              <span class="b-star" style="bottom:6px;right:14px;font-size:8px;color:#fbbf24;">★</span>
+              <span class="b-icon" style="font-size:52px;">🎵</span>
+            </div>
+          </div>
+        </div>
+        <div class="badge-kid-name" style="color:#f783ac;">SOPHIA</div>
+        <div class="badge-title-name" style="color:#e64980;">🎵 The Rhythm Maker</div>
+        <div class="badge-why">Poetry. Piano. Gymnastics. Everything Sophia does has rhythm, grace and precision. She brought all of that energy into building this quiz — an equal partner in everything Hannah and Sophia made together.</div>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 15: ELSIE badge ══ -->
+    <div class="slide badge-slide" id="s15">
+      <div class="badge-reveal">
+        <div class="badge-float-wrap">
+          <div class="b-ring-wrap" style="width:200px;height:200px;">
+            <div class="b-ring-outer" style="border-color:#7c3aed;"></div>
+            <div class="b-ring-inner" style="inset:14px;border-color:#c084fc;"></div>
+            <div class="b-ring-core" style="inset:26px;background:#1e0a4e;border-color:#c084fc;">
+              <span class="b-star" style="top:6px;left:6px;font-size:11px;color:#fbbf24;">★</span>
+              <span class="b-star" style="top:6px;right:6px;font-size:11px;color:#fbbf24;">★</span>
+              <span class="b-star" style="bottom:6px;left:14px;font-size:8px;color:#fbbf24;">★</span>
+              <span class="b-star" style="bottom:6px;right:14px;font-size:8px;color:#fbbf24;">★</span>
+              <span class="b-icon" style="font-size:52px;">🦋</span>
+            </div>
+          </div>
+        </div>
+        <div class="badge-kid-name" style="color:#c084fc;">ELSIE</div>
+        <div class="badge-title-name" style="color:#7c3aed;">👑 The Creative Director</div>
+        <div class="badge-why">Looked at Claude's first design and said "nope — too dark, do it again." Set up GitHub and Supabase herself. Designed every butterfly, every sparkle. She knew exactly what she wanted and didn't stop until she got it.</div>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 16: ARTHUR badge ══ -->
+    <div class="slide badge-slide" id="s16">
+      <div class="badge-reveal">
+        <div class="badge-float-wrap">
+          <div class="b-ring-wrap" style="width:200px;height:200px;">
+            <div class="b-ring-outer" style="border-color:#BA7517;"></div>
+            <div class="b-ring-inner" style="inset:14px;border-color:#FAC775;"></div>
+            <div class="b-ring-core" style="inset:26px;background:#412402;border-color:#FAC775;">
+              <span class="b-star" style="top:6px;left:6px;font-size:11px;color:#fbbf24;">★</span>
+              <span class="b-star" style="top:6px;right:6px;font-size:11px;color:#fbbf24;">★</span>
+              <span class="b-star" style="bottom:6px;left:14px;font-size:8px;color:#fbbf24;">★</span>
+              <span class="b-star" style="bottom:6px;right:14px;font-size:8px;color:#fbbf24;">★</span>
+              <span class="b-icon" style="font-size:52px;">⚡</span>
+            </div>
+          </div>
+        </div>
+        <div class="badge-kid-name" style="color:#FAC775;">ARTHUR</div>
+        <div class="badge-title-name" style="color:#BA7517;">⚡ First to Launch</div>
+        <div class="badge-why">The moment Code Quest went live, Arthur was already in it — clicking, exploring, earning points before anyone else found the login screen. Zero fear. Instant curiosity. Also gave us the quote of the entire bootcamp.</div>
+        <div style="margin-top:12px;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:14px;padding:10px 20px;font-size:16px;font-weight:800;color:#fbbf24;">"A coding play date." — Arthur 😂</div>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 17: EMMA badge ══ -->
+    <div class="slide badge-slide" id="s17b" style="background:linear-gradient(135deg,#0f0e1a,#1a0530);">
+      <div class="badge-reveal">
+        <div class="badge-float-wrap">
+          <div class="b-ring-wrap" style="width:220px;height:220px;">
+            <div class="emma-outer"></div>
+            <div class="emma-inner" style="inset:14px;"></div>
+            <div class="emma-core" style="inset:24px;">
+              <span class="e-sparkle" style="top:7px;left:22px;font-size:13px;color:#ffe066;">✦</span>
+              <span class="e-sparkle" style="top:7px;right:22px;font-size:13px;color:#ff6b6b;">✦</span>
+              <span class="e-sparkle" style="bottom:7px;left:22px;font-size:13px;color:#74c0fc;">✦</span>
+              <span class="e-sparkle" style="bottom:7px;right:22px;font-size:13px;color:#69db7c;">✦</span>
+              <span class="e-sparkle" style="top:50%;left:4px;margin-top:-8px;font-size:13px;color:#ffa94d;">✦</span>
+              <span class="e-sparkle" style="top:50%;right:4px;margin-top:-8px;font-size:13px;color:#cc5de8;">✦</span>
+              <span class="emma-icon">⭐</span>
+            </div>
+          </div>
+        </div>
+        <div class="emma-name">EMMA</div>
+        <div class="badge-title-name" style="color:#cc5de8;">⭐ The Little Star</div>
+        <div class="honorary">✦ honorary badge · age 4 ✦</div>
+        <div class="badge-why" style="margin-top:16px;">Too young for the bootcamp but never too young to be part of the family. Emma was there in spirit every step of the way. Every team needs a lucky star — and this team had the best one. ✨</div>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 18: What's Next ══ -->
+    <div class="slide" id="s17">
+      <div class="label">Looking ahead</div>
+      <div class="big-title" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(60px,11vw,110px);background:linear-gradient(135deg,white,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:0.9;margin-bottom:20px;">WHAT'S<br>NEXT?</div>
+      <div class="next-grid">
+        <div class="next-card" style="--accent:linear-gradient(90deg,#7c3aed,#ec4899);">
+          <div class="next-icon">🚀</div>
+          <h4>Code Quest v2</h4>
+          <p>Bigger levels, harder challenges, more advanced projects. Build things that real people outside the family use.</p>
+        </div>
+        <div class="next-card" style="--accent:linear-gradient(90deg,#1d4ed8,#0891b2);">
+          <div class="next-icon">🌍</div>
+          <h4>Real Products</h4>
+          <p>What if each of you built something that solves a real problem in your life? That's where it gets really exciting.</p>
+        </div>
+        <div class="next-card" style="--accent:linear-gradient(90deg,#22c55e,#0891b2);">
+          <div class="next-icon">👨‍👩‍👧‍👦</div>
+          <h4>Family Hackathon 2027</h4>
+          <p>Do it again. Bigger. More ambition. Make it an annual Olatoye family tradition. 🔥</p>
+        </div>
+        <div class="next-card" style="--accent:linear-gradient(90deg,#fbbf24,#f97316);">
+          <div class="next-icon">🎓</div>
+          <h4>Teach Others</h4>
+          <p>You know how to build with AI now. What if you taught a friend? Or your class? Knowledge multiplies when it's shared.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 19: Judging ══ -->
+    <div class="slide" id="s18">
+      <div class="label">Parents — your turn</div>
+      <div class="big-title" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(56px,11vw,110px);background:linear-gradient(135deg,#fbbf24,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:0.9;margin-bottom:20px;">BRAGGING<br>RIGHTS</div>
+      <div class="sub" style="margin-bottom:20px;">Parents — you saw all four apps. You played both multiplayer quizzes. You heard the kids speak. Now it's time to decide. 👑</div>
+      <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+        <div class="pill" style="background:rgba(29,78,216,0.2);color:#93c5fd;border:1px solid rgba(29,78,216,0.3);font-size:17px;padding:12px 28px;">🔵 Tech Bros</div>
+        <div style="display:flex;align-items:center;font-size:24px;font-weight:900;opacity:0.4;">vs</div>
+        <div class="pill" style="background:rgba(190,24,93,0.2);color:#f9a8d4;border:1px solid rgba(190,24,93,0.3);font-size:17px;padding:12px 28px;">💖 Girl Power</div>
+      </div>
+      <div style="margin-top:20px;font-size:14px;opacity:0.45;font-weight:800;letter-spacing:1px;">JUDGE ON: Design · Questions · Gameplay · Features · Presentation</div>
+    </div>
+
+    <!-- ══ SLIDE 20: Celebrate ══ -->
+    <div class="slide" id="s19">
+      <div class="big-emoji">🎉</div>
+      <div class="big-title">THAT'S A<br>WRAP!</div>
+      <div class="sub" style="margin-top:16px;">Six kids who can now build real things on the internet. With AI. From nothing. In two weeks.<br><br>That's not small. That's the future — and it lives in this family. 🚀</div>
+      <div style="margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href="https://girlpowercoders.github.io/girlpowerquiz" target="_blank" class="play-btn" style="border-color:rgba(190,24,93,0.5);">🦋 Girl Power Quiz</a>
+        <a href="https://techbros3.github.io/Tech-Bros-Quiz/" target="_blank" class="play-btn">🌌 Tech Bros Quiz</a>
+        <a href="badges.html" class="play-btn" style="border-color:rgba(251,191,36,0.4);">🏅 All Badges</a>
+      </div>
+    </div>
+
+  </div><!-- /slides -->
+
+  <!-- Navigation -->
+  <div id="nav">
+    <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" disabled>← Prev</button>
+    <span id="slideCounter">1 / 20</span>
+    <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Next →</button>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const total = slides.length;
+    let current = 0;
+
+    // Build dots
+    const dotsEl = document.getElementById('dots');
+    slides.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      d.onclick = () => goTo(i);
+      dotsEl.appendChild(d);
+    });
+
+    function goTo(n) {
+      slides[current].classList.remove('active');
+      dotsEl.children[current].classList.remove('active');
+      current = Math.max(0, Math.min(n, total - 1));
+      slides[current].classList.add('active');
+      dotsEl.children[current].classList.add('active');
+      document.getElementById('slideCounter').textContent = (current + 1) + ' / ' + total;
+      document.getElementById('prevBtn').disabled = current === 0;
+      document.getElementById('nextBtn').disabled = current === total - 1;
+    }
+
+    function changeSlide(dir) { goTo(current + dir); }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); changeSlide(1); }
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                    { e.preventDefault(); changeSlide(-1); }
+      if (e.key === 'f' || e.key === 'F') toggleFS();
+    });
+
+    // Touch swipe
+    let touchStartX = 0;
+    document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+    document.addEventListener('touchend', e => {
+      const diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) changeSlide(diff > 0 ? 1 : -1);
+    });
+
+    // Fullscreen
+    function toggleFS() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+        document.getElementById('fsBtn').textContent = '✕ Exit Fullscreen';
+      } else {
+        document.exitFullscreen();
+        document.getElementById('fsBtn').textContent = '⛶ Fullscreen';
+      }
+    }
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement) document.getElementById('fsBtn').textContent = '⛶ Fullscreen';
+    });
+
+    // Stars
+    const bg = document.getElementById('starsBg');
+    for (let i = 0; i < 120; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*5}s;--delay:${Math.random()*5}s;--op:${0.1+Math.random()*0.5};`;
+      bg.appendChild(s);
+    }
+
+    // Init counter
+    document.getElementById('slideCounter').textContent = '1 / ' + total;
+  </script>
+
+</body>
+</html>
