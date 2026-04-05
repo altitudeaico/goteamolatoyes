@@ -1372,7 +1372,10 @@
       <h1 style="font-size:32px;font-weight:900;margin-bottom:6px;">Welcome Back!</h1>
       <p style="font-size:15px;opacity:0.6;margin-bottom:32px;">Enter your name and secret code</p>
       <input type="text" id="nameInput" placeholder="Your name" style="width:100%;background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.2);color:white;font-size:16px;border-radius:16px;padding:16px;margin-bottom:12px;" onkeydown="if(event.key==='Enter')document.getElementById('codeInput').focus()">
-      <input type="password" id="codeInput" placeholder="Secret code" style="width:100%;background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.2);color:white;font-size:16px;border-radius:16px;padding:16px;margin-bottom:20px;" onkeydown="if(event.key==='Enter')tryLogin()">
+      <div style="position:relative;width:100%;margin-bottom:20px;">
+        <input type="password" id="codeInput" placeholder="Secret code" style="width:100%;background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.2);color:white;font-size:16px;border-radius:16px;padding:16px 52px 16px 16px;" onkeydown="if(event.key==='Enter')tryLogin()">
+        <button type="button" onclick="togglePw('codeInput',this)" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:20px;opacity:0.5;padding:4px;line-height:1;" title="Show/hide code">👁</button>
+      </div>
       <button class="btn btn-green" onclick="tryLogin()" style="width:100%;font-size:17px;padding:18px;box-shadow:0 6px 20px rgba(34,197,94,0.4);">Let's Go! 🚀</button>
     </div>
 
@@ -1383,7 +1386,10 @@
       <h1 style="font-size:32px;font-weight:900;margin-bottom:6px;">Join the Quest!</h1>
       <p style="font-size:15px;opacity:0.6;margin-bottom:32px;">Create your account to get started</p>
       <input type="text" id="newName" placeholder="Your name" style="width:100%;background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.2);color:white;font-size:16px;border-radius:16px;padding:16px;margin-bottom:12px;" onkeydown="if(event.key==='Enter')document.getElementById('newCode').focus()">
-      <input type="password" id="newCode" placeholder="Make a secret code (4+ characters)" style="width:100%;background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.2);color:white;font-size:16px;border-radius:16px;padding:16px;margin-bottom:8px;" onkeydown="if(event.key==='Enter')trySignup()">
+      <div style="position:relative;width:100%;margin-bottom:8px;">
+        <input type="password" id="newCode" placeholder="Make a secret code (4+ characters)" style="width:100%;background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.2);color:white;font-size:16px;border-radius:16px;padding:16px 52px 16px 16px;" onkeydown="if(event.key==='Enter')trySignup()">
+        <button type="button" onclick="togglePw('newCode',this)" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:20px;opacity:0.5;padding:4px;line-height:1;" title="Show/hide code">👁</button>
+      </div>
       <p style="font-size:13px;opacity:0.5;margin-bottom:20px;">Remember your code — you'll need it to log back in!</p>
       <button class="btn btn-green" onclick="trySignup()" style="width:100%;font-size:17px;padding:18px;box-shadow:0 6px 20px rgba(34,197,94,0.4);">Create Account 🎉</button>
     </div>
@@ -1402,12 +1408,14 @@
     <p style="margin-bottom:24px; opacity:0.8; font-size:16px;">Welcome <span id="changePwName"></span>! Before you continue, please set your own private password.</p>
     <div style="position:relative; width:100%; max-width:380px;">
       <span style="position:absolute; left:16px; top:50%; transform:translateY(-50%); font-size:18px;">🔑</span>
-      <input type="password" id="newPwInput" placeholder="New password (4+ characters)" style="width:100%; padding:16px 16px 16px 48px; margin-bottom:12px;"
+      <div style="position:relative;width:100%;margin-bottom:12px;">
+      <input type="password" id="newPwInput" placeholder="New password (4+ characters)" style="width:100%; padding:16px 52px 16px 48px;"
         onkeydown="if(event.key==='Enter') document.getElementById('newPwConfirm').focus()">
     </div>
     <div style="position:relative; width:100%; max-width:380px;">
       <span style="position:absolute; left:16px; top:50%; transform:translateY(-50%); font-size:18px;">✅</span>
-      <input type="password" id="newPwConfirm" placeholder="Confirm your password" style="width:100%; padding:16px 16px 16px 48px; margin-bottom:20px;"
+      <div style="position:relative;width:100%;margin-bottom:20px;">
+      <input type="password" id="newPwConfirm" placeholder="Confirm your password" style="width:100%; padding:16px 52px 16px 48px;"
         onkeydown="if(event.key==='Enter') saveNewPassword()">
     </div>
     <button class="btn btn-green" onclick="saveNewPassword()" style="width:100%; max-width:380px;">Save Password 🔐</button>
@@ -3041,6 +3049,20 @@ Make it exciting and something our whole family will enjoy playing!`
     if (banner) banner.remove();
   }
 
+
+  function togglePw(inputId, btn) {
+    var inp = document.getElementById(inputId);
+    if (!inp) return;
+    if (inp.type === 'password') {
+      inp.type = 'text';
+      btn.style.opacity = '1';
+      btn.textContent = '??';
+    } else {
+      inp.type = 'password';
+      btn.style.opacity = '0.5';
+      btn.textContent = '??';
+    }
+  }
   function logOut() {
     localStorage.removeItem('cq');
     user = null;
