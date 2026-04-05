@@ -11,16 +11,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Code Quest">
-  <link rel="apple-touch-icon" href="icons/icon-180.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
-  <!-- Microsoft -->
-  <meta name="msapplication-TileColor" content="#4f46e5">
-  <meta name="msapplication-TileImage" content="icons/icon-144.png">
-  <!-- Mobile optimisation -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="application-name" content="Code Quest">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
   <meta name="mobile-web-app-capable" content="yes">
 
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
@@ -1322,18 +1313,6 @@
     <span id="teamPillIcon">👥</span>
     <span id="teamPillName">My Team</span>
   </div>
-  <!-- PWA Install Button — shown only when installable -->
-  <button id="pwaInstallBtn" onclick="installPWA()" class="hide" style="
-    position:fixed;bottom:90px;right:16px;
-    background:linear-gradient(135deg,#4f46e5,#7c3aed);
-    border:none;border-radius:100px;
-    color:white;font-family:'Nunito',sans-serif;
-    font-weight:900;font-size:13px;
-    padding:10px 18px;cursor:pointer;z-index:350;
-    box-shadow:0 4px 20px rgba(79,70,229,0.5);
-    display:flex;align-items:center;gap:6px;">
-    📲 Add to Home Screen
-  </button>
   <div class="toast" id="toast"></div>
   <div id="confettiContainer"></div>
   <div id="modalContainer"></div>
@@ -1355,7 +1334,7 @@
     <!-- Welcome -->
     <div id="authWelcome" style="display:flex;flex-direction:column;align-items:center;text-align:center;padding:40px 24px;width:100%;max-width:380px;">
       <div style="font-size:72px;margin-bottom:8px;">🚀</div>
-      <div style="font-size:13px;font-weight:900;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:8px;">#GoTeamOlatoyes · v16</div>
+      <div style="font-size:13px;font-weight:900;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:8px;">#GoTeamOlatoyes · v17</div>
       <h1 style="font-size:48px;font-weight:900;margin-bottom:8px;background:linear-gradient(135deg,white,#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">CODE QUEST</h1>
       <p style="font-size:16px;opacity:0.65;margin-bottom:40px;line-height:1.5;">Build real apps with AI.<br>Hackathon: Saturday 4th April 🚀</p>
       <button class="btn btn-green" onclick="showLogin()" style="width:100%;font-size:17px;padding:18px;margin-bottom:12px;box-shadow:0 6px 20px rgba(34,197,94,0.4);">👋 I Have an Account</button>
@@ -1372,10 +1351,7 @@
       <h1 style="font-size:32px;font-weight:900;margin-bottom:6px;">Welcome Back!</h1>
       <p style="font-size:15px;opacity:0.6;margin-bottom:32px;">Enter your name and secret code</p>
       <input type="text" id="nameInput" placeholder="Your name" style="width:100%;background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.2);color:white;font-size:16px;border-radius:16px;padding:16px;margin-bottom:12px;" onkeydown="if(event.key==='Enter')document.getElementById('codeInput').focus()">
-      <div style="position:relative;width:100%;margin-bottom:20px;">
-        <input type="password" id="codeInput" placeholder="Secret code" style="width:100%;background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.2);color:white;font-size:16px;border-radius:16px;padding:16px 52px 16px 16px;" onkeydown="if(event.key==='Enter')tryLogin()">
-        <button type="button" onclick="togglePw('codeInput',this)" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:20px;opacity:0.5;padding:4px;line-height:1;" title="Show/hide code">👁</button>
-      </div>
+      <div style="position:relative;width:100%;margin-bottom:20px;"><input type="password" id="codeInput" placeholder="Secret code" style="width:100%;background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.2);color:white;font-size:16px;border-radius:16px;padding:16px 52px 16px 16px;" onkeydown="if(event.key==='Enter')tryLogin()"><button type="button" onclick="togglePw('codeInput',this)" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:20px;opacity:0.5;padding:4px;line-height:1;">&#128065;</button></div>
       <button class="btn btn-green" onclick="tryLogin()" style="width:100%;font-size:17px;padding:18px;box-shadow:0 6px 20px rgba(34,197,94,0.4);">Let's Go! 🚀</button>
     </div>
 
@@ -1386,10 +1362,7 @@
       <h1 style="font-size:32px;font-weight:900;margin-bottom:6px;">Join the Quest!</h1>
       <p style="font-size:15px;opacity:0.6;margin-bottom:32px;">Create your account to get started</p>
       <input type="text" id="newName" placeholder="Your name" style="width:100%;background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.2);color:white;font-size:16px;border-radius:16px;padding:16px;margin-bottom:12px;" onkeydown="if(event.key==='Enter')document.getElementById('newCode').focus()">
-      <div style="position:relative;width:100%;margin-bottom:8px;">
-        <input type="password" id="newCode" placeholder="Make a secret code (4+ characters)" style="width:100%;background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.2);color:white;font-size:16px;border-radius:16px;padding:16px 52px 16px 16px;" onkeydown="if(event.key==='Enter')trySignup()">
-        <button type="button" onclick="togglePw('newCode',this)" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:20px;opacity:0.5;padding:4px;line-height:1;" title="Show/hide code">👁</button>
-      </div>
+      <div style="position:relative;width:100%;margin-bottom:8px;"><input type="password" id="newCode" placeholder="Make a secret code (4+ characters)" style="width:100%;background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.2);color:white;font-size:16px;border-radius:16px;padding:16px 52px 16px 16px;" onkeydown="if(event.key==='Enter')trySignup()"><button type="button" onclick="togglePw('newCode',this)" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:20px;opacity:0.5;padding:4px;line-height:1;">&#128065;</button></div>
       <p style="font-size:13px;opacity:0.5;margin-bottom:20px;">Remember your code — you'll need it to log back in!</p>
       <button class="btn btn-green" onclick="trySignup()" style="width:100%;font-size:17px;padding:18px;box-shadow:0 6px 20px rgba(34,197,94,0.4);">Create Account 🎉</button>
     </div>
@@ -1408,14 +1381,12 @@
     <p style="margin-bottom:24px; opacity:0.8; font-size:16px;">Welcome <span id="changePwName"></span>! Before you continue, please set your own private password.</p>
     <div style="position:relative; width:100%; max-width:380px;">
       <span style="position:absolute; left:16px; top:50%; transform:translateY(-50%); font-size:18px;">🔑</span>
-      <div style="position:relative;width:100%;margin-bottom:12px;">
-      <input type="password" id="newPwInput" placeholder="New password (4+ characters)" style="width:100%; padding:16px 52px 16px 48px;"
+      <input type="password" id="newPwInput" placeholder="New password (4+ characters)" style="width:100%; padding:16px 16px 16px 48px; margin-bottom:12px;"
         onkeydown="if(event.key==='Enter') document.getElementById('newPwConfirm').focus()">
     </div>
     <div style="position:relative; width:100%; max-width:380px;">
       <span style="position:absolute; left:16px; top:50%; transform:translateY(-50%); font-size:18px;">✅</span>
-      <div style="position:relative;width:100%;margin-bottom:20px;">
-      <input type="password" id="newPwConfirm" placeholder="Confirm your password" style="width:100%; padding:16px 52px 16px 48px;"
+      <input type="password" id="newPwConfirm" placeholder="Confirm your password" style="width:100%; padding:16px 16px 16px 48px; margin-bottom:20px;"
         onkeydown="if(event.key==='Enter') saveNewPassword()">
     </div>
     <button class="btn btn-green" onclick="saveNewPassword()" style="width:100%; max-width:380px;">Save Password 🔐</button>
@@ -1537,7 +1508,7 @@
   <div id="parentDash" class="hide">
     <div style="font-size:48px; margin-bottom:8px;">👨‍👩‍👧‍👦</div>
     <h1 id="parentName">Parent Dashboard</h1>
-    <p style="margin-bottom:20px; font-size:16px; opacity:0.8;">Code Quest 2026 · Hackathon Complete! 🏆</p>
+    <p style="margin-bottom:20px; font-size:16px; opacity:0.8;">Hackathon: Saturday 4th April · 6:30pm</p>
 
     <!-- Countdown -->
     <div id="parentCountdown" style="background:rgba(255,255,255,0.15); border-radius:16px; padding:14px 20px; margin-bottom:20px; font-size:22px; font-weight:900; width:100%; max-width:420px;"></div>
@@ -2960,7 +2931,14 @@ Make it exciting and something our whole family will enjoy playing!`
 
   init();
 
-
+  // Register PWA service worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('SW registered'))
+        .catch(e => console.log('SW failed:', e));
+    });
+  }
 
 
   function togglePw(inputId, btn) {
@@ -2969,11 +2947,11 @@ Make it exciting and something our whole family will enjoy playing!`
     if (inp.type === 'password') {
       inp.type = 'text';
       btn.style.opacity = '1';
-      btn.textContent = '??';
+      btn.innerHTML = '&#128065;&#65039;';
     } else {
       inp.type = 'password';
       btn.style.opacity = '0.5';
-      btn.textContent = '??';
+      btn.innerHTML = '&#128065;';
     }
   }
   function logOut() {
@@ -2991,61 +2969,50 @@ Make it exciting and something our whole family will enjoy playing!`
   let editingLevelId = null;
 
   async function showParentDashboard() {
-    try {
-      const xpEl = document.getElementById('xpDisplay');
-      if (xpEl) xpEl.classList.add('hide');
-      const nameEl = document.getElementById('parentName');
-      if (nameEl) nameEl.textContent = 'Hey ' + (user.display_name || 'there') + '! ??';
-      go('parentDash');
-      startParentCountdown();
-      loadKidCards();
-      updateParentKickoffBanner();
-    } catch(e) {
-      console.error('[showParentDashboard]', e);
-      toast('Error loading dashboard: ' + e.message, true);
-    }
+    document.getElementById('xpDisplay').classList.add('hide');
+    document.getElementById('parentName').textContent = `Hey ${user.display_name}! 👋`;
+    go('parentDash');
+    startParentCountdown();
+    loadKidCards();
+    updateParentKickoffBanner();
   }
 
   function startParentCountdown() {
-    const el = document.getElementById('parentCountdown');
-    if (!el) return;
     const hackathon = new Date('2026-04-04T18:00:00');
-    const now = new Date();
-    if (now >= hackathon) {
-      el.textContent = '🏆 Hackathon complete! The kids smashed it.';
-    } else {
-      function tick() {
-        const diff = hackathon - new Date();
-        if (diff <= 0) { el.textContent = '🚀 Hackathon is happening NOW!'; return; }
-        const d = Math.floor(diff / 86400000);
-        const h = Math.floor((diff % 86400000) / 3600000);
-        const m = Math.floor((diff % 3600000) / 60000);
-        const s = Math.floor((diff % 60000) / 1000);
-        el.textContent = '⏳ ' + d + 'd ' + h + 'h ' + m + 'm ' + s + 's to hackathon';
+    function tick() {
+      const now = new Date();
+      const diff = hackathon - now;
+      if (diff <= 0) {
+        document.getElementById('parentCountdown').textContent = '🏆 Hackathon complete! The kids smashed it.'; return;
+        return;
       }
-      tick();
-      setInterval(tick, 1000);
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      document.getElementById('parentCountdown').textContent =
+        `⏳ ${d}d ${h}h ${m}m ${s}s to hackathon`;
     }
+    tick();
+    setInterval(tick, 1000);
   }
 
   async function loadKidCards() {
-    const container = document.getElementById('parentKidCards');
-    try {
-    const [{ data: kids, error: kErr }, { data: teams }] = await Promise.all([
+    const [{ data: kids }, { data: teams }] = await Promise.all([
       db.from('hackathon_users')
         .select('*')
         .eq('role', 'kid')
         .order('xp', { ascending: false }),
       db.from('hackathon_teams').select('*')
     ]);
-    if (kErr) { if (container) container.innerHTML = '<p style="opacity:0.5;font-size:14px;">Could not load kids data — check connection.</p>'; return; }
 
     const teamMap = {};
     (teams || []).forEach(t => teamMap[t.id] = t);
 
     const totalLevels = LEVELS.length;
+    const container = document.getElementById('parentKidCards');
     if (!kids?.length) {
-      if (container) container.innerHTML = '<p style="opacity:0.6; text-align:center;">No kids signed up yet</p>';
+      container.innerHTML = '<p style="opacity:0.6; text-align:center;">No kids signed up yet</p>';
       return;
     }
 
@@ -3083,10 +3050,6 @@ Make it exciting and something our whole family will enjoy playing!`
           <div class="parent-kid-xp">${k.xp}⭐</div>
         </div>`;
     }).join('');
-    } catch(e) {
-      console.error('[loadKidCards]', e);
-      if (container) container.innerHTML = '<p style="opacity:0.5;font-size:14px;">Could not load data. Try refreshing.</p>';
-    }
   }
 
   // Award XP
@@ -5911,79 +5874,3 @@ Always end your response with a clear, specific action the kid can take RIGHT NO
 
 </body>
 </html>
-
-
-  <!-- PWA Install Button -->
-  <button id="pwaInstallBtn" onclick="installPWA()" style="display:none;position:fixed;bottom:90px;right:16px;background:linear-gradient(135deg,#4f46e5,#7c3aed);border:none;border-radius:100px;color:white;font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;padding:10px 18px;cursor:pointer;z-index:350;box-shadow:0 4px 20px rgba(79,70,229,0.5);align-items:center;gap:6px;">
-    Add to Home Screen
-  </button>
-
-<script>
-  // ── PWA Install Prompt ──
-  let _pwaPrompt = null;
-
-  window.addEventListener('beforeinstallprompt', function(e) {
-    e.preventDefault();
-    _pwaPrompt = e;
-    var btn = document.getElementById('pwaInstallBtn');
-    if (btn) btn.style.display = 'flex';
-  });
-
-  function installPWA() {
-    if (!_pwaPrompt) {
-      // Fallback for when prompt already fired or not available
-      alert('To install: tap the Chrome menu (three dots) then "Add to Home Screen"');
-      return;
-    }
-    var p = _pwaPrompt;
-    _pwaPrompt = null;
-    p.prompt();
-    p.userChoice.then(function(r) {
-      var btn = document.getElementById('pwaInstallBtn');
-      if (r.outcome === 'accepted') {
-        if (btn) btn.style.display = 'none';
-      } else {
-        // Put it back if they dismissed
-        _pwaPrompt = null;
-        if (btn) btn.style.display = 'none';
-      }
-    });
-  }
-
-  window.addEventListener('appinstalled', function() {
-    var btn = document.getElementById('pwaInstallBtn');
-    if (btn) btn.style.display = 'none';
-    _pwaPrompt = null;
-  });
-
-  // ── Service Worker ──
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-      navigator.serviceWorker.register('sw.js')
-        .then(function(reg) {
-          // Quietly check for updates periodically
-          setInterval(function() { reg.update(); }, 60000);
-          reg.addEventListener('updatefound', function() {
-            var sw = reg.installing;
-            sw.addEventListener('statechange', function() {
-              if (sw.state === 'installed' && navigator.serviceWorker.controller) {
-                // Show update banner — user taps to update, no auto reload
-                var banner = document.createElement('div');
-                banner.id = 'swUpdateBanner';
-                banner.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white;padding:14px 20px;border-radius:16px;font-weight:800;font-size:14px;z-index:9999;display:flex;align-items:center;gap:10px;font-family:Nunito,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,0.4);white-space:nowrap;';
-                banner.innerHTML = 'New version ready! <button onclick="swUpdate()" style="background:white;color:#4f46e5;border:none;border-radius:8px;padding:6px 12px;font-weight:900;font-size:13px;cursor:pointer;margin-left:4px;">Update</button>';
-                document.body.appendChild(banner);
-              }
-            });
-          });
-        })
-        .catch(function(e) { console.warn('[SW]', e); });
-    });
-  }
-
-  function swUpdate() {
-    var banner = document.getElementById('swUpdateBanner');
-    if (banner) banner.remove();
-    window.location.reload();
-  }
-</script>
