@@ -3131,9 +3131,8 @@ Make it exciting and something our whole family will enjoy playing!`
     (teams || []).forEach(t => teamMap[t.id] = t);
 
     const totalLevels = LEVELS.length;
-    const container = document.getElementById('parentKidCards');
     if (!kids?.length) {
-      container.innerHTML = '<p style="opacity:0.6; text-align:center;">No kids signed up yet</p>';
+      if (container) container.innerHTML = '<p style="opacity:0.6; text-align:center;">No kids signed up yet</p>';
       return;
     }
 
@@ -3171,6 +3170,10 @@ Make it exciting and something our whole family will enjoy playing!`
           <div class="parent-kid-xp">${k.xp}⭐</div>
         </div>`;
     }).join('');
+    } catch(e) {
+      console.error('[loadKidCards]', e);
+      if (container) container.innerHTML = '<p style="opacity:0.5;font-size:14px;">Could not load data. Try refreshing.</p>';
+    }
   }
 
   // Award XP
