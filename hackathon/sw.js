@@ -1,4 +1,4 @@
-const CACHE = 'codequest-v15';
+const CACHE = 'codequest-v16';
 
 const APP_SHELL = [
   '/goteamolatoyes/hackathon/index.html',

@@ -2960,41 +2960,7 @@ Make it exciting and something our whole family will enjoy playing!`
 
   init();
 
-  // ── PWA: Service Worker + Install Prompt + Update Notification ──
-  let deferredInstallPrompt = null;
 
-  // Capture install prompt
-  window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault();
-    deferredInstallPrompt = e;
-    // Show install button if user is logged in
-    const installBtn = document.getElementById('pwaInstallBtn');
-    if (installBtn) installBtn.classList.remove('hide');
-  });
-
-  // Install button handler
-  function installPWA() {
-    if (!deferredInstallPrompt) return;
-    deferredInstallPrompt.prompt();
-    deferredInstallPrompt.userChoice.then(result => {
-      if (result.outcome === 'accepted') {
-        toast('Code Quest added to your home screen! 🚀');
-        const installBtn = document.getElementById('pwaInstallBtn');
-        if (installBtn) installBtn.classList.add('hide');
-      }
-      deferredInstallPrompt = null;
-    });
-  }
-
-  // Hide install button once installed
-  window.addEventListener('appinstalled', () => {
-    const installBtn = document.getElementById('pwaInstallBtn');
-    if (installBtn) installBtn.classList.add('hide');
-    deferredInstallPrompt = null;
-    toast('Welcome to Code Quest on your home screen! 🚀');
-  });
-
-  // SW registered in separate script block below
 
 
   function togglePw(inputId, btn) {
