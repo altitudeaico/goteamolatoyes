@@ -1537,7 +1537,7 @@
   <div id="parentDash" class="hide">
     <div style="font-size:48px; margin-bottom:8px;">👨‍👩‍👧‍👦</div>
     <h1 id="parentName">Parent Dashboard</h1>
-    <p style="margin-bottom:20px; font-size:16px; opacity:0.8;">Hackathon: Saturday 4th April · 6:30pm</p>
+    <p style="margin-bottom:20px; font-size:16px; opacity:0.8;">Code Quest 2026 · Hackathon Complete! 🏆</p>
 
     <!-- Countdown -->
     <div id="parentCountdown" style="background:rgba(255,255,255,0.15); border-radius:16px; padding:14px 20px; margin-bottom:20px; font-size:22px; font-weight:900; width:100%; max-width:420px;"></div>
@@ -3078,42 +3078,54 @@ Make it exciting and something our whole family will enjoy playing!`
   let editingLevelId = null;
 
   async function showParentDashboard() {
-    document.getElementById('xpDisplay').classList.add('hide');
-    document.getElementById('parentName').textContent = `Hey ${user.display_name}! 👋`;
-    go('parentDash');
-    startParentCountdown();
-    loadKidCards();
-    updateParentKickoffBanner();
+    try {
+      const xpEl = document.getElementById('xpDisplay');
+      if (xpEl) xpEl.classList.add('hide');
+      const nameEl = document.getElementById('parentName');
+      if (nameEl) nameEl.textContent = 'Hey ' + (user.display_name || 'there') + '! ??';
+      go('parentDash');
+      startParentCountdown();
+      loadKidCards();
+      updateParentKickoffBanner();
+    } catch(e) {
+      console.error('[showParentDashboard]', e);
+      toast('Error loading dashboard: ' + e.message, true);
+    }
   }
 
   function startParentCountdown() {
-    const hackathon = new Date('2026-04-04T18:30:00');
-    function tick() {
-      const now = new Date();
-      const diff = hackathon - now;
-      if (diff <= 0) {
-        document.getElementById('parentCountdown').textContent = '🚀 Hackathon is happening NOW!';
-        return;
+    const el = document.getElementById('parentCountdown');
+    if (!el) return;
+    const hackathon = new Date('2026-04-04T18:00:00');
+    const now = new Date();
+    if (now >= hackathon) {
+      el.textContent = '🏆 Hackathon complete! The kids smashed it.';
+    } else {
+      function tick() {
+        const diff = hackathon - new Date();
+        if (diff <= 0) { el.textContent = '🚀 Hackathon is happening NOW!'; return; }
+        const d = Math.floor(diff / 86400000);
+        const h = Math.floor((diff % 86400000) / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        el.textContent = '⏳ ' + d + 'd ' + h + 'h ' + m + 'm ' + s + 's to hackathon';
       }
-      const d = Math.floor(diff / 86400000);
-      const h = Math.floor((diff % 86400000) / 3600000);
-      const m = Math.floor((diff % 3600000) / 60000);
-      const s = Math.floor((diff % 60000) / 1000);
-      document.getElementById('parentCountdown').textContent =
-        `⏳ ${d}d ${h}h ${m}m ${s}s to hackathon`;
+      tick();
+      setInterval(tick, 1000);
     }
-    tick();
-    setInterval(tick, 1000);
   }
 
   async function loadKidCards() {
-    const [{ data: kids }, { data: teams }] = await Promise.all([
+    const container = document.getElementById('parentKidCards');
+    try {
+    const [{ data: kids, error: kErr }, { data: teams }] = await Promise.all([
       db.from('hackathon_users')
         .select('*')
         .eq('role', 'kid')
         .order('xp', { ascending: false }),
       db.from('hackathon_teams').select('*')
     ]);
+    if (kErr) { if (container) container.innerHTML = '<p style="opacity:0.5;font-size:14px;">Could not load kids data — check connection.</p>'; return; }
 
     const teamMap = {};
     (teams || []).forEach(t => teamMap[t.id] = t);
