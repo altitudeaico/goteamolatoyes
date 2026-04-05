@@ -1,4 +1,4 @@
-const CACHE = 'codequest-v14';
+const CACHE = 'codequest-v15';
 
 const APP_SHELL = [
   '/goteamolatoyes/hackathon/index.html',
@@ -45,7 +45,7 @@ self.addEventListener('install', e => {
     caches.open(CACHE)
       .then(cache => cache.addAll(APP_SHELL).catch(err => console.warn('[SW] Cache install error:', err)))
   );
-  self.skipWaiting();
+  // No skipWaiting here — only skip on explicit user request
 });
 
 // ── Activate — clean old caches ──

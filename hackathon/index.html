@@ -2994,60 +2994,7 @@ Make it exciting and something our whole family will enjoy playing!`
     toast('Welcome to Code Quest on your home screen! 🚀');
   });
 
-  // Register service worker + watch for updates
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js')
-        .then(reg => {
-          console.log('[SW] Registered');
-
-          // Check for updates every 60 seconds
-          setInterval(() => reg.update(), 60000);
-
-          // New SW waiting = update available
-          reg.addEventListener('updatefound', () => {
-            const newSW = reg.installing;
-            newSW.addEventListener('statechange', () => {
-              if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
-                // Show update toast
-                showUpdateToast();
-              }
-            });
-          });
-        })
-        .catch(e => console.log('[SW] Failed:', e));
-
-      // When SW takes control after update, reload
-      let refreshing = false;
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (!refreshing) {
-          refreshing = true;
-          window.location.reload();
-        }
-      });
-    });
-  }
-
-  function showUpdateToast() {
-    // Create update banner
-    const banner = document.createElement('div');
-    banner.id = 'updateBanner';
-    banner.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);' +
-      'background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white;' +
-      'padding:14px 24px;border-radius:16px;font-weight:800;font-size:15px;' +
-      'z-index:9999;display:flex;align-items:center;gap:12px;font-family:Nunito,sans-serif;' +
-      'box-shadow:0 8px 32px rgba(79,70,229,0.4);white-space:nowrap;';
-    banner.innerHTML = '✨ New version available! <button onclick="applyUpdate()" style="background:white;color:#4f46e5;border:none;border-radius:10px;padding:6px 14px;font-weight:900;font-size:14px;cursor:pointer;font-family:Nunito,sans-serif;">Update Now</button>';
-    document.body.appendChild(banner);
-  }
-
-  function applyUpdate() {
-    if (navigator.serviceWorker.controller) {
-      navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
-    }
-    const banner = document.getElementById('updateBanner');
-    if (banner) banner.remove();
-  }
+  // SW registered in separate script block below
 
 
   function togglePw(inputId, btn) {
@@ -6048,27 +5995,29 @@ Always end your response with a clear, specific action the kid can take RIGHT NO
     window.addEventListener('load', function() {
       navigator.serviceWorker.register('sw.js')
         .then(function(reg) {
-          // Check for updates
+          // Quietly check for updates periodically
           setInterval(function() { reg.update(); }, 60000);
           reg.addEventListener('updatefound', function() {
             var sw = reg.installing;
             sw.addEventListener('statechange', function() {
               if (sw.state === 'installed' && navigator.serviceWorker.controller) {
-                // New version available
+                // Show update banner — user taps to update, no auto reload
                 var banner = document.createElement('div');
+                banner.id = 'swUpdateBanner';
                 banner.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white;padding:14px 20px;border-radius:16px;font-weight:800;font-size:14px;z-index:9999;display:flex;align-items:center;gap:10px;font-family:Nunito,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,0.4);white-space:nowrap;';
-                banner.innerHTML = 'New version available! <button onclick="navigator.serviceWorker.controller.postMessage({type:\'SKIP_WAITING\'});this.parentNode.remove();" style="background:white;color:#4f46e5;border:none;border-radius:8px;padding:6px 12px;font-weight:900;font-size:13px;cursor:pointer;margin-left:4px;">Update</button>';
+                banner.innerHTML = 'New version ready! <button onclick="swUpdate()" style="background:white;color:#4f46e5;border:none;border-radius:8px;padding:6px 12px;font-weight:900;font-size:13px;cursor:pointer;margin-left:4px;">Update</button>';
                 document.body.appendChild(banner);
               }
             });
           });
         })
-        .catch(function(e) { console.warn('SW:', e); });
-
-      var refreshing = false;
-      navigator.serviceWorker.addEventListener('controllerchange', function() {
-        if (!refreshing) { refreshing = true; window.location.reload(); }
-      });
+        .catch(function(e) { console.warn('[SW]', e); });
     });
+  }
+
+  function swUpdate() {
+    var banner = document.getElementById('swUpdateBanner');
+    if (banner) banner.remove();
+    window.location.reload();
   }
 </script>
