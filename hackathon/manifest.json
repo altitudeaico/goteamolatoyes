@@ -1,27 +1,48 @@
 {
   "name": "Code Quest 🚀",
   "short_name": "Code Quest",
-  "description": "The Olatoye family coding hackathon app",
-  "start_url": "/goteamolatoyes/hackathon/index.html",
+  "description": "Olatoye Academy — The family coding hackathon app. Six kids. Three cities. One quest.",
+  "start_url": "/goteamolatoyes/hackathon/index.html?source=pwa",
   "scope": "/goteamolatoyes/hackathon/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#4f46e5",
+  "background_color": "#0f0e1a",
   "theme_color": "#4f46e5",
+  "lang": "en-GB",
+  "categories": ["education", "games"],
   "icons": [
+    { "src": "icons/icon-72.png",  "sizes": "72x72",   "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-96.png",  "sizes": "96x96",   "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-128.png", "sizes": "128x128", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-144.png", "sizes": "144x144", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-152.png", "sizes": "152x152", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-180.png", "sizes": "180x180", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-256.png", "sizes": "256x256", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-384.png", "sizes": "384x384", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
     {
-      "src": "icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "name": "Hackathon Badges",
+      "short_name": "Badges",
+      "description": "See all hackathon badges",
+      "url": "/goteamolatoyes/hackathon/badges.html?source=shortcut",
+      "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }]
     },
     {
-      "src": "icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "name": "Girl Power Quiz",
+      "short_name": "Girl Power",
+      "description": "Play the Girl Power Quiz",
+      "url": "https://girlpowercoders.github.io/girlpowerquiz",
+      "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Tech Bros Quiz",
+      "short_name": "Tech Bros",
+      "description": "Play the Tech Bros Quiz",
+      "url": "https://techbros3.github.io/Tech-Bros-Quiz/",
+      "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }]
     }
-  ],
-  "categories": ["education", "games"],
-  "lang": "en-GB"
+  ]
 }

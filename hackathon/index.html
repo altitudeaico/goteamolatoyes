@@ -11,7 +11,16 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Code Quest">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
+  <!-- Microsoft -->
+  <meta name="msapplication-TileColor" content="#4f46e5">
+  <meta name="msapplication-TileImage" content="icons/icon-144.png">
+  <!-- Mobile optimisation -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="Code Quest">
   <meta name="mobile-web-app-capable" content="yes">
 
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
@@ -1313,6 +1322,18 @@
     <span id="teamPillIcon">👥</span>
     <span id="teamPillName">My Team</span>
   </div>
+  <!-- PWA Install Button — shown only when installable -->
+  <button id="pwaInstallBtn" onclick="installPWA()" class="hide" style="
+    position:fixed;bottom:90px;right:16px;
+    background:linear-gradient(135deg,#4f46e5,#7c3aed);
+    border:none;border-radius:100px;
+    color:white;font-family:'Nunito',sans-serif;
+    font-weight:900;font-size:13px;
+    padding:10px 18px;cursor:pointer;z-index:350;
+    box-shadow:0 4px 20px rgba(79,70,229,0.5);
+    display:flex;align-items:center;gap:6px;">
+    📲 Add to Home Screen
+  </button>
   <div class="toast" id="toast"></div>
   <div id="confettiContainer"></div>
   <div id="modalContainer"></div>
@@ -2931,13 +2952,93 @@ Make it exciting and something our whole family will enjoy playing!`
 
   init();
 
-  // Register PWA service worker
+  // ── PWA: Service Worker + Install Prompt + Update Notification ──
+  let deferredInstallPrompt = null;
+
+  // Capture install prompt
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    // Show install button if user is logged in
+    const installBtn = document.getElementById('pwaInstallBtn');
+    if (installBtn) installBtn.classList.remove('hide');
+  });
+
+  // Install button handler
+  function installPWA() {
+    if (!deferredInstallPrompt) return;
+    deferredInstallPrompt.prompt();
+    deferredInstallPrompt.userChoice.then(result => {
+      if (result.outcome === 'accepted') {
+        toast('Code Quest added to your home screen! 🚀');
+        const installBtn = document.getElementById('pwaInstallBtn');
+        if (installBtn) installBtn.classList.add('hide');
+      }
+      deferredInstallPrompt = null;
+    });
+  }
+
+  // Hide install button once installed
+  window.addEventListener('appinstalled', () => {
+    const installBtn = document.getElementById('pwaInstallBtn');
+    if (installBtn) installBtn.classList.add('hide');
+    deferredInstallPrompt = null;
+    toast('Welcome to Code Quest on your home screen! 🚀');
+  });
+
+  // Register service worker + watch for updates
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('sw.js')
-        .then(() => console.log('SW registered'))
-        .catch(e => console.log('SW failed:', e));
+        .then(reg => {
+          console.log('[SW] Registered');
+
+          // Check for updates every 60 seconds
+          setInterval(() => reg.update(), 60000);
+
+          // New SW waiting = update available
+          reg.addEventListener('updatefound', () => {
+            const newSW = reg.installing;
+            newSW.addEventListener('statechange', () => {
+              if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+                // Show update toast
+                showUpdateToast();
+              }
+            });
+          });
+        })
+        .catch(e => console.log('[SW] Failed:', e));
+
+      // When SW takes control after update, reload
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
+      });
     });
+  }
+
+  function showUpdateToast() {
+    // Create update banner
+    const banner = document.createElement('div');
+    banner.id = 'updateBanner';
+    banner.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);' +
+      'background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white;' +
+      'padding:14px 24px;border-radius:16px;font-weight:800;font-size:15px;' +
+      'z-index:9999;display:flex;align-items:center;gap:12px;font-family:Nunito,sans-serif;' +
+      'box-shadow:0 8px 32px rgba(79,70,229,0.4);white-space:nowrap;';
+    banner.innerHTML = '✨ New version available! <button onclick="applyUpdate()" style="background:white;color:#4f46e5;border:none;border-radius:10px;padding:6px 14px;font-weight:900;font-size:14px;cursor:pointer;font-family:Nunito,sans-serif;">Update Now</button>';
+    document.body.appendChild(banner);
+  }
+
+  function applyUpdate() {
+    if (navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
+    }
+    const banner = document.getElementById('updateBanner');
+    if (banner) banner.remove();
   }
 
   function logOut() {
