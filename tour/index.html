@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>#GoTeamOlatoyes Summer Tour 2026</title>
 <meta name="description" content="The family plan for Summer Tour 2026 — a working draft we build together.">
+<meta property="og:title" content="#GoTeamOlatoyes Summer Tour 2026">
+<meta property="og:description" content="24 Jul – 4 Aug · Manchester. The family plan — a working draft we build together.">
+<meta property="og:image" content="https://altitudeaico.github.io/goteamolatoyes/tour/og.jpg">
+<meta property="og:url" content="https://altitudeaico.github.io/goteamolatoyes/tour/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="#GoTeamOlatoyes Summer Tour 2026">
+<meta name="twitter:description" content="24 Jul – 4 Aug · Manchester. The family plan we build together.">
+<meta name="twitter:image" content="https://altitudeaico.github.io/goteamolatoyes/tour/og.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
@@ -37,22 +46,17 @@
 
   /* ---------- HERO POSTER ---------- */
   .poster{
-    background:var(--ink);
+    background:
+      linear-gradient(180deg, rgba(36,20,53,.55) 0%, rgba(36,20,53,.42) 40%, rgba(36,20,53,.95) 100%),
+      linear-gradient(90deg, rgba(36,20,53,.85) 0%, rgba(36,20,53,.35) 62%, rgba(36,20,53,.12) 100%),
+      url('hero.jpg') center 42% / cover no-repeat, var(--ink);
     color:var(--cream-text);
-    padding:38px 22px 30px;
+    padding:172px 22px 30px;
     position:relative;
     overflow:hidden;
     border-bottom:5px solid var(--marigold);
   }
-  .poster::before{
-    content:"";
-    position:absolute;
-    top:-140px;right:-120px;
-    width:320px;height:320px;
-    background:radial-gradient(circle, rgba(255,182,39,.35), rgba(255,93,93,.12) 55%, transparent 70%);
-    border-radius:50%;
-    pointer-events:none;
-  }
+  .poster::before{content:none}
   .eyebrow{
     font-size:.8rem;letter-spacing:.22em;text-transform:uppercase;
     color:var(--marigold);font-weight:700;margin-bottom:14px;position:relative;
