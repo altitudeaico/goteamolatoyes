@@ -86,6 +86,10 @@
   .draft-ribbon .dot{width:8px;height:8px;border-radius:50%;background:#fff;animation:pulse 1.8s infinite}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important}
+  }
+
   /* ---------- INTRO ---------- */
   .intro{padding:22px 22px 4px}
   .intro p{color:var(--muted);font-size:1rem}
@@ -145,11 +149,12 @@
   .badge.confirmed{background:var(--leaf);color:#fff}
   .badge.proposal{background:transparent;color:var(--amber);border:1.5px dashed var(--amber)}
   .note-btn{
-    margin-left:auto;background:none;border:none;cursor:pointer;
-    font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:600;color:var(--ink);
-    display:inline-flex;align-items:center;gap:5px;padding:4px 6px;border-radius:8px;
+    margin-left:auto;background:#F6ECD8;border:none;cursor:pointer;
+    font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:700;color:var(--ink);
+    display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:100px;min-height:40px;
   }
-  .note-btn:hover{background:#F1E6D2}
+  .note-btn:hover{background:#EBDCC0}
+  .note-btn:active{transform:scale(.97)}
 
   /* ---------- OPEN QUESTIONS ---------- */
   .todo{
@@ -158,10 +163,12 @@
   }
   .todo h3{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;font-size:1.35rem;letter-spacing:.02em;color:var(--marigold)}
   .todo p.sub{font-size:.9rem;color:rgba(244,233,214,.7);margin:4px 0 14px}
-  .todo ul{list-style:none;display:flex;flex-direction:column;gap:11px}
-  .todo li{display:flex;gap:11px;align-items:flex-start;font-size:.95rem}
-  .todo li .box{
-    flex:0 0 20px;height:20px;border:2px solid var(--marigold);border-radius:6px;margin-top:1px;
+  .todo p.lead{font-size:.92rem;color:rgba(244,233,214,.75);margin:-2px 0 14px}
+  .todo ul{list-style:none;display:flex;flex-direction:column;gap:13px}
+  .todo li{display:flex;gap:12px;align-items:flex-start;font-size:.95rem}
+  .todo li .q{
+    flex:0 0 24px;height:24px;border-radius:50%;background:var(--marigold);color:var(--ink);
+    font-weight:800;font-size:.85rem;display:flex;align-items:center;justify-content:center;margin-top:0;
   }
 
   /* ---------- LINE-UP ---------- */
@@ -205,20 +212,22 @@
   /* ---------- AUTH BAR ---------- */
   .authbar{
     background:#EFE2C8;border-bottom:1px solid var(--line);
-    padding:10px 16px;display:flex;gap:8px;align-items:center;
+    padding:12px 16px;display:flex;gap:8px;align-items:center;
     font-size:.85rem;flex-wrap:wrap;justify-content:center;
   }
+  .authbar .help{flex-basis:100%;text-align:center;color:var(--muted);font-weight:500;margin-bottom:4px;line-height:1.4}
   .authbar input{
-    flex:1;min-width:150px;max-width:260px;padding:9px 12px;
-    border:1.5px solid var(--line);border-radius:10px;font-family:inherit;
-    font-size:.9rem;background:#fff;color:var(--text);
+    flex:1;min-width:160px;max-width:280px;padding:12px 14px;
+    border:1.5px solid var(--line);border-radius:12px;font-family:inherit;
+    font-size:16px;background:#fff;color:var(--text);
   }
   .authbar button{
-    background:var(--ink);color:var(--cream-text);border:none;padding:9px 14px;
-    border-radius:10px;font-family:inherit;font-weight:600;font-size:.85rem;cursor:pointer;
+    background:var(--ink);color:var(--cream-text);border:none;padding:12px 18px;
+    border-radius:12px;font-family:inherit;font-weight:700;font-size:.9rem;cursor:pointer;min-height:46px;
   }
-  .authbar .who{color:var(--muted);font-weight:600}
-  .authbar .link{background:none;color:var(--ink);text-decoration:underline;padding:4px 6px;font-weight:600}
+  .authbar button:active{transform:scale(.98)}
+  .authbar .who{color:var(--text);font-weight:600}
+  .authbar .link{background:none;color:var(--ink);text-decoration:underline;padding:8px 8px;font-weight:600;min-height:40px}
 
   /* ---------- NOTES ---------- */
   .notes-panel{grid-column:1 / -1;margin-top:8px;border-top:1.5px dashed var(--line);padding-top:12px;display:none}
@@ -259,7 +268,7 @@
 
   <!-- INTRO -->
   <div class="intro">
-    <p>The plan for when everyone's together. It's a draft — <strong>add your bit or change what doesn't work.</strong> Green is locked in, amber is just an idea so far.</p>
+    <p>The plan for when everyone's together. It's a draft — <strong>add your bit or change what doesn't work.</strong> A green ✓ means it's confirmed; amber means it's still just an idea. Tap 💬 on any day to leave a note.</p>
   </div>
 
   <!-- TOUR DATES -->
@@ -269,6 +278,7 @@
   <!-- OPEN QUESTIONS -->
   <div class="sec-head"><h2>Still To Lock In</h2><div class="rule"></div></div>
   <div class="todo">
+    <p class="lead">Nothing here is decided yet — tell us what you think.</p>
     <ul id="todo"></ul>
   </div>
 
@@ -352,8 +362,8 @@
     datesEl.innerHTML='';
     days.forEach(d=>{
       const badge = d.status==='confirmed'
-        ? '<span class="badge confirmed">Locked</span>'
-        : '<span class="badge proposal">Idea</span>';
+        ? '<span class="badge confirmed">✓ Confirmed</span>'
+        : '<span class="badge proposal">Just an idea</span>';
       const card = el(`
         <div class="day ${d.is_anchor?'anchor':''}" data-id="${d.id||''}">
           <div class="datecol">
@@ -367,7 +377,7 @@
             <div class="chips">
               <span class="chip">📍 ${esc(d.host||'')}</span>
               ${badge}
-              <button class="note-btn" data-id="${d.id||''}">💬 <span class="ncount">0</span> notes</button>
+              <button class="note-btn" data-id="${d.id||''}">💬 <span class="nlabel">Add a note</span></button>
             </div>
           </div>
           <div class="notes-panel"></div>
@@ -381,7 +391,7 @@
 
   // TODO + crew (static)
   const todoEl = document.getElementById('todo');
-  TODO.forEach(t=>todoEl.appendChild(el(`<li><span class="box"></span><span>${esc(t)}</span></li>`)));
+  TODO.forEach(t=>todoEl.appendChild(el(`<li><span class="q">?</span><span>${esc(t)}</span></li>`)));
   const crewEl = document.getElementById('crew');
   CREW.forEach(h=>crewEl.appendChild(el(`<div class="house"><div class="hname">${esc(h.name)}</div><div class="members">${esc(h.members)}</div></div>`)));
 
@@ -396,12 +406,13 @@
   // ---- auth ----
   const authbar=document.getElementById('authbar');
   function renderAuth(){
-    if(!sb){authbar.innerHTML='<span class="who">Viewing the plan. Live notes need the database online.</span>';return;}
+    if(!sb){authbar.innerHTML='<span class="who">Here\u2019s the plan \u2014 have a scroll. (Adding notes needs the database online.)</span>';return;}
     if(ME){
-      authbar.innerHTML=`<span class="who">Signed in as ${esc(ME.name||'you')}</span> <button class="link" id="signout">Sign out</button>`;
+      const where = ME.household ? ' \u00b7 '+esc(ME.household) : '';
+      authbar.innerHTML=`<span class="who">\u2713 Signed in as ${esc(ME.name||'you')}${where}</span> <button class="link" id="signout">Sign out</button>`;
       document.getElementById('signout').onclick=async()=>{await sb.auth.signOut();ME=null;renderAuth();await loadNotes();};
     }else{
-      authbar.innerHTML=`<input id="email" type="email" placeholder="your email to add notes" autocomplete="email"><button id="sendlink">Send me a link</button>`;
+      authbar.innerHTML=`<span class="help">Just looking? Scroll on down. To add a note or idea, enter your email \u2014 we\u2019ll send a link to tap. No password needed.</span><input id="email" type="email" inputmode="email" placeholder="you@email.com" autocomplete="email"><button id="sendlink">Send my link</button>`;
       document.getElementById('sendlink').onclick=sendLink;
       const inp=document.getElementById('email');
       inp.addEventListener('keydown',ev=>{if(ev.key==='Enter')sendLink();});
@@ -409,10 +420,12 @@
   }
   async function sendLink(){
     const email=(document.getElementById('email').value||'').trim();
-    if(!email){showToast('Pop your email in first.');return;}
+    if(!email||email.indexOf('@')<1){showToast('Pop your email in first \u2014 that\u2019s where the link goes.');return;}
+    const btn=document.getElementById('sendlink'); if(btn){btn.disabled=true;btn.textContent='Sending\u2026';}
     const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname}});
-    if(error){showToast('Hmm — '+esc(error.message));return;}
-    showToast(`Link sent to <b>${esc(email)}</b>. Check your email 📧`);
+    if(btn){btn.disabled=false;btn.textContent='Send my link';}
+    if(error){showToast('Hmm \u2014 '+esc(error.message));return;}
+    showToast(`Sent! Check your email and tap the link \u2014 it brings you back here, signed in. \ud83d\udce7`);
   }
   async function loadMe(){
     if(!sb){ME=null;return;}
@@ -442,8 +455,9 @@
   }
   function paintCounts(){
     document.querySelectorAll('.day').forEach(card=>{
-      const span=card.querySelector('.ncount');
-      if(span)span.textContent=(NOTES[card.dataset.id]||[]).length;
+      const n=(NOTES[card.dataset.id]||[]).length;
+      const lbl=card.querySelector('.nlabel');
+      if(lbl)lbl.textContent = n===0 ? 'Add a note' : (n===1 ? '1 note' : n+' notes');
       const panel=card.querySelector('.notes-panel');
       if(panel&&panel.classList.contains('open'))fillPanel(card);
     });
@@ -453,8 +467,8 @@
     const list=(NOTES[id]||[]).map(n=>`<div class="note">${esc(n.body)}<div class="meta">${esc((n.author&&n.author.name)||'Someone')}${n.author&&n.author.household?' · '+esc(n.author.household):''}</div></div>`).join('');
     let composer;
     if(!sb){composer='<div class="composer"><span class="hint">Notes need the database online.</span></div>';}
-    else if(ME){composer='<div class="composer"><textarea placeholder="Add a note…"></textarea><button>Post note</button></div>';}
-    else{composer='<div class="composer"><span class="hint">Sign in at the top to add a note.</span></div>';}
+    else if(ME){composer='<div class="composer"><textarea placeholder="Add a note or idea for this day…"></textarea><button>Post note</button></div>';}
+    else{composer='<div class="composer"><span class="hint">👆 Enter your email at the top to add a note.</span></div>';}
     panel.innerHTML=(list||'<div class="empty-notes">No notes yet — be the first.</div>')+composer;
     if(sb&&ME){
       const btn=panel.querySelector('.composer button');
