@@ -257,7 +257,7 @@
 
   <!-- INTRO -->
   <div class="intro">
-    <p>The plan for when everyone's together. It's a draft — <strong>add your bit or change what doesn't work.</strong> A green ✓ means it's confirmed; amber means it's still just an idea. Tap 💬 on any day to leave a note.</p>
+    <p>The plan for when everyone's together. It's a draft — <strong>add your bit or change what doesn't work.</strong> A green ✓ means it's confirmed; "Open" means nothing's set for that day yet. Tap 💬 on any day to leave a note.</p>
   </div>
 
   <!-- TOUR DATES -->
@@ -303,16 +303,16 @@
     {num:"26",mon:"Jul",dow:"Sun",title:"Church + Native",blurb:"Calvary in the morning, then lunch at Native.",host:"All",status:"confirmed"},
     {num:"27",mon:"Jul",dow:"Mon",title:"Cousins' Sleepover",blurb:"All the cousins at Middleton. Uncle Gbenga & Uncle B possibly back in London.",host:"Middleton",status:"confirmed"},
     {num:"28",mon:"Jul",dow:"Tue",title:"Park Outing",blurb:"Uncle Ayo, Aunty Lina & Aunty Funms leading. Aunty May May WFH — to confirm.",host:"Middleton",status:"confirmed"},
-    {num:"29",mon:"Jul",dow:"Wed",title:"Manchester Day Out",blurb:"Idea: Science & Industry Museum or Chill Factore.",host:"TBC",status:"proposal"},
-    {num:"30",mon:"Jul",dow:"Thu",title:"Quiet Day",blurb:"Nothing planned. A day to rest.",host:"TBC",status:"proposal"},
-    {num:"31",mon:"Jul",dow:"Fri",title:"Split Day",blurb:"Idea: kids' activity in the day, adults' dinner out in the evening.",host:"TBC",status:"proposal"},
+    {num:"29",mon:"Jul",dow:"Wed",title:"Open",blurb:"Nothing set yet — add your ideas.",host:"",status:"proposal"},
+    {num:"30",mon:"Jul",dow:"Thu",title:"Open",blurb:"Nothing set yet — add your ideas.",host:"",status:"proposal"},
+    {num:"31",mon:"Jul",dow:"Fri",title:"Open",blurb:"Nothing set yet — add your ideas.",host:"",status:"proposal"},
     {num:"01",mon:"Aug",dow:"Sat",title:"Code Quest 👨‍💻",blurb:"A fun activity day with the kids, taking their AI journey forward from the last Code Quest.",host:"Native",status:"confirmed"},
-    {num:"02",mon:"Aug",dow:"Sun",title:"Farewell",blurb:"Idea: Calvary + a family lunch to close the tour.",host:"TBC",status:"proposal"},
-    {num:"03",mon:"Aug",dow:"Mon",title:"Wind-Down",blurb:"Tour ends. Individual plans from here.",host:"—",status:"confirmed"}
+    {num:"02",mon:"Aug",dow:"Sun",title:"Open",blurb:"Nothing set yet — add your ideas.",host:"",status:"proposal"},
+    {num:"03",mon:"Aug",dow:"Mon",title:"Wind-Down",blurb:"Tour ends. Individual plans from here.",host:"",status:"confirmed"}
   ];
 
   const TODO = [
-    "Wed–Fri (29–31): the ideas are placeholders. What do we actually want?",
+    "Wed–Fri (29–31) and Sun (2 Aug) are wide open — what shall we do?",
     "Is Emma (4) in or out of the cousins' sleepover?",
     "Aunty May May's WFH days?",
     "NY departure date — does the 3rd close it, or is there more?",
@@ -352,7 +352,8 @@
     days.forEach(d=>{
       const badge = d.status==='confirmed'
         ? '<span class="badge confirmed">✓ Confirmed</span>'
-        : '<span class="badge proposal">Just an idea</span>';
+        : '<span class="badge proposal">Open</span>';
+      const hostChip = d.host ? `<span class="chip">📍 ${esc(d.host)}</span>` : '';
       const card = el(`
         <div class="day" data-id="${d.id||''}">
           <div class="datecol">
@@ -364,7 +365,7 @@
             <div class="title">${d.title}</div>
             <div class="blurb">${d.blurb||''}</div>
             <div class="chips">
-              <span class="chip">📍 ${esc(d.host||'')}</span>
+              ${hostChip}
               ${badge}
               <button class="note-btn" data-id="${d.id||''}">💬 <span class="nlabel">Add a note</span></button>
             </div>
