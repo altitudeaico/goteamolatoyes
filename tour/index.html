@@ -197,6 +197,42 @@
     .day{grid-template-columns:76px 1fr}
     .datecol .dnum{font-size:2.2rem}
   }
+
+  /* ---------- AUTH BAR ---------- */
+  .authbar{
+    background:#EFE2C8;border-bottom:1px solid var(--line);
+    padding:10px 16px;display:flex;gap:8px;align-items:center;
+    font-size:.85rem;flex-wrap:wrap;justify-content:center;
+  }
+  .authbar input{
+    flex:1;min-width:150px;max-width:260px;padding:9px 12px;
+    border:1.5px solid var(--line);border-radius:10px;font-family:inherit;
+    font-size:.9rem;background:#fff;color:var(--text);
+  }
+  .authbar button{
+    background:var(--ink);color:var(--cream-text);border:none;padding:9px 14px;
+    border-radius:10px;font-family:inherit;font-weight:600;font-size:.85rem;cursor:pointer;
+  }
+  .authbar .who{color:var(--muted);font-weight:600}
+  .authbar .link{background:none;color:var(--ink);text-decoration:underline;padding:4px 6px;font-weight:600}
+
+  /* ---------- NOTES ---------- */
+  .notes-panel{grid-column:1 / -1;margin-top:8px;border-top:1.5px dashed var(--line);padding-top:12px;display:none}
+  .notes-panel.open{display:block}
+  .note{background:#F6ECD8;border-radius:10px;padding:9px 12px;margin-bottom:8px;font-size:.9rem;color:var(--text)}
+  .note .meta{font-size:.72rem;color:var(--muted);margin-top:4px;font-weight:600}
+  .empty-notes{font-size:.85rem;color:var(--muted);font-style:italic;margin-bottom:10px}
+  .composer{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+  .composer textarea{
+    width:100%;min-height:58px;padding:10px;border:1.5px solid var(--line);
+    border-radius:10px;font-family:inherit;font-size:.9rem;resize:vertical;background:#fff;color:var(--text);
+  }
+  .composer button{
+    align-self:flex-end;background:var(--leaf);color:#fff;border:none;padding:8px 16px;
+    border-radius:10px;font-weight:700;font-size:.85rem;cursor:pointer;font-family:inherit;
+  }
+  .composer button:disabled{opacity:.5;cursor:default}
+  .composer .hint{font-size:.82rem;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -213,6 +249,9 @@
     <div class="meta">24 JUL <span>—</span> 04 AUG <span>·</span> MANCHESTER</div>
     <div class="draft-ribbon"><span class="dot"></span> WORKING DRAFT</div>
   </header>
+
+  <!-- AUTH BAR -->
+  <div class="authbar" id="authbar"></div>
 
   <!-- INTRO -->
   <div class="intro">
@@ -236,7 +275,7 @@
   <!-- FOOTER -->
   <footer>
     <div class="ft-title">See you on tour 🎉</div>
-    <p>Got a note, an address, a lift to offer? Drop it in the family WhatsApp for now. In-app notes and costs coming next.</p>
+    <p>Sign in with your email at the top, then tap 💬 on any day to add a note. Logistics and shared costs coming next.</p>
     <p>Put together by Uncle B.</p>
     <div class="stamp" id="stamp"></div>
   </footer>
@@ -245,8 +284,16 @@
 
 <div class="toast" id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  // ---- THE PLAN (single source of truth) ----
+  // ---- CONFIG ----
+  const SUPABASE_URL = 'https://kxqxokbyvxrjwbegpqso.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4cXhva2J5dnhyandiZWdwcXNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1MzcxNzMsImV4cCI6MjEwMDExMzE3M30.x5rSgQE2vgz6YGvgJY-NeS1HUi6-tZ1tjIGkPqiANJ4';
+  const sb = (window.supabase && window.supabase.createClient)
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    : null;
+
+  // ---- THE PLAN (fallback shown instantly, and if the DB is ever offline) ----
   const DAYS = [
     {num:"24",mon:"Jul",dow:"Fri",title:"Arrivals",blurb:"NY family up from London, Gravesend crew drive up. Travel, settle, eat.",host:"Everyone → Middleton",status:"confirmed"},
     {num:"25",mon:"Jul",dow:"Sat",title:"Uncle Ayo's Party 🎉",blurb:"Middleton. Everyone together.",host:"Middleton",status:"confirmed",anchor:true},
@@ -279,62 +326,169 @@
   // ---- RENDER ----
   function el(html){const t=document.createElement('template');t.innerHTML=html.trim();return t.content.firstChild;}
 
+  function esc(s){return (s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
   const datesEl = document.getElementById('dates');
-  DAYS.forEach(d=>{
-    const badge = d.status==='confirmed'
-      ? '<span class="badge confirmed">Locked</span>'
-      : '<span class="badge proposal">Idea</span>';
-    const card = el(`
-      <div class="day ${d.anchor?'anchor':''}">
-        <div class="datecol">
-          <div class="dnum">${d.num}</div>
-          <div class="dmon">${d.mon}</div>
-          <div class="ddow">${d.dow}</div>
-        </div>
-        <div class="body">
-          <div class="title">${d.title}</div>
-          <div class="blurb">${d.blurb}</div>
-          <div class="chips">
-            <span class="chip">📍 ${d.host}</span>
-            ${badge}
-            <button class="note-btn" data-t="${d.title.replace(/"/g,'')}">💬 Add a note</button>
-          </div>
-        </div>
-      </div>`);
-    datesEl.appendChild(card);
-  });
 
-  const todoEl = document.getElementById('todo');
-  TODO.forEach(t=>todoEl.appendChild(el(`<li><span class="box"></span><span>${t}</span></li>`)));
-
-  const crewEl = document.getElementById('crew');
-  CREW.forEach(h=>{
-    crewEl.appendChild(el(`
-      <div class="house">
-        <div class="hname">${h.name}</div>
-        <div class="members">${h.members}</div>
-      </div>`));
-  });
-
-  // ---- INTERIM NOTE HANDLER (real in-app notes land with the collab layer) ----
-  const toast = document.getElementById('toast');
-  let toastTimer;
-  function showToast(html){
-    toast.innerHTML = html;
-    toast.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(()=>toast.classList.remove('show'),4200);
+  // normalise both the static fallback and DB rows into one shape
+  function fromStatic(d){
+    return {id:null,title:d.title,blurb:d.blurb,host:d.host,status:d.status,
+            is_anchor:!!d.anchor,num:d.num,mon:d.mon,dow:d.dow};
   }
-  document.addEventListener('click',e=>{
-    const b = e.target.closest('.note-btn');
-    if(!b) return;
-    showToast(`In-app notes coming soon. <br>For now, put your note on <b>${b.dataset.t}</b> in the family WhatsApp 💬`);
+  function fromDB(r){
+    const dt=new Date(r.event_date+'T00:00:00');
+    return {id:r.id,title:r.title,blurb:r.blurb,host:r.host,status:r.status,
+            is_anchor:!!r.is_anchor,
+            num:String(dt.getDate()).padStart(2,'0'),
+            mon:dt.toLocaleDateString('en-GB',{month:'short'}),
+            dow:dt.toLocaleDateString('en-GB',{weekday:'short'})};
+  }
+
+  function renderDays(days){
+    datesEl.innerHTML='';
+    days.forEach(d=>{
+      const badge = d.status==='confirmed'
+        ? '<span class="badge confirmed">Locked</span>'
+        : '<span class="badge proposal">Idea</span>';
+      const card = el(`
+        <div class="day ${d.is_anchor?'anchor':''}" data-id="${d.id||''}">
+          <div class="datecol">
+            <div class="dnum">${d.num}</div>
+            <div class="dmon">${d.mon}</div>
+            <div class="ddow">${d.dow}</div>
+          </div>
+          <div class="body">
+            <div class="title">${d.title}</div>
+            <div class="blurb">${d.blurb||''}</div>
+            <div class="chips">
+              <span class="chip">📍 ${esc(d.host||'')}</span>
+              ${badge}
+              <button class="note-btn" data-id="${d.id||''}">💬 <span class="ncount">0</span> notes</button>
+            </div>
+          </div>
+          <div class="notes-panel"></div>
+        </div>`);
+      datesEl.appendChild(card);
+    });
+  }
+
+  // paint the fallback plan immediately so the page never looks empty
+  renderDays(DAYS.map(fromStatic));
+
+  // TODO + crew (static)
+  const todoEl = document.getElementById('todo');
+  TODO.forEach(t=>todoEl.appendChild(el(`<li><span class="box"></span><span>${esc(t)}</span></li>`)));
+  const crewEl = document.getElementById('crew');
+  CREW.forEach(h=>crewEl.appendChild(el(`<div class="house"><div class="hname">${esc(h.name)}</div><div class="members">${esc(h.members)}</div></div>`)));
+
+  // ---- toast ----
+  const toast=document.getElementById('toast'); let toastTimer;
+  function showToast(html){toast.innerHTML=html;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),4600);}
+
+  // ---- state ----
+  let ME=null;      // {id,name,household} when a signed-in member
+  let NOTES={};     // day_id -> [note,...]
+
+  // ---- auth ----
+  const authbar=document.getElementById('authbar');
+  function renderAuth(){
+    if(!sb){authbar.innerHTML='<span class="who">Viewing the plan. Live notes need the database online.</span>';return;}
+    if(ME){
+      authbar.innerHTML=`<span class="who">Signed in as ${esc(ME.name||'you')}</span> <button class="link" id="signout">Sign out</button>`;
+      document.getElementById('signout').onclick=async()=>{await sb.auth.signOut();ME=null;renderAuth();await loadNotes();};
+    }else{
+      authbar.innerHTML=`<input id="email" type="email" placeholder="your email to add notes" autocomplete="email"><button id="sendlink">Send me a link</button>`;
+      document.getElementById('sendlink').onclick=sendLink;
+      const inp=document.getElementById('email');
+      inp.addEventListener('keydown',ev=>{if(ev.key==='Enter')sendLink();});
+    }
+  }
+  async function sendLink(){
+    const email=(document.getElementById('email').value||'').trim();
+    if(!email){showToast('Pop your email in first.');return;}
+    const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname}});
+    if(error){showToast('Hmm — '+esc(error.message));return;}
+    showToast(`Link sent to <b>${esc(email)}</b>. Check your email 📧`);
+  }
+  async function loadMe(){
+    if(!sb){ME=null;return;}
+    const {data:{session}}=await sb.auth.getSession();
+    if(!session){ME=null;return;}
+    const {data,error}=await sb.from('tour_members').select('id,name,household').eq('email',session.user.email).maybeSingle();
+    ME=(!error&&data)?data:null;
+  }
+
+  // ---- days from DB ----
+  async function loadDays(){
+    if(!sb)return;
+    const {data,error}=await sb.from('tour_days').select('*').order('sort_order');
+    if(!error&&data&&data.length){renderDays(data.map(fromDB));}
+  }
+
+  // ---- notes ----
+  async function loadNotes(){
+    NOTES={};
+    if(sb&&ME){
+      const {data,error}=await sb.from('tour_notes')
+        .select('id,day_id,body,created_at,author:tour_members(name,household)')
+        .order('created_at');
+      if(!error&&data){data.forEach(n=>{(NOTES[n.day_id]=NOTES[n.day_id]||[]).push(n);});}
+    }
+    paintCounts();
+  }
+  function paintCounts(){
+    document.querySelectorAll('.day').forEach(card=>{
+      const span=card.querySelector('.ncount');
+      if(span)span.textContent=(NOTES[card.dataset.id]||[]).length;
+      const panel=card.querySelector('.notes-panel');
+      if(panel&&panel.classList.contains('open'))fillPanel(card);
+    });
+  }
+  function fillPanel(card){
+    const id=card.dataset.id, panel=card.querySelector('.notes-panel');
+    const list=(NOTES[id]||[]).map(n=>`<div class="note">${esc(n.body)}<div class="meta">${esc((n.author&&n.author.name)||'Someone')}${n.author&&n.author.household?' · '+esc(n.author.household):''}</div></div>`).join('');
+    let composer;
+    if(!sb){composer='<div class="composer"><span class="hint">Notes need the database online.</span></div>';}
+    else if(ME){composer='<div class="composer"><textarea placeholder="Add a note…"></textarea><button>Post note</button></div>';}
+    else{composer='<div class="composer"><span class="hint">Sign in at the top to add a note.</span></div>';}
+    panel.innerHTML=(list||'<div class="empty-notes">No notes yet — be the first.</div>')+composer;
+    if(sb&&ME){
+      const btn=panel.querySelector('.composer button');
+      btn.onclick=async()=>{
+        const ta=panel.querySelector('textarea'), body=(ta.value||'').trim();
+        if(!body)return;
+        btn.disabled=true;
+        const {error}=await sb.from('tour_notes').insert({day_id:id,author_id:ME.id,body});
+        btn.disabled=false;
+        if(error){showToast('Could not post — '+esc(error.message));return;}
+        ta.value='';
+        await loadNotes();
+      };
+    }
+  }
+
+  datesEl.addEventListener('click',e=>{
+    const b=e.target.closest('.note-btn'); if(!b)return;
+    const card=b.closest('.day'), panel=card.querySelector('.notes-panel');
+    if(!card.dataset.id){showToast('Notes switch on once the plan loads from the database.');return;}
+    panel.classList.toggle('open');
+    if(panel.classList.contains('open'))fillPanel(card);
   });
+
+  // ---- boot ----
+  (async function boot(){
+    renderAuth();
+    await loadDays();
+    await loadMe();
+    renderAuth();
+    await loadNotes();
+    if(sb){sb.auth.onAuthStateChange(async()=>{await loadMe();renderAuth();await loadNotes();});}
+  })();
 
   // ---- BUILD STAMP ----
   const now = new Date();
   document.getElementById('stamp').textContent =
-    'Draft v1 · last updated ' + now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) +
+    'Draft v2 · last updated ' + now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) +
     ' ' + now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
 </script>
 </body>
