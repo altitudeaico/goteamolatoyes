@@ -72,12 +72,20 @@
   .gate-title{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;
     font-size:2rem;letter-spacing:.02em;color:var(--marigold);line-height:1}
   .gate-sub{color:rgba(244,233,214,.78);margin:10px 0 22px;font-size:.96rem;line-height:1.45}
+  .gate-pw{position:relative;width:100%}
   .gate input{
-    width:100%;padding:14px 16px;border-radius:12px;border:1.5px solid rgba(244,233,214,.25);
+    width:100%;padding:14px 74px 14px 16px;border-radius:12px;border:1.5px solid rgba(244,233,214,.25);
     font-family:inherit;font-size:16px;text-align:center;background:rgba(255,255,255,.06);
     color:var(--cream-text);letter-spacing:.02em;
   }
   .gate input::placeholder{color:rgba(244,233,214,.4)}
+  .pw-toggle{
+    position:absolute;right:8px;top:50%;transform:translateY(-50%);
+    background:rgba(244,233,214,.12);color:var(--cream-text);border:none;
+    padding:7px 12px;border-radius:8px;font-family:inherit;font-size:.8rem;font-weight:700;
+    cursor:pointer;min-height:34px;letter-spacing:.02em;
+  }
+  .pw-toggle:active{transform:translateY(-50%) scale(.96)}
   .gate button{
     width:100%;margin-top:12px;padding:14px;border-radius:12px;background:var(--marigold);
     color:var(--ink);font-weight:800;border:none;font-size:1rem;cursor:pointer;font-family:inherit;min-height:50px;
@@ -287,7 +295,10 @@
     <div class="gate-lock">🔒</div>
     <div class="gate-title">#GoTeamOlatoyes</div>
     <div class="gate-sub">Family only. Enter the password to see the Summer Tour plan.</div>
-    <input id="gatepw" type="password" inputmode="text" placeholder="Password" autocomplete="current-password" autofocus>
+    <div class="gate-pw">
+      <input id="gatepw" type="password" inputmode="text" placeholder="Password" autocomplete="current-password" autofocus>
+      <button type="button" id="gatetoggle" class="pw-toggle" aria-label="Show password">Show</button>
+    </div>
     <button id="gatebtn">Enter</button>
     <div class="gate-err" id="gateerr"></div>
   </div>
@@ -307,6 +318,14 @@
     }
     document.getElementById('gatebtn').onclick=unlock;
     document.getElementById('gatepw').addEventListener('keydown',function(e){ if(e.key==='Enter') unlock(); });
+    var pw=document.getElementById('gatepw'), tog=document.getElementById('gatetoggle');
+    tog.onclick=function(){
+      var show = pw.type==='password';
+      pw.type = show ? 'text' : 'password';
+      tog.textContent = show ? 'Hide' : 'Show';
+      tog.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+      pw.focus();
+    };
   })();
 </script>
 
