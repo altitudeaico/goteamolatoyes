@@ -211,12 +211,12 @@
       <span class="l3">2026</span>
     </h1>
     <div class="meta">24 JUL <span>—</span> 04 AUG <span>·</span> MANCHESTER</div>
-    <div class="draft-ribbon"><span class="dot"></span> WORKING DRAFT · WE BUILD THIS TOGETHER</div>
+    <div class="draft-ribbon"><span class="dot"></span> WORKING DRAFT</div>
   </header>
 
   <!-- INTRO -->
   <div class="intro">
-    <p>This is the <strong>straw-man plan</strong> for when everyone's together — three households and Grandma, all in one place for once. It's not fixed. <strong>Poke holes in it, add your bit.</strong> Green means locked, amber means it's only a suggestion so far.</p>
+    <p>The plan for when everyone's together. It's a draft — <strong>add your bit or change what doesn't work.</strong> Green is locked in, amber is just an idea so far.</p>
   </div>
 
   <!-- TOUR DATES -->
@@ -226,8 +226,6 @@
   <!-- OPEN QUESTIONS -->
   <div class="sec-head"><h2>Still To Lock In</h2><div class="rule"></div></div>
   <div class="todo">
-    <h3>Over to you</h3>
-    <p class="sub">The bits we need the family to weigh in on before it's final.</p>
     <ul id="todo"></ul>
   </div>
 
@@ -238,7 +236,7 @@
   <!-- FOOTER -->
   <footer>
     <div class="ft-title">See you on tour 🎉</div>
-    <p>Got a thought, an address, a lift to offer? For now drop it in the family WhatsApp — in-app suggestions and the money ledger are coming next.</p>
+    <p>Got a note, an address, a lift to offer? Drop it in the family WhatsApp for now. In-app notes and costs coming next.</p>
     <p>Put together by Uncle B.</p>
     <div class="stamp" id="stamp"></div>
   </footer>
@@ -250,32 +248,32 @@
 <script>
   // ---- THE PLAN (single source of truth) ----
   const DAYS = [
-    {num:"24",mon:"Jul",dow:"Fri",title:"Arrivals",blurb:"NY family up from London, Gravesend crew drive up. No plans — travel, settle, eat.",host:"Everyone → Middleton",status:"confirmed"},
-    {num:"25",mon:"Jul",dow:"Sat",title:"Ayo's Party 🎉",blurb:"Middleton. Everyone in one room. The opening night.",host:"Middleton",status:"confirmed",anchor:true},
-    {num:"26",mon:"Jul",dow:"Sun",title:"Church + Native",blurb:"Calvary together in the morning, then lunch and hangout at Native. A slow one.",host:"All",status:"confirmed"},
-    {num:"27",mon:"Jul",dow:"Mon",title:"Cousins' Sleepover",blurb:"All the cousins at Middleton. Gbenga & B possibly back in London.",host:"Middleton",status:"confirmed"},
-    {num:"28",mon:"Jul",dow:"Tue",title:"Park Outing",blurb:"Ayo, Lina & Funmi leading. May May WFH — to confirm.",host:"Middleton",status:"confirmed"},
-    {num:"29",mon:"Jul",dow:"Wed",title:"Manchester Day Out",blurb:"Idea: Science & Industry Museum or Chill Factore. Weather-proof, cousin-friendly.",host:"TBC",status:"proposal"},
-    {num:"30",mon:"Jul",dow:"Thu",title:"Quiet Day",blurb:"Deliberately nothing on. Ten days is long — a day to breathe is a feature.",host:"TBC",status:"proposal"},
-    {num:"31",mon:"Jul",dow:"Fri",title:"Split Day",blurb:"Idea: kids' activity in the day, grown-ups' dinner out in the evening.",host:"TBC",status:"proposal"},
-    {num:"01",mon:"Aug",dow:"Sat",title:"Code Quest 👨‍💻",blurb:"Native. Uncle B running it. The closing show.",host:"Native · Uncle B",status:"confirmed",anchor:true},
-    {num:"02",mon:"Aug",dow:"Sun",title:"Farewell",blurb:"Idea: Calvary + a big family lunch to close the tour properly.",host:"TBC",status:"proposal"},
-    {num:"03",mon:"Aug",dow:"Mon",title:"Wind-Down",blurb:"Tour officially ends. Individual plans from here.",host:"—",status:"confirmed"}
+    {num:"24",mon:"Jul",dow:"Fri",title:"Arrivals",blurb:"NY family up from London, Gravesend crew drive up. Travel, settle, eat.",host:"Everyone → Middleton",status:"confirmed"},
+    {num:"25",mon:"Jul",dow:"Sat",title:"Uncle Ayo's Party 🎉",blurb:"Middleton. Everyone together.",host:"Middleton",status:"confirmed",anchor:true},
+    {num:"26",mon:"Jul",dow:"Sun",title:"Church + Native",blurb:"Calvary in the morning, then lunch at Native.",host:"All",status:"confirmed"},
+    {num:"27",mon:"Jul",dow:"Mon",title:"Cousins' Sleepover",blurb:"All the cousins at Middleton. Uncle Gbenga & Uncle B possibly back in London.",host:"Middleton",status:"confirmed"},
+    {num:"28",mon:"Jul",dow:"Tue",title:"Park Outing",blurb:"Uncle Ayo, Aunty Lina & Aunty Funms leading. Aunty May May WFH — to confirm.",host:"Middleton",status:"confirmed"},
+    {num:"29",mon:"Jul",dow:"Wed",title:"Manchester Day Out",blurb:"Idea: Science & Industry Museum or Chill Factore.",host:"TBC",status:"proposal"},
+    {num:"30",mon:"Jul",dow:"Thu",title:"Quiet Day",blurb:"Nothing planned. A day to rest.",host:"TBC",status:"proposal"},
+    {num:"31",mon:"Jul",dow:"Fri",title:"Split Day",blurb:"Idea: kids' activity in the day, adults' dinner out in the evening.",host:"TBC",status:"proposal"},
+    {num:"01",mon:"Aug",dow:"Sat",title:"Code Quest 👨‍💻",blurb:"Native. Uncle B running it.",host:"Native · Uncle B",status:"confirmed",anchor:true},
+    {num:"02",mon:"Aug",dow:"Sun",title:"Farewell",blurb:"Idea: Calvary + a family lunch to close the tour.",host:"TBC",status:"proposal"},
+    {num:"03",mon:"Aug",dow:"Mon",title:"Wind-Down",blurb:"Tour ends. Individual plans from here.",host:"—",status:"confirmed"}
   ];
 
   const TODO = [
-    "Wed / Thu / Fri (29–31) — the proposals are just placeholders. What do we actually want?",
+    "Wed–Fri (29–31): the ideas are placeholders. What do we actually want?",
     "Is Emma (4) in or out of the cousins' sleepover?",
-    "May May's WFH days — which days is she tied up?",
-    "NY's actual departure date — does the 3rd close it, or is there more?",
-    "Anything Grandma fancies at Radlett — just say the word."
+    "Aunty May May's WFH days?",
+    "NY departure date — does the 3rd close it, or is there more?",
+    "Anything Grandma wants at Radlett?"
   ];
 
   const CREW = [
-    {name:"Middleton",tag:"Base camp",members:"Ayo · Lina · Hannah · Sophia · Ezekiel"},
-    {name:"Gravesend",tag:"On the road",members:"Bolaji · Funmi · Elsie · Emma"},
-    {name:"New York",tag:"Flying in",members:"Gbenga · May May · Theodore · Arthur"},
-    {name:"Radlett",tag:"Special guest",members:"Grandma — joining every show. If she wants something at Radlett, she'll say.",guest:true}
+    {name:"Middleton",members:"Uncle Ayo · Aunty Lina · Hannah · Sophia · Ezekiel"},
+    {name:"Gravesend",members:"Uncle B · Aunty Funms · Elsie · Emma"},
+    {name:"New York",members:"Uncle Gbenga · Aunty May May · Theodore · Arthur"},
+    {name:"Radlett",members:"Grandma"}
   ];
 
   // ---- RENDER ----
@@ -312,9 +310,8 @@
   const crewEl = document.getElementById('crew');
   CREW.forEach(h=>{
     crewEl.appendChild(el(`
-      <div class="house ${h.guest?'guest':''}">
+      <div class="house">
         <div class="hname">${h.name}</div>
-        <div class="htag">${h.tag}</div>
         <div class="members">${h.members}</div>
       </div>`));
   });
@@ -331,7 +328,7 @@
   document.addEventListener('click',e=>{
     const b = e.target.closest('.note-btn');
     if(!b) return;
-    showToast(`Notes go live when we switch on the collab layer. <br>For now, drop your thought on <b>${b.dataset.t}</b> in the family WhatsApp 💬`);
+    showToast(`In-app notes coming soon. <br>For now, put your note on <b>${b.dataset.t}</b> in the family WhatsApp 💬`);
   });
 
   // ---- BUILD STAMP ----
