@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>#GoTeamOlatoyes Summer Tour 2026</title>
+<meta name="description" content="The family plan for Summer Tour 2026 — a working draft we build together.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#241435;
+    --ink-2:#170C22;
+    --paper:#FBF3E7;
+    --card:#FFFDF9;
+    --line:#E7D8BE;
+    --text:#2A1E12;
+    --muted:#6E5F4C;
+    --marigold:#FFB627;
+    --coral:#FF5D5D;
+    --leaf:#2FA36B;
+    --amber:#D9822B;
+    --cream-text:#F4E9D6;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    background:var(--paper);
+    color:var(--text);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:680px;margin:0 auto}
+
+  /* ---------- HERO POSTER ---------- */
+  .poster{
+    background:var(--ink);
+    color:var(--cream-text);
+    padding:38px 22px 30px;
+    position:relative;
+    overflow:hidden;
+    border-bottom:5px solid var(--marigold);
+  }
+  .poster::before{
+    content:"";
+    position:absolute;
+    top:-140px;right:-120px;
+    width:320px;height:320px;
+    background:radial-gradient(circle, rgba(255,182,39,.35), rgba(255,93,93,.12) 55%, transparent 70%);
+    border-radius:50%;
+    pointer-events:none;
+  }
+  .eyebrow{
+    font-size:.8rem;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--marigold);font-weight:700;margin-bottom:14px;position:relative;
+  }
+  .poster h1{
+    font-family:'Anton',sans-serif;
+    font-weight:400;
+    line-height:.9;
+    letter-spacing:.01em;
+    text-transform:uppercase;
+    position:relative;
+  }
+  .poster h1 .l1{display:block;font-size:clamp(2.9rem,15vw,4.6rem);color:var(--cream-text)}
+  .poster h1 .l2{display:block;font-size:clamp(3.6rem,19vw,5.8rem);color:var(--marigold)}
+  .poster h1 .l3{display:block;font-size:clamp(3.6rem,19vw,5.8rem);
+    color:transparent;-webkit-text-stroke:2px var(--coral);}
+  .poster .meta{
+    margin-top:18px;font-family:'Anton',sans-serif;font-size:1.05rem;
+    letter-spacing:.04em;color:var(--cream-text);position:relative;
+  }
+  .poster .meta span{color:var(--marigold)}
+  .draft-ribbon{
+    display:inline-flex;align-items:center;gap:8px;margin-top:20px;position:relative;
+    background:var(--coral);color:#fff;font-weight:700;font-size:.82rem;
+    padding:8px 14px;border-radius:100px;letter-spacing:.02em;
+  }
+  .draft-ribbon .dot{width:8px;height:8px;border-radius:50%;background:#fff;animation:pulse 1.8s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+  /* ---------- INTRO ---------- */
+  .intro{padding:22px 22px 4px}
+  .intro p{color:var(--muted);font-size:1rem}
+  .intro strong{color:var(--text)}
+
+  /* ---------- SECTION HEADERS ---------- */
+  .sec-head{
+    display:flex;align-items:baseline;gap:12px;
+    padding:30px 22px 6px;
+  }
+  .sec-head h2{
+    font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;
+    font-size:1.7rem;letter-spacing:.02em;color:var(--ink);
+  }
+  .sec-head .rule{flex:1;height:2px;background:var(--line)}
+
+  /* ---------- TOUR DATES ---------- */
+  .dates{padding:8px 16px 6px}
+  .day{
+    background:var(--card);
+    border:1.5px solid var(--line);
+    border-radius:16px;
+    padding:16px 16px 14px;
+    margin:12px 0;
+    display:grid;
+    grid-template-columns:64px 1fr;
+    gap:14px;
+    position:relative;
+  }
+  .day.anchor{
+    border-color:var(--coral);
+    box-shadow:0 6px 22px rgba(255,93,93,.14);
+  }
+  .day.anchor::after{
+    content:"HEADLINE";
+    position:absolute;top:-9px;right:14px;
+    background:var(--coral);color:#fff;
+    font-size:.62rem;font-weight:700;letter-spacing:.14em;
+    padding:3px 9px;border-radius:100px;
+  }
+  .datecol{
+    text-align:center;padding-top:2px;
+    border-right:1.5px dashed var(--line);
+    margin-right:-2px;
+  }
+  .datecol .dnum{font-family:'Anton',sans-serif;font-size:1.9rem;line-height:.9;color:var(--ink)}
+  .datecol .dmon{font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:600;margin-top:3px}
+  .datecol .ddow{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--marigold);font-weight:700;margin-top:6px}
+  .body .title{font-size:1.12rem;font-weight:700;color:var(--text);line-height:1.2}
+  .body .blurb{font-size:.92rem;color:var(--muted);margin-top:5px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;align-items:center}
+  .chip{
+    font-size:.72rem;font-weight:600;padding:4px 10px;border-radius:100px;
+    background:#F1E6D2;color:#7A6647;letter-spacing:.02em;
+  }
+  .badge{font-size:.68rem;font-weight:700;padding:4px 11px;border-radius:100px;letter-spacing:.06em;text-transform:uppercase}
+  .badge.confirmed{background:var(--leaf);color:#fff}
+  .badge.proposal{background:transparent;color:var(--amber);border:1.5px dashed var(--amber)}
+  .note-btn{
+    margin-left:auto;background:none;border:none;cursor:pointer;
+    font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:600;color:var(--ink);
+    display:inline-flex;align-items:center;gap:5px;padding:4px 6px;border-radius:8px;
+  }
+  .note-btn:hover{background:#F1E6D2}
+
+  /* ---------- OPEN QUESTIONS ---------- */
+  .todo{
+    margin:8px 16px;background:var(--ink);color:var(--cream-text);
+    border-radius:18px;padding:20px 20px 18px;
+  }
+  .todo h3{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;font-size:1.35rem;letter-spacing:.02em;color:var(--marigold)}
+  .todo p.sub{font-size:.9rem;color:rgba(244,233,214,.7);margin:4px 0 14px}
+  .todo ul{list-style:none;display:flex;flex-direction:column;gap:11px}
+  .todo li{display:flex;gap:11px;align-items:flex-start;font-size:.95rem}
+  .todo li .box{
+    flex:0 0 20px;height:20px;border:2px solid var(--marigold);border-radius:6px;margin-top:1px;
+  }
+
+  /* ---------- LINE-UP ---------- */
+  .crew{padding:8px 16px 4px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .house{
+    background:var(--card);border:1.5px solid var(--line);border-radius:16px;
+    padding:14px 15px;
+  }
+  .house .hname{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;font-size:1.15rem;color:var(--ink);letter-spacing:.02em}
+  .house .htag{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--coral);font-weight:700;margin-top:1px}
+  .house .members{font-size:.86rem;color:var(--muted);margin-top:8px;line-height:1.45}
+  .house.guest{grid-column:1 / -1;background:linear-gradient(135deg,#2A1840,#241435);border-color:var(--marigold)}
+  .house.guest .hname{color:var(--marigold)}
+  .house.guest .htag{color:var(--marigold)}
+  .house.guest .members{color:var(--cream-text);opacity:.85}
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    background:var(--ink-2);color:var(--cream-text);margin-top:26px;
+    padding:26px 22px 30px;text-align:center;
+  }
+  footer .ft-title{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;font-size:1.2rem;color:var(--marigold);letter-spacing:.02em}
+  footer p{font-size:.85rem;color:rgba(244,233,214,.6);margin-top:8px}
+  footer .stamp{font-size:.72rem;color:rgba(244,233,214,.35);margin-top:16px;letter-spacing:.04em}
+
+  /* ---------- TOAST ---------- */
+  .toast{
+    position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(120px);
+    background:var(--ink);color:var(--cream-text);padding:14px 20px;border-radius:14px;
+    font-size:.9rem;max-width:88%;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.3);
+    transition:transform .35s cubic-bezier(.2,.9,.3,1.2);z-index:50;border:1.5px solid var(--marigold);
+  }
+  .toast.show{transform:translateX(-50%) translateY(0)}
+  .toast b{color:var(--marigold)}
+
+  @media(min-width:560px){
+    .day{grid-template-columns:76px 1fr}
+    .datecol .dnum{font-size:2.2rem}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO -->
+  <header class="poster">
+    <div class="eyebrow">#GoTeamOlatoyes presents</div>
+    <h1>
+      <span class="l1">Summer</span>
+      <span class="l2">Tour</span>
+      <span class="l3">2026</span>
+    </h1>
+    <div class="meta">24 JUL <span>—</span> 04 AUG <span>·</span> MANCHESTER</div>
+    <div class="draft-ribbon"><span class="dot"></span> WORKING DRAFT · WE BUILD THIS TOGETHER</div>
+  </header>
+
+  <!-- INTRO -->
+  <div class="intro">
+    <p>This is the <strong>straw-man plan</strong> for when everyone's together — three households and Grandma, all in one place for once. It's not fixed. <strong>Poke holes in it, add your bit.</strong> Green means locked, amber means it's only a suggestion so far.</p>
+  </div>
+
+  <!-- TOUR DATES -->
+  <div class="sec-head"><h2>The Dates</h2><div class="rule"></div></div>
+  <div class="dates" id="dates"></div>
+
+  <!-- OPEN QUESTIONS -->
+  <div class="sec-head"><h2>Still To Lock In</h2><div class="rule"></div></div>
+  <div class="todo">
+    <h3>Over to you</h3>
+    <p class="sub">The bits we need the family to weigh in on before it's final.</p>
+    <ul id="todo"></ul>
+  </div>
+
+  <!-- LINE-UP -->
+  <div class="sec-head"><h2>The Line-Up</h2><div class="rule"></div></div>
+  <div class="crew" id="crew"></div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="ft-title">See you on tour 🎉</div>
+    <p>Got a thought, an address, a lift to offer? For now drop it in the family WhatsApp — in-app suggestions and the money ledger are coming next.</p>
+    <p>Put together by Uncle B.</p>
+    <div class="stamp" id="stamp"></div>
+  </footer>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ---- THE PLAN (single source of truth) ----
+  const DAYS = [
+    {num:"24",mon:"Jul",dow:"Fri",title:"Arrivals",blurb:"NY family up from London, Gravesend crew drive up. No plans — travel, settle, eat.",host:"Everyone → Middleton",status:"confirmed"},
+    {num:"25",mon:"Jul",dow:"Sat",title:"Ayo's Party 🎉",blurb:"Middleton. Everyone in one room. The opening night.",host:"Middleton",status:"confirmed",anchor:true},
+    {num:"26",mon:"Jul",dow:"Sun",title:"Church + Native",blurb:"Calvary together in the morning, then lunch and hangout at Native. A slow one.",host:"All",status:"confirmed"},
+    {num:"27",mon:"Jul",dow:"Mon",title:"Cousins' Sleepover",blurb:"All the cousins at Middleton. Gbenga & B possibly back in London.",host:"Middleton",status:"confirmed"},
+    {num:"28",mon:"Jul",dow:"Tue",title:"Park Outing",blurb:"Ayo, Lina & Funmi leading. May May WFH — to confirm.",host:"Middleton",status:"confirmed"},
+    {num:"29",mon:"Jul",dow:"Wed",title:"Manchester Day Out",blurb:"Idea: Science & Industry Museum or Chill Factore. Weather-proof, cousin-friendly.",host:"TBC",status:"proposal"},
+    {num:"30",mon:"Jul",dow:"Thu",title:"Quiet Day",blurb:"Deliberately nothing on. Ten days is long — a day to breathe is a feature.",host:"TBC",status:"proposal"},
+    {num:"31",mon:"Jul",dow:"Fri",title:"Split Day",blurb:"Idea: kids' activity in the day, grown-ups' dinner out in the evening.",host:"TBC",status:"proposal"},
+    {num:"01",mon:"Aug",dow:"Sat",title:"Code Quest 👨‍💻",blurb:"Native. Uncle B running it. The closing show.",host:"Native · Uncle B",status:"confirmed",anchor:true},
+    {num:"02",mon:"Aug",dow:"Sun",title:"Farewell",blurb:"Idea: Calvary + a big family lunch to close the tour properly.",host:"TBC",status:"proposal"},
+    {num:"03",mon:"Aug",dow:"Mon",title:"Wind-Down",blurb:"Tour officially ends. Individual plans from here.",host:"—",status:"confirmed"}
+  ];
+
+  const TODO = [
+    "Wed / Thu / Fri (29–31) — the proposals are just placeholders. What do we actually want?",
+    "Is Emma (4) in or out of the cousins' sleepover?",
+    "May May's WFH days — which days is she tied up?",
+    "NY's actual departure date — does the 3rd close it, or is there more?",
+    "Anything Grandma fancies at Radlett — just say the word."
+  ];
+
+  const CREW = [
+    {name:"Middleton",tag:"Base camp",members:"Ayo · Lina · Hannah · Sophia · Ezekiel"},
+    {name:"Gravesend",tag:"On the road",members:"Bolaji · Funmi · Elsie · Emma"},
+    {name:"New York",tag:"Flying in",members:"Gbenga · May May · Theodore · Arthur"},
+    {name:"Radlett",tag:"Special guest",members:"Grandma — joining every show. If she wants something at Radlett, she'll say.",guest:true}
+  ];
+
+  // ---- RENDER ----
+  function el(html){const t=document.createElement('template');t.innerHTML=html.trim();return t.content.firstChild;}
+
+  const datesEl = document.getElementById('dates');
+  DAYS.forEach(d=>{
+    const badge = d.status==='confirmed'
+      ? '<span class="badge confirmed">Locked</span>'
+      : '<span class="badge proposal">Idea</span>';
+    const card = el(`
+      <div class="day ${d.anchor?'anchor':''}">
+        <div class="datecol">
+          <div class="dnum">${d.num}</div>
+          <div class="dmon">${d.mon}</div>
+          <div class="ddow">${d.dow}</div>
+        </div>
+        <div class="body">
+          <div class="title">${d.title}</div>
+          <div class="blurb">${d.blurb}</div>
+          <div class="chips">
+            <span class="chip">📍 ${d.host}</span>
+            ${badge}
+            <button class="note-btn" data-t="${d.title.replace(/"/g,'')}">💬 Add a note</button>
+          </div>
+        </div>
+      </div>`);
+    datesEl.appendChild(card);
+  });
+
+  const todoEl = document.getElementById('todo');
+  TODO.forEach(t=>todoEl.appendChild(el(`<li><span class="box"></span><span>${t}</span></li>`)));
+
+  const crewEl = document.getElementById('crew');
+  CREW.forEach(h=>{
+    crewEl.appendChild(el(`
+      <div class="house ${h.guest?'guest':''}">
+        <div class="hname">${h.name}</div>
+        <div class="htag">${h.tag}</div>
+        <div class="members">${h.members}</div>
+      </div>`));
+  });
+
+  // ---- INTERIM NOTE HANDLER (real in-app notes land with the collab layer) ----
+  const toast = document.getElementById('toast');
+  let toastTimer;
+  function showToast(html){
+    toast.innerHTML = html;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>toast.classList.remove('show'),4200);
+  }
+  document.addEventListener('click',e=>{
+    const b = e.target.closest('.note-btn');
+    if(!b) return;
+    showToast(`Notes go live when we switch on the collab layer. <br>For now, drop your thought on <b>${b.dataset.t}</b> in the family WhatsApp 💬`);
+  });
+
+  // ---- BUILD STAMP ----
+  const now = new Date();
+  document.getElementById('stamp').textContent =
+    'Draft v1 · last updated ' + now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) +
+    ' ' + now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+</script>
+</body>
+</html>
