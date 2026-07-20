@@ -1,0 +1,28 @@
+name: Keep tour DB awake
+
+# Free-tier Supabase pauses a project after ~7 days with no activity.
+# This pings the tour database twice a week so it stays live before the
+# family starts using it. Uses the public anon key (already in the page),
+# so nothing secret lives here. Safe to delete once the tour is over.
+
+on:
+  schedule:
+    - cron: '17 9 * * 1,4'   # Mondays & Thursdays, ~09:17 UTC
+  workflow_dispatch:          # lets you run it manually from the Actions tab
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping tour_days
+        run: |
+          KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4cXhva2J5dnhyandiZWdwcXNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1MzcxNzMsImV4cCI6MjEwMDExMzE3M30.x5rSgQE2vgz6YGvgJY-NeS1HUi6-tZ1tjIGkPqiANJ4"
+          CODE=$(curl -sS -o /dev/null -w "%{http_code}" \
+            "https://kxqxokbyvxrjwbegpqso.supabase.co/rest/v1/tour_days?select=id&limit=1" \
+            -H "apikey: $KEY" \
+            -H "Authorization: Bearer $KEY")
+          echo "Supabase responded: $CODE"
+          if [ "$CODE" != "200" ]; then
+            echo "Unexpected status — project may be paused or unreachable."
+            exit 1
+          fi
