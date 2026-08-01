@@ -64,6 +64,32 @@
   [hidden]{display:none!important;}
   :focus-visible{outline:2px solid var(--mint);outline-offset:3px;}
 
+
+  .add{background:var(--panel);border:1px dashed var(--line);border-radius:20px;
+       padding:18px;margin:0 0 22px;}
+  .add h2{font-size:17px;margin:0 0 4px;font-weight:600;}
+  .add p.hint{color:var(--muted);font-size:13.5px;margin:0 0 14px;}
+  .field{margin:0 0 12px;}
+  .field label{display:block;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;
+               color:var(--muted);font-weight:700;margin:0 0 6px;}
+  .field input[type=text]{width:100%;font:inherit;font-size:15px;padding:11px 13px;
+       background:#1b1038;border:1px solid var(--line);border-radius:12px;color:var(--cream);}
+  .field input[type=file]{width:100%;font:inherit;font-size:13.5px;color:var(--muted);}
+  .field input[type=text]::placeholder{color:#6f5d99;}
+  .row2{display:grid;gap:12px;}
+  .btn{font:inherit;font-size:15px;font-weight:700;cursor:pointer;touch-action:manipulation;
+       background:var(--violet);border:1px solid var(--violet);color:#fff;
+       border-radius:999px;padding:12px 22px;}
+  .btn:disabled{opacity:.5;cursor:default;}
+  .btn.ghost{background:transparent;border-color:var(--line);color:var(--cream);
+             font-weight:600;font-size:13px;padding:8px 15px;}
+  .btn.ghost:hover{border-color:var(--blush);color:var(--blush);}
+  .status{font-size:13.5px;margin:12px 0 0;color:var(--mint);}
+  .status.bad{color:#FFB3D5;}
+  .bar{height:5px;background:#1b1038;border-radius:99px;overflow:hidden;margin-top:12px;}
+  .bar i{display:block;height:100%;width:0;background:var(--mint);transition:width .2s;}
+  .del{float:right;}
+  @media (min-width:560px){ .row2{grid-template-columns:1fr 1fr;} }
   footer{color:var(--muted);font-size:13px;margin-top:34px;border-top:1px solid var(--line);
          padding-top:18px;}
   code{background:#2d1c56;padding:2px 6px;border-radius:5px;font-size:12.5px;}
@@ -78,83 +104,194 @@
   </header>
 
   <p class="msg" id="msg" hidden></p>
+
+  <section class="add">
+    <h2>Add a song</h2>
+    <p class="hint">Pick an audio file, a video file, or both. They'll be saved for everyone.</p>
+
+    <div class="field">
+      <label for="f-title">Title</label>
+      <input type="text" id="f-title" placeholder="Golden Hour">
+    </div>
+    <div class="field">
+      <label for="f-note">Note <span style="text-transform:none;letter-spacing:0">(optional)</span></label>
+      <input type="text" id="f-note" placeholder="Made on Suno, second try">
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label for="f-audio">Audio file</label>
+        <input type="file" id="f-audio" accept="audio/*">
+      </div>
+      <div class="field">
+        <label for="f-video">Video file</label>
+        <input type="file" id="f-video" accept="video/*">
+      </div>
+    </div>
+    <div class="field">
+      <label for="f-by">Added by</label>
+      <input type="text" id="f-by" placeholder="Hannah">
+    </div>
+
+    <button class="btn" id="f-go">Save the song</button>
+    <div class="bar" id="f-bar" hidden><i></i></div>
+    <p class="status" id="f-status" hidden></p>
+  </section>
+
   <div id="list"></div>
 
   <footer>
-    Songs live in the <code>songs</code> folder and are listed in <code>songs.json</code>.
+    Songs are saved online, so everyone sees the same library.
   </footer>
 </div>
 
 <script>
-var FALLBACK = {
-  title: "Song Gallery",
-  subtitle: "Press play on any track.",
-  tracks: [{
-    title: "Test Beep",
-    note: "A test track so you can check the sound works.",
-    audio: "songs/test-beep.mp3",
-    video: "songs/test-beep.mp4"
-  }]
-};
+/* ---------------------------------------------------------------
+   Song Gallery
+   Songs are stored online with Supabase so they stay put.
+   Anyone with the link can add one.
+   --------------------------------------------------------------- */
+
+var SB_URL = 'https://kxqxokbyvxrjwbegpqso.supabase.co';
+var SB_KEY = 'sb_publishable_DHY8OiCyiiSGc1Ta5dzRYw_CbvATbFK';
+var BUCKET = 'pp-songs';
 
 function $(id){ return document.getElementById(id); }
 function esc(t){ return String(t).replace(/[<>&"]/g, function(c){
   return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]; }); }
 
-function msg(html){
+function msg(html, bad){
   var m = $('msg');
   if(!html){ m.hidden = true; return; }
   m.hidden = false; m.innerHTML = html;
 }
 
-function build(data){
-  $('title').textContent = data.title || 'Song Gallery';
-  $('subtitle').textContent = data.subtitle || '';
-  document.title = data.title || 'Song Gallery';
+function status(text, bad){
+  var s = $('f-status');
+  if(!text){ s.hidden = true; return; }
+  s.hidden = false; s.textContent = text;
+  s.className = 'status' + (bad ? ' bad' : '');
+}
 
+/* ---- talking to the database ---- */
+
+function headers(extra){
+  var h = { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY };
+  for(var k in extra) h[k] = extra[k];
+  return h;
+}
+
+function loadTracks(){
+  return fetch(SB_URL + '/rest/v1/pp_tracks?select=*&order=sort_order.asc,created_at.asc',
+               { headers: headers({}), cache: 'no-store' })
+    .then(function(r){
+      if(!r.ok) throw new Error('Could not read the song list (' + r.status + ')');
+      return r.json();
+    });
+}
+
+function addTrack(row){
+  return fetch(SB_URL + '/rest/v1/pp_tracks', {
+    method: 'POST',
+    headers: headers({ 'Content-Type':'application/json', Prefer:'return=representation' }),
+    body: JSON.stringify(row)
+  }).then(function(r){
+    if(!r.ok) return r.text().then(function(t){ throw new Error('Saving failed: ' + t); });
+    return r.json();
+  });
+}
+
+function removeTrack(id){
+  return fetch(SB_URL + '/rest/v1/pp_tracks?id=eq.' + encodeURIComponent(id), {
+    method: 'DELETE', headers: headers({})
+  });
+}
+
+/* ---- uploading a file ---- */
+
+function safeName(name){
+  return name.toLowerCase()
+             .replace(/[^a-z0-9.]+/g, '-')
+             .replace(/-+/g, '-')
+             .replace(/^-|-$/g, '');
+}
+
+function uploadFile(file, onProgress){
+  var path = Date.now() + '-' + safeName(file.name);
+  return new Promise(function(resolve, reject){
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', SB_URL + '/storage/v1/object/' + BUCKET + '/' + path);
+    xhr.setRequestHeader('apikey', SB_KEY);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + SB_KEY);
+    xhr.setRequestHeader('x-upsert', 'true');
+    if(file.type) xhr.setRequestHeader('Content-Type', file.type);
+    xhr.upload.onprogress = function(e){
+      if(e.lengthComputable && onProgress) onProgress(e.loaded / e.total);
+    };
+    xhr.onload = function(){
+      if(xhr.status >= 200 && xhr.status < 300){
+        resolve(SB_URL + '/storage/v1/object/public/' + BUCKET + '/' + path);
+      } else {
+        reject(new Error('Upload failed (' + xhr.status + '). ' + xhr.responseText));
+      }
+    };
+    xhr.onerror = function(){ reject(new Error('Upload failed. Check the connection.')); };
+    xhr.send(file);
+  });
+}
+
+/* ---- will the browser actually play it? ---- */
+
+function playable(file){
+  var el = document.createElement(file.type.indexOf('video') === 0 ? 'video' : 'audio');
+  return el.canPlayType(file.type) !== '';
+}
+
+/* ---- drawing the list ---- */
+
+function build(tracks){
   var list = $('list');
   list.innerHTML = '';
-  var tracks = data.tracks || [];
 
   if(!tracks.length){
-    msg('No songs listed yet. Add them to <b>songs.json</b>.');
+    msg('No songs yet. Add the first one above.');
     return;
   }
+  msg('');
 
   tracks.forEach(function(t, i){
     var el = document.createElement('section');
     el.className = 'track';
     var n = ('0' + (i + 1)).slice(-2);
     var h = '<div class="head"><span class="num">' + n + '</span>' +
-            '<h2 class="name">' + esc(t.title || 'Untitled') + '</h2></div>';
+            '<h2 class="name">' + esc(t.title || 'Untitled') + '</h2>' +
+            '<button class="btn ghost del" data-id="' + esc(t.id) + '">Remove</button></div>';
     if(t.note) h += '<p class="tnote">' + esc(t.note) + '</p>';
-    if(t.audio){
+    if(t.added_by) h += '<p class="tnote">Added by ' + esc(t.added_by) + '</p>';
+    if(t.audio_url){
       h += '<p class="lbl">Listen</p>' +
-           '<audio controls preload="none" src="' + esc(t.audio) + '"></audio>';
+           '<audio controls preload="none" src="' + esc(t.audio_url) + '"></audio>';
     }
-    if(t.video){
+    if(t.video_url){
       h += '<button class="toggle" aria-expanded="false">Watch the video</button>' +
            '<div class="vwrap" hidden><p class="lbl">Watch</p>' +
-           '<video controls playsinline preload="none" src="' + esc(t.video) + '"></video></div>';
+           '<video controls playsinline preload="none" src="' + esc(t.video_url) + '"></video></div>';
     }
-    if(!t.audio && !t.video){
+    if(!t.audio_url && !t.video_url){
       h += '<p class="tnote">No file listed for this track yet.</p>';
     }
     el.innerHTML = h;
     list.appendChild(el);
   });
-
 }
 
-document.getElementById('list').addEventListener('click', function(e){
-  var b = e.target.closest('.toggle');
-  if(!b) return;
-  var wrap = b.nextElementSibling;
-  var open = b.getAttribute('aria-expanded') === 'true';
-  b.setAttribute('aria-expanded', open ? 'false' : 'true');
-  b.textContent = open ? 'Watch the video' : 'Hide the video';
-  wrap.hidden = open;
-});
+function refresh(){
+  return loadTracks().then(build)['catch'](function(err){
+    build([]);
+    msg('Could not load the songs. ' + esc(err.message), true);
+  });
+}
+
+/* ---- one player at a time ---- */
 
 document.addEventListener('play', function(e){
   var players = document.querySelectorAll('audio, video');
@@ -163,17 +300,97 @@ document.addEventListener('play', function(e){
   }
 }, true);
 
-fetch('songs.json', {cache:'no-store'})
-  .then(function(r){
-    if(!r.ok) throw new Error('songs.json returned ' + r.status);
-    return r.json();
-  })
-  .then(build)
-  ['catch'](function(err){
-    build(FALLBACK);
-    msg('Showing the built-in list. <b>songs.json</b> could not be read (' +
-        esc(err.message) + '). This works once the site is published to a web address.');
+/* ---- show and hide videos, and removing a track ---- */
+
+$('list').addEventListener('click', function(e){
+  var b = e.target.closest('.toggle');
+  if(b){
+    var wrap = b.nextElementSibling;
+    var open = b.getAttribute('aria-expanded') === 'true';
+    b.setAttribute('aria-expanded', open ? 'false' : 'true');
+    b.textContent = open ? 'Watch the video' : 'Hide the video';
+    wrap.hidden = open;
+    return;
+  }
+  var d = e.target.closest('.del');
+  if(d){
+    if(!confirm('Remove this track from the list?')) return;
+    d.disabled = true;
+    removeTrack(d.dataset.id).then(refresh);
+  }
+});
+
+/* ---- saving a new song ---- */
+
+$('f-go').addEventListener('click', function(){
+  var title = $('f-title').value.trim();
+  var note  = $('f-note').value.trim();
+  var by    = $('f-by').value.trim();
+  var af    = $('f-audio').files[0];
+  var vf    = $('f-video').files[0];
+
+  if(!title){ status('Give the song a title first.', true); return; }
+  if(!af && !vf){ status('Pick an audio file, a video file, or both.', true); return; }
+
+  if(af && !playable(af)){
+    status('That audio file might not play in a browser. MP3 is the safe choice.', true);
+  }
+  if(vf && !playable(vf)){
+    status('That video file might not play in a browser. MP4 is the safe choice.', true);
+  }
+
+  var btn = $('f-go');
+  btn.disabled = true;
+  var bar = $('f-bar'); bar.hidden = false;
+  var fill = bar.querySelector('i');
+  var jobs = (af ? 1 : 0) + (vf ? 1 : 0);
+  var done = 0;
+
+  function progress(p){
+    fill.style.width = ((done + p) / jobs * 100) + '%';
+  }
+
+  status('Uploading...');
+
+  var chain = Promise.resolve({});
+
+  if(af){
+    chain = chain.then(function(acc){
+      return uploadFile(af, progress).then(function(url){
+        done++; acc.audio_url = url; return acc;
+      });
+    });
+  }
+  if(vf){
+    chain = chain.then(function(acc){
+      return uploadFile(vf, progress).then(function(url){
+        done++; acc.video_url = url; return acc;
+      });
+    });
+  }
+
+  chain.then(function(acc){
+    acc.title = title;
+    if(note) acc.note = note;
+    if(by) acc.added_by = by;
+    status('Saving...');
+    return addTrack(acc);
+  }).then(function(){
+    status('Saved. It is on the site now.');
+    $('f-title').value = ''; $('f-note').value = '';
+    $('f-audio').value = ''; $('f-video').value = '';
+    fill.style.width = '100%';
+    setTimeout(function(){ bar.hidden = true; fill.style.width = '0'; status(''); }, 2500);
+    return refresh();
+  })['catch'](function(err){
+    status(err.message, true);
+    bar.hidden = true; fill.style.width = '0';
+  }).then(function(){
+    btn.disabled = false;
   });
+});
+
+refresh();
 </script>
 </body>
 </html>
