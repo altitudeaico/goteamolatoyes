@@ -199,6 +199,12 @@ section{padding:28px 0 0}
 .roster{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:7px}
 .roster li{border:1px solid var(--line-soft);border-radius:2px;padding:7px 12px;font-size:14.5px;font-weight:500;white-space:nowrap}
 .blank{margin-top:15px;padding-top:13px;border-top:1px dashed var(--line-soft);font-family:var(--sys);font-size:10.5px;color:var(--parch-dim);line-height:2.1;overflow-wrap:anywhere}
+.blank.locked{line-height:1.6;display:grid;gap:5px;border-top-style:solid}
+.blank.locked span{display:flex;align-items:baseline;gap:9px;font-family:var(--body);font-size:15px;color:var(--parch)}
+.blank.locked i{
+  font-style:normal;font-family:var(--gothic);font-weight:700;font-size:13px;
+  color:var(--gold);min-width:20px;letter-spacing:.02em
+}
 
 /* ── decrees ── */
 .decrees{list-style:none;margin:24px 0 0;padding:0;counter-reset:d}
@@ -420,7 +426,11 @@ footer{
         <div class="tag">House the second</div>
         <div class="name" id="nameB">Pixel Power</div>
         <ul class="roster"><li>Elsie</li><li>Theodore</li><li>Hannah</li></ul>
-        <div class="blank">Speakers: ______ · ______ · ______</div>
+        <div class="blank locked">
+          <span><i>I</i>Theodore</span>
+          <span><i>II</i>Hannah</span>
+          <span><i>III</i>Elsie</span>
+        </div>
       </div>
     </div>
     <p class="dim" style="margin-top:18px;font-size:15px">Each house names three speakers before building starts — one per build, locked in, no swapping.</p>
