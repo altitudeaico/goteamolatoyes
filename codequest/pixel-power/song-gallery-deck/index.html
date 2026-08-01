@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B0912">
+<title>Code Quest — The Songs · Hannah · Pixel Power</title>
+<meta name="description" content="Code Quest, The Songs. Hannah's presentation for Pixel Power — ten songs made with Suno, and how they were made.">
+<meta property="og:title" content="Code Quest — The Songs">
+<meta property="og:description" content="Ten songs, made with AI. By Hannah, Pixel Power.">
+<meta property="og:image" content="https://altitudeaico.github.io/goteamolatoyes/codequest/pixel-power/song-gallery-deck/slides.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  :root{
+    --void:#0B0912; --parch:#E9DFC7; --parch-dim:#9A8F7A;
+    --gold:#D9A94C; --gold-hi:#F2CE7B; --phos:#45E3C4;
+    --line:rgba(217,169,76,.2);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:var(--void);color:var(--parch)}
+  body{
+    display:flex;flex-direction:column;overflow:hidden;
+    font-family:system-ui,-apple-system,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased
+  }
+
+  .bar{
+    flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:9px max(11px,env(safe-area-inset-left)) 9px max(11px,env(safe-area-inset-right));
+    border-bottom:1px solid var(--line)
+  }
+  .who{
+    font-family:ui-monospace,monospace;font-size:8.5px;font-weight:700;
+    letter-spacing:.2em;text-transform:uppercase;color:var(--phos);line-height:1.5;min-width:0
+  }
+  .who b{
+    display:block;color:var(--gold-hi);font-size:13.5px;letter-spacing:0;
+    font-family:system-ui,sans-serif;font-weight:700;text-transform:none;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+  }
+  .acts{display:flex;gap:6px;flex:none}
+  .acts a,.acts button{
+    font-family:ui-monospace,monospace;font-size:9px;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--parch-dim);text-decoration:none;cursor:pointer;
+    border:1px solid var(--line);border-radius:3px;padding:8px 11px;background:transparent;
+    white-space:nowrap
+  }
+  .acts a:hover,.acts button:hover{color:var(--gold-hi);border-color:var(--gold)}
+
+  /* tabs */
+  .tabs{
+    flex:none;display:flex;gap:6px;justify-content:center;
+    padding:9px 12px;border-bottom:1px solid var(--line)
+  }
+  .tabs button{
+    font-family:ui-monospace,monospace;font-size:9.5px;font-weight:700;letter-spacing:.16em;
+    text-transform:uppercase;cursor:pointer;padding:9px 16px;border-radius:3px;
+    background:transparent;border:1px solid var(--line);color:var(--parch-dim)
+  }
+  .tabs button.on{color:var(--gold-hi);border-color:var(--gold);background:rgba(217,169,76,.08)}
+
+  .stage{
+    flex:1;min-height:0;display:grid;place-items:center;overflow:auto;padding:12px;
+    background:radial-gradient(60% 50% at 50% 0%, rgba(69,227,196,.07), transparent 70%)
+  }
+  .stage img{
+    max-width:100%;max-height:100%;width:auto;height:auto;display:block;
+    border:1px solid var(--line);border-radius:3px;cursor:zoom-in;
+    box-shadow:0 24px 70px rgba(0,0,0,.6)
+  }
+  .stage img.hide{display:none}
+  .stage.zoomed{place-items:start center}
+  .stage.zoomed img{max-width:none;max-height:none;cursor:zoom-out}
+  .stage.zoomed img#a{width:1536px}
+  .stage.zoomed img#b{width:1024px}
+
+  .hint{
+    flex:none;text-align:center;padding:7px 10px calc(9px + env(safe-area-inset-bottom));
+    font-family:ui-monospace,monospace;font-size:8.5px;letter-spacing:.18em;
+    text-transform:uppercase;color:rgba(154,143,122,.55)
+  }
+</style>
+</head>
+<body>
+  <div class="bar">
+    <div class="who">Pixel Power &middot; Build one<b>Code Quest &mdash; The Songs &middot; Hannah</b></div>
+    <div class="acts">
+      <button id="zoom" type="button">Zoom</button>
+      <a id="dl" href="slides.jpg" download>Download</a>
+      <a href="../">&larr; Team</a>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button id="t-a" class="on" type="button">The deck</button>
+    <button id="t-b" type="button">The songs</button>
+  </div>
+
+  <div class="stage" id="stage">
+    <img id="a" src="slides.jpg" alt="Code Quest The Songs presentation deck, six slides: title, why we chose our songs, music ideas for adventure mode, boss battles and victory, the game music guide, playlist inspiration, and thank you.">
+    <img id="b" class="hide" src="songs.jpg" alt="Listen to our songs board: ten songs made with Suno, each with a QR code, plus how they were made and the music styles used.">
+  </div>
+
+  <div class="hint">Tap the board to zoom &middot; Arrow keys to switch</div>
+
+<script>
+  var stage = document.getElementById('stage');
+  var a = document.getElementById('a');
+  var b = document.getElementById('b');
+  var ta = document.getElementById('t-a');
+  var tb = document.getElementById('t-b');
+  var zoom = document.getElementById('zoom');
+  var dl = document.getElementById('dl');
+  var showingA = true;
+
+  function show(first){
+    showingA = first;
+    a.classList.toggle('hide', !first);
+    b.classList.toggle('hide', first);
+    ta.classList.toggle('on', first);
+    tb.classList.toggle('on', !first);
+    dl.setAttribute('href', first ? 'slides.jpg' : 'songs.jpg');
+    fit();
+  }
+  function fit(){
+    stage.classList.remove('zoomed');
+    zoom.textContent = 'Zoom';
+    stage.scrollTop = stage.scrollLeft = 0;
+  }
+  function toggleZoom(){
+    var on = stage.classList.toggle('zoomed');
+    zoom.textContent = on ? 'Fit' : 'Zoom';
+    if (!on) stage.scrollTop = stage.scrollLeft = 0;
+  }
+
+  ta.addEventListener('click', function(){ show(true); });
+  tb.addEventListener('click', function(){ show(false); });
+  zoom.addEventListener('click', toggleZoom);
+  a.addEventListener('click', toggleZoom);
+  b.addEventListener('click', toggleZoom);
+
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') show(false);
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') show(true);
+    else if (e.key === 'z' || e.key === 'Z') toggleZoom();
+  });
+</script>
+</body>
+</html>
