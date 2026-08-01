@@ -1,0 +1,2729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dragonball Flight — 3D</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #05060f; }
+  body { font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; color: #fff; }
+  #g { display: block; width: 100vw; height: 100vh; }
+  #hud {
+    position: absolute; top: 12px; left: 14px; z-index: 5; font-size: 15px;
+    text-shadow: 0 1px 4px #000; line-height: 1.5; pointer-events: none;
+  }
+  #hud b { color: #ffe066; }
+  #scoreboard {
+    position: absolute; top: 12px; left: 0; right: 0; text-align: center; z-index: 5;
+    font-size: 26px; font-weight: bold; text-shadow: 0 2px 6px #000; pointer-events: none;
+  }
+  #scoreboard .r { color: #ff8a8a; } #scoreboard .b { color: #8ec5ff; }
+  #tip {
+    position: absolute; bottom: 14px; left: 0; right: 0; text-align: center; z-index: 5;
+    font-size: 14px; color: #cfe0ff; text-shadow: 0 1px 4px #000; pointer-events: none;
+  }
+  #title, #createScreen, #hubScreen, #resultScreen, #panelScreen {
+    position: absolute; inset: 0; z-index: 10; display: none; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center; padding: 20px; overflow-y: auto;
+    background: radial-gradient(circle at 50% 35%, rgba(40,60,140,0.55), rgba(5,6,15,0.96));
+  }
+  #panelScreen { justify-content: flex-start; padding-top: 26px; }
+  .card { display: flex; align-items: center; gap: 12px; text-align: left; background: rgba(10,25,55,0.85);
+    border: 1px solid rgba(120,180,255,0.3); border-radius: 12px; padding: 10px 14px; }
+  .card .em { font-size: 26px; width: 32px; text-align: center; }
+  .card .info { flex: 1; } .card .nm { font-weight: bold; font-size: 15px; } .card .mt { font-size: 11px; color: #9fb4d8; }
+  .card .lv { font-size: 12px; color: #ffd54a; }
+  .card button { font: inherit; font-weight: bold; font-size: 13px; color: #05060f; background: linear-gradient(180deg,#ffe066,#ffb020);
+    border: none; border-radius: 10px; padding: 7px 11px; cursor: pointer; white-space: nowrap; }
+  .card button:disabled { background: #33405a; color: #7d8aa5; cursor: not-allowed; }
+  #title { display: flex; }
+  h1 { font-size: clamp(28px,6vw,60px); text-shadow: 0 0 20px #4aa3ff; }
+  .sub { color: #ffd54a; margin: 8px 0 24px; font-size: clamp(14px,2.4vw,20px); }
+  #title .dragon, #createScreen .dragon, #hubScreen .dragon, #resultScreen .dragon { font-size: clamp(46px,11vw,100px); filter: drop-shadow(0 0 20px #ff7b2a); }
+  .field { margin: 7px 0; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .field label { font-size: 12px; color: #ffd54a; }
+  .field input[type=text] { font: inherit; font-size: 17px; text-align: center; padding: 7px 12px; border-radius: 10px;
+    border: 2px solid rgba(120,180,255,0.5); background: rgba(10,20,45,0.9); color: #fff; width: 240px; }
+  .field input[type=color] { width: 50px; height: 36px; border: none; border-radius: 8px; background: none; cursor: pointer; }
+  .row { display: flex; gap: 18px; }
+  .diffRow, .mascotRow { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; max-width: 340px; }
+  .diffRow button, .mascotRow button { font: inherit; font-weight: bold; color: #fff; padding: 7px 13px; border-radius: 10px;
+    background: rgba(10,20,45,0.9); border: 2px solid rgba(120,180,255,0.4); cursor: pointer; }
+  .diffRow button.sel, .mascotRow button.sel { border-color: #ffe066; box-shadow: 0 0 12px rgba(255,224,102,0.8); }
+  .statRow { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin: 14px 0; }
+  .statCard { background: rgba(10,25,55,0.85); border: 1px solid rgba(120,180,255,0.35); border-radius: 12px; padding: 10px 18px; }
+  .statCard .v { font-size: 22px; font-weight: bold; } .statCard .k { font-size: 11px; color: #9fb4d8; }
+  .linkBtn { margin-top: 12px; background: none; border: none; color: #9fb4d8; font: inherit; font-size: 13px; cursor: pointer; text-decoration: underline; }
+  #startBtn {
+    font-size: 24px; font-weight: bold; color: #05060f; cursor: pointer;
+    background: linear-gradient(180deg,#ffe066,#ffb020); border: none; border-radius: 40px;
+    padding: 15px 44px; box-shadow: 0 0 24px rgba(255,180,40,0.7);
+  }
+  #startBtn:hover { transform: scale(1.05); }
+  #title .hint { margin-top: 22px; font-size: 13px; color: #9fb4d8; }
+</style>
+</head>
+<body>
+  <canvas id="g"></canvas>
+  <div id="scoreboard"></div>
+  <div id="hud"></div>
+  <div id="tip">W · A/D · E/Q · SHIFT boost · <b>SPACE switch</b> · hold X+mouse SHOOT · Z pass · C steal · <b>F tackle</b></div>
+  <div id="title">
+    <div class="dragon">🐉</div>
+    <h1>DRAGONBALL FLIGHT — 3D</h1>
+    <div class="sub">★ Fly through the arena in real 3D ★</div>
+    <button id="startBtn">▶ START</button>
+    <div class="hint">A 2026 Clauding Tournament Game — by Theodore</div>
+    <div class="hint" style="color:#7dff9a;font-weight:bold;">build v35 — floating ball</div>
+  </div>
+
+  <!-- Create Your Club -->
+  <div id="createScreen">
+    <h1>🏟️ CREATE YOUR CLUB</h1>
+    <div class="field"><label>Club Name</label><input type="text" id="inName" maxlength="20" value="Skyfire Dragons" /></div>
+    <div class="field"><label>Team Color</label><input type="color" id="inColor" value="#ff6b6b" /></div>
+    <div class="field"><label>Mascot</label><div class="mascotRow" id="mascotRow"></div></div>
+    <div class="field"><label>Difficulty (starting gold + how fast you earn)</label>
+      <div class="diffRow" id="diffRow"></div>
+      <div id="diffDesc" style="font-size:12px;color:#9fb4d8;margin-top:5px;"></div>
+    </div>
+    <div class="field"><label>Team Philosophy (play style)</label>
+      <div class="diffRow" id="philRow"></div>
+      <div id="philDesc" style="font-size:12px;color:#9fb4d8;margin-top:5px;"></div>
+    </div>
+    <div class="field"><label>Era (when your story begins)</label>
+      <div class="diffRow" id="eraRow"></div>
+      <div id="eraDesc" style="font-size:12px;color:#9fb4d8;margin-top:5px;"></div>
+    </div>
+    <button id="createBtn" class="startBtn" style="font-size:22px;font-weight:bold;color:#05060f;cursor:pointer;background:linear-gradient(180deg,#ffe066,#ffb020);border:none;border-radius:40px;padding:13px 40px;margin-top:10px;">CREATE CLUB →</button>
+  </div>
+
+  <!-- Club Hub -->
+  <div id="hubScreen">
+    <div class="dragon" id="hubCrest">🐉</div>
+    <h1 id="hubName">Skyfire Dragons</h1>
+    <div class="statRow">
+      <div class="statCard"><div class="v" id="hubMoney">💰 500</div><div class="k">GOLD</div></div>
+      <div class="statCard"><div class="v" id="hubRep">⭐ 50</div><div class="k" id="hubTier">Unknown Club</div></div>
+      <div class="statCard"><div class="v" id="hubRecord">0–0</div><div class="k">WIN–LOSS</div></div>
+      <div class="statCard"><div class="v" id="hubMatch">Match 1</div><div class="k" id="hubDiff">Normal</div></div>
+    </div>
+    <div class="sub" style="font-size:14px;color:#9fb4d8;">4 quarters × 75s — most points wins (tie → overtime)!</div>
+    <div id="hubExtra" style="font-size:12px;color:#7dff9a;margin-bottom:10px;"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+      <button id="playBtn" class="startBtn" style="font-size:22px;font-weight:bold;color:#05060f;cursor:pointer;background:linear-gradient(180deg,#ffe066,#ffb020);border:none;border-radius:40px;padding:14px 34px;">▶ PLAY MATCH</button>
+      <button id="tourneyBtn" class="startBtn" style="font-size:22px;font-weight:bold;color:#05060f;cursor:pointer;background:linear-gradient(180deg,#ffd54a,#ff9a3c);border:none;border-radius:40px;padding:14px 28px;">🏆 TOURNAMENT</button>
+    </div>
+    <button id="dayBtn" class="startBtn" style="font-size:16px;font-weight:bold;color:#05060f;cursor:pointer;background:linear-gradient(180deg,#a7f3d0,#34d399);border:none;border-radius:40px;padding:9px 24px;margin-top:8px;">🗓️ Do Today's Activity</button>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:8px;max-width:560px;">
+      <button class="linkBtn" data-panel="squad">👥 Squad</button>
+      <button class="linkBtn" data-panel="facilities">🏗️ Facilities</button>
+      <button class="linkBtn" data-panel="staff">👔 Staff</button>
+      <button class="linkBtn" data-panel="youth">🎓 Youth</button>
+      <button class="linkBtn" data-panel="hatchery">🥚 Hatchery</button>
+      <button class="linkBtn" data-panel="transfers">🔁 Transfers</button>
+      <button class="linkBtn" data-panel="league">🏆 League</button>
+      <button class="linkBtn" data-panel="worldrank">🌍 World</button>
+      <button class="linkBtn" data-panel="news">📰 News</button>
+      <button class="linkBtn" data-panel="history">📜 History</button>
+      <button class="linkBtn" data-panel="scout">🔭 Scouting</button>
+      <button class="linkBtn" data-panel="finances">💰 Finances</button>
+      <button class="linkBtn" data-panel="fans">👥 Fans</button>
+      <button class="linkBtn" data-panel="legacy">🏛️ Legacy</button>
+    </div>
+    <button id="editBtn" class="linkBtn">✏️ Edit Club</button>
+    <button id="newBtn" class="linkBtn">🆕 New Club</button>
+  </div>
+
+  <!-- Shared management panel (Facilities / Staff / Youth / etc.) -->
+  <div id="panelScreen">
+    <h1 id="panelTitle" style="font-size:clamp(24px,5vw,40px);">Panel</h1>
+    <div id="panelGold" style="font-size:18px;color:#ffe066;margin-bottom:12px;">💰 500 gold</div>
+    <div id="panelList" style="display:flex;flex-direction:column;gap:8px;width:100%;max-width:600px;"></div>
+    <button id="panelBack" class="startBtn" style="font-size:20px;font-weight:bold;color:#05060f;cursor:pointer;background:linear-gradient(180deg,#ffe066,#ffb020);border:none;border-radius:40px;padding:11px 34px;margin-top:16px;">← BACK TO CLUB</button>
+  </div>
+
+  <!-- Result -->
+  <div id="resultScreen">
+    <div class="dragon">🏆</div>
+    <h1 id="resultTitle">You Win!</h1>
+    <div class="sub" id="resultScore">15 — 9</div>
+    <div id="resultReward" style="font-size:20px;color:#7dff9a;font-weight:bold;margin-bottom:20px;"></div>
+    <button id="backBtn" class="startBtn" style="font-size:22px;font-weight:bold;color:#05060f;cursor:pointer;background:linear-gradient(180deg,#ffe066,#ffb020);border:none;border-radius:40px;padding:13px 40px;">🏟️ BACK TO CLUB</button>
+  </div>
+
+  <!-- In-match COACHING overlay: freezes the match until you pick a tactic -->
+  <div id="coachOverlay" style="display:none;position:fixed;inset:0;z-index:50;background:rgba(3,6,20,0.74);flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px;box-sizing:border-box;">
+    <div style="font-size:clamp(22px,5vw,32px);font-weight:bold;color:#ffe066;">🧠 COACH — pick a tactic</div>
+    <div style="font-size:13px;color:#9fb4d8;margin-bottom:4px;">The match is paused. Choose one!</div>
+    <div id="coachBtns" style="display:flex;flex-direction:column;gap:9px;width:100%;max-width:440px;"></div>
+  </div>
+
+<script>
+/* =========================================================
+   DRAGONBALL FLIGHT — REAL 3D
+   A from-scratch 3D engine (no libraries):
+   - true 3D world coordinates (x = right, y = up, z = depth)
+   - a perspective camera that chases your dragon
+   - painter's-algorithm depth sorting
+   You fly a dragon through a 3D arena with 3D scoring rings
+   floating at the four altitude layers.
+   ========================================================= */
+
+// Global error banner: any error shows on screen instead of a silent freeze.
+function showErr(m) {
+  let d = document.getElementById('errBanner');
+  if (!d) { d = document.createElement('div'); d.id = 'errBanner';
+    d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#b00020;color:#fff;font:bold 13px monospace;padding:9px;z-index:99999;white-space:pre-wrap;';
+    document.body.appendChild(d); }
+  d.textContent = '⚠ ' + m + '  (tap to hide)'; d.onclick = () => d.remove();
+}
+window.addEventListener('error', e => showErr((e.message || 'error') + ' @ ' + (e.lineno || '?')));
+
+const canvas = document.getElementById('g');
+const ctx = canvas.getContext('2d');
+const hud = document.getElementById('hud');
+
+let W = 0, H = 0, F = 0;      // width, height, focal length
+function resize() {
+  const dpr = window.devicePixelRatio || 1;
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  F = H * 0.75;              // focal length (smaller = wider, more dramatic depth)
+}
+window.addEventListener('resize', resize); resize();
+
+// ---- Arena size (metres-ish): x width, y height, z length ----  MUCH bigger now!
+const ARENA = { x: 2900, y: 3000, z: 8100 };   // WAY way way bigger!
+
+// ---- The camera: a fixed ANGLED (isometric) view that shows the whole
+//      field at a tilt, so you see both height (y) and the field (xz).
+//      It only gently scrolls to follow the action.
+const CAM_YAW = 0.55, CAM_PITCH = 0.5, CAM_DIST = 1000;   // pitch>0 looks down
+const cam = { x: 459, y: 1679, z: 752, yaw: CAM_YAW, pitch: CAM_PITCH };
+const camTarget = { x: 0, y: 1200, z: 1500 };   // locked onto the player
+// The world direction the camera looks along (matches the project() rotations).
+function camForward() {
+  return {
+    x: -Math.cos(CAM_PITCH) * Math.sin(CAM_YAW),
+    y: -Math.sin(CAM_PITCH),
+    z:  Math.cos(CAM_PITCH) * Math.cos(CAM_YAW)
+  };
+}
+
+// Project a 3D world point to the 2D screen. Returns null if behind camera.
+function project(p) {
+  let dx = p.x - cam.x, dy = p.y - cam.y, dz = p.z - cam.z;
+  // rotate by -yaw around the up (y) axis
+  const cy = Math.cos(-cam.yaw), sy = Math.sin(-cam.yaw);
+  let rx = dx * cy - dz * sy;
+  let rz = dx * sy + dz * cy;
+  // rotate by -pitch around the x axis
+  const cp = Math.cos(-cam.pitch), sp = Math.sin(-cam.pitch);
+  let ry = dy * cp - rz * sp;
+  let rz2 = dy * sp + rz * cp;
+  if (rz2 < 1) return null;   // behind / too close
+  return { x: W / 2 + F * rx / rz2, y: H / 2 - F * ry / rz2, z: rz2, s: F / rz2 };
+}
+
+// ---- Your dragon (you're on the RED team) ----
+const you = { x: 0, y: 1200, z: 1500, yaw: 0, speed: 0, boost: 1, team: 'red', color: '#ff6b6b', t: 0, shootCd: 0 };
+
+// ---- Scoring rings (two goals, 3 heights each = the altitude layers) ----
+const RINGS = [];
+function buildRings() {
+  const heights = [{ y: 450, r: 180, pts: 1 }, { y: 1150, r: 130, pts: 3 }, { y: 1850, r: 95, pts: 5 }];
+  // near end = YOUR goal (defend it); far end = enemy goal (score here!)
+  const ends = [{ z: 250, color: '#ff6b6b', team: 'red' }, { z: ARENA.z - 250, color: '#6bb3ff', team: 'blue' }];
+  for (const e of ends) for (const h of heights)
+    RINGS.push({ x: 0, y: h.y, z: e.z, r: h.r, pts: h.pts, color: e.color, team: e.team, glow: 0, cd: 0 });
+}
+buildRings();
+
+// Every dragon gets its OWN body color (so they all look different); a team-colored
+// circle is drawn around them so you can still tell friend from foe.
+const DRAGON_COLORS = ['#ff6b6b', '#ffd54a', '#7dff9a', '#6bb3ff', '#ba68c8', '#4dd0e1', '#ff9a3c', '#f06292', '#9ccc65', '#4db6ac', '#fff176', '#a1887f', '#ff8a65', '#90caf9', '#ce93d8', '#80cbc4'];
+let redTeamCol = '#ff5a5a', blueTeamCol = '#4d9bff';   // team ring colors (red team = your color)
+// ---- AI dragons: RED = your teammates, BLUE = opponents ----
+const bots = [];
+for (let i = 0; i < 10; i++) {
+  const team = i % 2 ? 'blue' : 'red';
+  bots.push({
+    x: (Math.random() - 0.5) * ARENA.x * 1.4, y: 50 + Math.random() * (ARENA.y * 0.7),
+    z: 80 + Math.random() * (ARENA.z - 160),
+    yaw: Math.random() * 6.28, team, color: team === 'blue' ? '#6bb3ff' : '#ff6b6b',
+    bodyCol: DRAGON_COLORS[(i * 3 + 1) % DRAGON_COLORS.length],   // each dragon a distinct color
+    t: Math.random() * 10, shootCd: 0, speed: 0, boost: 1, role: 'attacker', pressT: 0
+  });
+}
+// Each team keeps 3 GUARDS (a Guardian + 2 Defenders) on its own goal.
+for (const tm of ['red', 'blue']) {
+  const teamBots = bots.filter(b => b.team === tm);
+  const teamRings = RINGS.filter(r => r.team === tm);   // their OWN goal to defend
+  teamBots.forEach((b, i) => {
+    if (i < 3) { b.role = 'guard'; b.guardRing = teamRings[i % teamRings.length]; }
+  });
+}
+// The dragon YOU currently control (starts as your own dragon 🐲).
+let player = you;
+function allRed() { return [you, ...bots.filter(b => b.team === 'red')]; }
+// Switch control to the RED dragon nearest the ball (FIFA-style).
+function switchPlayer() {
+  const reds = allRed();
+  let best = null, bd = Infinity;
+  for (const d of reds) { const dist = Math.hypot(d.x - ball.x, d.y - ball.y, d.z - ball.z); if (dist < bd) { bd = dist; best = d; } }
+  if (best) player = best;
+}
+
+// ---- The Dragonball ----
+const ball = { x: 0, y: 1200, z: 1500, vx: 0, vy: 0, vz: 0 };
+let ballOwner = you;     // you | a bot | null (loose / flying)
+let lastTouch = 'red';   // which team touched it last (for goals)
+let shotTimer = 0;
+const CATCH_R = 170;     // how close to grab a loose ball
+const DIVE_R = 950;      // guards dive for a loose ball within this invisible radius
+const GRAV = 620;        // gravity pulls a SLOW ball down (fast shots fly straight)
+const BALL_MIN = 190;    // the ball never sinks below this — it always FLOATS above the ground
+let lastConceded = '';   // the team that lost the most recent point (they get the ball next)
+const SCORE_PAD = 34;    // the scoring sphere is a touch bigger than the ring
+let goalGuarded = false; // is the goal you're attacking being guarded right now?
+const teamScore = { you: 0, opp: 0 };
+let scorePopT = 0, scorePopMsg = '';
+
+// ---- Match extras (momentum, fouls, tackle, commentary, stats, weather) ----
+let momentum = 0, foulProtect = 0, foulCooldown = 0, tackleCd = 0, halftimeT = 0;
+let commentary = '', commentaryT = 0;
+let teamFouls = { red: 0, blue: 0 };
+let stats = { red: { shots: 0, steals: 0, tackles: 0, fouls: 0, poss: 0 }, blue: { shots: 0, steals: 0, tackles: 0, fouls: 0, poss: 0 } };
+const FOUL_NAMES = ['Ramming', 'Wing Block', 'Ball Slap', 'Late Hit', 'Dangerous Collision', 'Pulling'];
+const WEATHERS = [{ n: 'Clear', e: '☀️', s: 1 }, { n: 'Windy', e: '🌬️', s: 1.06 }, { n: 'Rainy', e: '🌧️', s: 0.95 }, { n: 'Stormy', e: '⛈️', s: 0.9 }, { n: 'Snowy', e: '🌨️', s: 0.93 }];
+let weather = WEATHERS[0];
+let crowdMult = 1, isRival = false;   // Vol V Ch19: rival games have a louder crowd (bigger momentum swings)
+let histCommentT = 22;                // Vol VI Ch16: timer for occasional history-aware commentary
+function say(m) { commentary = m; commentaryT = 3; }
+function addMom(team, a) { momentum += (team === 'red' ? a : -a) * crowdMult; momentum = Math.max(-100, Math.min(100, momentum)); }
+function pickW() { return WEATHERS[Math.floor(Math.random() * WEATHERS.length)]; }
+function resetExtras() {
+  momentum = 0; foulProtect = 0; foulCooldown = 0; tackleCd = 0; halftimeT = 0; commentary = ''; commentaryT = 0;
+  teamFouls = { red: 0, blue: 0 };
+  stats = { red: { shots: 0, steals: 0, tackles: 0, fouls: 0, poss: 0 }, blue: { shots: 0, steals: 0, tackles: 0, fouls: 0, poss: 0 } };
+  weather = pickW();
+  // fresh state for the new match features
+  coaching = false; slowmoT = 0; slowmoCd = 0; replayMode = false; replayBuf = []; replaySave = null; replayCd = 0; collideCd = 0; goT = 0;
+  energy = 0; fireShotArmed = false; gustT = 0; stoneWallT = 0; slipT = 0; insightT = 0; vanishT = 0;   // element specials (not passives)
+  histCommentT = 22;
+  const co = document.getElementById('coachOverlay'); if (co) co.style.display = 'none';
+}
+
+let aiming = false;                  // holding X = aiming with the mouse
+let autoPlay = false;                // T = let the AI fly YOUR dragon too (idle mode)
+let introT = 0;                      // pre-match team-intro banner timer
+let goT = 0;                         // "GO!" flash after the 3-2-1 countdown
+let coaching = false;                // B = open the coaching menu (freezes play)
+let collideCd = 0;                   // cooldown between mid-air collisions
+let slowmoT = 0, slowmoCd = 0;       // slow-motion "interactive moment"
+let replayMode = false, replayBuf = [], replayIdx = 0, replaySave = null;   // instant replay
+let flyT = 0;                        // pre-match flyover timer
+let mouseX = 0, mouseY = 0;
+
+// ---- In-match COACHING: freeze the match and pick a tactic (Vol II) ----
+const TACTICS = [
+  { e: '⚡', n: 'All-Out Attack', d: 'Fly faster & press harder — but weaker defense', fn: () => { redSpeedMult = Math.min(2.1, redSpeedMult + 0.15); stealBonus += 0.1; redBlockMult = Math.max(0.6, redBlockMult - 0.2); } },
+  { e: '🛡️', n: 'Lock the Defense', d: 'Your guards block a bigger area (slower attack)', fn: () => { redBlockMult += 0.6; redSpeedMult = Math.max(0.9, redSpeedMult - 0.05); } },
+  { e: '🎯', n: 'Focus Passing', d: 'Passes fly stronger & straighter', fn: () => { passMult += 0.3; } },
+  { e: '😤', n: 'High Press', d: 'Steal the ball much more easily', fn: () => { stealBonus += 0.2; } },
+  { e: '🔷', n: 'Diamond', d: 'Balanced — 3 guards, even shape', fn: () => setFormation('Diamond') },
+  { e: '🔺', n: 'Pyramid', d: 'Vertical attack — push high', fn: () => setFormation('Pyramid') },
+  { e: '🌙', n: 'Crescent', d: 'Wide passing — spread out', fn: () => setFormation('Crescent') },
+  { e: '🗡️', n: 'Spear', d: 'Aggressive scoring — only 2 guards', fn: () => setFormation('Spear') },
+  { e: '🛡️', n: 'Shield', d: 'Extreme defense — 4 guards packed', fn: () => setFormation('Shield') },
+  { e: '🌀', n: 'Spiral', d: 'Constant rotation — hard to read', fn: () => setFormation('Spiral') },
+  { e: '🔁', n: 'Substitution', d: 'Fresh legs — rest a tired rider, small speed boost', fn: () => doSub() },
+  { e: '⏸️', n: 'Timeout (rest)', d: 'Catch your breath — momentum swings your way', fn: () => { addMom('red', 25); } }
+];
+// ===== Volume V Ch5: the 3D FORMATION ENGINE — each has guard count + 3D shape =====
+const FORMATIONS = {
+  Diamond:  { guards: 3, spreadX: 1.0, alt: 0.5, depth: 1.0, rotate: 0, desc: 'Balanced' },
+  Pyramid:  { guards: 3, spreadX: 0.7, alt: 0.85, depth: 1.2, rotate: 0, desc: 'Strong vertical attack' },
+  Crescent: { guards: 3, spreadX: 1.5, alt: 0.5, depth: 0.9, rotate: 0, desc: 'Wide passing' },
+  Spear:    { guards: 2, spreadX: 0.6, alt: 0.4, depth: 1.4, rotate: 0, desc: 'Aggressive scoring' },
+  Shield:   { guards: 4, spreadX: 1.15, alt: 0.4, depth: 0.55, rotate: 0, desc: 'Extreme defense' },
+  Spiral:   { guards: 3, spreadX: 1.0, alt: 0.6, depth: 1.0, rotate: 1, desc: 'Constant rotation' }
+};
+let redForm = FORMATIONS.Diamond, enemyForm = FORMATIONS.Shield;
+function assignGuards(team, f) {
+  const list = bots.filter(b => b.team === team);
+  const rings = RINGS.filter(r => r.team === team);
+  list.forEach((b, i) => {
+    if (i < f.guards) { b.role = 'guard'; b.guardRing = rings[i % rings.length]; }
+    else { b.role = 'attacker'; b.guardRing = null; }
+  });
+}
+// Set YOUR formation (accepts a name, or an old numeric save for back-compat).
+function setFormation(name) {
+  if (typeof name === 'number') name = name === 2 ? 'Spear' : name === 4 ? 'Shield' : 'Diamond';
+  const f = FORMATIONS[name] || FORMATIONS.Diamond;
+  redForm = f; assignGuards('red', f);
+  if (club) club.formation = name;
+}
+function setEnemyFormation(name) {
+  const f = FORMATIONS[name] || FORMATIONS.Diamond;
+  enemyForm = f; enemyFormName = name; assignGuards('blue', f);
+}
+// Substitute a tired rider: rest the squad + a fresh-legs boost.
+function doSub() {
+  if (club && club.roster) {
+    let wi = 0, wf = -1; club.roster.forEach((r, i) => { if ((r.fatigue || 0) > wf) { wf = r.fatigue; wi = i; } });
+    if (club.roster[wi]) club.roster[wi].fatigue = Math.max(0, (club.roster[wi].fatigue || 0) - 40);
+  }
+  redSpeedMult = Math.min(2.1, redSpeedMult + 0.06); addMom('red', 10);
+}
+function openCoach() {
+  if (!playing || coaching || replayMode || introT > 0) return;
+  coaching = true;
+  const box = document.getElementById('coachBtns'); box.innerHTML = '';
+  TACTICS.forEach(t => {
+    const b = document.createElement('button');
+    b.style.cssText = 'font-size:16px;font-weight:bold;color:#05060f;cursor:pointer;background:linear-gradient(180deg,#ffe066,#ffb020);border:none;border-radius:14px;padding:12px 16px;text-align:left;';
+    b.innerHTML = t.e + ' <b>' + t.n + '</b><br><span style="font-size:12px;color:#4a3a00;font-weight:normal">' + t.d + '</span>';
+    b.onclick = () => chooseTactic(t);
+    box.appendChild(b);
+  });
+  document.getElementById('coachOverlay').style.display = 'flex';
+}
+function chooseTactic(t) {
+  t.fn(); coaching = false;
+  document.getElementById('coachOverlay').style.display = 'none';
+  say('🧠 Coach: ' + t.n + '!');
+}
+
+// ============ ELEMENTAL POWERS (PLAN-elemental-powers.md) ============
+const ELEMENT_INFO = {
+  '🔥': { name: 'Fire',   beats: ['🌍', '❄'], pass: { shot: 0.15 }, special: 'Fire Shot' },
+  '🌊': { name: 'Water',  beats: ['🔥'],       pass: { passm: 0.12 }, special: 'Slipstream' },
+  '🌪': { name: 'Wind',   beats: ['🌊'],       pass: { speed: 0.08 }, special: 'Gust' },
+  '⚡': { name: 'Storm',  beats: ['🌪'],       pass: { boost: 0.5 },  special: 'Thunder Dash' },
+  '❄': { name: 'Ice',    beats: ['🌊', '🌪'], pass: { steal: 0.08 }, special: 'Freeze' },
+  '🌍': { name: 'Earth',  beats: ['⚡'],       pass: { block: 0.4 },  special: 'Stone Wall' },
+  '🌌': { name: 'Cosmic', beats: [],           pass: { speed: 0.03, block: 0.15, passm: 0.08 }, special: 'Insight' },
+  '☀': { name: 'Solar',  beats: [],           pass: { speed: 0.04 }, special: 'Flare' },
+  '🌑': { name: 'Shadow', beats: [],           pass: { steal: 0.08 }, special: 'Vanish' }
+};
+// Per-dragon element speed feel: Wind/Storm zippy, Earth/Ice heavier.
+const ELEM_SPD = { '🌪': 1.12, '💨': 1.12, '⚡': 1.08, '☀': 1.05, '🌑': 1.04, '🔥': 1.0, '🌊': 1.0, '🌌': 1.0, '❄': 0.97, '🌍': 0.9 };
+let teamElem = '🔥', enemyElem = '🌊', energy = 0;
+let shotPowerMult = 1, boostRegenMult = 1, enemyShotSpreadMult = 1;
+let fireShotArmed = false, gustT = 0, stoneWallT = 0, slipT = 0, insightT = 0, vanishT = 0;
+function elemName(e) { return (ELEMENT_INFO[e] || {}).name || 'Fire'; }
+// Fire your team element's SPECIAL move.
+function fireSpecial() {
+  const info = ELEMENT_INFO[teamElem]; if (!info) return;
+  switch (teamElem) {
+    case '🔥': fireShotArmed = true; say('🔥 FIRE SHOT armed — shoot now!'); break;
+    case '🌪': gustT = 1.6; player.boost = 1; say('🌪 GUST — super speed!'); break;
+    case '🌍': stoneWallT = 2.2; say('🌍 STONE WALL — your goal is sealed!'); break;
+    case '🌊': slipT = 3; say('🌊 SLIPSTREAM — razor-sharp turns!'); break;
+    case '⚡': { const f = { x: Math.sin(player.yaw), z: Math.cos(player.yaw) }; player.x += f.x * 650; player.z += f.z * 650; player.boost = 1; say('⚡ THUNDER DASH!'); break; }
+    case '❄': { let en = null, bd = 1e9; for (const b of bots) if (b.team === 'blue') { const dd = Math.hypot(b.x - player.x, b.y - player.y, b.z - player.z); if (dd < bd) { bd = dd; en = b; } } if (en) en.stun = 1.6; say('❄ FREEZE — enemy frozen!'); break; }
+    case '☀': addMom('red', 45); say('☀ FLARE — momentum surge!'); break;
+    case '🌌': insightT = 4; addMom('red', 15); say('🌌 INSIGHT — perfect vision!'); break;
+    case '🌑': vanishT = 1.6; foulProtect = Math.max(foulProtect, 1.6); say('🌑 VANISH — untouchable!'); break;
+  }
+  energy = 0;
+}
+
+// Send the ball flying in a 3D direction from its current spot.
+function launch(vx, vy, vz, team) {
+  ball.vx = vx; ball.vy = vy; ball.vz = vz;
+  ballOwner = null; lastTouch = team; shotTimer = 0; ball.unblockable = false;
+}
+// Turn a screen point (the crosshair) into a 3D direction, and fire the ball that way.
+function fireAt(mx, my) {
+  const yaw = CAM_YAW, pitch = CAM_PITCH;
+  // 1) camera-space ray through the crosshair, rotated into WORLD direction (matches project()/camForward())
+  const rxd = (mx - W / 2) / F, ryd = (H / 2 - my) / F;
+  const dyr = ryd * Math.cos(pitch) - Math.sin(pitch);
+  const rz = ryd * Math.sin(pitch) + Math.cos(pitch);
+  const dxr = rxd * Math.cos(yaw) - rz * Math.sin(yaw);
+  const dzr = rxd * Math.sin(yaw) + rz * Math.cos(yaw);
+  // 2) find the WORLD POINT the crosshair points at (where the ray reaches the enemy goal depth)
+  const goalZ = ARENA.z - 250;
+  let tx, ty, tz;
+  if (dzr > 0.05) { const t = (goalZ - cam.z) / dzr; tx = cam.x + dxr * t; ty = cam.y + dyr * t; tz = cam.z + dzr * t; }
+  else { tx = cam.x + dxr * 5000; ty = cam.y + dyr * 5000; tz = cam.z + dzr * 5000; }
+  // 3) fire the ball FROM the ball TOWARD that aimed point (this is what "aim" should do)
+  const ax = tx - ball.x, ay = ty - ball.y, az = tz - ball.z, len = Math.hypot(ax, ay, az) || 1;
+  let sp = 5200 * shotPowerMult;   // Fire passive = harder shots
+  const armed = fireShotArmed; if (armed) { sp *= 1.5; fireShotArmed = false; say('🔥 FIRE SHOT!'); }
+  launch(ax / len * sp, ay / len * sp + sp * 0.05, az / len * sp, 'red');   // small upward arc vs gravity
+  ball.unblockable = armed;   // Fire Shot can't be blocked
+  stats.red.shots++;
+}
+function releaseShoot() {
+  if (aiming && ballOwner === player && playing) fireAt(mouseX, mouseY);
+  aiming = false;
+}
+// PASS to your nearest teammate (another red dragon).
+function doPass() {
+  if (ballOwner !== player) return;
+  const mates = allRed().filter(d => d !== player);
+  let best = null, bd = Infinity;
+  for (const m of mates) { const d = Math.hypot(m.x - player.x, m.y - player.y, m.z - player.z); if (d < bd) { bd = d; best = m; } }
+  if (!best) return;
+  const dx = best.x - ball.x, dy = best.y - ball.y, dz = best.z - ball.z, L = Math.hypot(dx, dy, dz) || 1;
+  // PASSING STYLES (Rulebook): the pass changes with distance — plus a rare flashy No-Look.
+  let style, sp, lift = 0;
+  if (Math.random() < 0.18) { style = 'No-Look pass! 😎'; sp = 2500 * passMult; addMom('red', 6); }
+  else if (bd < 600) { style = 'Chest pass'; sp = 2900 * passMult; }
+  else if (bd < 1400) { style = 'Lob pass'; sp = 2300 * passMult; lift = 700; }   // arcs up and over
+  else { style = 'Power pass!'; sp = 3500 * passMult; }
+  // GUARANTEE the pass carries at least 9/10 of the way to the teammate (drag = 0.992 → factor ~2.0s)
+  sp = Math.max(sp, bd / 1.8);
+  if (club && club.rec) club.rec.longestPass = Math.max(club.rec.longestPass, Math.round(bd));   // Vol VI record
+  launch(dx / L * sp, dy / L * sp + lift, dz / L * sp, 'red');
+  say('🎙️ ' + style);
+}
+// STEAL from a nearby enemy who has the ball.
+function doSteal() {
+  if (!ballOwner || ballOwner === player || ballOwner.team === 'red') return;
+  if (Math.hypot(ballOwner.x - player.x, ballOwner.y - player.y, ballOwner.z - player.z) < 180) {
+    if (foulProtect <= 0 && Math.random() < 0.6 + stealBonus) {
+      stats.red.steals++; say('🎙️ Great steal!'); addMom('red', 15);
+      ballOwner = player; lastTouch = 'red';
+    } else if (Math.random() < 0.25) maybeFoul(player, ballOwner);
+  }
+}
+// TACKLE — charge an enemy carrier to knock the ball LOOSE (riskier than a steal).
+function doTackle() {
+  if (tackleCd > 0 || !ballOwner || ballOwner === player || ballOwner.team === 'red') return;
+  tackleCd = 1;
+  const v = ballOwner, d = Math.hypot(v.x - player.x, v.y - player.y, v.z - player.z);
+  if (d > 260) return;
+  const power = 0.55 + (player.speed > 900 ? 0.2 : 0) + stealBonus - (v.resist ? 0.1 : 0);
+  if (Math.random() < power) {
+    // knock it loose + stun the carrier + recoil apart
+    ball.vx = (Math.random() - 0.5) * 800; ball.vy = 400; ball.vz = (Math.random() - 0.5) * 800;
+    ballOwner = null; lastTouch = 'red'; shotTimer = 0;
+    v.stun = 0.6;
+    const nx = (v.x - player.x) / (d || 1), ny = (v.y - player.y) / (d || 1), nz = (v.z - player.z) / (d || 1);
+    v.x += nx * 60; v.y += ny * 60; v.z += nz * 60; player.x -= nx * 40; player.z -= nz * 40;
+    stats.red.tackles++; say('🎙️ Big TACKLE — ball knocked loose!'); addMom('red', 18); startReplay();   // 📺 replay the big hit
+  } else {
+    maybeFoul(player, v);   // a mistimed tackle is a foul!
+  }
+}
+function freePossession(victim) { ballOwner = victim; foulProtect = 1.6; ball.vx = ball.vy = ball.vz = 0; }
+function penaltyFor(team) {
+  const gx = 0, gz = team === 'red' ? ARENA.z - 400 : 400;
+  ball.x = gx; ball.y = ARENA.y * 0.4; ball.z = gz; ball.vx = ball.vy = ball.vz = 0;
+  const list = [you, ...bots].filter(d => d.team === team);
+  let best = list[0], bd = 1e9; for (const d of list) { const dd = Math.hypot(d.x - ball.x, d.y - ball.y, d.z - ball.z); if (dd < bd) { bd = dd; best = d; } }
+  ballOwner = best; foulProtect = 2; lastTouch = team;
+}
+function maybeFoul(fouler, victim) {
+  if (!fouler || !victim || foulCooldown > 0) return;
+  foulCooldown = 3; teamFouls[fouler.team] = (teamFouls[fouler.team] || 0) + 1; stats[fouler.team].fouls++;
+  const nm = FOUL_NAMES[Math.floor(Math.random() * FOUL_NAMES.length)], roll = Math.random();
+  if (teamFouls[fouler.team] >= 4 && roll < 0.4 && fouler !== player && fouler !== you) {
+    fouler.benchT = 12; say('🚨 ' + nm + '! ' + (fouler.team === 'red' ? 'Your dragon' : 'Enemy') + ' sent to the SIN-BIN!');
+    addMom(victim.team, 20); freePossession(victim);
+  } else if (roll < 0.22) {
+    say('🚩 PENALTY! ' + nm + '!'); addMom(victim.team, 24); penaltyFor(victim.team);
+  } else {
+    say('🚩 ' + nm + ' — free possession!'); addMom(victim.team, 10); freePossession(victim);
+  }
+}
+
+const keys = {};
+window.addEventListener('keydown', e => {
+  keys[e.code] = true;
+  if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code)) e.preventDefault();
+  if (e.code === 'KeyX') aiming = true;           // hold X to AIM
+  if (e.code === 'KeyZ' && !e.repeat) doPass();    // Z = pass
+  if (e.code === 'KeyC' && !e.repeat) doSteal();   // C = steal
+  if (e.code === 'KeyF' && !e.repeat) doTackle();  // F = tackle (knock ball loose)
+  if (e.code === 'Space' && !e.repeat) switchPlayer();  // SPACE = switch player
+  if (e.code === 'KeyT' && !e.repeat) { autoPlay = !autoPlay; say(autoPlay ? '🤖 AUTO-PLAY on — team plays itself' : '🎮 Manual control'); }
+  if (e.code === 'KeyB' && !e.repeat) openCoach();   // B = coach (freeze + pick a tactic)
+  if (e.code === 'KeyG' && !e.repeat && playing && !coaching && !replayMode && introT <= 0 && energy >= 100) fireSpecial();   // G = element special
+});
+window.addEventListener('keyup', e => {
+  keys[e.code] = false;
+  if (e.code === 'KeyX') releaseShoot();           // let go of X to FIRE
+});
+window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+window.addEventListener('blur', () => { for (const k in keys) keys[k] = false; aiming = false; });
+
+// =========================================================
+//  CLUB (create a club, hub, play a match to 15, earn rewards)
+// =========================================================
+let playing = false;
+const WIN_SCORE = 15;
+let oppName = 'Storm Wings';   // the team you're facing this match
+let club = null;
+try { const s = localStorage.getItem('dbf3dClub'); if (s) club = JSON.parse(s); } catch (e) {}
+function saveClub() { try { localStorage.setItem('dbf3dClub', JSON.stringify(club)); } catch (e) {} }
+
+const DIFFS = [
+  { key: 'Easy',   money: 1200, rep: 250, mult: 1.5, desc: 'Big budget · earn gold & rep FAST 😌' },
+  { key: 'Normal', money: 500,  rep: 50,  mult: 1.0, desc: 'A balanced start ⚖️' },
+  { key: 'Hard',   money: 200,  rep: 15,  mult: 0.6, desc: 'Low budget · earn SLOWLY 💪' }
+];
+const MASCOTS = ['🐉','🔥','🌪','⚡','❄','🌑','🦅','🐲'];
+const PHILS = [
+  { key: 'Balanced Flight', note: 'Well-rounded — no weakness ⚖️' },
+  { key: 'Fast Break', note: 'Your team flies EXTRA fast 💨' },
+  { key: 'Sky Fortress', note: 'Your goal is much harder to score on 🛡️' },
+  { key: 'Precision Passing', note: 'Passes fly faster & truer 🎯' },
+  { key: 'Aggressive Pressure', note: 'You steal the ball more easily ✋' },
+  { key: 'X System', note: 'A little of everything 🌌' }
+];
+// Volume VI Ch24: historic eras — when your story begins.
+const ERAS = [
+  { key: 'Classic', year: 50, econ: 0.85, note: '🎩 The old days — traditional, smaller money' },
+  { key: 'Modern', year: 120, econ: 1.0, note: '🌆 Today\'s game — balanced (default)' },
+  { key: 'Future', year: 220, econ: 1.3, note: '🚀 Far future — huge money & advanced dragons' },
+  { key: 'Procedural', year: 0, econ: 1.0, note: '🎲 A fresh, randomly-generated history' }
+];
+let chosenMascot = '🐉', chosenDiff = 'Normal', chosenPhil = 'Balanced Flight', chosenEra = 'Modern';
+function repTier(r) { return r <= 100 ? 'Unknown Club' : r <= 250 ? 'Local Club' : r <= 500 ? 'Regional Power' : r <= 700 ? 'National Contender' : r <= 900 ? 'International Giant' : 'Legendary Dynasty'; }
+
+const SCREENS = ['title', 'createScreen', 'hubScreen', 'resultScreen', 'panelScreen'];
+function hideScreens() { SCREENS.forEach(id => { const e = document.getElementById(id); if (e) e.style.display = 'none'; }); }
+function showScreen(id) { hideScreens(); const e = document.getElementById(id); if (e) e.style.display = 'flex'; }
+
+const mascotRow = document.getElementById('mascotRow');
+MASCOTS.forEach(m => {
+  const b = document.createElement('button'); b.textContent = m;
+  if (m === chosenMascot) b.classList.add('sel');
+  b.onclick = () => { chosenMascot = m; [...mascotRow.children].forEach(c => c.classList.remove('sel')); b.classList.add('sel'); };
+  mascotRow.appendChild(b);
+});
+const diffRow = document.getElementById('diffRow'), diffDesc = document.getElementById('diffDesc');
+DIFFS.forEach(d => {
+  const b = document.createElement('button'); b.textContent = d.key;
+  if (d.key === chosenDiff) { b.classList.add('sel'); diffDesc.textContent = d.desc; }
+  b.onclick = () => { chosenDiff = d.key; [...diffRow.children].forEach(c => c.classList.remove('sel')); b.classList.add('sel'); diffDesc.textContent = d.desc; };
+  diffRow.appendChild(b);
+});
+const philRow = document.getElementById('philRow'), philDesc = document.getElementById('philDesc');
+PHILS.forEach(ph => {
+  const b = document.createElement('button'); b.textContent = ph.key;
+  if (ph.key === chosenPhil) { b.classList.add('sel'); philDesc.textContent = ph.note; }
+  b.onclick = () => { chosenPhil = ph.key; [...philRow.children].forEach(c => c.classList.remove('sel')); b.classList.add('sel'); philDesc.textContent = ph.note; };
+  philRow.appendChild(b);
+});
+const eraRow = document.getElementById('eraRow'), eraDesc = document.getElementById('eraDesc');
+ERAS.forEach(er => {
+  const b = document.createElement('button'); b.textContent = er.key;
+  if (er.key === chosenEra) { b.classList.add('sel'); eraDesc.textContent = er.note; }
+  b.onclick = () => { chosenEra = er.key; [...eraRow.children].forEach(c => c.classList.remove('sel')); b.classList.add('sel'); eraDesc.textContent = er.note; };
+  eraRow.appendChild(b);
+});
+
+function enterFromTitle() {
+  if (club && !club.roster) initClubExtras(club);   // upgrade an older saved club
+  if (club && !club.nextOpponent) pickNextOpp(club);
+  if (club && club.bond === undefined) { club.bond = 30; club.chemistry = 30; club.fans = 500; club.sponsor = pickSponsor(); club.sponsorProg = 0; }
+  if (club && club.tourneyUnlocked === undefined) { club.tourneyUnlocked = false; club.tourneyRoundsLeft = 0; club.regSinceLock = 0; }
+  // Give older saved riders the new Volume IV fields (attributes, potential, etc.)
+  if (club && club.roster && club.roster[0] && !club.roster[0].attrs) {
+    club.roster.forEach(r => { r.attrs = genAttrs(r.base || 70); r.potential = Math.min(99, (r.base || 70) + ri(4, 28)); r.personality = PERSONALITIES[ri(0, PERSONALITIES.length - 1)]; r.morale = r.morale || ri(60, 85); r.injurySev = r.injurySev || ''; });
+  }
+  // Per-rider Bond + partner dragon for older saves; give old dragons ratings/weight.
+  if (club && club.roster && club.roster[0] && club.roster[0].bond === undefined) {
+    club.roster.forEach((r, i) => { r.bond = ri(12, 30); if (club.dragons && club.dragons[i]) r.dragonIdx = i; });
+  }
+  if (club && club.dragons) club.dragons.forEach(d => { if (!d.ratings) { d.ratings = genDragonRatings(60 + (d.bonus || 1) * 5); d.weight = d.weight || 1; d.gender = d.gender || DGENDER[ri(0, 1)]; d.potential = d.potential || Math.min(99, dragonOvr(d) + ri(4, 20)); if (d.bond === undefined) d.bond = 0; } });
+  // Newer profile fields for older saves.
+  if (club && club.roster && club.roster[0] && !club.roster[0].nation) {
+    club.roster.forEach(r => { r.nation = NATIONS[ri(0, NATIONS.length - 1)]; r.nick = Math.random() < 0.4 ? NICKS[ri(0, NICKS.length - 1)] : ''; r.height = ri(165, 198); r.wgt = ri(60, 92); r.hand = HANDS[ri(0, 1)]; r.side = SIDES[ri(0, 2)]; r.seasons = r.seasons || 0; });
+  }
+  if (club && club.dragons) club.dragons.forEach(d => { if (!d.wingspan) { d.wingspan = (6 + Math.random() * 9).toFixed(1); d.horns = DHORNS[ri(0, DHORNS.length - 1)]; d.tail = DTAILS[ri(0, DTAILS.length - 1)]; d.colName = DCOLNAME[ri(0, DCOLNAME.length - 1)]; d.bloodline = DBLOOD[ri(0, DBLOOD.length - 1)]; } });
+  if (club && !club.staffPeople) { club.staffPeople = {}; STAFF.forEach(s => { club.staffPeople[s.key] = { name: rName(), personality: PERSONALITIES[ri(0, PERSONALITIES.length - 1)] }; }); }
+  if (club && club.fanLoyal === undefined) { club.fanLoyal = 50; club.fanExcite = 50; club.fanExpect = 40; }
+  if (club && !club.finance) club.finance = { earnedTickets: 0, earnedMerch: 0, earnedSponsor: 0, earnedPrize: 0, spentWages: 0, spentUpkeep: 0 };
+  if (club && !club.stories) club.stories = [];
+  if (club && !club.scout) club.scout = {};
+  if (club && !club.rival) club.rival = {};
+  if (club && club.roster) club.roster.forEach(r => { if (!r.tend) r.tend = RIDER_TEND[ri(0, RIDER_TEND.length - 1)]; });
+  if (club && club.dragons) club.dragons.forEach(d => { if (!d.tend) d.tend = DRAGON_TEND[ri(0, DRAGON_TEND.length - 1)]; });
+  if (club && !club.trend) refreshTrend(club);
+  if (club && !club.seasonAwards) club.seasonAwards = [];
+  if (club && !club.year) { club.foundedYear = 100 + ri(0, 30); club.year = club.foundedYear; }
+  if (club && !club.seasonWL) club.seasonWL = { w: 0, l: 0 };
+  if (club && !club.rec) club.rec = { fastestFlight: 0, highestJump: 0, longestPass: 0 };
+  if (club && !club.timeline) club.timeline = [];
+  if (club && !club.awardsHistory) club.awardsHistory = [];
+  if (club && club.lastPhase === undefined) { club.lastPhase = -1; club.ruleLog = []; club.expansion = []; }
+  if (club && club.fanCultureIdx === undefined) club.fanCultureIdx = ri(0, FAN_CULTURES.length - 1);
+  if (club && club.roster) club.roster.forEach(r => { if (!r.career) r.career = ['⭐ Rookie debut']; });
+  if (club) showHub(); else showCreate();
+}
+function showCreate() {
+  if (club) {
+    document.getElementById('inName').value = club.name;
+    document.getElementById('inColor').value = club.color;
+    chosenMascot = club.mascot; chosenDiff = club.difficulty; chosenPhil = club.philosophy || 'Balanced Flight';
+    [...mascotRow.children].forEach(c => c.classList.toggle('sel', c.textContent === chosenMascot));
+    [...diffRow.children].forEach(c => c.classList.toggle('sel', c.textContent === chosenDiff));
+    [...philRow.children].forEach(c => c.classList.toggle('sel', c.textContent === chosenPhil));
+    const ph = PHILS.find(x => x.key === chosenPhil); if (ph) philDesc.textContent = ph.note;
+    chosenEra = club.era || 'Modern';
+    [...eraRow.children].forEach(c => c.classList.toggle('sel', c.textContent === chosenEra));
+    const er = ERAS.find(x => x.key === chosenEra); if (er) eraDesc.textContent = er.note;
+  }
+  showScreen('createScreen');
+}
+function createClub() {
+  const name = document.getElementById('inName').value.trim() || 'Skyfire Dragons';
+  const color = document.getElementById('inColor').value;
+  const d = DIFFS.find(x => x.key === chosenDiff) || DIFFS[1];
+  if (!club) {
+    club = { money: d.money, rep: d.rep, difficulty: d.key, wins: 0, losses: 0, matchNum: 1 };
+    club.name = name; club.color = color; club.mascot = chosenMascot; club.philosophy = chosenPhil;
+    initClubExtras(club);   // roster, facilities, staff, league, etc.
+    // Volume VI Ch24: apply the chosen ERA (start year + economy base)
+    const era = ERAS.find(e => e.key === chosenEra) || ERAS[1];
+    club.era = era.key;
+    club.foundedYear = era.year > 0 ? era.year : 60 + ri(0, 180);   // Procedural = a random history
+    club.year = club.foundedYear;
+    club.eraEcon = era.econ;
+    if (era.key === 'Future') { club.dragons.forEach(dg => { if (dg.ratings) for (const k in dg.ratings) dg.ratings[k] = Math.min(99, dg.ratings[k] + 4); }); }   // advanced dragons
+  } else {
+    if (chosenDiff !== club.difficulty) { club.money = d.money; club.rep = d.rep; club.difficulty = d.key; }
+    club.name = name; club.color = color; club.mascot = chosenMascot; club.philosophy = chosenPhil;
+  }
+  saveClub(); showHub();
+}
+function showHub() {
+  document.getElementById('hubCrest').textContent = club.mascot;
+  document.getElementById('hubName').textContent = club.name;
+  document.getElementById('hubName').style.color = club.color;
+  document.getElementById('hubMoney').textContent = '💰 ' + club.money;
+  document.getElementById('hubRep').textContent = '⭐ ' + club.rep;
+  document.getElementById('hubTier').textContent = repTier(club.rep);
+  document.getElementById('hubRecord').textContent = club.wins + '–' + club.losses;
+  const DAY_ACT = ['🛌 Recovery', '🏋️ Training', '🔭 Scouting', '📋 Tactics & Bond', '📣 Media Day', '🏟️ Match Day!'];
+  const _ph = PHASES[seasonPhase(club)];
+  document.getElementById('hubMatch').textContent = 'Year ' + (club.year || club.foundedYear || 100) + ' · ' + _ph.e + ' ' + _ph.n + ' · ' + DAY_ACT[Math.min(5, (club.day || 1) - 1)];
+  document.getElementById('hubDiff').textContent = club.difficulty + ' Mode';
+  // Tournament button: locked until 10 matches, then 4 rounds, then locks again.
+  const tb = document.getElementById('tourneyBtn');
+  if (club.tourneyUnlocked && club.tourneyRoundsLeft > 0) {
+    tb.disabled = false; tb.style.opacity = '1'; tb.style.cursor = 'pointer';
+    tb.textContent = '🏆 TOURNAMENT (' + club.tourneyRoundsLeft + ' left)';
+  } else {
+    tb.disabled = true; tb.style.opacity = '0.5'; tb.style.cursor = 'not-allowed';
+    tb.textContent = '🔒 Tournament (' + Math.max(0, 10 - (club.regSinceLock || 0)) + ' matches)';
+  }
+  const injured = club.roster.filter(r => r.injuryMatches > 0).length;
+  const fit = Math.round(100 - club.roster.reduce((s, r) => s + (r.fatigue || 0), 0) / club.roster.length);
+  const spn = club.sponsor;
+  document.getElementById('hubExtra').innerHTML =
+    '<span style="font-size:16px;color:#fff">🆚 Next match vs <b style="color:#8ec5ff">' + (club.nextOpponent || 'Storm Wings') + '</b> <i style="color:#ffb0b0;font-size:12px">(' + styleKey(club.nextOpponent || 'Storm Wings') + ')</i>' + (isRivalTeam(club.nextOpponent || '') ? ' <span style="color:#ff7a7a">⚔️ RIVAL</span>' : '') + ' <span style="color:#9fb4d8;font-size:11px">🔭 ' + scoutPlays(club.nextOpponent || '') + 'x</span></span>' +
+    '<br>🪜 ' + leagueName(club.division) + ' (Div ' + club.division + ') · 🧩 ' + (club.philosophy || 'Balanced Flight') +
+    '<br>🎓 Talent +' + (club.talent || 0) + ' · ❤️ Bond ' + (club.bond || 0) + ' <i>(' + bondTier(club.bond || 0) + ')</i> · 🤝 Chem ' + (club.chemistry || 0) + ' · 👥 Fans ' + (club.fans || 0) +
+    '<br>🔋 Fitness ' + fit + '% · ⛑️ Injured ' + injured + ' · 🏗️ Facilities ' + totalFac() + ' · 🏆 ' + club.trophies +
+    (spn ? '<br>🤝 Sponsor ' + spn.em + ' <b>' + spn.name + '</b>: win ' + spn.goal + ' for 💰' + spn.reward + ' (' + (club.sponsorProg || 0) + '/' + spn.goal + ')' : '') +
+    (club.stories && club.stories.length ? '<br><span style="color:#8fd6ff">' + club.stories[club.stories.length - 1] + '</span>' : '') +
+    (club.trend ? '<br><span style="color:#c9b8ff">📈 League trend: ' + club.trend + '</span>' : '');
+  showScreen('hubScreen');
+}
+// Weekly calendar — do the CURRENT day's activity, then advance a day (Vol III).
+function doDayActivity() {
+  const day = club.day || 1;
+  let msg = '';
+  if (day === 1) {        // 🛌 Recovery
+    club.roster.forEach(r => r.fatigue = Math.max(0, (r.fatigue || 0) - ri(15, 30)));
+    msg = '🛌 Recovery day — your riders rested and lost fatigue!';
+  } else if (day === 2) { // 🏋️ Training
+    club.roster.forEach(r => { if (r.attrs) { const gs = Object.keys(ATTRS), g = gs[ri(0, gs.length - 1)], a = ATTRS[g][ri(0, ATTRS[g].length - 1)]; r.attrs[a] = Math.min(99, r.attrs[a] + 1); r.base = Math.max(r.base, attrAvg(r.attrs)); } });
+    club.chemistry = Math.min(100, (club.chemistry || 0) + 2);
+    msg = '🏋️ Training day — the whole squad improved a little!';
+  } else if (day === 3) { // 🔭 Scouting
+    club.prospects = [genProspect(), genProspect(), genProspect()];
+    club.rep = Math.min(1000, club.rep + 3);
+    msg = '🔭 Scouting day — fresh youth prospects found! (see Youth)';
+  } else if (day === 4) { // 📋 Tactics & Bond
+    club.bond = Math.min(100, (club.bond || 0) + 3); club.chemistry = Math.min(100, (club.chemistry || 0) + 3);
+    club.roster.forEach(r => r.bond = Math.min(100, (r.bond || 0) + 1));
+    msg = '📋 Tactics & bonding — team Bond and Chemistry rose!';
+  } else if (day === 5) { // 📣 Media
+    club.fans += ri(30, 80); club.fanExcite = Math.min(100, (club.fanExcite || 50) + 5);
+    msg = '📣 Media day — fans are more excited and numerous!';
+  } else {                // 🏟️ Match Day
+    alert('🏟️ It\'s MATCH DAY! Press ▶ PLAY MATCH to play.'); return;
+  }
+  club.day = day + 1; if (club.day > 6) { club.day = 1; club.week = (club.week || 1) + 1; }
+  saveClub(); alert(msg); showHub();
+}
+// Match clock + quarters.
+const QUARTERS = 4, QLEN = 75;   // 4 quarters of 75 seconds
+let quarter = 1, clock = QLEN, quarterLabel = 'Q1', suddenDeath = false;
+// Team power set by facilities/staff/talent + your PHILOSOPHY.
+let redSpeedMult = 1, redBlockMult = 1, passMult = 1, stealBonus = 0;
+
+// give the ball to the nearest dragon of a team (used when the conceding team restarts)
+function giveBallTo(team) {
+  const list = [you, ...bots].filter(d => d.team === team);
+  let best = list[0], bd = 1e9;
+  for (const d of list) { const dd = Math.hypot(d.x, d.y - ARENA.y / 2, d.z - ARENA.z / 2); if (dd < bd) { bd = dd; best = d; } }
+  ballOwner = best || you; lastTouch = team;
+}
+function kickoff(isFirst) {   // reposition everyone + a fresh ball at center (scores kept)
+  you.x = 0; you.y = 1200; you.z = 1500; you.yaw = 0; you.speed = 0; you.boost = 1;
+  for (const b of bots) { b.x = (Math.random() - 0.5) * ARENA.x * 1.4; b.y = 50 + Math.random() * (ARENA.y * 0.7); b.z = 80 + Math.random() * (ARENA.z - 160); b.speed = 0; b.pressT = 0; }
+  ball.x = 0; ball.y = ARENA.y / 2; ball.z = ARENA.z / 2; ball.vx = ball.vy = ball.vz = 0;   // dead centre, centre height
+  player = you;
+  if (isFirst || !lastConceded) { ballOwner = null; lastTouch = 'red'; }   // Q1: a loose ball rests at centre — contest it!
+  else giveBallTo(lastConceded);                                          // other quarters: the team that conceded last restarts
+}
+function resetMatch() {
+  teamScore.you = 0; teamScore.opp = 0;
+  quarter = 1; clock = QLEN; quarterLabel = 'Q1'; suddenDeath = false;
+  // team power from facilities/staff/talent (minus injured riders) + bond & chemistry
+  const injured = club ? club.roster.filter(r => r.injuryMatches > 0).length : 0;
+  const effTalent = club ? Math.max(0, (club.talent || 0) - injured * 2) : 0;
+  const avgBond = club && club.roster.length ? club.roster.reduce((s, r) => s + (r.bond || 0), 0) / club.roster.length : 0;
+  redSpeedMult = 1 + (club ? getFac('flightTunnel') * 0.02 + effTalent * 0.008 + getStaff('headCoach') * 0.03
+                            + (club.chemistry || 0) / 600 + avgBond / 900 : 0);
+  redBlockMult = 1; passMult = 1; stealBonus = 0;
+  // your PHILOSOPHY
+  const phil = club ? club.philosophy : 'Balanced Flight';
+  if (phil === 'Fast Break') redSpeedMult += 0.15;
+  else if (phil === 'Sky Fortress') redBlockMult = 1.9;
+  else if (phil === 'Precision Passing') passMult = 1.35;
+  else if (phil === 'Aggressive Pressure') stealBonus = 0.25;
+  else if (phil === 'X System') { redSpeedMult += 0.06; redBlockMult = 1.35; passMult = 1.1; }
+  // Team MORALE nudges performance too.
+  if (club) redSpeedMult += (club.roster.reduce((s, r) => s + (r.morale || 70), 0) / club.roster.length - 70) / 600;
+  // ---- ELEMENTAL POWERS: your team element (from your lead rider) + enemy element ----
+  teamElem = (club && club.roster && club.roster[0] && club.roster[0].element) ? club.roster[0].element : '🔥';
+  const epool = ['🔥', '🌊', '🌪', '⚡', '❄', '🌍', '🌌', '☀', '🌑'];
+  enemyElem = epool[ri(0, epool.length - 1)];
+  // Every on-field dragon gets its OWN element (your riders' elements; enemies varied).
+  you.elem = teamElem;
+  const reds = club && club.roster ? club.roster.filter(r => r.element) : [];
+  let ri2 = 1;
+  for (const b of bots) {
+    if (b.team === 'red') { b.elem = (reds[ri2] && reds[ri2].element) || epool[ri(0, epool.length - 1)]; ri2++; }
+    else b.elem = epool[ri(0, epool.length - 1)];
+  }
+  energy = 0; shotPowerMult = 1; boostRegenMult = 1; enemyShotSpreadMult = 1;
+  fireShotArmed = false; gustT = 0; stoneWallT = 0; slipT = 0; insightT = 0; vanishT = 0;
+  const pinfo = ELEMENT_INFO[teamElem] || ELEMENT_INFO['🔥'], p = pinfo.pass || {};
+  redSpeedMult += (p.speed || 0); redBlockMult += (p.block || 0); passMult += (p.passm || 0); stealBonus += (p.steal || 0);
+  shotPowerMult = 1 + (p.shot || 0); boostRegenMult = 1 + (p.boost || 0);
+  // Type advantage: your element vs the enemy's (a small nudge, never an auto-win)
+  if (pinfo.beats.includes(enemyElem)) { stealBonus += 0.12; redBlockMult += 0.1; }
+  else if ((ELEMENT_INFO[enemyElem] || {}).beats && ELEMENT_INFO[enemyElem].beats.includes(teamElem)) { enemyShotSpreadMult = 0.7; }   // enemy aims better
+  redSpeedMult = Math.min(1.95, redSpeedMult);
+  const col = club ? club.color : '#ff6b6b';
+  redTeamCol = col; blueTeamCol = '#4d9bff';      // team ring colors (your team = your club color)
+  you.color = col; you.bodyCol = '#ffd54a';       // your body is gold, ring is your team color
+  // your dragon's WEIGHT class comes from your lead rider's partner dragon (flight physics)
+  you.weight = (club && club.dragons && club.dragons[0]) ? (club.dragons[0].weight || 1) : 1;
+  you.vy = 0; you.bank = 0; you.pitchV = 0;
+  setupEnemyAI();   // Vol V: the opponent's identity + your difficulty shape how they play
+  // Vol V Ch20: your LEAD RIDER's tendency gives your team a small edge
+  const lt = club && club.roster[0] ? club.roster[0].tend : '';
+  if (lt === 'Sharpshooter') shotPowerMult += 0.1;
+  else if (lt === 'Playmaker' || lt === 'Long Bomber') passMult += 0.12;
+  else if (lt === 'Trickster') stealBonus += 0.06;
+  else if (lt === 'High Flyer') you.y = 1600;
+  else if (lt === 'Ground Hugger') redSpeedMult += 0.04;
+  // Vol V Ch15-16: X SYSTEM rotation for X-System teams (you can pick the "X System" philosophy)
+  redX = !!(club && club.philosophy === 'X System'); enemyX = enemyStyleName === 'X Fighters'; xRotT = 4;
+  // Vol V Ch23: CHAMPIONSHIP PRESSURE in big games — veterans stay calm, young players panic
+  bigGame = tournamentMatch || isRival;
+  if (bigGame) {
+    const avgAge = club ? club.roster.reduce((s, r) => s + r.age, 0) / club.roster.length : 24;
+    redSpeedMult += Math.max(-0.08, Math.min(0.08, (avgAge - 23) * 0.012));   // older squad = calmer
+    const lead = (enemyCoach.leadership - 65) / 100;                          // a strong leader keeps them calm
+    enemySmart = Math.min(1, Math.max(0.2, enemySmart + lead * 0.15));
+    enemyReact = Math.min(1, Math.max(0.2, enemyReact + lead * 0.15));
+  }
+  // Vol V Ch9/10: TEAMWORK / communication quality — crisper passing when the team gels
+  const cap = club && club.roster ? club.roster.find(r => r.role === 'Captain') : null;
+  const capLead = cap && cap.attrs ? (cap.attrs['Leadership'] || 70) : 65;
+  teamwork = Math.max(0, Math.min(100, Math.round(((club ? club.chemistry : 30) + avgBond) / 2 + (capLead - 60) / 3)));
+  passMult += (teamwork - 50) / 400;
+  redSpeedMult = Math.min(2.0, Math.max(0.8, redSpeedMult));
+  setFormation(club && club.formation ? club.formation : 3);   // start with your chosen (or default) formation
+  resetExtras();
+  lastConceded = '';           // fresh match — nobody has conceded yet
+  kickoff(true);               // Q1: loose ball rests at centre
+}
+function quarterEnd() {
+  if (quarter < QUARTERS) {
+    quarter++; clock = QLEN; quarterLabel = 'Q' + quarter; kickoff(false);   // conceding team restarts
+    if (quarter === 3) { halftimeT = 3; say('⏸ HALFTIME!'); enemyHalftimeAdjust(); } else say('🎙️ Quarter ' + quarter + '!');
+  } else if (teamScore.you === teamScore.opp) {
+    suddenDeath = true; clock = QLEN; quarterLabel = 'OT'; kickoff(false);   // tied -> overtime
+  } else {
+    endMatch();
+  }
+}
+function startMatch() {
+  tournamentMatch = false;
+  oppName = (club && club.nextOpponent) || 'Storm Wings';
+  resetMatch(); hideScreens(); playing = true; introT = 4;
+}
+function startTournament() {
+  if (!club || !club.tourneyUnlocked || club.tourneyRoundsLeft <= 0) return;   // locked!
+  tournamentMatch = true;
+  oppName = tournamentOpp();   // face the league's best team
+  resetMatch(); hideScreens(); playing = true; introT = 4;
+}
+// Dynamic emergent stories (Vol IV) — a headline that reacts to what just happened.
+function genStory(won, mvp, margin) {
+  const nm = mvp.nick ? mvp.name + ' "' + mvp.nick + '"' : mvp.name;
+  const wins = [
+    '📰 ' + nm + ' stars as ' + club.name + ' win ' + teamScore.you + '–' + teamScore.opp + '!',
+    '📰 ' + club.name + ' soar past ' + oppName + ' — fans go wild!',
+    '📰 ' + (mvp.age <= 20 ? 'Teenage sensation ' : 'Veteran ') + nm + ' leads the charge!',
+    '📰 What a display! ' + club.name + ' look unstoppable.'
+  ];
+  const bigWins = ['🔥 DEMOLITION! ' + club.name + ' crush ' + oppName + ' by ' + margin + '!', '🔥 ' + nm + ' unstoppable in a ' + margin + '-point rout!'];
+  const losses = [
+    '📰 Heartbreak as ' + club.name + ' fall to ' + oppName + '.',
+    '📰 ' + club.name + ' stumble — the coach demands answers.',
+    '📰 Tough day at the arena, but ' + nm + ' fought hard.'
+  ];
+  const pool = won ? (margin >= 6 ? bigWins.concat(wins) : wins) : losses;
+  return pool[ri(0, pool.length - 1)];
+}
+// Volume VI Ch10: the 13 annual awards, worked out from your squad + the league.
+function computeAwards() {
+  const R = club.roster;
+  const by = (f) => R.slice().sort((a, b) => f(b) - f(a))[0];
+  const bestDragon = (club.dragons || []).slice().sort((a, b) => dragonOvr(b) - dragonOvr(a))[0];
+  const leagueRows = Object.keys(club.league).map(n => ({ n, ...club.league[n] })).sort((a, b) => b.p - a.p);
+  const captain = R.find(r => r.role === 'Captain') || by(r => (r.attrs ? r.attrs['Leadership'] || 0 : 0));
+  const guardian = R.find(r => r.role === 'Guardian') || R[0];
+  const defender = R.find(r => r.role === 'Defender') || R[0];
+  const rookie = by(r => -r.age);   // youngest
+  const disc = by(r => (r.attrs ? r.attrs['Discipline'] || 0 : 0));
+  const legend = (club.hof && club.hof.length ? club.hof[club.hof.length - 1].name : by(r => r.mvps || 0).name);
+  const A = [];
+  const add = (name, who) => A.push({ name, who });
+  add('🌟 League MVP', by(r => r.mvps || 0).name);
+  add('🏅 Best Rider', by(r => ovr(r)).name);
+  add('🐉 Best Dragon', bestDragon ? bestDragon.name : '—');
+  add('🧢 Best Captain', captain ? captain.name : '—');
+  add('🛡️ Best Guardian', guardian ? guardian.name : '—');
+  add('🧑‍🏫 Coach of the Year', (club.staffPeople && club.staffPeople.headCoach ? club.staffPeople.headCoach.name : 'Your Coach'));
+  add('🐣 Rookie of the Year', rookie ? rookie.name : '—');
+  add('💥 Breakthrough Player', by(r => (r.potential || 0) - ovr(r)).name);
+  add('📈 Most Improved', by(r => r.level || 1).name);
+  add('🧱 Defensive Player', defender ? defender.name : '—');
+  add('🤝 Sportsmanship', disc ? disc.name : '—');
+  add('👥 Team of the Year', leagueRows[0] ? leagueRows[0].n : club.name);
+  add('👑 Legend Award', legend);
+  return A;
+}
+// Volume VI: end-of-season rollover — advance a year, crown awards, snapshot the timeline & history.
+function seasonRollover() {
+  const snum = Math.floor(club.matchNum / 15);
+  club.year = (club.year || club.foundedYear || 100) + 1;
+  // best single season
+  const swl = club.seasonWL || { w: 0, l: 0 };
+  const better = !club.bestSeason || swl.w > (parseInt(club.bestSeason) || 0);
+  if (better && (swl.w + swl.l) > 0) club.bestSeason = swl.w + '–' + swl.l;
+  club.seasonWL = { w: 0, l: 0 };
+  // club-history bests
+  let topRider = club.roster[0]; club.roster.forEach(r => { if ((r.mvps || 0) > (topRider.mvps || 0) || ovr(r) > ovr(topRider)) topRider = r; });
+  club.greatestCaptain = topRider.name;
+  const leg = (club.dragons || []).slice().sort((a, b) => dragonOvr(b) - dragonOvr(a))[0];
+  if (leg) club.legendaryDragon = leg.name;
+  // biggest rival = most-played opponent
+  let rv = '', rp = 0; for (const k in (club.rival || {})) { if (club.rival[k].played > rp) { rp = club.rival[k].played; rv = k; } }
+  if (rv) club.biggestRival = rv;
+  // awards + timeline
+  const awards = computeAwards();
+  club.awardsHistory = club.awardsHistory || []; club.awardsHistory.push({ season: snum, year: club.year, awards });
+  // Vol VI Ch6: log season honours onto the winners' career timelines
+  const mvpR = club.roster.find(r => r.name === awards[0].who); if (mvpR) { mvpR.career = mvpR.career || []; mvpR.career.push('Year ' + club.year + ': 🌟 Season MVP'); }
+  const bestR = club.roster.find(r => r.name === awards[1].who); if (bestR && bestR !== mvpR) { bestR.career = bestR.career || []; bestR.career.push('Year ' + club.year + ': 🏅 Best Rider'); }
+  const champ = Object.keys(club.league).map(n => ({ n, ...club.league[n] })).sort((a, b) => b.p - a.p)[0];
+  club.timeline = club.timeline || [];
+  club.timeline.push({ season: snum, year: club.year, champion: champ ? champ.n : '?', mvp: awards[0].who, record: (swl.w + '–' + swl.l), div: club.division });
+  club.stories = club.stories || []; club.stories.push('🏅 Year ' + club.year + ' Awards — MVP ' + awards[0].who + ' · Champions: ' + (champ ? champ.n : '?') + '!');
+  // Vol VI Ch18: LEAGUE GOVERNANCE — a rule sometimes changes between seasons.
+  if (Math.random() < 0.45) {
+    const rule = RULE_CHANGES[ri(0, RULE_CHANGES.length - 1)];
+    club.ruleLog = club.ruleLog || []; club.ruleLog.push('Year ' + club.year + ': ' + rule);
+    club.stories.push('📜 Rule change — ' + rule);
+  }
+  // Vol VI Ch19: EXPANSION — as the sport grows, a brand-new club may join the world.
+  if (Math.random() < 0.3 && (club.expansion || []).length < EXPANSION_NAMES.length) {
+    const used = new Set([...Object.keys(club.league), ...(club.expansion || [])]);
+    const name = EXPANSION_NAMES.find(n => !used.has(n));
+    if (name) { club.expansion = club.expansion || []; club.expansion.push(name); club.league[name] = { w: 0, l: 0, p: 0 }; club.stories.push('🆕 Expansion — ' + name + ' join the league!'); }
+  }
+  // Vol VI Ch1/22: the WORLD keeps living — news about other clubs.
+  club.stories.push(worldEvent(club));
+  // Vol VI Ch21: DYNAMIC STORYLINES — emergent sagas from the world state.
+  const sagas = [];
+  if (club.division <= 5) sagas.push("📖 " + club.name + "'s rise continues — now among the world's elite!");
+  else if (club.division >= 15) sagas.push('📖 ' + club.name + ' battle to climb out of the lower leagues.');
+  if ((club.trophies || 0) >= 3) sagas.push('📖 A ' + club.name + ' DYNASTY is forming — ' + club.trophies + ' titles and counting!');
+  const others = Object.keys(club.league).filter(t => t !== club.name);
+  const ot = others[ri(0, others.length - 1)] || 'A rival';
+  const worldSagas = ['📖 ' + ot + ': a legendary dynasty collapses as its aging stars fade.',
+    '📖 ' + ot + ': a tiny club\'s fairytale rise grips the league.',
+    '📖 ' + ot + ': a coach returns to the club that once fired them.',
+    '📖 ' + ot + ': two brothers face off for the championship.',
+    '📖 ' + ot + ': the offspring of a legendary dragon debuts as an MVP.'];
+  sagas.push(worldSagas[ri(0, worldSagas.length - 1)]);
+  club.sagas = club.sagas || []; const saga = sagas[ri(0, sagas.length - 1)];
+  club.sagas.push('Year ' + club.year + ': ' + saga.replace('📖 ', '')); club.stories.push(saga);
+  // reset the league standings for the new season
+  initLeague(club);
+}
+function endMatch() {
+  playing = false;
+  const won = teamScore.you > teamScore.opp;
+  document.getElementById('resultTitle').textContent = won ? ('🏆 ' + (club ? club.name : 'You') + ' Win!') : ('🌪 ' + oppName + ' Win!');
+  document.getElementById('resultScore').textContent = teamScore.you + ' — ' + teamScore.opp;
+  const d = DIFFS.find(x => x.key === (club ? club.difficulty : 'Normal')) || DIFFS[1];
+  // Rewards (facilities + fans + staff bonuses).
+  let gold = Math.round(((won ? 200 : 60) + getFac('merchFactory') * 20 + (club.fans || 0) * 0.02) * d.mult * economyMult(club));   // world economy grows over the years
+  let rep = Math.round(((won ? 30 : 0) + getStaff('chiefScout') * 3 + Math.floor(totalFac() / 2)) * d.mult);
+  club.money += gold; club.rep = Math.max(0, Math.min(1000, club.rep + rep));
+
+  // ----- Finances ledger + a gentle running cost (Vol III economy) -----
+  const F = club.finance || (club.finance = { earnedTickets: 0, earnedMerch: 0, earnedSponsor: 0, earnedPrize: 0, spentWages: 0, spentUpkeep: 0 });
+  const tickets = Math.round((club.fans || 0) * 0.05 * (won ? 1.2 : 0.9));
+  const merch = getFac('merchFactory') * 15 + Math.round((club.fanExcite || 50) * 0.3);
+  const wages = club.roster.reduce((s, r) => s + Math.round(ovr(r) / 6), 0);
+  const upkeep = totalFac() * 2 + club.dragons.length * 2;
+  F.earnedTickets += tickets; F.earnedMerch += merch; F.earnedPrize += gold;
+  F.spentWages += wages; F.spentUpkeep += upkeep;
+  club.money += tickets + merch;                                   // gate income
+  club.money = Math.max(0, club.money - Math.round((wages + upkeep) * 0.4));   // gentle costs (never below 0)
+
+  // Bond & Chemistry grow.
+  club.bond = Math.min(100, (club.bond || 0) + 2);
+  club.chemistry = Math.min(100, (club.chemistry || 0) + 2);
+  // ----- Full Fans system (Vol III): loyalty / excitement / expectations -----
+  if (won) {
+    club.fans = (club.fans || 0) + 120 + Math.round(club.rep * 0.2);
+    club.fanExcite = Math.min(100, (club.fanExcite || 50) + 8);
+    club.fanLoyal = Math.min(100, (club.fanLoyal || 50) + 4);
+    club.fanExpect = Math.min(100, (club.fanExpect || 40) + 3);
+  } else {
+    club.fans = Math.max(100, (club.fans || 0) - 60);
+    club.fanExcite = Math.max(0, (club.fanExcite || 50) - 6);
+    club.fanLoyal = Math.max(0, (club.fanLoyal || 50) - ((club.fanExpect || 40) > 60 ? 5 : 2));   // grumpy if expectations were high
+    club.fanExpect = Math.max(0, (club.fanExpect || 40) - 2);
+  }
+
+  // Sponsor progress.
+  if (won && club.sponsor) {
+    club.sponsorProg = (club.sponsorProg || 0) + 1;
+    if (club.sponsorProg >= club.sponsor.goal) { club.money += club.sponsor.reward; F.earnedSponsor += club.sponsor.reward; club.sponsor = pickSponsor(); club.sponsorProg = 0; }
+  }
+  // Tournament victory = a trophy + a big bonus!
+  let tourMsg = '';
+  if (tournamentMatch && won) { club.trophies = (club.trophies || 0) + 1; club.money += 300; club.rep = Math.min(1000, club.rep + 50); tourMsg = '<br><span style="font-size:15px;color:#ffe066">🏆 TOURNAMENT WON! +1 trophy, +300 gold, +50 rep!</span>'; }
+
+  // Fatigue + injuries for your riders.
+  club.roster.forEach(r => {
+    if (r.injuryMatches > 0) { r.injuryMatches--; r.fatigue = Math.max(0, (r.fatigue || 0) - 20); return; }
+    r.fatigue = Math.min(100, (r.fatigue || 0) + ri(8, 20) - (getFac('recoverySpa') * 2));
+    r.fatigue = Math.max(0, r.fatigue);
+    const chance = 0.03 + (r.fatigue / 100) * 0.10;
+    if (Math.random() < chance) {
+      const sr = Math.random();
+      r.injurySev = sr < 0.6 ? 'Minor' : sr < 0.9 ? 'Moderate' : 'Major';
+      const dur = r.injurySev === 'Minor' ? ri(1, 2) : r.injurySev === 'Moderate' ? ri(2, 4) : ri(4, 7);
+      r.injuryMatches = Math.max(1, dur - Math.floor(getFac('medicalCenter') / 4));
+    }
+  });
+
+  // Records + league + roster XP.
+  const rc = club.records;
+  club.seasonWL = club.seasonWL || { w: 0, l: 0 };
+  if (won) { club.wins++; club.seasonWL.w++; rc.streak++; if (teamScore.you - teamScore.opp > rc.biggestWin) rc.biggestWin = teamScore.you - teamScore.opp; }
+  else { club.losses++; club.seasonWL.l++; rc.streak = 0; }
+  if (teamScore.you > rc.mostPts) rc.mostPts = teamScore.you;
+  recRes(club, club.name, won); recRes(club, oppName, !won); simLeague(club);
+  // Vol V: you SCOUT the team a bit more, and the head-to-head RIVALRY record grows.
+  club.scout = club.scout || {}; club.scout[oppName] = (club.scout[oppName] || 0) + 1;
+  club.rival = club.rival || {}; const rr = club.rival[oppName] || (club.rival[oppName] = { w: 0, l: 0, played: 0 });
+  rr.played++; if (won) rr.w++; else rr.l++;
+  // your riders earn XP + an MVP
+  let mvp = club.roster[0];
+  club.roster.forEach(r => {
+    r.xp += (won ? 40 : 15); r.goals += ri(0, 3);
+    if (r.xp >= r.level * 100) { r.xp -= r.level * 100; r.level++; if (r.age < 29 && r.base < r.potential) r.base = Math.min(r.potential, r.base + 1); }
+    r.morale = Math.max(0, Math.min(100, (r.morale || 70) + (won ? 5 : -6)));   // morale
+    // Per-pair Bond grows from flying together (faster with a Dragon Sanctuary + high bond already).
+    r.bond = Math.min(100, (r.bond || 0) + (won ? 3 : 2) + (getFac('dragonSanctuary') > 0 ? 1 : 0));
+    const dg = club.dragons[r.dragonIdx]; if (dg) dg.bond = Math.min(100, (dg.bond || 0) + (won ? 3 : 2));
+    // Low morale → the rider asks to leave (Vol IV).
+    r.wantsOut = (r.morale < 25);
+    if (ovr(r) > ovr(mvp)) mvp = r;
+  });
+  mvp.mvps++; mvp.base = Math.min(99, mvp.base + 1); mvp.morale = Math.min(100, (mvp.morale || 70) + 8);
+
+  // Tournament unlock cycle: 10 matches -> unlock 4 rounds -> lock -> repeat.
+  if (tournamentMatch) {
+    club.tourneyRoundsLeft = Math.max(0, (club.tourneyRoundsLeft || 0) - 1);
+    if (club.tourneyRoundsLeft <= 0) { club.tourneyUnlocked = false; club.regSinceLock = 0; }
+  } else if (!club.tourneyUnlocked) {
+    club.regSinceLock = (club.regSinceLock || 0) + 1;
+    if (club.regSinceLock >= 10) { club.tourneyUnlocked = true; club.tourneyRoundsLeft = 4; club.regSinceLock = 0; }
+  }
+
+  club.matchNum++;
+  // Vol VI Ch4: WORLD CALENDAR — when the season phase changes, something happens.
+  const ph = seasonPhase(club);
+  if (ph !== club.lastPhase) {
+    club.lastPhase = ph; const P = PHASES[ph];
+    club.stories = club.stories || []; club.stories.push(P.e + ' ' + P.n + ' — ' + P.d);
+    if (ph === 0) { club.market = [genStar(), genStar(), genStar(), genStar()]; club.prospects = [genProspect(), genProspect(), genProspect()]; }  // Winter: transfers + academy draft refresh
+    if (ph === 2) { club.rep = Math.min(1000, club.rep + 10); club.fanExcite = Math.min(100, (club.fanExcite || 50) + 6); }                       // Summer: All-Star buzz
+  }
+  // Aging + retirement each season (~15 matches): decline for the old, rookies replace legends.
+  if (club.matchNum % 15 === 0) {
+    seasonRollover();   // Volume VI: awards, timeline, club history, new year
+    club.roster.forEach((r, i) => {
+      r.age++; r.seasons = (r.seasons || 0) + 1;
+      if (r.age >= 32) r.base = Math.max(45, r.base - ri(1, 2));   // physical decline
+      if (r.age > 35 && Math.random() < 0.5) {
+        club.hof = club.hof || []; club.hof.push({ name: r.name, ovr: ovr(r), goals: r.goals });
+        // Retired riders take a new job at the club (Vol IV: coach / scout / academy director).
+        club.coaches = club.coaches || [];
+        const job = ['Assistant Coach', 'Scout', 'Academy Director', 'Flight Trainer'][ri(0, 3)];
+        club.coaches.push({ name: r.name, job, rating: Math.min(99, ovr(r) + ri(-4, 6)) });
+        club.roster[i] = genRider(r.role, undefined, ri(17, 19));   // a rookie debuts
+        club.roster[i].bond = ri(8, 20); club.roster[i].dragonIdx = i;
+      }
+    });
+  }
+  // hatch any ready eggs
+  club.eggs = club.eggs.filter(e => { if (e.on <= club.matchNum) { const dg = genDragon(); club.dragons.push(dg); club.talent += dg.bonus; return false; } return true; });
+  if (club.matchNum % 3 === 0) club.market = [genStar(), genStar(), genStar(), genStar()];
+  // weekly calendar: Day 1–6, then a new week
+  club.day = (club.day || 1) + 1; if (club.day > 6) { club.day = 1; club.week = (club.week || 1) + 1; if (Math.random() < 0.5) refreshTrend(club); }   // the league meta shifts
+  // promotion / relegation every 6 matches (end of a week)
+  if (club.matchNum % 6 === 0) {
+    const rows = Object.keys(club.league).map(n => ({ n, ...club.league[n] })).sort((a, b) => b.p - a.p);
+    const rank = rows.findIndex(r => r.n === club.name) + 1;
+    if (rank <= 2 && club.division > 1) { club.division--; club.money += 200; }
+    else if (rank >= rows.length - 1 && club.division < 20) club.division++;
+    initLeague(club);
+  }
+  // LOSE = the tournament resets, and your club rests (fresh week).
+  let lostMsg = '';
+  if (!won) { initLeague(club); club.day = 1; club.week = (club.week || 1); lostMsg = '<br><span style="font-size:15px;color:#ff9a9a">😴 You lost — the tournament resets. Rest up and start again!</span>'; }
+  pickNextOpp(club);
+  // Dynamic story headline (Vol IV).
+  const story = genStory(won, mvp, teamScore.you - teamScore.opp);
+  club.stories = club.stories || []; club.stories.push(story);
+  if (Math.random() < 0.4) club.stories.push(genLeagueHeadline(club));   // Ch11: extra league-wide news
+  while (club.stories.length > 24) club.stories.shift();
+  saveClub();
+  const tp = stats.red.poss + stats.blue.poss || 1, rp2 = Math.round(stats.red.poss / tp * 100);
+  const statLine = '<br><span style="font-size:12px;color:#cfe0ff">📊 Possession ' + rp2 + '% · 🎯 Shots ' + stats.red.shots + '–' + stats.blue.shots +
+    ' · ✋ Steals ' + stats.red.steals + '–' + stats.blue.steals + ' · 💥 Tackles ' + stats.red.tackles + '–' + stats.blue.tackles +
+    ' · 🚩 Fouls ' + stats.red.fouls + '–' + stats.blue.fouls + '</span>';
+  document.getElementById('resultReward').innerHTML = '💰 +' + gold + ' gold' + (rep ? ' · ⭐ +' + rep + ' reputation' : '') +
+    tourMsg + '<br><span style="font-size:14px;color:#ffd54a">🌟 MVP: ' + mvp.name + ' (+1 OVR)</span>' + statLine + lostMsg +
+    '<br><span style="font-size:14px;color:#8fd6ff">' + story + '</span>';
+  showScreen('resultScreen');
+}
+
+document.getElementById('startBtn').onclick = enterFromTitle;
+document.getElementById('dayBtn').onclick = doDayActivity;
+document.getElementById('createBtn').onclick = createClub;
+document.getElementById('editBtn').onclick = showCreate;
+document.getElementById('newBtn').onclick = () => {
+  club = null; chosenMascot = '🐉'; chosenDiff = 'Normal';
+  document.getElementById('inName').value = 'Skyfire Dragons';
+  document.getElementById('inColor').value = '#ff6b6b';
+  [...mascotRow.children].forEach(c => c.classList.toggle('sel', c.textContent === '🐉'));
+  [...diffRow.children].forEach(c => c.classList.toggle('sel', c.textContent === 'Normal'));
+  diffDesc.textContent = DIFFS[1].desc;
+  showCreate();
+};
+document.getElementById('playBtn').onclick = startMatch;
+document.getElementById('tourneyBtn').onclick = startTournament;
+document.getElementById('backBtn').onclick = showHub;
+
+// =========================================================
+//  MANAGEMENT SYSTEMS (squad, facilities, staff, youth, hatchery,
+//  transfers, league, legacy) — same idea as the 2D game.
+// =========================================================
+const FIRST = ['Zane','Kai','Rex','Nova','Ash','Sky','Bolt','Ember','Frost','Jet','Cyrus','Lyra','Onyx','Vex','Rune','Talon','Blaze','Wren','Axel'];
+const LAST = ['Stormrider','Flameheart','Windborn','Nightwing','Ironscale','Skyfall','Emberforge','Frostfang','Thunderclaw','Starwing','Shadowdive','Dawnbreak'];
+const ELEMS = ['🔥','🌊','🌪','⚡','❄','🌍','🌌','☀','🌑'];
+const ROLES = ['Guardian','Defender','Defender','Utility','Captain','Universal','Flyer','Striker'];
+function ri(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
+function rName() { return FIRST[ri(0, FIRST.length - 1)] + ' ' + LAST[ri(0, LAST.length - 1)]; }
+// Volume IV — the 32 rider attributes (4 groups), personalities, dragon species.
+const ATTRS = {
+  Physical: ['Speed', 'Reflexes', 'Balance', 'Endurance', 'Strength', 'Flexibility', 'Recovery', 'Durability'],
+  Technical: ['Passing', 'Catching', 'Accuracy', 'Power', 'Ball Control', 'Trick Shots', 'Aerial Control', 'Interceptions'],
+  Mental: ['Vision', 'Awareness', 'Decision Making', 'Leadership', 'Confidence', 'Focus', 'Adaptability', 'Creativity', 'Composure'],
+  Competitive: ['Clutch', 'Discipline', 'Aggression', 'Work Ethic', 'Coachability', 'Loyalty', 'Consistency', 'Determination']
+};
+const PERSONALITIES = ['Leader', 'Perfectionist', 'Joker', 'Quiet', 'Aggressive', 'Calm', 'Emotional', 'Analytical', 'Fearless', 'Showman', 'Loyal', 'Ambitious'];
+// Rider identity pools (Vol IV profile).
+const NATIONS = ['Emberland', 'Frosthelm', 'Galewick', 'Stonereach', 'Tidecaller Isles', 'Sunhaven', 'Shadowfen', 'Starfall Reach', 'Thunderpeak', 'Wyvern Coast', 'Aurora Vale', 'Dragonspire'];
+const NICKS = ['The Comet', 'Ace', 'The Wall', 'Lightning', 'The Fox', 'Sky King', 'The Phantom', 'Rocket', 'The Maestro', 'Ironwing', 'Flash', 'The Wizard'];
+const HANDS = ['Left', 'Right'];
+const SIDES = ['Left wing', 'Right wing', 'Center'];
+// Dragon appearance pools (Vol IV profile).
+const DHORNS = ['Curved', 'Straight', 'Spiral', 'Crowned', 'Twin', 'Hornless'];
+const DTAILS = ['Spiked', 'Fan', 'Whip', 'Club', 'Feathered', 'Forked'];
+const DCOLNAME = ['Crimson', 'Azure', 'Emerald', 'Golden', 'Violet', 'Onyx', 'Silver', 'Amber', 'Teal', 'Ivory', 'Scarlet', 'Cobalt'];
+const DBLOOD = ['Pure', 'Mixed', 'Wild', 'Royal', 'Ancient'];
+// Volume V Ch20/21: TENDENCIES — same rating, different play style.
+const RIDER_TEND = ['Sharpshooter', 'Playmaker', 'Ball Hog', 'Long Bomber', 'High Flyer', 'Ground Hugger', 'Trickster', 'Clutch'];
+const DRAGON_TEND = ['Aggressive Diver', 'Smooth Turner', 'Wide Arcs', 'Sharp Banker', 'High Altitude', 'Close Support', 'Late Booster', 'Fearless'];
+const RIDER_TEND_DESC = {
+  'Sharpshooter': 'shoots often & hard', 'Playmaker': 'pass-first, sets up teammates', 'Ball Hog': 'protects the ball',
+  'Long Bomber': 'loves long passes', 'High Flyer': 'attacks up high', 'Ground Hugger': 'stays low & fast',
+  'Trickster': 'spins & fakes', 'Clutch': 'best when it matters most'
+};
+// Dragon species — each has a weight class (wt): light dragons are nimble, heavy ones are tanky.
+const SPECIES = [
+  { n: 'Fire Drake', e: '🔥', s: 'Explosive attacker · low stamina', wt: 1.0 }, { n: 'Wind Serpent', e: '🌪', s: 'Fastest · great steals', wt: 0.8 },
+  { n: 'Earth Wyrm', e: '🌍', s: 'Rock-solid defender · slower', wt: 1.35 }, { n: 'Cosmic Dragon', e: '🌌', s: 'Tactical genius · rare', wt: 0.95 },
+  { n: 'Shadow Serpent', e: '🌑', s: 'Deceptive · hard to predict', wt: 0.85 }, { n: 'Frost Drake', e: '❄', s: 'Precise control', wt: 1.05 },
+  { n: 'Storm Wyrm', e: '⚡', s: 'Explosive bursts', wt: 0.9 }, { n: 'Tidal Dragon', e: '🌊', s: 'Smooth maneuvers', wt: 1.1 },
+  { n: 'Solar Drake', e: '☀', s: 'High visibility', wt: 1.0 }, { n: 'Ancient Wyrm', e: '🐉', s: 'Balanced legend', wt: 1.15 },
+  { n: 'Sky Griffin', e: '🦅', s: 'Superb climber', wt: 0.85 }, { n: 'Magma Titan', e: '🌋', s: 'Heavy hitter · slow', wt: 1.4 },
+  { n: 'Aurora Serpent', e: '🌈', s: 'Dazzling agility', wt: 0.8 }, { n: 'Thunder Roc', e: '🌩', s: 'Lightning sprints', wt: 0.95 },
+  { n: 'Coral Dragon', e: '🐚', s: 'Slippery dodger', wt: 1.0 }, { n: 'Iron Wyrm', e: '⚙', s: 'Unbreakable wall', wt: 1.45 },
+  { n: 'Moon Drake', e: '🌙', s: 'Calm & clever', wt: 0.95 }, { n: 'Jade Serpent', e: '🟢', s: 'Balanced all-rounder', wt: 1.05 },
+  { n: 'Ember Phoenix', e: '🔆', s: 'Fast recovery', wt: 0.85 }, { n: 'Glacier Wyrm', e: '🧊', s: 'Immovable defender', wt: 1.4 },
+  { n: 'Void Dragon', e: '🕳', s: 'Ultra rare · unreadable', wt: 0.9 }, { n: 'Gale Drake', e: '💨', s: 'Top speed steals', wt: 0.75 },
+  { n: 'Crystal Wyrm', e: '💎', s: 'Precise & tough', wt: 1.2 }, { n: 'Star Serpent', e: '⭐', s: 'Legendary genius', wt: 0.9 },
+  { n: 'Lava Serpent', e: '🔥', s: 'Fierce attacker', wt: 1.15 }, { n: 'Cloud Drake', e: '☁', s: 'Floaty hoverer', wt: 0.8 }, { n: 'Blizzard Wyrm', e: '🌨', s: 'Chilly defender', wt: 1.35 },
+  { n: 'Comet Serpent', e: '☄', s: 'Blazing sprints', wt: 0.75 }, { n: 'Reef Drake', e: '🐠', s: 'Twisty dodger', wt: 1.0 }, { n: 'Bronze Wyrm', e: '🥉', s: 'Sturdy blocker', wt: 1.3 },
+  { n: 'Eclipse Dragon', e: '🌘', s: 'Mysterious · rare', wt: 0.9 }, { n: 'Zephyr Serpent', e: '🍃', s: 'Feather-light', wt: 0.72 }, { n: 'Obsidian Wyrm', e: '⬛', s: 'Dark & tough', wt: 1.4 },
+  { n: 'Prism Drake', e: '🔷', s: 'Precise passer', wt: 0.95 }, { n: 'Meteor Titan', e: '🌠', s: 'Huge hitter', wt: 1.45 }, { n: 'Mist Serpent', e: '🌫', s: 'Sneaky · deceptive', wt: 0.85 },
+  { n: 'Dawn Phoenix', e: '🌅', s: 'Quick to recover', wt: 0.8 }, { n: 'Garnet Wyrm', e: '🔴', s: 'Bold attacker', wt: 1.1 }, { n: 'Sapphire Drake', e: '🔵', s: 'Cool & clever', wt: 1.0 },
+  { n: 'Emerald Serpent', e: '🟩', s: 'Nimble all-rounder', wt: 0.9 }, { n: 'Thunderbird', e: '🦤', s: 'Shocking speed', wt: 0.88 }, { n: 'Granite Golem', e: '🪨', s: 'Immovable wall', wt: 1.5 },
+  { n: 'Nova Dragon', e: '💥', s: 'Explosive · rare', wt: 0.92 }, { n: 'Willow Serpent', e: '🌿', s: 'Bendy & agile', wt: 0.82 }, { n: 'Cinder Drake', e: '🔥', s: 'Hot streaks', wt: 1.0 },
+  { n: 'Polar Wyrm', e: '🐻‍❄️', s: 'Icy tank', wt: 1.38 }, { n: 'Twilight Serpent', e: '🌆', s: 'Hard to read', wt: 0.9 }, { n: 'Gilded Drake', e: '🏅', s: 'Shiny champion', wt: 1.05 },
+  { n: 'Cyclone Wyrm', e: '🌀', s: 'Spinning speedster', wt: 0.8 }, { n: 'Amber Dragon', e: '🟠', s: 'Warm & steady', wt: 1.1 }, { n: 'Onyx Serpent', e: '🖤', s: 'Silent hunter', wt: 0.95 },
+  { n: 'Radiant Phoenix', e: '✨', s: 'Legendary spirit', wt: 0.85 }, { n: 'Boulder Wyrm', e: '🧱', s: 'Rock defender', wt: 1.42 }, { n: 'Feather Drake', e: '🪶', s: 'Lightest flyer', wt: 0.7 },
+  { n: 'Inferno Roc', e: '🔥', s: 'Scorching diver', wt: 1.08 }, { n: 'Tsunami Wyrm', e: '🌊', s: 'Powerful surges', wt: 1.25 }, { n: 'Tempest Drake', e: '⚡', s: 'Storm chaser', wt: 0.93 },
+  { n: 'Permafrost Serpent', e: '❄', s: 'Freezes attacks', wt: 1.2 }, { n: 'Canyon Wyrm', e: '🌍', s: 'Grounded guard', wt: 1.36 }, { n: 'Galaxy Drake', e: '🌌', s: 'Genius tactician', wt: 0.9 },
+  { n: 'Sunburst Phoenix', e: '☀', s: 'Blinding rusher', wt: 0.86 }, { n: 'Nightshade Serpent', e: '🌑', s: 'Vanishing steals', wt: 0.84 }, { n: 'Quartz Wyrm', e: '💎', s: 'Hard & steady', wt: 1.18 },
+  { n: 'Hurricane Roc', e: '🌀', s: 'Fastest turns', wt: 0.79 }, { n: 'Molten Titan', e: '🌋', s: 'Crushing power', wt: 1.47 }, { n: 'Glimmer Drake', e: '✨', s: 'Slick playmaker', wt: 0.9 },
+  { n: 'Steel Wyrm', e: '⚙', s: 'Tank defender', wt: 1.43 }, { n: 'Verdant Serpent', e: '🌿', s: 'Endless stamina', wt: 0.95 }, { n: 'Aurora Drake', e: '🌈', s: 'Dazzling flair', wt: 0.83 },
+  { n: 'Frostbite Wyrm', e: '🧊', s: 'Slows enemies', wt: 1.3 }, { n: 'Solar Flare Roc', e: '☀', s: 'Momentum booster', wt: 0.88 }, { n: 'Duskwing Serpent', e: '🌆', s: 'Tricky dodger', wt: 0.87 },
+  { n: 'Titanium Wyrm', e: '⚙', s: 'Nearly unbreakable', wt: 1.46 }, { n: 'Spark Drake', e: '⚡', s: 'Quick recharge', wt: 0.9 }, { n: 'Coralreef Serpent', e: '🐚', s: 'Weaving runs', wt: 1.0 },
+  { n: 'Phantom Dragon', e: '🕳', s: 'Unreadable · rare', wt: 0.9 }, { n: 'Sandstorm Wyrm', e: '🌍', s: 'Gritty blocker', wt: 1.32 }, { n: 'Starlight Serpent', e: '⭐', s: 'Radiant genius', wt: 0.88 },
+  { n: 'Wildfire Drake', e: '🔥', s: 'Relentless pressure', wt: 1.02 }, { n: 'Glacial Titan', e: '❄', s: 'Frozen fortress', wt: 1.44 }, { n: 'Breeze Serpent', e: '🍃', s: 'Effortless glide', wt: 0.74 },
+  { n: 'Thunderhead Wyrm', e: '🌩', s: 'Booming strikes', wt: 1.1 }, { n: 'Opal Drake', e: '🔷', s: 'Precise & calm', wt: 0.96 }, { n: 'Meteorite Wyrm', e: '☄', s: 'Fiery charger', wt: 1.15 },
+  { n: 'Nebula Dragon', e: '🌌', s: 'Cosmic vision', wt: 0.9 }, { n: 'Ironclad Golem', e: '🪨', s: 'The great wall', wt: 1.5 }, { n: 'Sunspire Phoenix', e: '☀', s: 'Rising star', wt: 0.85 },
+  { n: 'Umbra Serpent', e: '🌑', s: 'Shadow specialist', wt: 0.84 }, { n: 'Riptide Wyrm', e: '🌊', s: 'Sweeping runs', wt: 1.2 }, { n: 'Voltage Drake', e: '⚡', s: 'Electric bursts', wt: 0.91 },
+  { n: 'Diamond Wyrm', e: '💎', s: 'Flawless defender', wt: 1.22 }, { n: 'Gustwing Serpent', e: '💨', s: 'Blistering steals', wt: 0.73 }, { n: 'Emberstorm Roc', e: '🔥', s: 'Blazing tempo', wt: 1.0 },
+  { n: 'Crag Wyrm', e: '🌍', s: 'Stubborn guard', wt: 1.37 }, { n: 'Celestial Drake', e: '⭐', s: 'Otherworldly skill', wt: 0.89 }, { n: 'Snowdrift Serpent', e: '🌨', s: 'Chilly control', wt: 1.1 },
+  { n: 'Blazeheart Phoenix', e: '🔆', s: 'Never gives up', wt: 0.86 }, { n: 'Marble Wyrm', e: '🪨', s: 'Solid as stone', wt: 1.4 }, { n: 'Whisper Serpent', e: '🌫', s: 'Silent & sly', wt: 0.85 },
+  { n: 'Eternal Dragon', e: '🐲', s: 'The 100th · a perfect all-round legend', wt: 1.0 }
+];
+// Dragon ratings (Vol IV) — grouped like rider attributes.
+const DRAGON_RATINGS = {
+  Flight: ['Cruise', 'Sprint', 'Accel', 'Turning', 'Climb', 'Dive', 'Hover', 'Precision'],
+  Athletic: ['Endurance', 'Recovery', 'Durability', 'Grip', 'Wing Power', 'Agility'],
+  Intelligence: ['Awareness', 'Obedience', 'Memory', 'Problem Solving', 'Adaptability'],
+  Personality: ['Courage', 'Calmness', 'Curiosity', 'Playfulness', 'Competitiveness', 'Loyalty']
+};
+function genDragonRatings(base) { const o = {}; for (const g in DRAGON_RATINGS) for (const a of DRAGON_RATINGS[g]) o[a] = Math.max(30, Math.min(99, base + ri(-14, 14))); return o; }
+function genAttrs(base) { const o = {}; for (const g in ATTRS) for (const a of ATTRS[g]) o[a] = Math.max(30, Math.min(99, base + ri(-12, 12))); return o; }
+function attrAvg(o) { let s = 0, n = 0; for (const k in o) { s += o[k]; n++; } return n ? Math.round(s / n) : 70; }
+// Make one rider (used for the starting squad, youth signings, and rookies).
+function genRider(role, baseOverride, ageR) {
+  let base = baseOverride || ri(64, 86);
+  const attrs = genAttrs(base);
+  if (!baseOverride) base = attrAvg(attrs);
+  return {
+    name: rName(), element: ELEMS[ri(0, ELEMS.length - 1)], role, base, level: 1, xp: 0, goals: 0, mvps: 0,
+    age: ageR || ri(18, 27), fatigue: 0, injuryMatches: 0, injurySev: '',
+    attrs, potential: Math.min(99, base + ri(4, 28)),
+    personality: PERSONALITIES[ri(0, PERSONALITIES.length - 1)], morale: ri(60, 85),
+    // identity profile (Vol IV)
+    nation: NATIONS[ri(0, NATIONS.length - 1)], nick: Math.random() < 0.4 ? NICKS[ri(0, NICKS.length - 1)] : '',
+    height: ri(165, 198), wgt: ri(60, 92), hand: HANDS[ri(0, 1)], side: SIDES[ri(0, 2)], seasons: 0,
+    tend: RIDER_TEND[ri(0, RIDER_TEND.length - 1)],   // Vol V play-style tendency
+    career: ['⭐ Rookie debut']                       // Vol VI Ch6: career timeline
+  };
+}
+function makeRoster() { return ROLES.map(role => genRider(role)); }
+function ovr(r) { return Math.min(99, r.base + (r.level - 1) * 2); }
+// Bond tier names (Vol IV Ch 10).
+function bondTier(v) { return v <= 10 ? 'Stranger' : v <= 25 ? 'Familiar' : v <= 40 ? 'Partners' : v <= 60 ? 'Trusted' : v <= 80 ? 'Synchronized' : v <= 95 ? 'Elite Pair' : 'Legendary Bond'; }
+
+const FACILITIES = [
+  { key: 'flightTunnel', name: 'Flight Tunnel', em: '🌀', act: 'Your team flies FASTER' },
+  { key: 'merchFactory', name: 'Merchandise Factory', em: '🧢', act: 'More gold each match' },
+  { key: 'trainingCenter', name: 'Training Center', em: '🏋️', act: '' },
+  { key: 'dragonSanctuary', name: 'Dragon Sanctuary', em: '🐉', act: '' },
+  { key: 'medicalCenter', name: 'Medical Center', em: '🏥', act: '' },
+  { key: 'sportsScience', name: 'Sports Science Lab', em: '🔬', act: '' },
+  { key: 'flightLab', name: 'Strategy Center', em: '📋', act: '' },
+  { key: 'nutrition', name: 'Nutrition Center', em: '🥗', act: '' },
+  { key: 'recoverySpa', name: 'Recovery Spa', em: '💆', act: '' },
+  { key: 'youthAcademy', name: 'Youth Academy', em: '🎓', act: '' },
+  { key: 'hatchery', name: 'Dragon Hatchery', em: '🥚', act: '' },
+  { key: 'breeding', name: 'Breeding Sanctuary', em: '💞', act: '' },
+  { key: 'analytics', name: 'Analytics Center', em: '📈', act: '' },
+  { key: 'museum', name: 'Museum & Hall of Fame', em: '🏛️', act: '' }
+];
+function getFac(k) { return (club.facilities && club.facilities[k]) || 0; }
+function facCost(l) { return 100 + l * 60; }
+function totalFac() { return FACILITIES.reduce((s, f) => s + getFac(f.key), 0); }
+
+const STAFF = [
+  { key: 'headCoach', name: 'Head Coach', em: '🧑‍🏫', act: 'Team flies faster' },
+  { key: 'marketingDir', name: 'Marketing Director', em: '📣', act: 'More gold' },
+  { key: 'chiefScout', name: 'Chief Scout', em: '🔭', act: 'More reputation' },
+  { key: 'fitnessCoach', name: 'Conditioning Coach', em: '💪', act: '+Team prestige' }
+];
+function getStaff(k) { return (club.staff && club.staff[k]) || 0; }
+function staffCost(l) { return 140 + l * 90; }
+const STAFF_MAX = 5, FAC_MAX = 10;
+
+const RARITIES = [{ n: 'Common', c: '#b0bec5', b: 1, w: 55 }, { n: 'Rare', c: '#4dd0e1', b: 2, w: 28 }, { n: 'Epic', c: '#ba68c8', b: 3, w: 13 }, { n: 'Legendary', c: '#ffd54a', b: 5, w: 4 }];
+function rollRar() { let r = Math.random() * 100, a = 0; for (const x of RARITIES) { a += x.w; if (r < a) return x; } return RARITIES[0]; }
+const DADJ = ['Ancient','Blazing','Frost','Storm','Shadow','Golden','Crystal','Thunder','Emerald','Crimson'];
+const DNOUN = ['Wyrm','Drake','Serpent','Fang','Wing','Talon','Scale','Flame','Spirit','Rex'];
+const DGENDER = ['♂', '♀'];
+function genDragon() {
+  const r = rollRar(), sp = SPECIES[ri(0, SPECIES.length - 1)];
+  const base = 60 + r.b * 5 + ri(-6, 10);   // rarer dragons rate higher
+  const ratings = genDragonRatings(base);
+  return {
+    name: DADJ[ri(0, 9)] + ' ' + DNOUN[ri(0, 9)], element: sp.e, species: sp.n, trait: sp.s,
+    rarity: r.n, color: r.c, bonus: r.b, gen: 1, weight: sp.wt, gender: DGENDER[ri(0, 1)],
+    ratings, potential: Math.min(99, base + ri(4, 24)), bond: 0,
+    // appearance profile (Vol IV)
+    wingspan: (6 + Math.random() * 9).toFixed(1), horns: DHORNS[ri(0, DHORNS.length - 1)],
+    tail: DTAILS[ri(0, DTAILS.length - 1)], colName: DCOLNAME[ri(0, DCOLNAME.length - 1)], bloodline: DBLOOD[ri(0, DBLOOD.length - 1)],
+    tend: DRAGON_TEND[ri(0, DRAGON_TEND.length - 1)]   // Vol V flight tendency
+  };
+}
+function dragonOvr(d) { if (!d.ratings) return 60 + (d.bonus || 1) * 6; let s = 0, n = 0; for (const k in d.ratings) { s += d.ratings[k]; n++; } return Math.round(s / n); }
+function genProspect() { const o = ri(58, 78), p = o + ri(4, 16); return { name: rName(), role: ROLES[ri(0, ROLES.length - 1)], element: ELEMS[ri(0, 8)], ovr: o, pot: p, cost: 120 + (p - 58) * 9 }; }
+function genStar() { const o = ri(78, 94); return { name: rName(), role: ROLES[ri(0, ROLES.length - 1)], element: ELEMS[ri(0, 8)], ovr: o, bonus: Math.max(1, Math.round((o - 74) / 4)), price: 200 + (o - 74) * 40 }; }
+
+const LEAGUE_TEAMS = ['Storm Wings','Inferno Drakes','Frost Fangs','Shadow Serpents','Terra Wyrms','Thunder Talons','Gale Griffins','Cosmic Comets'];
+// ===== Volume V Ch4/24: every team has a permanent IDENTITY that changes how it plays you =====
+const STYLES = {
+  'Sky Storm':        { desc: 'Fast offense · aggressive steals', tempo: 1.22, ringBias: 0.35, defense: 0.85, press: 0.0009, person: 'Fearless', smart: 0.05 },
+  'Iron Wall':        { desc: 'Elite defense · patient offense', tempo: 0.9, ringBias: 0.15, defense: 1.45, press: 0.0003, person: 'Disciplined', smart: 0.1 },
+  'Vertical Assault': { desc: 'Attacks the 5-point ring · high risk', tempo: 1.06, ringBias: 0.72, defense: 0.9, press: 0.0005, person: 'Aggressive', smart: 0.0 },
+  'Dragon Swarm':     { desc: 'Constant movement · short passes', tempo: 1.12, ringBias: 0.3, defense: 1.0, press: 0.0008, person: 'Experimental', smart: 0.08 },
+  'X Fighters':       { desc: 'The X System · the smartest team', tempo: 1.16, ringBias: 0.45, defense: 1.25, press: 0.0007, person: 'Scientific', smart: 0.22 },
+  'Balanced':         { desc: 'A well-rounded side', tempo: 1.0, ringBias: 0.3, defense: 1.0, press: 0.0005, person: 'Traditional', smart: 0.0 }
+};
+const TEAM_STYLE = {
+  'Storm Wings': 'Sky Storm', 'Inferno Drakes': 'Vertical Assault', 'Frost Fangs': 'Iron Wall',
+  'Shadow Serpents': 'Dragon Swarm', 'Terra Wyrms': 'Iron Wall', 'Thunder Talons': 'Sky Storm',
+  'Gale Griffins': 'Dragon Swarm', 'Cosmic Comets': 'X Fighters'
+};
+function styleKey(name) { return TEAM_STYLE[name] || 'Balanced'; }
+function styleOf(name) { return STYLES[styleKey(name)] || STYLES['Balanced']; }
+// ===== Volume V Ch3: every team has a COACH with ratings that shape how it plays =====
+const COACH_FIRST = ['Coach', 'Gaffer', 'Master', 'Mentor', 'Boss'];
+const STYLE_FORM = { 'Sky Storm': 'Spear', 'Iron Wall': 'Shield', 'Vertical Assault': 'Pyramid', 'Dragon Swarm': 'Crescent', 'X Fighters': 'Spiral', 'Balanced': 'Diamond' };
+const TEAM_COACHES = {};
+(function () {   // build a coach for each league team, biased by its style
+  LEAGUE_TEAMS.forEach(t => {
+    const sk = TEAM_STYLE[t] || 'Balanced', b = { 'X Fighters': 18, 'Iron Wall': 8, 'Sky Storm': 4, 'Vertical Assault': 2, 'Dragon Swarm': 6, 'Balanced': 0 }[sk] || 0;
+    TEAM_COACHES[t] = {
+      name: COACH_FIRST[ri(0, COACH_FIRST.length - 1)] + ' ' + LAST[ri(0, LAST.length - 1)],
+      tactical: Math.min(99, 60 + b + ri(0, 14)),
+      leadership: Math.min(99, 58 + ri(0, 24)),
+      creativity: Math.min(99, 55 + (sk === 'X Fighters' || sk === 'Dragon Swarm' ? 15 : 0) + ri(0, 18)),
+      discipline: Math.min(99, 58 + (sk === 'Iron Wall' ? 18 : 0) + ri(0, 16)),
+      development: Math.min(99, 55 + ri(0, 24))
+    };
+  });
+})();
+function coachOf(name) { return TEAM_COACHES[name] || { name: 'Coach', tactical: 65, leadership: 65, creativity: 65, discipline: 65, development: 65 }; }
+// ===== Volume V Ch13/20: hidden TENDENCIES you uncover by SCOUTING (stable per team) =====
+function hashStr(s) { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return Math.abs(h); }
+const TEND_SIDE = ['Favors the LEFT side', 'Favors the RIGHT side', 'Attacks through the MIDDLE'];
+const TEND_ALT = ['Loves HIGH-altitude attacks', 'Prefers LOW ground-level runs', 'Attacks at all altitudes'];
+const TEND_WEAK = ['Guardian struggles down low', 'Slow to get back on defense', 'Panics when pressed hard', 'Weak on the counterattack'];
+function tendOf(name) { const h = hashStr(name); return { side: TEND_SIDE[h % 3], alt: TEND_ALT[(h >> 2) % 3], weak: TEND_WEAK[(h >> 4) % 4] }; }
+// The full scouting report for a team (revealed a little more each time you play them).
+function scoutFacts(name) {
+  const st = styleKey(name), c = coachOf(name), t = tendOf(name);
+  return [
+    '🎭 Plays the "' + st + '" style — ' + styleOf(name).desc,
+    '🔷 Lines up in the ' + (STYLE_FORM[st] || 'Diamond') + ' formation',
+    '👔 Coach ' + c.name + ' · Tactical ' + c.tactical + (c.tactical >= 62 ? ' (adapts at halftime!)' : ''),
+    '🧭 ' + t.side,
+    '📈 ' + t.alt,
+    '⚠️ Weakness: ' + t.weak
+  ];
+}
+function scoutPlays(name) { return (club && club.scout && club.scout[name]) || 0; }
+// A rivalry forms after a few close meetings (Vol V Ch19).
+function rivalRec(name) { return (club && club.rival && club.rival[name]) || { w: 0, l: 0, played: 0 }; }
+function isRivalTeam(name) { const r = rivalRec(name); return r.played >= 3 && Math.abs(r.w - r.l) <= 2; }
+// enemy-AI knobs, set each match from the opponent's identity + coach + your difficulty (smarts, not cheats)
+let enemyTempo = 1, enemyRingBias = 0.3, enemyDefense = 1, enemyPress = 0.0005, enemySmart = 0.5, enemyReact = 0.7, enemyStyleName = 'Balanced', enemyPerson = 'Traditional', enemyFormName = 'Shield', enemyCoach = null;
+let redX = false, enemyX = false, xRotT = 4, bigGame = false;   // Vol V: X System rotation + big-game pressure
+let teamwork = 50;   // Vol V Ch9/10: communication/teamwork quality (from chemistry + bond + captain)
+// X System (Ch15-16): positionless — periodically rotate who defends vs attacks.
+function xRotate(team) {
+  const list = bots.filter(b => b.team === team);
+  const rings = RINGS.filter(r => r.team === team);
+  const nG = (team === 'red' ? redForm : enemyForm).guards, start = ri(0, Math.max(0, list.length - 1));
+  list.forEach((b, idx) => {
+    const pos = (idx + start) % list.length;
+    if (pos < nG) { b.role = 'guard'; b.guardRing = rings[pos % rings.length]; }
+    else { b.role = 'attacker'; b.guardRing = null; }
+  });
+}
+// Pick which ring the enemy attacks — expected-value style (Vol V Ch6/12): high-value rings when bold or trailing.
+let enemyLastRing = 0;   // Vol V Ch17: tactical memory — remember the last ring attacked
+function chooseEnemyRing(goals) {
+  const byVal = goals.slice().sort((a, b) => b.pts - a.pts);   // [5pt, 3pt, 1pt]
+  const trailing = teamScore.opp < teamScore.you && quarter >= QUARTERS && clock < 30;   // desperate late
+  // Vol V Ch18: MOMENTUM — enemy gets bolder when it has momentum, safer when it's against them.
+  const em = -momentum / 100;   // >0 = enemy has the momentum
+  const bias = enemyRingBias + (trailing ? 0.35 : 0) + enemySmart * 0.1 + em * 0.22;
+  let pick;
+  if (Math.random() < bias) pick = byVal[0];
+  else if (Math.random() < 0.55) pick = byVal[1] || byVal[0];
+  else pick = byVal[byVal.length - 1];
+  // Ch17: don't be predictable — vary away from the last ring you attacked (smarter = more varied)
+  if (pick.pts === enemyLastRing && Math.random() < 0.4 + enemySmart * 0.3) {
+    const others = byVal.filter(r => r.pts !== enemyLastRing);
+    if (others.length) pick = others[ri(0, others.length - 1)];
+  }
+  enemyLastRing = pick.pts;
+  return pick;
+}
+function setupEnemyAI() {
+  const st = styleOf(oppName);
+  enemyStyleName = styleKey(oppName); enemyPerson = st.person;
+  enemyCoach = coachOf(oppName);
+  const diffLvl = ({ Easy: 0, Normal: 1, Hard: 2, Expansion: 0.5 })[club ? club.difficulty : 'Normal'];
+  const dl = (diffLvl === undefined ? 1 : diffLvl);
+  const coachTac = (enemyCoach.tactical - 65) / 100;   // a great coach makes the team a bit smarter
+  enemyReact = Math.min(1, 0.4 + dl * 0.3 + coachTac * 0.4);   // Easy react late, Hard/good-coach react sharp
+  enemySmart = Math.min(1, 0.32 + dl * 0.22 + (st.smart || 0) + coachTac * 0.5);
+  enemyTempo = st.tempo * (0.88 + dl * 0.08);
+  enemyRingBias = st.ringBias; enemyDefense = st.defense * (1 + (enemyCoach.discipline - 65) / 300); enemyPress = st.press;
+  // Vol V Ch19: RIVALRY — a fierce, familiar foe brings a louder crowd + more aggressive play.
+  isRival = isRivalTeam(oppName);
+  crowdMult = (isRival ? 1.4 : 1) * (club ? fanCultureOf(club).mom : 1);   // Vol VI: your fan culture makes home games louder
+  if (isRival) { enemyTempo *= 1.08; enemyPress *= 1.6; enemySmart = Math.min(1, enemySmart + 0.05); }
+  setEnemyFormation(STYLE_FORM[enemyStyleName] || 'Diamond');   // enemy lines up in its style's formation
+  for (const b of bots) if (b.team === 'blue') b.targetRing = null;
+}
+// Vol V Ch14: the enemy coach adjusts at halftime based on the score (smarter coaches adapt more).
+function enemyHalftimeAdjust() {
+  if (!enemyCoach) return;
+  const adapt = enemyCoach.tactical >= 62;   // only tactically-aware coaches change things
+  if (!adapt) return;
+  if (teamScore.opp < teamScore.you) {            // enemy is losing → attack!
+    enemyRingBias = Math.min(0.9, enemyRingBias + 0.2); enemyTempo *= 1.08; setEnemyFormation('Spear');
+    say('🧠 ' + oppName + ' coach: go on the ATTACK!');
+  } else if (teamScore.opp > teamScore.you) {      // enemy is winning → protect the lead
+    enemyTempo *= 0.94; setEnemyFormation('Shield');
+    say('🧠 ' + oppName + ' coach: lock it DOWN!');
+  }
+}
+const LADDER = ['Universal Legends Tournament','World Dragon Crown Finals','World Dragon Super Cup','World Elite Championship','Dragon Masters League','Intercontinental Super League','Grand Continental Championship','Continental Dragon League','Kingdoms Champions Cup','Dragon Crown Playoffs','Dragon Kingdom Premier League','Royal Championship Division','Elite Championship League','National League One','National League Two','Provincial Championship','Regional League','Development League','Amateur League','Rookie League'];
+function leagueName(d) { return LADDER[Math.max(0, Math.min(19, (d || 20) - 1))]; }
+// Volume V Ch25: the tactical "meta" evolves — a league TREND that changes over time.
+const TRENDS = [
+  'teams are loading up on 5-point Vertical Assaults', 'the X System is spreading across the league',
+  'defenses are packing into the Shield formation', 'High Spiral Rotations are the new craze',
+  'clubs are chasing young Wind-element flyers', 'coaches favor patient, low-risk passing this season',
+  'aggressive High Press tactics are everywhere', 'the Triple Dive Counter is catching teams off guard',
+  'breeding rare bloodlines is the hot strategy', 'veteran captains are back in fashion',
+  'everyone wants a Fire-element Sharpshooter', 'the Reverse Pyramid is this season\'s surprise'
+];
+function refreshTrend(c) { c.trend = TRENDS[ri(0, TRENDS.length - 1)]; }
+// ===== Volume VI (League Universe) starter: World Rankings, News/Media, Season Awards =====
+const WORLD_PRESTIGE = { 'X Fighters': 900, 'Iron Wall': 760, 'Sky Storm': 710, 'Vertical Assault': 690, 'Dragon Swarm': 670, 'Balanced': 620 };
+function worldScore(name) {
+  // Ch20: league strength matters — a higher division (lower number) is worth much more.
+  const divBonus = (21 - (club ? club.division : 20)) * 14;
+  if (club && name === club.name) return Math.round(club.rep + (club.trophies || 0) * 30 + club.wins * 3 + divBonus);
+  const lg = (club && club.league && club.league[name]) ? club.league[name] : { p: 0, w: 0 };
+  return Math.round((WORLD_PRESTIGE[styleKey(name)] || 620) + lg.p * 4 + (lg.w || 0) * 2 + divBonus);
+}
+function worldRankings() {
+  const names = club ? Object.keys(club.league) : LEAGUE_TEAMS.slice();
+  return names.map(n => ({ n, s: worldScore(n) })).sort((a, b) => b.s - a.s);
+}
+const JOURNO = [
+  'That was a masterclass in aerial control!', 'The X System is changing how this league is played.',
+  'Defenses have never been tougher — scoring is a real art now.', 'A new era of young flyers is rising.',
+  'Rivalry weekend always brings out the best drama.', 'Coaching adjustments are winning championships.',
+  'The crowd energy in big games is simply electric.', 'Breeding programs are reshaping the dragon world.'
+];
+// ===== Volume VI Round 3: MEDIA & CULTURE =====
+// Ch12: journalists with personalities.
+const JR_FIRST = ['Max', 'Vera', 'Dax', 'Nia', 'Cole', 'Isla', 'Rex', 'Mona'];
+const JR_PERSON = ['Supportive', 'Critical', 'Sensational', 'Analytical', 'Ex-Pro'];
+const JOURNALISTS = [];
+(function () { for (let i = 0; i < 6; i++) JOURNALISTS.push({ name: JR_FIRST[i % JR_FIRST.length] + ' ' + LAST[ri(0, LAST.length - 1)], p: JR_PERSON[i % JR_PERSON.length] }); })();
+const PUNDIT_LINES = {
+  'Supportive': ['They gave it everything — real heart out there.', 'Keep believing, this squad is going places!', 'A proud performance whatever the result.'],
+  'Critical': ['Frankly, that defense needs serious work.', 'Not good enough — the fans expect more.', 'Too many easy mistakes out there today.'],
+  'Sensational': ['UNBELIEVABLE scenes at the arena!!', 'This could be the story of the SEASON!', 'The drama is absolutely off the charts!'],
+  'Analytical': ['Possession and shot selection decided that one.', 'Their formation created the key mismatches.', 'The numbers point to a clear tactical edge.'],
+  'Ex-Pro': ["Back in my day we'd have closed that out.", 'That captain reminds me of the old greats.', 'Experience always wins the tight ones.']
+};
+function genPundit() { const j = JOURNALISTS[ri(0, JOURNALISTS.length - 1)]; const L = PUNDIT_LINES[j.p]; return { j, line: L[ri(0, L.length - 1)] }; }
+// Ch13: fan cultures (each club's crowd feels different).
+const FAN_CULTURES = [
+  { n: 'Loud & Passionate', e: '📣', mom: 1.15, desc: 'deafening chants' },
+  { n: 'Traditional', e: '🎩', mom: 1.0, desc: 'proud & respectful' },
+  { n: 'Family-Friendly', e: '👨‍👩‍👧', mom: 1.0, desc: 'a warm atmosphere' },
+  { n: 'Creative Chants', e: '🎵', mom: 1.08, desc: 'inventive songs & banners' },
+  { n: 'Fierce & Aggressive', e: '🔥', mom: 1.18, desc: 'an intimidating home crowd' }
+];
+function fanCultureOf(c) { return FAN_CULTURES[(c && c.fanCultureIdx) || 0]; }
+// Ch15: broadcast tiers by league level.
+function broadcastTier(c) {
+  if (tournamentMatch) return { n: 'World Finals', e: '🎆', desc: 'Opening ceremony · fireworks · dragon flyover' };
+  const d = c ? c.division : 20;
+  if (d <= 5) return { n: 'Premier Broadcast', e: '📺', desc: 'Pro coverage · pregame analysis' };
+  if (d <= 12) return { n: 'National Broadcast', e: '🛰️', desc: 'Full commentary team' };
+  return { n: 'Local Broadcast', e: '📻', desc: 'Simple coverage, small crowd' };
+}
+// Ch16: history-aware commentary about the two clubs.
+function genHistoryComment(c, opp) {
+  const rr = (c && c.rival && c.rival[opp]) || { w: 0, l: 0, played: 0 };
+  if (rr.played === 0) return '🎙️ First-ever meeting with ' + opp + '!';
+  if (rr.w > rr.l) return '🎙️ You lead the all-time series ' + rr.w + '–' + rr.l + '.';
+  if (rr.l > rr.w) return '🎙️ ' + opp + ' lead the series ' + rr.l + '–' + rr.w + ' — payback time!';
+  return '🎙️ All square in the series ' + rr.w + '–' + rr.l + '.';
+}
+// Ch11: bigger news — extra league-wide headlines.
+function genLeagueHeadline(c) {
+  const teams = Object.keys(c.league).filter(t => t !== c.name);
+  const t = teams[ri(0, teams.length - 1)] || 'A rival club';
+  const H = ['📰 ' + t + ' on a hot winning streak.', '📰 Transfer rumor links a star to ' + t + '.',
+    '📰 Injury blow for ' + t + "'s captain.", '📰 ' + t + ' unveil a new arena expansion.',
+    '📰 Young ' + t + ' dragon tipped for greatness.', '📰 ' + t + ' fans set an attendance record.'];
+  return H[ri(0, H.length - 1)];
+}
+function initLeague(c) { c.league = {}; c.league[c.name] = { w: 0, l: 0, p: 0 }; LEAGUE_TEAMS.forEach(t => c.league[t] = { w: 0, l: 0, p: 0 }); (c.expansion || []).forEach(t => c.league[t] = { w: 0, l: 0, p: 0 }); }
+function recRes(c, name, won) { const r = c.league[name]; if (r) { if (won) { r.w++; r.p += 3; } else r.l++; } }
+// The world sims other clubs each match — includes any expansion teams in the table.
+function simLeague(c) {
+  const free = Object.keys(c.league).filter(t => t !== c.name && t !== c.nextOpponent);
+  for (let i = 0; i + 1 < free.length; i += 2) {
+    if (Math.random() < 0.5) { recRes(c, free[i], true); recRes(c, free[i + 1], false); }
+    else { recRes(c, free[i + 1], true); recRes(c, free[i], false); }
+  }
+}
+function pickNextOpp(c) { const pool = Object.keys(c.league).filter(t => t !== c.name); c.nextOpponent = pool[ri(0, pool.length - 1)] || LEAGUE_TEAMS[0]; }
+
+// ===== Volume VI Round 2: THE LIVING WORLD =====
+const PHASES = [
+  { n: 'Winter', e: '❄️', d: 'Transfer window · Academy Draft · Dragon Festival' },
+  { n: 'Spring', e: '🌸', d: 'The league season begins · Cup competitions' },
+  { n: 'Summer', e: '☀️', d: 'International Championships · All-Star Week' },
+  { n: 'Autumn', e: '🍂', d: 'Playoffs · World Championship · Awards' }
+];
+function seasonPhase(c) { return Math.min(3, Math.floor((((c.matchNum || 1) - 1) % 15) / 4)); }
+function economyMult(c) { return (c.eraEcon || 1) * (1 + Math.max(0, (c.year || 100) - (c.foundedYear || 100)) * 0.03); }   // era base × growth over the decades
+const RULE_CHANGES = [
+  'Overtime is now a 5-minute golden-point period.', 'Rosters expanded — clubs may carry one more rider.',
+  'Youth eligibility lowered — 16-year-olds can now debut.', 'A soft salary cap is introduced by league governance.',
+  'The 5-point ring now sits slightly higher this era.', 'Tackle rules tightened — fewer collisions allowed.',
+  'A luxury tax now funds smaller clubs.', 'Transfer windows shortened to keep squads stable.'
+];
+const EXPANSION_NAMES = ['Nova Wings', 'Aether Drakes', 'Solar Flares', 'Void Runners', 'Crystal Guard', 'Phoenix Ascendant', 'Tidebreakers', 'Skyforge United'];
+// Autonomous world news about OTHER clubs (the world lives without you).
+function worldEvent(c) {
+  const teams = Object.keys(c.league).filter(t => t !== c.name);
+  const t = teams[ri(0, teams.length - 1)] || 'a rival club';
+  const T = [
+    '🌍 ' + t + ' win the World Championship!', '📰 ' + t + ' sign a superstar rider in a record transfer.',
+    '📰 A legendary dragon retires at ' + t + ' after 19 seasons.', '📰 ' + t + ' fire their head coach after a slump.',
+    '📰 A ' + t + ' academy graduate shocks the league.', '📰 ' + t + ' break a decades-old attendance record.'
+  ];
+  return T[ri(0, T.length - 1)];
+}
+
+// Sponsors + tournaments.
+const SPONSORS = [{ name: 'DragonFuel', em: '⛽', goal: 2, reward: 150 }, { name: 'SkyGear', em: '🎽', goal: 3, reward: 260 }, { name: 'AeroWings', em: '🪽', goal: 4, reward: 420 }, { name: 'ScaleShine', em: '✨', goal: 2, reward: 180 }];
+function pickSponsor() { return SPONSORS[ri(0, SPONSORS.length - 1)]; }
+function isTournament() { return !!(club && club.matchNum % 10 === 0); }
+function tournamentOpp() {
+  const rows = Object.keys(club.league).filter(n => n !== club.name).map(n => ({ n, ...club.league[n] })).sort((a, b) => b.p - a.p);
+  return rows[0] ? rows[0].n : club.nextOpponent;
+}
+let tournamentMatch = false;
+
+// Add all the management fields to a club (called for a new club).
+function initClubExtras(c) {
+  c.facilities = {}; c.staff = {}; c.talent = 0;
+  c.eggs = []; c.dragons = []; c.squad = [];
+  c.roster = makeRoster();
+  // Give every rider a partner dragon + a personal Bond (Vol IV: bond is per Rider↔Dragon pair).
+  c.roster.forEach((r, i) => { const dg = genDragon(); c.dragons.push(dg); c.talent += dg.bonus; r.dragonIdx = i; r.bond = ri(12, 30); });
+  c.records = { biggestWin: 0, mostPts: 0, streak: 0, best: 0 };
+  c.division = 20; c.trophies = 0; c.day = 1; c.week = 1;
+  c.bond = 30; c.chemistry = 30; c.fans = 500;
+  // Named staff members (Vol IV: staff are people, not just levels).
+  c.staffPeople = {}; STAFF.forEach(s => { c.staffPeople[s.key] = { name: rName(), personality: PERSONALITIES[ri(0, PERSONALITIES.length - 1)] }; });
+  // Full Fans system (Vol III): loyalty / excitement / expectations.
+  c.fanLoyal = 50; c.fanExcite = 50; c.fanExpect = 40;
+  // Lifetime finances ledger (Vol III).
+  c.finance = { earnedTickets: 0, earnedMerch: 0, earnedSponsor: 0, earnedPrize: 0, spentWages: 0, spentUpkeep: 0 };
+  c.stories = [];
+  c.scout = {}; c.rival = {};   // Vol V: scouting reports + head-to-head rivalry records
+  c.seasonAwards = [];          // Vol VI: season MVP / Golden Boot history
+  // ===== Volume VI Round 1: the living HISTORY =====
+  c.foundedYear = 100 + ri(0, 30); c.year = c.foundedYear;   // in-world lore year
+  c.seasonWL = { w: 0, l: 0 }; c.bestSeason = '';            // best single-season record
+  c.rec = { fastestFlight: 0, highestJump: 0, longestPass: 0 };   // live-tracked records
+  c.timeline = [];              // one snapshot per season (champion, MVP, etc.)
+  c.awardsHistory = [];         // the 13 awards, per season
+  c.greatestCaptain = ''; c.legendaryDragon = '';
+  c.lastPhase = -1; c.ruleLog = []; c.expansion = [];   // Vol VI R2: calendar phase, rule changes, expansion clubs
+  c.fanCultureIdx = ri(0, FAN_CULTURES.length - 1);     // Vol VI R3: this club's fan culture
+  refreshTrend(c);              // Vol V: the current league tactical trend
+  c.sponsor = pickSponsor(); c.sponsorProg = 0;
+  c.tourneyUnlocked = false; c.tourneyRoundsLeft = 0; c.regSinceLock = 0;
+  c.market = [genStar(), genStar(), genStar(), genStar()];
+  c.prospects = [genProspect(), genProspect(), genProspect()];
+  initLeague(c); pickNextOpp(c);
+}
+
+// ---- The shared panel ----
+function openPanel(title, fill) {
+  document.getElementById('panelTitle').textContent = title;
+  document.getElementById('panelGold').textContent = '💰 ' + club.money + ' gold';
+  const list = document.getElementById('panelList'); list.innerHTML = '';
+  fill(list);
+  showScreen('panelScreen');
+}
+function card(em, nm, mt, right) {
+  const d = document.createElement('div'); d.className = 'card';
+  d.innerHTML = '<div class="em">' + em + '</div><div class="info"><div class="nm">' + nm + '</div><div class="mt">' + mt + '</div></div>';
+  if (right) d.appendChild(right);
+  return d;
+}
+function buyBtn(label, cost, ok, onBuy) {
+  const b = document.createElement('button'); b.textContent = label; b.disabled = !ok || club.money < cost;
+  b.onclick = () => { if (club.money < cost || !ok) return; club.money -= cost; onBuy(); saveClub(); };
+  return b;
+}
+
+const PANELS = {
+  squad: () => openPanel('👥 Your Squad', list => {
+    club.roster.slice().sort((a, b) => ovr(b) - ovr(a)).forEach(r => {
+      const st = r.injuryMatches > 0 ? '<span style="color:#ff9a9a">⛑️ ' + (r.injurySev || 'Injured') + ' (' + r.injuryMatches + ')</span>'
+               : (r.fatigue > 70 ? '<span style="color:#ffca7a">😓 Tired</span>' : '<span style="color:#7dff9a">✅ Fit</span>');
+      const want = r.wantsOut ? ' · <span style="color:#ff9a9a">✋ wants out</span>' : '';
+      const wrap = document.createElement('div'); wrap.style.display = 'flex'; wrap.style.gap = '5px';
+      const btn = document.createElement('button'); btn.textContent = '📋 View'; btn.onclick = () => openRider(r);
+      const tb = document.createElement('button'); tb.textContent = '🏋️ Train 💰60';
+      tb.disabled = club.money < 60; tb.onclick = () => trainRider(r);
+      wrap.appendChild(btn); wrap.appendChild(tb);
+      list.appendChild(card(r.element, r.name + '  <span style="color:#9fb4d8;font-size:11px">' + r.role + ' · age ' + r.age + ' · ' + (r.personality || '') + '</span>',
+        'OVR ' + ovr(r) + ' (pot ' + (r.potential || ovr(r)) + ') · 😀 ' + (r.morale || 70) + ' · ❤️ Bond ' + (r.bond || 0) + ' (' + bondTier(r.bond || 0) + ') · ⚽ ' + r.goals + want + ' · ' + st, wrap));
+    });
+  }),
+  facilities: () => openPanel('🏗️ Facilities', list => {
+    FACILITIES.forEach(f => {
+      const lvl = getFac(f.key), cost = facCost(lvl);
+      const b = buyBtn(lvl >= FAC_MAX ? 'MAX' : 'Upgrade 💰' + cost, cost, lvl < FAC_MAX, () => { club.facilities[f.key] = lvl + 1; PANELS.facilities(); });
+      list.appendChild(card(f.em, f.name + '  <span class="lv">Lv ' + lvl + '/' + FAC_MAX + '</span>', f.act ? '✨ ' + f.act : '+ Club prestige', b));
+    });
+  }),
+  staff: () => openPanel('👔 Staff', list => {
+    const people = club.staffPeople || {};
+    STAFF.forEach(s => {
+      const lvl = getStaff(s.key), cost = staffCost(lvl);
+      const p = people[s.key] || {};
+      const b = buyBtn(lvl >= STAFF_MAX ? 'MAX' : (lvl === 0 ? 'Hire 💰' : 'Promote 💰') + cost, cost, lvl < STAFF_MAX, () => { club.staff[s.key] = lvl + 1; PANELS.staff(); });
+      const who = p.name ? '<b>' + p.name + '</b> <span style="color:#9fb4d8;font-size:11px">(' + (p.personality || '') + ') · ' + s.name + '</span>' : s.name;
+      list.appendChild(card(s.em, who + '  <span class="lv">Lv ' + lvl + '/' + STAFF_MAX + '</span>', '✨ ' + s.act, b));
+    });
+  }),
+  youth: () => openPanel('🎓 Youth Academy — Talent +' + club.talent, list => {
+    club.prospects.forEach((p, i) => {
+      const b = buyBtn('Recruit 💰' + p.cost, p.cost, true, () => {
+        let wi = 0, wv = 1e9; club.roster.forEach((r, j) => { if (ovr(r) < wv) { wv = ovr(r); wi = j; } });
+        club.roster[wi] = genRider(club.roster[wi].role, p.ovr, ri(17, 20));
+        club.talent += Math.max(1, Math.round((p.pot - 65) / 4)); club.prospects[i] = genProspect(); PANELS.youth();
+      });
+      list.appendChild(card(p.element, p.name, p.role + ' · OVR ' + p.ovr + ' · Potential ' + p.pot, b));
+    });
+  }),
+  hatchery: () => openPanel('🥚 Dragon Hatchery — ' + (club.dragons.length) + ' dragons', list => {
+    const b = buyBtn('Buy Egg 💰150', 150, true, () => { club.eggs.push({ on: club.matchNum + 2 }); PANELS.hatchery(); });
+    list.appendChild(card('🥚', 'Buy a Dragon Egg', 'Hatches after 2 matches into a random dragon', b));
+    if (getFac('breeding') > 0 && club.dragons.length >= 2) {
+      const bb = buyBtn('🧬 Breed 💰200', 200, true, () => { breedDragons(); PANELS.hatchery(); });
+      list.appendChild(card('💞', 'Breeding Sanctuary', 'Breed your 2 newest dragons — a chance at a rare bloodline!', bb));
+    } else if (getFac('breeding') === 0) {
+      list.appendChild(card('💞', 'Breeding Sanctuary', 'Build the Breeding Sanctuary facility to breed dragons'));
+    }
+    club.eggs.forEach(e => list.appendChild(card('🥚', 'Incubating egg…', 'Hatches in ' + Math.max(0, e.on - club.matchNum) + ' matches')));
+    club.dragons.slice().reverse().forEach(d => {
+      const vb = document.createElement('button'); vb.textContent = '📋 View'; vb.onclick = () => openDragon(d);
+      list.appendChild(card(d.element, d.name + ' <span style="color:#9fb4d8;font-size:11px">' + (d.gender || '') + '</span>',
+        '<span style="color:' + d.color + '">' + d.rarity + '</span> · ' + (d.species || '?') + ' · gen ' + (d.gen || 1) + ' · OVR ' + dragonOvr(d) + ' · ❤️ ' + (d.bond || 0), vb));
+    });
+  }),
+  transfers: () => openPanel('🔁 Transfer Market — Talent +' + club.talent, list => {
+    club.market.forEach((s, i) => {
+      const b = buyBtn('Sign 💰' + s.price, s.price, true, () => { club.talent += s.bonus; club.squad.push(s); club.market[i] = genStar(); PANELS.transfers(); });
+      list.appendChild(card(s.element, s.name, s.role + ' · OVR ' + s.ovr + ' · +' + s.bonus + ' talent', b));
+    });
+  }),
+  league: () => openPanel('🏆 ' + leagueName(club.division) + ' (Div ' + club.division + ')', list => {
+    const rows = Object.keys(club.league).map(n => ({ n, ...club.league[n] })).sort((a, b) => b.p - a.p || (b.w - b.l) - (a.w - a.l));
+    rows.forEach((r, i) => {
+      const mine = r.n === club.name;
+      const d = document.createElement('div'); d.className = 'card';
+      d.style.background = mine ? 'rgba(255,224,102,0.16)' : 'rgba(10,25,55,0.85)';
+      const sty = mine ? (club.philosophy || '') : styleKey(r.n);
+      const pers = mine ? '' : ' · ' + styleOf(r.n).person;   // Vol V Ch24: club personality word
+      const coach = mine ? '' : ' · 👔 ' + coachOf(r.n).name + ' (Tac ' + coachOf(r.n).tactical + ')';
+      d.innerHTML = '<div class="info"><div class="nm">' + (i + 1) + '. ' + r.n + (mine ? ' (you)' : '') + '</div><div class="mt" style="color:#ffb0b0">' + sty + pers + coach + '</div></div><div class="lv">' + r.w + 'W ' + r.l + 'L · ' + r.p + ' pts</div>';
+      list.appendChild(d);
+    });
+  }),
+  legacy: () => openPanel('🏛️ Club Legacy', list => {
+    const rc = club.records;
+    const s = document.createElement('div'); s.className = 'statRow'; s.style.maxWidth = '600px';
+    s.innerHTML =
+      '<div class="statCard"><div class="v">🏆 ' + club.trophies + '</div><div class="k">Trophies</div></div>' +
+      '<div class="statCard"><div class="v">' + club.wins + '–' + club.losses + '</div><div class="k">All-time</div></div>' +
+      '<div class="statCard"><div class="v">🔥 ' + rc.streak + '</div><div class="k">Win Streak</div></div>' +
+      '<div class="statCard"><div class="v">' + rc.biggestWin + '</div><div class="k">Biggest Win</div></div>' +
+      '<div class="statCard"><div class="v">' + rc.mostPts + '</div><div class="k">Most Points</div></div>';
+    list.appendChild(s);
+    const leg = club.dragons.filter(d => d.rarity === 'Legendary');
+    const hof = club.hof || [];
+    const h = document.createElement('div'); h.style.marginTop = '8px';
+    h.innerHTML = '<div style="color:#ffd54a;font-weight:bold;">🏛️ Hall of Fame</div>' +
+      (hof.length ? hof.slice(-8).reverse().map(x => '<div>🎖️ <b>' + x.name + '</b> — OVR ' + x.ovr + ', ' + x.goals + ' career goals (retired)</div>').join('') : '') +
+      (leg.length ? leg.map(d => '<div>' + d.element + ' <b>' + d.name + '</b> — Legendary dragon</div>').join('') : '') +
+      (!hof.length && !leg.length ? '<div style="color:#9fb4d8;font-size:13px;">Legends will appear here as riders retire and Legendary dragons hatch!</div>' : '');
+    list.appendChild(h);
+    // Retired riders who took a club job (Vol IV).
+    const coaches = club.coaches || [];
+    if (coaches.length) {
+      const cd = document.createElement('div'); cd.style.marginTop = '8px';
+      cd.innerHTML = '<div style="color:#ffd54a;font-weight:bold;">👔 Club Staff (retired legends)</div>' +
+        coaches.slice(-8).reverse().map(c => '<div>🧑‍🏫 <b>' + c.name + '</b> — ' + c.job + ' (rating ' + c.rating + ')</div>').join('');
+      list.appendChild(cd);
+    }
+  }),
+  finances: () => openPanel('💰 Finances', list => {
+    const f = club.finance || {};
+    const income = (f.earnedTickets || 0) + (f.earnedMerch || 0) + (f.earnedSponsor || 0) + (f.earnedPrize || 0);
+    const spent = (f.spentWages || 0) + (f.spentUpkeep || 0);
+    const top = document.createElement('div'); top.className = 'card';
+    top.innerHTML = '<div class="info"><div class="nm">Balance: 💰 ' + club.money + ' gold</div><div class="mt">Career profit: ' + (income - spent >= 0 ? '+' : '') + (income - spent) + ' gold</div></div>';
+    list.appendChild(top);
+    const rows = [
+      ['🎟️ Ticket sales', f.earnedTickets || 0, 1], ['🧢 Merchandise', f.earnedMerch || 0, 1],
+      ['🤝 Sponsors', f.earnedSponsor || 0, 1], ['🏆 Prize money', f.earnedPrize || 0, 1],
+      ['💸 Player wages', f.spentWages || 0, -1], ['🔧 Upkeep & medical', f.spentUpkeep || 0, -1]
+    ];
+    rows.forEach(([nm, v, sign]) => list.appendChild(card(sign > 0 ? '📈' : '📉', nm,
+      '<span style="color:' + (sign > 0 ? '#7dff9a' : '#ff9a9a') + '">' + (sign > 0 ? '+' : '−') + v + ' gold (all-time)</span>')));
+  }),
+  fans: () => openPanel('👥 Fanbase', list => {
+    const bar = (label, v, col) => {
+      const d = document.createElement('div'); d.className = 'card';
+      d.innerHTML = '<div class="info" style="width:100%"><div class="nm">' + label + ' — ' + Math.round(v) + '%</div>' +
+        '<div style="background:rgba(255,255,255,0.12);border-radius:6px;height:12px;margin-top:5px;overflow:hidden"><div style="width:' + Math.max(0, Math.min(100, v)) + '%;height:100%;background:' + col + '"></div></div></div>';
+      list.appendChild(d);
+    };
+    list.appendChild(card('👥', club.fans + ' fans', 'How many people follow ' + club.name));
+    const fc = fanCultureOf(club);
+    list.appendChild(card(fc.e, 'Fan Culture: ' + fc.n, 'Your crowd is known for ' + fc.desc + (fc.mom > 1 ? ' — a real home-field boost!' : '')));
+    bar('💚 Loyalty', club.fanLoyal || 50, '#7dff9a');
+    bar('🎉 Excitement', club.fanExcite || 50, '#ffd54a');
+    bar('🎯 Expectations', club.fanExpect || 40, '#8fd6ff');
+    const tip = document.createElement('div'); tip.style.cssText = 'color:#9fb4d8;font-size:13px;margin-top:6px;';
+    tip.innerHTML = 'Winning raises excitement & loyalty. High expectations mean fans get grumpy if you lose!';
+    list.appendChild(tip);
+  }),
+  scout: () => openPanel('🔭 Scouting Reports', list => {
+    const intro = document.createElement('div'); intro.style.cssText = 'color:#9fb4d8;font-size:13px;margin-bottom:6px;';
+    intro.innerHTML = 'Play a team to learn more about them! Each match reveals a new secret. 🔓';
+    list.appendChild(intro);
+    LEAGUE_TEAMS.forEach(t => {
+      const plays = scoutPlays(t), facts = scoutFacts(t), rr = rivalRec(t);
+      const d = document.createElement('div'); d.className = 'card';
+      let html = '<div class="info" style="width:100%"><div class="nm">' + t + (isRivalTeam(t) ? ' <span style="color:#ff7a7a">⚔️ RIVAL</span>' : '') +
+        ' <span style="color:#9fb4d8;font-size:11px">— scouted ' + plays + 'x · vs you ' + rr.w + 'W ' + rr.l + 'L</span></div><div class="mt" style="line-height:1.5">';
+      facts.forEach((f, i) => { html += (i < plays ? f : '🔒 <i style="color:#6a7fa0">??? (play them to reveal)</i>') + '<br>'; });
+      html += '</div></div>';
+      d.innerHTML = html;
+      list.appendChild(d);
+    });
+  }),
+  worldrank: () => openPanel('🌍 World Rankings', list => {
+    const intro = document.createElement('div'); intro.style.cssText = 'color:#9fb4d8;font-size:13px;margin-bottom:6px;';
+    intro.innerHTML = 'Win, earn reputation & trophies to climb the world ladder! 🏆';
+    list.appendChild(intro);
+    worldRankings().forEach((r, i) => {
+      const mine = club && r.n === club.name;
+      const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1) + '.';
+      const d = document.createElement('div'); d.className = 'card';
+      d.style.background = mine ? 'rgba(255,224,102,0.16)' : 'rgba(10,25,55,0.85)';
+      d.innerHTML = '<div class="info"><div class="nm">' + medal + ' ' + r.n + (mine ? ' (you)' : '') + '</div><div class="mt" style="color:#9fb4d8">' + (mine ? 'Your club' : styleKey(r.n)) + '</div></div><div class="lv">' + r.s + ' pts</div>';
+      list.appendChild(d);
+    });
+  }),
+  news: () => openPanel('📰 DBF News & Media', list => {
+    if (club.trend) list.appendChild(card('📈', 'League Trend', club.trend));
+    // Ch12: a named journalist with a personality-flavored take
+    const pu = genPundit();
+    list.appendChild(card('🎙️', pu.j.name + ' · ' + pu.j.p, '"' + pu.line + '"'));
+    const top = worldRankings().slice(0, 3).map((r, i) => ['🥇', '🥈', '🥉'][i] + ' ' + r.n).join('  ');
+    list.appendChild(card('🌍', 'World Top 3', top));
+    (club.seasonAwards || []).slice(-6).reverse().forEach(a => list.appendChild(card('🏅', 'Award', a)));
+    const st = club.stories || [];
+    if (!st.length) list.appendChild(card('📰', 'No headlines yet', 'Play a match to make the news!'));
+    st.slice(-12).reverse().forEach(s => list.appendChild(card('📰', 'Headline', s)));
+  }),
+  history: () => openPanel('📜 Club History & Records', list => {
+    const rec = club.rec || {}, champs = club.trophies || 0;
+    const topGoals = club.roster.reduce((m, r) => Math.max(m, r.goals || 0), (club.hof || []).reduce((m, h) => Math.max(m, h.goals || 0), 0));
+    const longCareer = club.roster.reduce((m, r) => Math.max(m, r.seasons || 0), 0);
+    // 1) club history
+    const ch = document.createElement('div'); ch.className = 'card';
+    ch.innerHTML = '<div class="info" style="width:100%"><div class="nm">' + club.mascot + ' ' + club.name + '</div><div class="mt" style="line-height:1.7">' +
+      '📅 Founded Year ' + (club.foundedYear || 100) + ' · now Year <b>' + (club.year || club.foundedYear || 100) + '</b><br>' +
+      '🏆 Championships: <b>' + champs + '</b><br>📈 Best Season: <b>' + (club.bestSeason || '—') + '</b><br>' +
+      '🧢 Greatest Captain: <b>' + (club.greatestCaptain || '—') + '</b><br>🐉 Legendary Dragon: <b>' + (club.legendaryDragon || '—') + '</b><br>' +
+      '⚔️ Biggest Rival: <b>' + (club.biggestRival || '—') + '</b></div></div>';
+    list.appendChild(ch);
+    // 2) records board
+    const rb = document.createElement('div'); rb.style.marginTop = '8px';
+    rb.innerHTML = '<div style="color:#ffd54a;font-weight:bold;">📊 Club Records</div><div style="line-height:1.6">' +
+      '⚽ Most career goals: <b>' + topGoals + '</b><br>💨 Fastest flight: <b>' + (rec.fastestFlight || 0) + '</b><br>' +
+      '🦘 Highest jump: <b>' + (rec.highestJump || 0) + 'm</b><br>🎯 Longest pass: <b>' + (rec.longestPass || 0) + '</b><br>' +
+      '📅 Longest career: <b>' + longCareer + ' seasons</b><br>🏆 Most championships: <b>' + champs + '</b></div>';
+    list.appendChild(rb);
+    // 3) latest awards
+    const ah = club.awardsHistory || [];
+    const aw = document.createElement('div'); aw.style.marginTop = '8px';
+    if (ah.length) {
+      const last = ah[ah.length - 1];
+      aw.innerHTML = '<div style="color:#ffd54a;font-weight:bold;">🏅 Year ' + last.year + ' Awards</div><div style="line-height:1.6">' +
+        last.awards.map(a => a.name + ': <b>' + a.who + '</b>').join('<br>') + '</div>';
+    } else aw.innerHTML = '<div style="color:#9fb4d8;font-size:13px;">Finish a season (15 matches) to hand out the 13 annual awards!</div>';
+    list.appendChild(aw);
+    // 4) the living world — economy, rule changes, expansion clubs
+    const world = document.createElement('div'); world.style.marginTop = '8px';
+    let wh = '<div style="color:#ffd54a;font-weight:bold;">🌍 The Living World</div><div style="line-height:1.6">' +
+      '📺 TV/economy deal: <b>×' + economyMult(club).toFixed(2) + '</b> (grows over the years)</div>';
+    if ((club.expansion || []).length) wh += '<div style="line-height:1.6">🆕 Expansion clubs: ' + club.expansion.join(', ') + '</div>';
+    if ((club.ruleLog || []).length) wh += '<div style="color:#c9b8ff;line-height:1.6;margin-top:4px;">📜 Rule history:<br>' + club.ruleLog.slice(-6).reverse().join('<br>') + '</div>';
+    if ((club.sagas || []).length) wh += '<div style="color:#ffd54a;line-height:1.6;margin-top:4px;">📖 Storylines:<br>' + club.sagas.slice(-6).reverse().join('<br>') + '</div>';
+    world.innerHTML = wh;
+    list.appendChild(world);
+    // 5) legacy timeline
+    const tl = club.timeline || [];
+    if (tl.length) {
+      const th = document.createElement('div'); th.style.marginTop = '8px';
+      th.innerHTML = '<div style="color:#ffd54a;font-weight:bold;">📅 Legacy Timeline</div><div style="line-height:1.6">' +
+        tl.slice(-12).reverse().map(t => 'Year ' + t.year + ': 🏆 <b>' + t.champion + '</b> · 🌟 MVP ' + t.mvp + ' · you ' + t.record).join('<br>') + '</div>';
+      list.appendChild(th);
+    }
+  })
+};
+// A single rider's full attribute sheet (Volume IV).
+function openRider(r) {
+  openPanel(r.element + ' ' + r.name, list => {
+    const dg = club.dragons[r.dragonIdx];
+    const info = document.createElement('div'); info.className = 'card';
+    const nn = r.nick ? ' "' + r.nick + '"' : '';
+    info.innerHTML = '<div class="info"><div class="nm">' + r.role + nn + ' · age ' + r.age + ' · ' + (r.personality || '') + '</div>' +
+      '<div class="mt">OVR ' + ovr(r) + ' · Potential ' + (r.potential || ovr(r)) + ' · Lv ' + r.level + ' · 😀 Morale ' + (r.morale || 70) +
+      ' · ⚽ ' + r.goals + ' goals · 🌟 ' + r.mvps + ' MVPs<br>❤️ Bond ' + (r.bond || 0) + ' <i>(' + bondTier(r.bond || 0) + ')</i>' +
+      (dg ? ' with 🐉 ' + dg.name + ' <span style="color:#9fb4d8">(' + (dg.species || '?') + ')</span>' : '') +
+      (r.tend ? '<br><span style="color:#ffd54a">🎯 Tendency: <b>' + r.tend + '</b> — ' + (RIDER_TEND_DESC[r.tend] || '') + '</span>' : '') +
+      '<br><span style="color:#9fb4d8">🌍 ' + (r.nation || '?') + ' · 📏 ' + (r.height || '?') + 'cm · ⚖️ ' + (r.wgt || '?') + 'kg · ✋ ' + (r.hand || '?') + '-handed · 🎯 ' + (r.side || '?') + ' · 📅 ' + (r.seasons || 0) + ' seasons</span>' +
+      (r.career && r.career.length ? '<br><span style="color:#c9b8ff">📖 Career: ' + r.career.slice(-5).join(' · ') + '</span>' : '') +
+      (r.wantsOut ? '<br><span style="color:#ff9a9a">✋ Unhappy — wants a transfer</span>' : '') + '</div></div>';
+    list.appendChild(info);
+    for (const g in ATTRS) {
+      const h = document.createElement('div'); h.style.cssText = 'color:#ffd54a;font-weight:bold;margin-top:8px;'; h.textContent = g;
+      list.appendChild(h);
+      const grid = document.createElement('div'); grid.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;';
+      ATTRS[g].forEach(a => {
+        const v = r.attrs ? r.attrs[a] : 70;
+        const d = document.createElement('div');
+        d.style.cssText = 'background:rgba(10,25,55,0.85);border:1px solid rgba(120,180,255,0.3);border-radius:8px;padding:4px 8px;font-size:12px;';
+        d.innerHTML = a + ' <b style="color:' + (v >= 85 ? '#7dff9a' : v >= 70 ? '#ffd54a' : '#cfe0ff') + '">' + v + '</b>';
+        grid.appendChild(d);
+      });
+      list.appendChild(grid);
+    }
+  });
+}
+// Full dragon rating sheet (Vol IV).
+function openDragon(d) {
+  openPanel(d.element + ' ' + d.name, list => {
+    const info = document.createElement('div'); info.className = 'card';
+    info.innerHTML = '<div class="info"><div class="nm">' + (d.species || '?') + ' ' + (d.gender || '') + ' · <span style="color:' + d.color + '">' + d.rarity + '</span></div>' +
+      '<div class="mt">OVR ' + dragonOvr(d) + ' · Potential ' + (d.potential || dragonOvr(d)) + ' · gen ' + (d.gen || 1) + ' · ❤️ Bond ' + (d.bond || 0) +
+      '<br>⚖️ Weight: ' + ((d.weight || 1) < 0.95 ? 'Light (nimble)' : (d.weight || 1) > 1.2 ? 'Heavy (tanky)' : 'Medium') + ' · ' + (d.trait || '') +
+      (d.tend ? '<br><span style="color:#ffd54a">🎯 Tendency: <b>' + d.tend + '</b></span>' : '') +
+      (d.wingspan ? '<br><span style="color:#9fb4d8">🪽 ' + d.wingspan + 'm wingspan · 🎨 ' + (d.colName || '') + ' · 👑 ' + (d.horns || '') + ' horns · 🦎 ' + (d.tail || '') + ' tail · 🩸 ' + (d.bloodline || '') + ' bloodline</span>' : '') +
+      // Vol VI Ch7: family tree
+      (d.parents && d.parents.length ? '<br><span style="color:#ce93d8">👪 Parents: ' + d.parents.join(' & ') + (d.grandparents && d.grandparents.length ? ' · Grandparents: ' + d.grandparents.join(', ') : '') + '</span>' : '') +
+      (d.children && d.children.length ? '<br><span style="color:#ce93d8">🐣 Children: ' + d.children.join(', ') + '</span>' : '') + '</div></div>';
+    list.appendChild(info);
+    if (d.ratings) for (const g in DRAGON_RATINGS) {
+      const h = document.createElement('div'); h.style.cssText = 'color:#ffd54a;font-weight:bold;margin-top:8px;'; h.textContent = g;
+      list.appendChild(h);
+      const grid = document.createElement('div'); grid.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;';
+      DRAGON_RATINGS[g].forEach(a => {
+        const v = d.ratings[a];
+        const el = document.createElement('div');
+        el.style.cssText = 'background:rgba(10,25,55,0.85);border:1px solid rgba(120,180,255,0.3);border-radius:8px;padding:4px 8px;font-size:12px;';
+        el.innerHTML = a + ' <b style="color:' + (v >= 85 ? '#7dff9a' : v >= 70 ? '#ffd54a' : '#cfe0ff') + '">' + v + '</b>';
+        grid.appendChild(el);
+      });
+      list.appendChild(grid);
+    }
+  });
+}
+// Train one rider: spend gold to raise a random attribute (up toward potential) + a little bond.
+function trainRider(r) {
+  if (club.money < 60) return;
+  club.money -= 60;
+  if (!r.attrs) r.attrs = genAttrs(r.base || 70);
+  const groups = Object.keys(ATTRS), g = groups[ri(0, groups.length - 1)];
+  const a = ATTRS[g][ri(0, ATTRS[g].length - 1)];
+  const gain = 1 + (getFac('trainingCenter') > 3 ? 1 : 0);   // better training center = bigger gains
+  r.attrs[a] = Math.min(99, r.attrs[a] + gain);
+  r.base = Math.max(r.base, attrAvg(r.attrs));
+  if (r.base > (r.potential || 99)) r.potential = r.base;   // hard work can raise the ceiling a touch
+  r.bond = Math.min(100, (r.bond || 0) + 1);
+  r.morale = Math.min(100, (r.morale || 70) + 2);
+  saveClub(); PANELS.squad();
+}
+// Dragon breeding (Vol IV Ch 17).
+function breedDragons() {
+  const ds = club.dragons; if (ds.length < 2) return;
+  const a = ds[ds.length - 1], b = ds[ds.length - 2];
+  const order = ['Common', 'Rare', 'Epic', 'Legendary'];
+  let idx = Math.max(order.indexOf(a.rarity), order.indexOf(b.rarity));
+  if (Math.random() < 0.3) idx = Math.min(3, idx + 1);   // a rare bloodline emerges!
+  const rar = RARITIES[idx] || RARITIES[0];
+  // offspring inherits the BETTER of each parent's ratings (+ a little) — rare bloodlines exceed limits
+  const pbase = Math.round((dragonOvr(a) + dragonOvr(b)) / 2) + (idx > Math.max(order.indexOf(a.rarity), order.indexOf(b.rarity)) ? ri(3, 8) : ri(-2, 4));
+  const ratings = {}; for (const g in DRAGON_RATINGS) for (const at of DRAGON_RATINGS[g]) ratings[at] = Math.max(30, Math.min(99, Math.round((( a.ratings ? a.ratings[at] : pbase) + (b.ratings ? b.ratings[at] : pbase)) / 2) + ri(-6, 8)));
+  const off = { name: DADJ[ri(0, 9)] + ' ' + DNOUN[ri(0, 9)], element: Math.random() < 0.5 ? a.element : b.element,
+    species: (Math.random() < 0.5 ? a.species : b.species) || 'Ancient Wyrm', trait: '🧬 Bred bloodline',
+    rarity: rar.n, color: rar.c, bonus: rar.b, gen: Math.max(a.gen || 1, b.gen || 1) + 1,
+    weight: ((a.weight || 1) + (b.weight || 1)) / 2, gender: DGENDER[ri(0, 1)], ratings, potential: Math.min(99, pbase + ri(6, 22)), bond: 0,
+    // Vol VI Ch7: family tree
+    parents: [a.name, b.name], grandparents: [].concat(a.parents || [], b.parents || []), bloodline: a.bloodline || b.bloodline || 'Mixed' };
+  a.children = (a.children || []).concat(off.name); b.children = (b.children || []).concat(off.name);   // record on parents
+  club.dragons.push(off); club.talent += off.bonus;
+  club.stories = club.stories || []; club.stories.push('🧬 A new dragon is bred: ' + off.name + ' (child of ' + a.name + ' & ' + b.name + ')!');
+}
+
+document.querySelectorAll('[data-panel]').forEach(b => b.onclick = () => PANELS[b.getAttribute('data-panel')]());
+document.getElementById('panelBack').onclick = showHub;
+
+// =========================================================
+//  INSTANT REPLAY — record the action, play back the last moment on a goal
+// =========================================================
+function recordReplay() {
+  if (replayMode) return;
+  const snap = { bx: ball.x, by: ball.y, bz: ball.z, d: [] };
+  for (const o of [you, ...bots]) snap.d.push({ x: o.x, y: o.y, z: o.z, yaw: o.yaw, bank: o.bank || 0, pit: o.pitchV || 0 });
+  replayBuf.push(snap); if (replayBuf.length > 100) replayBuf.shift();
+}
+let replayCd = 0;   // stops replays from spamming
+function startReplay(force) {
+  if (replayBuf.length < 12) return;             // need something to show
+  if (!force && replayCd > 0) return;            // saves/tackles respect a cooldown; goals force it
+  const dragons = [you, ...bots];
+  replaySave = { bx: ball.x, by: ball.y, bz: ball.z, bvx: ball.vx, bvy: ball.vy, bvz: ball.vz, d: dragons.map(o => ({ o, x: o.x, y: o.y, z: o.z, yaw: o.yaw, bank: o.bank || 0, pit: o.pitchV || 0 })) };
+  replayMode = true; replayIdx = Math.max(0, replayBuf.length - 80); replayCd = 7;   // ~last 1.3s
+}
+function stepReplay() {
+  const dragons = [you, ...bots];
+  const snap = replayBuf[replayIdx];
+  if (snap) {
+    ball.x = snap.bx; ball.y = snap.by; ball.z = snap.bz;
+    snap.d.forEach((s, i) => { const o = dragons[i]; if (o) { o.x = s.x; o.y = s.y; o.z = s.z; o.yaw = s.yaw; o.bank = s.bank; o.pitchV = s.pit; } });
+  }
+  camTarget.x += (ball.x - camTarget.x) * 0.18; camTarget.y += (ball.y - camTarget.y) * 0.18; camTarget.z += (ball.z - camTarget.z) * 0.18;
+  const f = camForward(); cam.x = camTarget.x - f.x * CAM_DIST; cam.y = camTarget.y - f.y * CAM_DIST; cam.z = camTarget.z - f.z * CAM_DIST;
+  cam.yaw = CAM_YAW; cam.pitch = CAM_PITCH;
+  replayIdx++;
+  if (replayIdx >= replayBuf.length) {           // done → restore live poses and resume
+    if (replaySave) { ball.x = replaySave.bx; ball.y = replaySave.by; ball.z = replaySave.bz; ball.vx = replaySave.bvx; ball.vy = replaySave.bvy; ball.vz = replaySave.bvz; replaySave.d.forEach(s => { s.o.x = s.x; s.o.y = s.y; s.o.z = s.z; s.o.yaw = s.yaw; s.o.bank = s.bank; s.o.pitchV = s.pit; }); }
+    replayMode = false; replayBuf = []; replaySave = null;
+  }
+}
+
+// =========================================================
+//  UPDATE
+// =========================================================
+function update(dt) {
+  // ----- Pre-match TEAM INTRO: freeze play, just ease the camera onto the field -----
+  if (introT > 0) {
+    introT -= dt;
+    if (introT <= 0) { goT = 0.9; say(isRival ? ('⚔️ RIVALRY vs ' + oppName + ' — the crowd is ROARING!') : ('🆚 ' + oppName + ' play "' + enemyStyleName + '"!')); }   // countdown finished → flash "GO!"
+    // PRE-MATCH FLYOVER: sweep high across the arena, then settle onto the player.
+    if (introT > 1) {
+      const p = Math.min(1, (4 - introT) / 3);   // 0→1 over the first ~3 seconds
+      camTarget.x = 0;
+      camTarget.y = ARENA.y * (0.85 - 0.5 * p);
+      camTarget.z = ARENA.z * (0.9 - 0.62 * p);
+    } else {
+      camTarget.x += (player.x - camTarget.x) * Math.min(1, 8 * dt);
+      camTarget.y += (player.y - camTarget.y) * Math.min(1, 8 * dt);
+      camTarget.z += (player.z - camTarget.z) * Math.min(1, 8 * dt);
+    }
+    const f = camForward();
+    cam.x = camTarget.x - f.x * CAM_DIST; cam.y = camTarget.y - f.y * CAM_DIST; cam.z = camTarget.z - f.z * CAM_DIST;
+    cam.yaw = CAM_YAW; cam.pitch = CAM_PITCH;
+    return;
+  }
+  if (goT > 0) goT -= dt;
+  // is the goal YOU attack being guarded right now? (any blue guard near a blue ring)
+  goalGuarded = bots.some(b => b.team === 'blue' && b.role === 'guard' && RINGS.some(r => r.team === 'blue' && Math.hypot(b.x - r.x, b.y - r.y, b.z - r.z) < 320));
+  // ----- SLOW-MO interactive moment: a breakaway near the enemy goal -----
+  if (slowmoCd > 0) slowmoCd -= dt;
+  if (ballOwner === player && slowmoT <= 0 && slowmoCd <= 0) {
+    let dg = 1e9; for (const r of RINGS) if (r.team === 'blue') dg = Math.min(dg, Math.hypot(r.x - player.x, r.y - player.y, r.z - player.z));
+    if (dg < 1500) { slowmoT = 1.3; slowmoCd = 11; say('⏳ SLOW-MO — take your shot!'); }
+  }
+  // ----- GUARDED GOAL: when you AIM at a defended goal, time slows so you can shoot AROUND the guard -----
+  if (aiming && ballOwner === player && goalGuarded) { slowmoT = Math.max(slowmoT, 0.5); }
+  // ----- YOU control whichever dragon `player` points to (unless AUTO-PLAY is on) -----
+  if (!autoPlay) {
+  const stunned = player.stun > 0; if (stunned) player.stun -= dt;   // can't move when stunned
+  // ===== FLIGHT PHYSICS (Vol II Ch2): weight → inertia, banking, climb/dive momentum, stall =====
+  const weight = player.weight || 1;               // heavier dragon = weightier feel
+  const turn = (1.6 / weight) * dt * (slipT > 0 ? 1.6 : 1);   // 🌊 Slipstream = sharper turns
+  let turnInput = 0;
+  if (!stunned && (keys['KeyA'] || keys['ArrowLeft']))  { player.yaw -= turn; turnInput = -1; }
+  if (!stunned && (keys['KeyD'] || keys['ArrowRight'])) { player.yaw += turn; turnInput =  1; }
+
+  const boosting = !stunned && (keys['ShiftLeft'] || keys['ShiftRight']) && player.boost > 0.05;
+  const maxSpeed = (boosting ? 1280 : 680) * redSpeedMult * weather.s * (gustT > 0 ? 1.5 : 1);   // 🌪 Gust = speed burst
+  if (boosting) player.boost = Math.max(0, player.boost - dt * 0.4);
+  else player.boost = Math.min(1, player.boost + dt * 0.25 * boostRegenMult);   // ⚡ Storm = faster recharge
+
+  // forward / back — heavier dragons accelerate slower (inertia)
+  let target = 0;
+  if (!stunned && (keys['KeyW'] || keys['ArrowUp']))   target = maxSpeed;
+  if (!stunned && (keys['KeyS'] || keys['ArrowDown'])) target = -maxSpeed * 0.5;
+  player.speed += (target - player.speed) * (3 / weight) * dt;
+  player.speed *= (1 - 0.35 * dt);   // air drag bleeds speed when you stop pushing
+
+  // climb / dive with MOMENTUM (you can't stop instantly in the air)
+  let climbIn = 0;
+  if (!stunned && keys['KeyE']) climbIn = 1;
+  if (!stunned && keys['KeyS'] && false) climbIn = 0;
+  if (!stunned && keys['KeyQ']) climbIn = -1;
+  const vyTarget = climbIn * 640;
+  player.vy = (player.vy || 0) + (vyTarget - (player.vy || 0)) * Math.min(1, (4 / weight) * dt);
+  // STALL: too slow to keep lift → the dragon sinks
+  const slow = Math.abs(player.speed) < 150;
+  if (slow && climbIn <= 0) player.vy -= 220 * dt;
+  player.y += player.vy * dt;
+
+  // BANKING (roll into turns) + PITCH (nose tilts when climbing/diving) — eased, just visuals
+  const bankTarget = -turnInput * 0.55 * Math.min(1, Math.abs(player.speed) / 500);
+  player.bank = (player.bank || 0) + (bankTarget - (player.bank || 0)) * Math.min(1, 7 * dt);
+  const pitchTarget = climbIn * 0.4 - (slow ? 0.15 : 0);
+  player.pitchV = (player.pitchV || 0) + (pitchTarget - (player.pitchV || 0)) * Math.min(1, 5 * dt);
+
+  // move along heading
+  const fwd = { x: Math.sin(player.yaw), z: Math.cos(player.yaw) };
+  player.x += fwd.x * player.speed * dt;
+  player.z += fwd.z * player.speed * dt;
+
+  // keep inside the arena
+  player.x = Math.max(-ARENA.x + 6, Math.min(ARENA.x - 6, player.x));
+  if (player.y <= 8 && player.vy < 0) player.vy = 0;         // can't sink through the floor
+  player.y = Math.max(8, Math.min(ARENA.y - 6, player.y));
+  player.z = Math.max(6, Math.min(ARENA.z - 6, player.z));
+  }   // end manual control (skipped during AUTO-PLAY)
+
+  // ----- MID-AIR COLLISION: boosting/charging fast into another dragon -----
+  if (collideCd > 0) collideCd -= dt;
+  if (collideCd <= 0 && Math.abs(player.speed) > 900 && player.stun <= 0) {
+    for (const o of [you, ...bots]) {
+      if (o === player) continue;
+      const dd = Math.hypot(o.x - player.x, o.y - player.y, o.z - player.z);
+      if (dd < 150) {                                 // contact!
+        collideCd = 0.8;
+        const nx = (o.x - player.x) / (dd || 1), ny = (o.y - player.y) / (dd || 1), nz = (o.z - player.z) / (dd || 1);
+        o.x += nx * 90; o.y += ny * 90; o.z += nz * 90; o.stun = 0.5;   // knock them back + stun
+        player.x -= nx * 45; player.z -= nz * 45; player.speed *= 0.3;  // you recoil too
+        if (ballOwner === o) {                         // if THEY had the ball, it pops loose
+          ball.vx = (Math.random() - 0.5) * 700; ball.vy = 350; ball.vz = (Math.random() - 0.5) * 700;
+          ballOwner = null; lastTouch = player.team; shotTimer = 0; say('💥 CRASH — ball knocked loose!');
+        } else say('💥 Mid-air collision!');
+        addMom(player.team, 6);
+        break;
+      }
+    }
+  }
+
+  // ----- camera LOCKED onto the dragon you control -----
+  camTarget.x += (player.x - camTarget.x) * Math.min(1, 8 * dt);
+  camTarget.y += (player.y - camTarget.y) * Math.min(1, 8 * dt);
+  camTarget.z += (player.z - camTarget.z) * Math.min(1, 8 * dt);
+  // camera sits back along the fixed viewing direction (so it looks AT the target)
+  const f3 = camForward();
+  cam.x = camTarget.x - f3.x * CAM_DIST;
+  cam.y = camTarget.y - f3.y * CAM_DIST;
+  cam.z = camTarget.z - f3.z * CAM_DIST;
+  cam.yaw = CAM_YAW; cam.pitch = CAM_PITCH;
+
+  // ----- the ball: attached to whoever owns it, or loose/flying -----
+  if (ballOwner) {
+    const oy = ballOwner.yaw || 0;
+    ball.x += ((ballOwner.x + Math.sin(oy) * 20) - ball.x) * Math.min(1, 12 * dt);
+    ball.y += ((Math.max(BALL_MIN, ballOwner.y - 55)) - ball.y) * Math.min(1, 12 * dt);   // floats below the rider, but never below BALL_MIN
+    ball.z += ((ballOwner.z + Math.cos(oy) * 20) - ball.z) * Math.min(1, 12 * dt);
+    ball.vx = ball.vy = ball.vz = 0;
+    if (ballOwner.team) stats[ballOwner.team].poss++;   // possession
+  } else {
+    // ----- BALL PHYSICS: gravity + bouncing (fast shots fly straight; a slow ball falls & bounces) -----
+    const bspd = Math.hypot(ball.vx, ball.vy, ball.vz);
+    // gravity ONLY while the throw still has force (ball is moving fast) → the shot arcs;
+    // once the force is gone (ball has slowed), NO gravity → the ball just floats.
+    if (bspd > 1200) ball.vy -= GRAV * 0.4 * dt;
+    ball.x += ball.vx * dt; ball.y += ball.vy * dt; ball.z += ball.vz * dt;
+    const dragF = bspd > 1200 ? 0.992 : 0.90;   // fast throw carries far; once the force fades it settles into a FLOAT
+    ball.vx *= dragF; ball.vy *= dragF; ball.vz *= dragF;
+    shotTimer += dt;
+    // bounce off an invisible cushion (BALL_MIN) so the ball hovers and never touches the ground
+    if (ball.y < BALL_MIN) { ball.y = BALL_MIN; if (ball.vy < 0) { ball.vy = -ball.vy * 0.55; ball.vx *= 0.85; ball.vz *= 0.85; } }
+    if (ball.y > ARENA.y) { ball.y = ARENA.y; if (ball.vy > 0) ball.vy = -ball.vy * 0.5; }
+    // hitting a SIDE/END wall bounces the ball back AND drifts it to centre height
+    let hitWall = false;
+    if (ball.x < -ARENA.x) { ball.x = -ARENA.x; ball.vx = Math.abs(ball.vx) * 0.6; hitWall = true; }
+    if (ball.x > ARENA.x) { ball.x = ARENA.x; ball.vx = -Math.abs(ball.vx) * 0.6; hitWall = true; }
+    if (ball.z < 6) { ball.z = 6; ball.vz = Math.abs(ball.vz) * 0.6; hitWall = true; }
+    if (ball.z > ARENA.z) { ball.z = ARENA.z; ball.vz = -Math.abs(ball.vz) * 0.6; hitWall = true; }
+    if (hitWall) { ball.y = ARENA.y / 2; ball.vy = 0; }   // return to centre Y level after a wall hit
+    // once it slows down, the nearest dragon can grab it
+    if (Math.hypot(ball.vx, ball.vy, ball.vz) < 600 && shotTimer > 0.25) {
+      let best = null, bd = CATCH_R;
+      for (const d of [you, ...bots]) {
+        const dist = Math.hypot(d.x - ball.x, d.y - ball.y, d.z - ball.z);
+        if (dist < bd) { bd = dist; best = d; }
+      }
+      if (best) { ballOwner = best; lastTouch = best.team; }
+    }
+  }
+
+  // ----- GOALS: a loose/flying ball at a ring is a GOAL — unless a guard is there to BLOCK it -----
+  for (const r of RINGS) {
+    if (r.cd > 0) r.cd -= dt;
+    const d = Math.hypot(ball.x - r.x, ball.y - r.y, ball.z - r.z);   // SPHERICAL distance to the ring center
+    // is this ring being GUARDED right now? (a guard hovering near it)
+    r.guarded = bots.some(b => b.team === r.team && b.role === 'guard' && Math.hypot(b.x - r.x, b.y - r.y, b.z - r.z) < 320);
+    if (d < r.r + SCORE_PAD) {   // ball inside the scoring sphere
+      r.glow = 1;
+      if (!ballOwner && r.cd <= 0) {
+        // A block only counts if the ball actually TOUCHES a guard's body (~its wingspan),
+        // not from far away. Your guards get a slightly bigger reach; philosophy can add more.
+        const BODY_R = 110;   // roughly the dragon's wingspan = a real "touch"
+        let blockR = r.team === 'red' ? BODY_R * 1.3 * redBlockMult : BODY_R * enemyDefense;   // Iron Wall guards reach more
+        if (r.team === 'red' && stoneWallT > 0) blockR *= 3;   // 🌍 Stone Wall special
+        const guard = ball.unblockable ? null : bots.find(b => b.team === r.team && b.role === 'guard' &&   // 🔥 Fire Shot can't be blocked
+          Math.hypot(b.x - ball.x, b.y - ball.y, b.z - ball.z) < blockR);
+        if (guard) {
+          scorePopMsg = '🛡 ' + (r.team === 'red' ? 'You' : oppName) + ' BLOCK it!';
+          scorePopT = 1.2; r.cd = 1.2; say('🎙️ Great save!'); addMom(r.team, 12);
+          ballOwner = guard; lastTouch = guard.team;   // the guard catches it
+          startReplay();                        // 📺 replay the great save (if not on cooldown)
+        } else {
+          if (r.team === 'blue') { teamScore.you += r.pts; scorePopMsg = 'YOU +' + r.pts + '!'; say('🎙️ GOAL! ' + r.pts + ' points!'); addMom('red', 40); lastConceded = 'blue'; }
+          else { teamScore.opp += r.pts; scorePopMsg = oppName + ' +' + r.pts + '!'; say('🎙️ ' + oppName + ' score ' + r.pts + '!'); addMom('blue', 40); lastConceded = 'red'; }
+          scorePopT = 1.4; r.cd = 2;
+          ball.x = 0; ball.y = ARENA.y / 2; ball.z = ARENA.z / 2; ball.vx = ball.vy = ball.vz = 0;   // centre + centre height
+          shotTimer = 0;
+          giveBallTo(lastConceded);             // the team that was scored on gets the ball
+          startReplay(true);                    // 📺 instant replay of the goal!
+        }
+      }
+    } else r.glow *= 0.92;
+  }
+  if (scorePopT > 0) scorePopT -= dt;
+
+  // tick the extra timers
+  if (tackleCd > 0) tackleCd -= dt;
+  if (foulProtect > 0) foulProtect -= dt;
+  if (foulCooldown > 0) foulCooldown -= dt;
+  if (commentaryT > 0) commentaryT -= dt;
+  if (halftimeT > 0) halftimeT -= dt;
+  momentum *= 0.998;
+  // element special: energy recharges (~9s), and the special timers count down
+  energy = Math.min(100, energy + dt * (100 / 9));
+  if (gustT > 0) gustT -= dt; if (stoneWallT > 0) stoneWallT -= dt; if (slipT > 0) slipT -= dt;
+  if (insightT > 0) insightT -= dt; if (vanishT > 0) vanishT -= dt;
+  if (replayCd > 0) replayCd -= dt;
+  // Vol VI records: track your fastest flight + highest jump live
+  if (club && club.rec) { club.rec.fastestFlight = Math.max(club.rec.fastestFlight, Math.round(Math.abs(player.speed))); club.rec.highestJump = Math.max(club.rec.highestJump, Math.round(player.y)); }
+  // Vol VI Ch16: the commentator occasionally recalls history
+  histCommentT -= dt;
+  if (histCommentT <= 0) { histCommentT = ri(22, 36); if (commentaryT <= 0 && club) { const rr = club.rival && club.rival[oppName] ? club.rival[oppName] : { played: 0 }; const L = ['These two have history — ' + rr.played + ' past meetings.', "The crowd remembers last season's clash!", 'A famous bloodline dragon flies today.', 'These captains have battled for years.']; say('🎙️ ' + L[ri(0, L.length - 1)]); } }
+  // X System: keep rotating positions so the team is positionless & hard to defend
+  if (redX || enemyX) { xRotT -= dt; if (xRotT <= 0) { if (redX) xRotate('red'); if (enemyX) xRotate('blue'); xRotT = 3.5; } }
+
+  // sudden-death overtime: the first goal wins
+  if (suddenDeath && teamScore.you !== teamScore.opp) { endMatch(); return; }
+  // tick the match clock; when it hits 0, end the quarter (or the match)
+  clock -= dt;
+  if (clock <= 0) { quarterEnd(); return; }
+
+  // ----- AI runs every dragon EXCEPT the one you're controlling (all of them in AUTO-PLAY) -----
+  for (const b of [you, ...bots]) {
+    if (b === player && !autoPlay) continue;   // you're flying this one by hand
+    if (b.stun > 0) { b.stun -= dt; continue; }      // stunned by a tackle
+    if (b.benchT > 0) { b.benchT -= dt; continue; }  // in the sin-bin
+    b.t += dt; if (b.shootCd > 0) b.shootCd -= dt;
+    const ef = ELEM_SPD[b.elem] || 1;   // each dragon's element affects its speed
+    if (ballOwner === b) {
+      // fly toward the goal this team attacks, then shoot
+      const targetTeam = b.team === 'red' ? 'blue' : 'red';   // red attacks blue goal
+      const goals = RINGS.filter(r => r.team === targetTeam);
+      let g;
+      if (b.team === 'blue') { if (!b.targetRing || Math.random() < 0.02) b.targetRing = chooseEnemyRing(goals); g = b.targetRing; }   // Vol V: pick a ring by expected value
+      else g = goals[Math.floor(b.t) % goals.length];
+      const dx = g.x - b.x, dy = g.y - b.y, dz = g.z - b.z, L = Math.hypot(dx, dy, dz) || 1;
+      const spd = 340 * dt * ef * (b.team === 'blue' ? enemyTempo : 1);   // identity tempo
+      b.x += dx / L * spd; b.y += dy / L * spd; b.z += dz / L * spd; b.yaw = Math.atan2(dx, dz);
+      // shoot only from a GOOD position — smarter teams take (and make) better looks
+      const shootRange = b.team === 'blue' ? (620 + enemySmart * 320 + (-momentum / 100) * 120) : 800;   // bolder with momentum, patient without
+      if (L < shootRange && b.shootCd <= 0) {
+        const sp2 = 3800;
+        let spread = b.team === 'blue' ? ((tournamentMatch ? 0.34 : 0.5) * (1.5 - enemySmart)) : 0.12;   // Hard/smart = tighter aim
+        if (b.team === 'blue') spread *= enemyShotSpreadMult;   // enemy element advantage = better aim
+        let ax = dx / L + (Math.random() - 0.5) * spread;
+        let ay = dy / L + (Math.random() - 0.5) * spread;
+        let az = dz / L + (Math.random() - 0.5) * spread;
+        const AL = Math.hypot(ax, ay, az) || 1;
+        launch(ax / AL * sp2, ay / AL * sp2, az / AL * sp2, b.team); b.shootCd = 3; stats[b.team].shots++;
+        if (b.team === 'blue') b.targetRing = null;   // reconsider next possession
+      }
+    } else if (b.role === 'guard') {
+      // GUARD: stay at your ring — but DIVE for a loose ball if it's near (even the Guardian!).
+      // Vol V Ch7: smart guards PREDICT where the ball is going and read it from farther away.
+      const blue = b.team === 'blue';
+      const lead = blue ? 0.16 * enemyReact : 0;
+      const px = ball.x + ball.vx * lead, py = ball.y + ball.vy * lead, pz = ball.z + ball.vz * lead;
+      const dPred = Math.hypot(px - b.x, py - b.y, pz - b.z);
+      const readR = blue ? DIVE_R * (0.55 + enemySmart * 0.7) : DIVE_R;
+      if (!ballOwner && dPred < readR) {         // intercept the predicted ball path
+        const dx = px - b.x, dy = py - b.y, dz = pz - b.z, L = dPred || 1;
+        const spd = 420 * dt * ef * (blue ? enemyTempo : 1); b.x += dx / L * spd; b.y += dy / L * spd; b.z += dz / L * spd; b.yaw = Math.atan2(dx, dz);
+      } else if (b.pressT > 0) {                 // rarely, chase the ball for a moment
+        b.pressT -= dt;
+        const dx = ball.x - b.x, dy = ball.y - b.y, dz = ball.z - b.z, L = Math.hypot(dx, dy, dz) || 1;
+        const spd = 300 * dt * ef; b.x += dx / L * spd; b.y += dy / L * spd; b.z += dz / L * spd; b.yaw = Math.atan2(dx, dz);
+      } else {
+        if (Math.random() < (b.team === 'blue' ? enemyPress : 0.0004)) b.pressT = 1.8;   // press-out (identity)
+        const gr = b.guardRing;
+        const f = b.team === 'red' ? redForm : enemyForm;   // formation shape (Vol V Ch5)
+        const inFront = b.team === 'red' ? 130 : -130;   // hover just in front of the ring
+        const rot = f.rotate ? b.t * 1.3 : b.t;          // Spiral keeps rotating
+        const tx = gr.x + Math.sin(rot) * 60 * f.spreadX, ty = gr.y + Math.cos(rot * 0.8) * 50 + (f.alt - 0.5) * 380, tz = gr.z + inFront * f.depth;
+        const dx = tx - b.x, dy = ty - b.y, dz = tz - b.z, L = Math.hypot(dx, dy, dz) || 1;
+        const spd = 320 * dt * ef; b.x += dx / L * spd; b.y += dy / L * spd; b.z += dz / L * spd;
+        b.yaw = Math.atan2(ball.x - b.x, ball.z - b.z);   // face the ball
+      }
+    } else if (!ballOwner && Math.hypot(ball.x - b.x, ball.y - b.y, ball.z - b.z) < 900) {
+      // attackers chase a nearby loose ball
+      const dx = ball.x - b.x, dy = ball.y - b.y, dz = ball.z - b.z, L = Math.hypot(dx, dy, dz) || 1;
+      const spd = 300 * dt * ef; b.x += dx / L * spd; b.y += dy / L * spd; b.z += dz / L * spd; b.yaw = Math.atan2(dx, dz);
+    } else {
+      // gentle drift
+      b.x += Math.sin(b.t * 0.5) * 32 * dt; b.y += Math.cos(b.t * 0.4) * 24 * dt; b.z += Math.sin(b.t * 0.3) * 32 * dt;
+    }
+    b.x = Math.max(-ARENA.x, Math.min(ARENA.x, b.x));
+    b.y = Math.max(12, Math.min(ARENA.y - 6, b.y));
+    b.z = Math.max(10, Math.min(ARENA.z - 10, b.z));
+  }
+  recordReplay();   // remember this frame for instant replays
+}
+function angleDiff(a, b) { let d = a - b; while (d > Math.PI) d -= 6.283; while (d < -Math.PI) d += 6.283; return d; }
+
+// =========================================================
+//  DRAW
+// =========================================================
+function drawSky() {
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, '#0a1030'); g.addColorStop(0.55, '#12305f'); g.addColorStop(1, '#1c4a7a');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+}
+
+// draw a 3D line if both ends are on-screen
+function line3(a, b, color, wdt) {
+  const pa = project(a), pb = project(b);
+  if (!pa || !pb) return;
+  ctx.strokeStyle = color; ctx.lineWidth = wdt || 1;
+  ctx.beginPath(); ctx.moveTo(pa.x, pa.y); ctx.lineTo(pb.x, pb.y); ctx.stroke();
+}
+
+function drawArena() {
+  // floor grid
+  const step = 360;
+  ctx.globalAlpha = 0.5;
+  for (let x = -ARENA.x; x <= ARENA.x; x += step)
+    line3({ x, y: 0, z: 0 }, { x, y: 0, z: ARENA.z }, 'rgba(120,170,255,0.25)');
+  for (let z = 0; z <= ARENA.z; z += step)
+    line3({ x: -ARENA.x, y: 0, z }, { x: ARENA.x, y: 0, z }, 'rgba(120,170,255,0.25)');
+  ctx.globalAlpha = 1;
+
+  // arena box edges (the 12 edges of the enclosed arena)
+  const c = [
+    { x: -ARENA.x, y: 0, z: 0 }, { x: ARENA.x, y: 0, z: 0 },
+    { x: ARENA.x, y: 0, z: ARENA.z }, { x: -ARENA.x, y: 0, z: ARENA.z },
+    { x: -ARENA.x, y: ARENA.y, z: 0 }, { x: ARENA.x, y: ARENA.y, z: 0 },
+    { x: ARENA.x, y: ARENA.y, z: ARENA.z }, { x: -ARENA.x, y: ARENA.y, z: ARENA.z }
+  ];
+  const edges = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+  for (const e of edges) line3(c[e[0]], c[e[1]], 'rgba(140,190,255,0.4)', 2);
+}
+
+// a 3D ring: sample points around it, project, draw the loop
+function drawRing(r) {
+  const N = 26, pts = [];
+  for (let i = 0; i <= N; i++) {
+    const a = i / N * Math.PI * 2;
+    const p = project({ x: r.x + Math.cos(a) * r.r, y: r.y + Math.sin(a) * r.r, z: r.z });
+    pts.push(p);
+  }
+  ctx.save();
+  ctx.strokeStyle = r.color;
+  ctx.shadowColor = r.color; ctx.shadowBlur = 12 + r.glow * 26;
+  ctx.lineWidth = 4 + r.glow * 4;
+  ctx.beginPath();
+  let started = false;
+  for (const p of pts) {
+    if (!p) { started = false; continue; }
+    if (!started) { ctx.moveTo(p.x, p.y); started = true; } else ctx.lineTo(p.x, p.y);
+  }
+  ctx.stroke();
+  ctx.restore();
+  // points label
+  const cp = project({ x: r.x, y: r.y, z: r.z });
+  if (cp) {
+    ctx.fillStyle = '#fff'; ctx.font = 'bold ' + Math.max(10, 20 * cp.s * 0.05) + 'px Trebuchet MS';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(r.pts, cp.x, cp.y);
+  }
+}
+
+// billboard = a flat sprite that always faces the camera
+function drawBillboard(pos, text, size, glow) {
+  const p = project(pos); if (!p) return null;
+  const px = Math.max(10, Math.min(180, size * p.s));   // clamp so nothing fills the screen
+  ctx.save();
+  ctx.font = px + 'px serif';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  if (glow) { ctx.shadowColor = glow; ctx.shadowBlur = 16; }
+  // a shadow on the floor beneath it
+  const floor = project({ x: pos.x, y: 0, z: pos.z });
+  if (floor) {
+    ctx.globalAlpha = 0.25;
+    ctx.fillStyle = '#000';
+    ctx.beginPath(); ctx.ellipse(floor.x, floor.y, px * 0.35, px * 0.14, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+  ctx.fillText(text, p.x, p.y);
+  ctx.restore();
+  return p;
+}
+
+// ---- 3D solid shapes (blocks + spheres) ----
+function hexToRgb(h) { h = h.replace('#', ''); return { r: parseInt(h.substr(0, 2), 16), g: parseInt(h.substr(2, 2), 16), b: parseInt(h.substr(4, 2), 16) }; }
+
+// project the 8 corners of a box, rotated by yaw + pitch (nose up/down) + roll (banking)
+function projCorners(pos, w, h, d, yaw, pitch, roll) {
+  pitch = pitch || 0; roll = roll || 0;
+  const hw = w / 2, hh = h / 2, hd = d / 2;
+  const local = [[-hw,-hh,-hd],[hw,-hh,-hd],[hw,-hh,hd],[-hw,-hh,hd],
+                 [-hw,hh,-hd],[hw,hh,-hd],[hw,hh,hd],[-hw,hh,hd]];
+  const cs = Math.cos(yaw), sn = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch), crr = Math.cos(roll), srr = Math.sin(roll);
+  return local.map(l => {
+    let x = l[0], y = l[1], z = l[2];
+    // roll (bank) around the forward axis
+    let nx = x * crr - y * srr, ny = x * srr + y * crr; x = nx; y = ny;
+    // pitch (nose up/down)
+    let py = y * cp - z * sp, pz = y * sp + z * cp; y = py; z = pz;
+    // yaw (heading)
+    return project({ x: x * cs + z * sn + pos.x, y: y + pos.y, z: -x * sn + z * cs + pos.z });
+  });
+}
+// draw a shaded 3D box (painter's algorithm on its faces)
+function drawBox(pos, w, h, d, yaw, color, pitch, roll) {
+  const c = projCorners(pos, w, h, d, yaw, pitch, roll);
+  const rgb = hexToRgb(color);
+  const faces = [
+    { idx: [4,5,6,7], b: 1.0 },  // top (brightest)
+    { idx: [0,1,2,3], b: 0.4 },  // bottom
+    { idx: [3,2,6,7], b: 0.85 }, // front
+    { idx: [0,1,5,4], b: 0.55 }, // back
+    { idx: [1,2,6,5], b: 0.7 },  // right
+    { idx: [0,3,7,4], b: 0.6 }   // left
+  ];
+  const out = [];
+  for (const f of faces) {
+    const pts = f.idx.map(i => c[i]);
+    if (pts.some(p => !p)) continue;
+    out.push({ pts, b: f.b, z: (pts[0].z + pts[1].z + pts[2].z + pts[3].z) / 4 });
+  }
+  out.sort((a, b) => b.z - a.z);   // far faces first
+  for (const f of out) {
+    ctx.fillStyle = 'rgb(' + Math.round(rgb.r * f.b) + ',' + Math.round(rgb.g * f.b) + ',' + Math.round(rgb.b * f.b) + ')';
+    ctx.beginPath(); ctx.moveTo(f.pts[0].x, f.pts[0].y);
+    for (let i = 1; i < 4; i++) ctx.lineTo(f.pts[i].x, f.pts[i].y);
+    ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,0.25)'; ctx.lineWidth = 1; ctx.stroke();
+  }
+}
+// a dragon = a body block + a wing block, turned to face its heading
+function drawDragon(o, isPlayer) {
+  const fl = project({ x: o.x, y: 0, z: o.z });
+  if (fl) {
+    ctx.save(); ctx.globalAlpha = 0.22; ctx.fillStyle = '#000';
+    ctx.beginPath(); ctx.ellipse(fl.x, fl.y, Math.max(5, fl.s * 4), Math.max(2, fl.s * 1.5), 0, 0, 6.283); ctx.fill();
+    ctx.restore();
+  }
+  // TEAM-COLORED circle around every dragon (tells friend from foe)
+  const teamCol = o.team === 'red' ? redTeamCol : blueTeamCol;
+  const cc = project({ x: o.x, y: o.y, z: o.z });
+  if (cc) {
+    ctx.save();
+    ctx.strokeStyle = teamCol; ctx.globalAlpha = 0.95; ctx.lineWidth = Math.max(2.5, 5 * cc.s);
+    ctx.shadowColor = teamCol; ctx.shadowBlur = 8;
+    ctx.beginPath(); ctx.ellipse(cc.x, cc.y, Math.max(26, 108 * cc.s), Math.max(11, 46 * cc.s), 0, 0, 6.283); ctx.stroke();
+    ctx.restore();
+  }
+  const col = isPlayer ? '#ffd54a' : (o.bodyCol || o.color);   // each dragon its own color (you glow gold)
+  const bank = o.bank || 0, pit = o.pitchV || 0;   // banking + pitch from flight physics
+  drawBox({ x: o.x, y: o.y, z: o.z }, 45, 33, 102, o.yaw, col, pit, bank);   // body
+  drawBox({ x: o.x, y: o.y, z: o.z }, 174, 12, 36, o.yaw, col, pit, bank);   // wings
+  // each dragon's ELEMENT badge floats just above it
+  if (o.elem && !isPlayer && cc) {
+    const eb = project({ x: o.x, y: o.y + 70, z: o.z });
+    if (eb) { ctx.save(); ctx.font = Math.max(11, 26 * eb.s) + 'px Trebuchet MS'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillText(o.elem, eb.x, eb.y); ctx.restore(); }
+  }
+  if (isPlayer) {   // strong "this is YOU" marker: a glowing ring + arrow + label
+    const c = project({ x: o.x, y: o.y, z: o.z });
+    if (c) {
+      ctx.save();
+      ctx.strokeStyle = '#ffe066'; ctx.shadowColor = '#ffe066'; ctx.shadowBlur = 16; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(c.x, c.y, Math.max(24, 95 * c.s), 0, 6.283); ctx.stroke();
+      ctx.restore();
+    }
+    const a = project({ x: o.x, y: o.y + 130, z: o.z });
+    if (a) {
+      const s = Math.max(10, 30 * a.s);
+      ctx.save();
+      ctx.fillStyle = '#ffe066'; ctx.shadowColor = '#ffe066'; ctx.shadowBlur = 14;
+      ctx.beginPath(); ctx.moveTo(a.x, a.y + s); ctx.lineTo(a.x - s * 0.6, a.y); ctx.lineTo(a.x + s * 0.6, a.y);
+      ctx.closePath(); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.font = 'bold ' + Math.max(13, 22 * a.s) + 'px Trebuchet MS';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+      ctx.fillText(teamElem + ' YOU', a.x, a.y - 4);
+      ctx.restore();
+    }
+  }
+}
+// a shaded sphere (the Dragonball)
+function drawSphere(pos, r, color) {
+  const p = project(pos); if (!p) return;
+  const rad = Math.max(3, Math.min(120, r * p.s));
+  const fl = project({ x: pos.x, y: 0, z: pos.z });
+  if (fl) {
+    ctx.save(); ctx.globalAlpha = 0.22; ctx.fillStyle = '#000';
+    ctx.beginPath(); ctx.ellipse(fl.x, fl.y, rad * 0.7, rad * 0.3, 0, 0, 6.283); ctx.fill();
+    ctx.restore();
+    // a faint tether from the floating ball down to its shadow — shows it's ABOVE the ground
+    ctx.save(); ctx.strokeStyle = 'rgba(255,224,102,0.35)'; ctx.setLineDash([4, 5]); ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(fl.x, fl.y); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+  }
+  const g = ctx.createRadialGradient(p.x - rad * 0.3, p.y - rad * 0.3, rad * 0.1, p.x, p.y, rad);
+  g.addColorStop(0, '#ffffff'); g.addColorStop(0.45, color); g.addColorStop(1, '#7a5a10');
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y, rad, 0, 6.283); ctx.fill();
+}
+
+// Ch15: festive fireworks for finals/tournament intros.
+function drawFireworks() {
+  const cols = ['#ff5a5a', '#ffd54a', '#7dff9a', '#8fd6ff', '#ce93d8'];
+  const t = 4 - introT;
+  ctx.save();
+  for (let i = 0; i < 5; i++) {
+    const cx = W * (0.15 + i * 0.175), cy = H * 0.18 + Math.sin(t * 2 + i) * 18;
+    const phase = (t * 1.3 + i * 0.5) % 1.4, rad = 10 + phase * 60;
+    ctx.globalAlpha = Math.max(0, 1 - phase / 1.4); ctx.strokeStyle = cols[i % cols.length]; ctx.lineWidth = 2;
+    for (let a = 0; a < 12; a++) {
+      const ang = a / 12 * 6.283;
+      ctx.beginPath();
+      ctx.moveTo(cx + Math.cos(ang) * rad * 0.5, cy + Math.sin(ang) * rad * 0.5);
+      ctx.lineTo(cx + Math.cos(ang) * rad, cy + Math.sin(ang) * rad);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+function render() {
+  drawSky();
+  drawArena();
+
+  // Collect everything with depth, then draw far -> near (painter's algorithm).
+  const items = [];
+  for (const r of RINGS) { const p = project(r); if (p) items.push({ z: p.z, kind: 'ring', o: r }); }
+  for (const d of [you, ...bots]) { const p = project(d); if (p) items.push({ z: p.z, kind: 'dragon', o: d }); }
+  { const p = project(ball); if (p) items.push({ z: p.z, kind: 'ball', o: ball }); }
+  items.sort((a, b) => b.z - a.z);
+
+  for (const it of items) {
+    if (it.kind === 'ring') drawRing(it.o);
+    else if (it.kind === 'dragon') drawDragon(it.o, it.o === player);
+    else if (it.kind === 'ball') drawSphere(it.o, 27, '#ffe066');
+  }
+
+  // HUD
+  const layer = player.y < ARENA.y * 0.25 ? 'Low Sky' : player.y < ARENA.y * 0.5 ? 'Mid Sky' : player.y < ARENA.y * 0.75 ? 'High Sky' : 'Apex';
+  const cs = Math.max(0, Math.ceil(clock)), cm = Math.floor(cs / 60), css = cs % 60;
+  const clkTxt = cm + ':' + (css < 10 ? '0' : '') + css;
+  document.getElementById('scoreboard').innerHTML =
+    '<span class="r">' + (club ? club.mascot + ' ' + club.name : '🔥 You') + ' ' + teamScore.you +
+    '</span> &nbsp;<span style="color:#ffd54a;font-size:20px">' + quarterLabel + ' ' + clkTxt + '</span>&nbsp; ' +
+    '<span class="b">' + teamScore.opp + ' ' + oppName + ' 🌪</span>';
+  hud.innerHTML = '🐉 <b>3D FLIGHT</b> <span style="color:#7dff9a">v35</span> · ' + weather.e + ' ' + weather.n + (autoPlay ? ' · <b style="color:#7dff9a">🤖 AUTO</b>' : '') +
+    '<br>🛗 Altitude: <b>' + Math.round(player.y) + 'm</b> (' + layer + ')' +
+    '<br>🔋 Boost: <b>' + Math.round(player.boost * 100) + '%</b> · <span style="color:#9fd0ff">T = auto-play · B = coach 🧠</span>' +
+    '<br>' + teamElem + ' <b>' + elemName(teamElem) + '</b> · ⚡ Power <b>' + Math.round(energy) + '%</b> ' + (energy >= 100 ? '<b style="color:#7dff9a">— press G!</b>' : '<span style="color:#9fd0ff">(G)</span>') +
+    '<br>🔷 <b>' + (club && club.formation ? (typeof club.formation === 'number' ? 'Diamond' : club.formation) : 'Diamond') + '</b>' + (redX ? ' <b style="color:#ce93d8">🌀 X</b>' : '') + ' · 🤝 ' + teamwork + '% · 🆚 ' + enemyStyleName + (enemyX ? ' 🌀' : '') + (bigGame ? ' <b style="color:#ffd54a">· 🏆 BIG GAME</b>' : '') +
+    '<br>' + (autoPlay ? '🤖 <b>Auto-play ON</b> — press T to take control'
+           : ballOwner === player ? '🟡 <b>You have the ball!</b> Hold X aim/shoot · Z pass'
+           : (ballOwner && ballOwner.team === 'red') ? '🟡 Teammate has it — SPACE to switch'
+           : (ballOwner && ballOwner.team === 'blue') ? '🟡 Enemy has it — C steal · F tackle!'
+           : '🟡 Loose ball — grab it!');
+
+  // Momentum bar (top-center, under the scoreboard)
+  const mw = 220, mx = W / 2 - mw / 2, my = 48;
+  ctx.save();
+  ctx.fillStyle = 'rgba(0,0,0,0.4)'; ctx.fillRect(mx, my, mw, 8);
+  const cxm = mx + mw / 2 + momentum / 100 * (mw / 2);
+  ctx.fillStyle = '#ffe066'; ctx.fillRect(cxm - 3, my - 3, 6, 14);
+  ctx.fillStyle = '#ff8a8a'; ctx.font = '10px Trebuchet MS'; ctx.textAlign = 'left'; ctx.fillText('Momentum', mx, my - 5);
+  ctx.restore();
+
+  // ELEMENT energy meter (bottom-center) — fills up, press G at full
+  if (playing) {
+    const ew = 240, ex = W / 2 - ew / 2, ey = H - 40, full = energy >= 100;
+    ctx.save();
+    ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.fillRect(ex, ey, ew, 16);
+    ctx.fillStyle = full ? '#7dff9a' : '#8fd6ff'; ctx.fillRect(ex, ey, ew * (energy / 100), 16);
+    ctx.strokeStyle = 'rgba(255,255,255,0.5)'; ctx.lineWidth = 1; ctx.strokeRect(ex, ey, ew, 16);
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 12px Trebuchet MS'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(teamElem + ' ' + ELEMENT_INFO[teamElem].special + (full ? ' — PRESS G!' : ' ' + Math.round(energy) + '%'), W / 2, ey + 8);
+    ctx.restore();
+  }
+
+  // Live commentary
+  if (commentaryT > 0 && commentary) {
+    ctx.save(); ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.font = 'bold 18px Trebuchet MS'; ctx.fillStyle = '#fff'; ctx.shadowColor = '#000'; ctx.shadowBlur = 6;
+    ctx.fillText(commentary, W / 2, 74);
+    ctx.restore();
+  }
+  // Halftime banner
+  if (halftimeT > 0) {
+    ctx.save(); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.font = 'bold 60px Trebuchet MS'; ctx.fillStyle = '#ffd54a'; ctx.shadowColor = '#000'; ctx.shadowBlur = 12;
+    ctx.fillText('⏸ HALFTIME', W / 2, H / 2);
+    ctx.restore();
+  }
+
+  // Pre-match TEAM INTRO banner (Vol II lifecycle: Arena Presentation → Team Intro)
+  if (introT > 0) {
+    // Ch15: BROADCAST — finals get fireworks!
+    const bt = broadcastTier(club);
+    if (tournamentMatch) drawFireworks();
+    ctx.save(); ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(0,0,0,0.45)'; ctx.fillRect(0, H / 2 - 132, W, 268);
+    ctx.shadowColor = '#000'; ctx.shadowBlur = 10;
+    ctx.fillStyle = '#8fd6ff'; ctx.font = '13px Trebuchet MS'; ctx.textBaseline = 'bottom';
+    ctx.fillText(bt.e + ' ' + bt.n + ' · ' + bt.desc, W / 2, H / 2 - 88);   // broadcast tier
+    ctx.fillStyle = isRival ? '#ff7a7a' : '#ffd54a'; ctx.font = 'bold 30px Trebuchet MS'; ctx.textBaseline = 'bottom';
+    ctx.fillText(isRival ? '⚔️ RIVALRY MATCH ⚔️' : (tournamentMatch ? '🏆 TOURNAMENT MATCH' : (leagueName(club ? club.division : 20))), W / 2, H / 2 - 60);
+    ctx.fillStyle = club ? club.color : '#ff6b6b'; ctx.font = 'bold 52px Trebuchet MS'; ctx.textBaseline = 'middle';
+    ctx.fillText((club ? club.mascot + ' ' + club.name : 'You'), W / 2, H / 2 - 18);
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 26px Trebuchet MS'; ctx.fillText('— VS —', W / 2, H / 2 + 22);
+    ctx.fillStyle = '#9fd0ff'; ctx.font = 'bold 40px Trebuchet MS'; ctx.fillText('🌪 ' + oppName, W / 2, H / 2 + 62);
+    ctx.fillStyle = '#ffb0b0'; ctx.font = 'italic 14px Trebuchet MS'; ctx.textBaseline = 'top';
+    ctx.fillText('“' + enemyStyleName + '” · 🔷 ' + enemyFormName + (enemyCoach ? ' · 👔 ' + enemyCoach.name : ''), W / 2, H / 2 + 86);
+    // Ch16: history-aware commentary (head-to-head record)
+    ctx.fillStyle = '#c9b8ff'; ctx.font = '13px Trebuchet MS'; ctx.textBaseline = 'top';
+    ctx.fillText(genHistoryComment(club, oppName).replace('🎙️ ', '📜 '), W / 2, H / 2 + 104);
+    // TEAM LINE-UP: your starting riders' names
+    if (club && club.roster) {
+      const top6 = club.roster.slice().sort((a, b) => ovr(b) - ovr(a)).slice(0, 6);
+      const names = top6.map(r => (r.element || '') + ' ' + r.name.split(' ')[0]).join('   ');
+      ctx.fillStyle = '#ffe9a8'; ctx.font = 'bold 12px Trebuchet MS'; ctx.textBaseline = 'top';
+      ctx.fillText('YOUR LINE-UP:  ' + names, W / 2, H / 2 + 122);
+    }
+    ctx.restore();
+    // 3-2-1 countdown number (Vol II opening release), shown in the last 3 seconds
+    if (introT <= 3) {
+      const n = Math.ceil(introT);
+      ctx.save(); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#ffe066'; ctx.shadowColor = '#ff7b2a'; ctx.shadowBlur = 30;
+      ctx.font = 'bold 130px Trebuchet MS';
+      ctx.fillText(n, W / 2, H * 0.16);
+      ctx.restore();
+    }
+  }
+  // "GO!" flash the moment the ball is released
+  if (goT > 0) {
+    ctx.save(); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.globalAlpha = Math.min(1, goT * 2);
+    ctx.fillStyle = '#7dff9a'; ctx.shadowColor = '#00ff88'; ctx.shadowBlur = 34;
+    ctx.font = 'bold 150px Trebuchet MS';
+    ctx.fillText('GO!', W / 2, H * 0.4);
+    ctx.restore();
+  }
+
+  // AIM crosshair (while holding X with the ball)
+  if (aiming && ballOwner === player) {
+    const bp = project(ball);
+    ctx.save();
+    if (bp) {   // aim line from the ball to the crosshair
+      ctx.strokeStyle = 'rgba(255,224,102,0.7)'; ctx.setLineDash([10, 8]); ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(bp.x, bp.y); ctx.lineTo(mouseX, mouseY); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    ctx.strokeStyle = '#ffe066'; ctx.shadowColor = '#ffe066'; ctx.shadowBlur = 12; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(mouseX, mouseY, 16, 0, 6.283); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(mouseX - 24, mouseY); ctx.lineTo(mouseX - 6, mouseY);
+    ctx.moveTo(mouseX + 6, mouseY);  ctx.lineTo(mouseX + 24, mouseY);
+    ctx.moveTo(mouseX, mouseY - 24); ctx.lineTo(mouseX, mouseY - 6);
+    ctx.moveTo(mouseX, mouseY + 6);  ctx.lineTo(mouseX, mouseY + 24);
+    ctx.stroke();
+    ctx.shadowBlur = 0; ctx.fillStyle = '#ffd54a'; ctx.font = 'bold 18px Trebuchet MS';
+    ctx.textAlign = 'center'; ctx.fillText(goalGuarded ? '🛡 GUARDED — aim AROUND the defender!' : '🎯 AIM — release X to fire!', W / 2, 62);
+    ctx.restore();
+  }
+
+  // GOAL! popup
+  if (scorePopT > 0) {
+    ctx.save();
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#ffe066'; ctx.shadowColor = '#ff7b2a'; ctx.shadowBlur = 30;
+    ctx.font = 'bold 80px Trebuchet MS';
+    ctx.fillText('GOAL! ' + scorePopMsg, W / 2, H * 0.3);
+    ctx.restore();
+  }
+  // SLOW-MO effect: a blue tint + label
+  if (slowmoT > 0) {
+    ctx.save();
+    ctx.fillStyle = 'rgba(60,120,255,0.14)'; ctx.fillRect(0, 0, W, H);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillStyle = '#bfe0ff';
+    ctx.shadowColor = '#3c78ff'; ctx.shadowBlur = 12; ctx.font = 'bold 26px Trebuchet MS';
+    ctx.fillText('⏳ SLOW-MOTION', W / 2, 96);
+    ctx.restore();
+  }
+  // INSTANT REPLAY banner
+  if (replayMode) {
+    ctx.save();
+    ctx.fillStyle = 'rgba(0,0,0,0.28)'; ctx.fillRect(0, 0, W, 46); ctx.fillRect(0, H - 46, W, 46);
+    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#ff5a5a'; ctx.font = 'bold 22px Trebuchet MS';
+    const dot = (Math.floor(replayIdx / 8) % 2) ? '●' : '○';
+    ctx.fillText(dot + ' INSTANT REPLAY', 18, 24);
+    ctx.restore();
+  }
+  // MINI-MAP (bottom-right): the whole arena top-down — you, teammates, enemies & the ball
+  if (playing && introT <= 0) drawMinimap();
+}
+// Top-down mini-map of the arena — shows EVERY dragon (green = your team, red = enemy).
+function drawMinimap() {
+  const mmW = 148, mmH = 208, pad = 14;
+  const mx = W - mmW - pad, my = H - mmH - pad;
+  const toX = wx => mx + Math.max(4, Math.min(mmW - 4, ((wx + ARENA.x) / (2 * ARENA.x)) * mmW));
+  const toY = wz => my + Math.max(4, Math.min(mmH - 4, mmH - (wz / ARENA.z) * mmH));   // enemy goal top, your goal bottom
+  function dot(wx, wz, col, r, ring) {
+    const px = toX(wx), py = toY(wz);
+    ctx.fillStyle = col; ctx.beginPath(); ctx.arc(px, py, r, 0, 6.283); ctx.fill();
+    ctx.strokeStyle = ring || 'rgba(0,0,0,0.55)'; ctx.lineWidth = 1.4; ctx.stroke();
+  }
+  ctx.save();
+  // panel + halves
+  ctx.fillStyle = 'rgba(4,10,26,0.75)'; ctx.strokeStyle = 'rgba(140,190,255,0.6)'; ctx.lineWidth = 2;
+  ctx.fillRect(mx, my, mmW, mmH); ctx.strokeRect(mx, my, mmW, mmH);
+  ctx.strokeStyle = 'rgba(140,190,255,0.25)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(mx, my + mmH / 2); ctx.lineTo(mx + mmW, my + mmH / 2); ctx.stroke();
+  // goals (at x=0): enemy far = top, yours near = bottom
+  dot(0, ARENA.z - 250, '#4d9bff', 5, '#fff');
+  dot(0, 250, '#ff9a3c', 5, '#fff');
+  // EVERY dragon: green = your team, red = enemy, gold = you
+  for (const d of bots) if (d.team === 'red') dot(d.x, d.z, '#4dff88', 4);   // your teammates
+  for (const d of bots) if (d.team === 'blue') dot(d.x, d.z, '#ff5a5a', 4);  // enemies
+  dot(you.x, you.z, (you === player ? '#4dff88' : '#4dff88'), 4);
+  // the ball
+  ctx.fillStyle = '#ffe066'; ctx.shadowColor = '#ffe066'; ctx.shadowBlur = 8;
+  ctx.beginPath(); ctx.arc(toX(ball.x), toY(ball.z), 4, 0, 6.283); ctx.fill(); ctx.shadowBlur = 0;
+  ctx.strokeStyle = '#000'; ctx.lineWidth = 1; ctx.stroke();
+  // YOU on top, extra big + gold
+  dot(player.x, player.z, '#ffd54a', 6, '#fff');
+  // legend
+  ctx.fillStyle = '#cfe0ff'; ctx.font = 'bold 10px Trebuchet MS'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+  ctx.fillText('🗺️ ⭐you 🟢team 🔴enemy 🟡ball', mx + mmW / 2, my - 2);
+  ctx.restore();
+}
+
+// =========================================================
+//  LOOP
+// =========================================================
+let last = 0;
+function loop(t) {
+  let dt = (t - last) / 1000; if (!last || dt > 0.1) dt = 0.016; last = t;
+  try {
+    if (replayMode) stepReplay();                 // instant replay plays back the last moment
+    else if (playing && !coaching) {              // coaching menu freezes the match
+      let sim = dt;
+      if (slowmoT > 0) { slowmoT -= dt; sim = dt * 0.45; }   // slow-motion interactive moment
+      update(sim);
+    }
+  } catch (e) { showErr('update: ' + (e && e.message || e)); }
+  try { render(); } catch (e) { showErr('render: ' + (e && e.message || e)); }
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+// Make sure the game window has keyboard focus so the controls always respond.
+try { window.focus(); } catch (e) {}
+window.addEventListener('pointerdown', () => { try { window.focus(); } catch (e) {} });
+</script>
+</body>
+</html>
