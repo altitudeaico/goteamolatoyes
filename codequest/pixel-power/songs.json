@@ -1,0 +1,12 @@
+{
+  "title": "Song Gallery",
+  "subtitle": "Press play on any track.",
+  "tracks": [
+    {
+      "title": "Test Beep",
+      "note": "A test track so you can check the sound works. Delete this once your own songs are in.",
+      "audio": "songs/test-beep.mp3",
+      "video": "songs/test-beep.mp4"
+    }
+  ]
+}
