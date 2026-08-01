@@ -41,7 +41,8 @@ body::after{
 .room{
   position:relative;z-index:1;width:100%;height:100%;
   display:grid;grid-template-columns:1fr 1fr;align-items:center;
-  gap:clamp(20px,4vw,64px);padding:clamp(18px,3.5vh,44px) clamp(20px,4vw,64px)
+  gap:clamp(20px,4vw,64px);
+  padding:clamp(18px,3.5vh,44px) clamp(20px,4vw,64px) clamp(74px,12vh,110px)
 }
 
 /* ── left: crest, countdown ── */
@@ -105,6 +106,33 @@ body::after{
 }
 .dots span.on{background:var(--phos);box-shadow:0 0 10px var(--phos)}
 
+.rail{
+  position:fixed;left:clamp(20px,4vw,64px);right:clamp(20px,4vw,64px);
+  bottom:clamp(30px,5vh,54px);z-index:3;display:grid;gap:clamp(4px,.6vw,8px);
+  grid-template-columns:repeat(7,1fr)
+}
+.rail .st{position:relative;padding-top:9px}
+.rail .st::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:rgba(217,169,76,.16);transition:background .4s
+}
+.rail .st i{
+  position:absolute;top:0;left:0;height:3px;width:0;background:var(--phos);
+  box-shadow:0 0 10px var(--phos);transition:width .5s linear
+}
+.rail .st b{
+  display:block;font-family:var(--sys);font-weight:700;
+  font-size:clamp(7px,.62vw,9.5px);letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(154,143,122,.55);white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+.rail .st .tm{
+  display:block;font-family:var(--sys);font-size:clamp(6.5px,.55vw,8.5px);
+  letter-spacing:.1em;color:rgba(154,143,122,.32);margin-top:2px
+}
+.rail .st.done::before{background:rgba(217,169,76,.42)}
+.rail .st.done b{color:rgba(154,143,122,.42)}
+.rail .st.on b{color:var(--phos)}
+.rail .st.on .tm{color:rgba(69,227,196,.6)}
 .foot{
   position:fixed;left:0;right:0;bottom:clamp(8px,1.4vh,16px);text-align:center;z-index:3;
   font-family:var(--sys);font-size:clamp(8px,.78vw,11px);letter-spacing:.3em;
@@ -122,6 +150,7 @@ body.showcursor .fsbtn{opacity:1}
 
 /* portrait / narrow: stack, reel on top */
 @media (max-aspect-ratio:1/1){
+  .rail{display:none}
   .room{grid-template-columns:1fr;grid-template-rows:auto auto;align-content:center;gap:clamp(16px,3vh,34px)}
   .right{order:-1}
   .crestwrap{width:min(200px,42vw)}
@@ -158,6 +187,7 @@ body.showcursor .fsbtn{opacity:1}
   </div>
 </div>
 
+<div class="rail" id="rail"></div>
 <div class="foot">#GoTeamOlatoyes · Code Quest MMXXVI</div>
 
 <button class="fsbtn" id="fs" type="button" aria-label="Toggle full screen">
@@ -234,11 +264,40 @@ body.showcursor .fsbtn{opacity:1}
   var labelEl = document.getElementById('label');
   var clockEl = document.getElementById('clock');
   var subEl   = document.getElementById('sub');
+  var railEl  = document.getElementById('rail');
+
+  /* build the stage rail */
+  var railStages = STAGES.map(function(s){
+    var d = document.createElement('div');
+    d.className = 'st';
+    d.innerHTML = '<i></i><b>' + s[2] + '</b><span class="tm">' + s[0] + '</span>';
+    railEl.appendChild(d);
+    return d;
+  });
+
+  function paintRail(now){
+    STAGES.forEach(function(s, i){
+      var a = at(s[0]), b = at(s[1]);
+      var el = railStages[i];
+      var fill = el.querySelector('i');
+      el.classList.remove('on','done');
+      if (now >= b){
+        el.classList.add('done');
+        fill.style.width = '100%';
+      } else if (now >= a){
+        el.classList.add('on');
+        fill.style.width = ((now - a) / (b - a) * 100) + '%';
+      } else {
+        fill.style.width = '0%';
+      }
+    });
+  }
 
   function tick(){
     var now   = new Date();
     var first = at(STAGES[0][0]);
     var last  = at(STAGES[STAGES.length - 1][1]);
+    paintRail(now);
 
     if (now < first){
       var ms = first - now;
