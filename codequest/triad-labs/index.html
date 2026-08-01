@@ -144,6 +144,17 @@ section{padding:24px 0 0}
 }
 .build h3{margin:5px 0 6px;color:var(--gold-hi)}
 .build p{margin:0;font-size:14.5px;color:var(--parch-dim)}
+.build .go{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.btn{
+  display:inline-block;font-family:var(--sys);font-size:10.5px;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;text-decoration:none;
+  padding:10px 17px;border-radius:3px;
+  background:var(--rubric);border:1px solid var(--rubric);color:#fff;
+  transition:filter .2s
+}
+.btn:hover{filter:brightness(1.15)}
+.btn.ghost{background:transparent;border-color:var(--line);color:var(--parch-dim)}
+.btn.ghost:hover{border-color:var(--gold);color:var(--gold-hi);filter:none}
 .build.empty{border-style:dashed;opacity:.7}
 .build.empty::before{background:var(--line-soft)}
 .build.empty h3{color:var(--parch-dim)}
@@ -239,20 +250,31 @@ footer a:hover{color:var(--gold)}
     <p class="eyebrow">What we made</p>
     <h2>The builds</h2>
     <div class="builds">
-      <div class="build empty">
-        <div class="rank">Build one &middot; Ezekiel presents</div>
-        <h3>To be announced</h3>
-        <p>Files land here as they come in.</p>
+      <div class="build">
+        <div class="rank">Build one &middot; Arthur presents</div>
+        <h3>Ninja Academy</h3>
+        <p>Path of Motion. A movement-powered action game &mdash; one HTML file, no dependencies, zero external requests. Runs from a USB stick on a plane.</p>
+        <div class="go">
+          <a class="btn" href="ninja-academy/">Play it</a>
+        </div>
       </div>
-      <div class="build empty">
-        <div class="rank">Build two &middot; Arthur presents</div>
-        <h3>To be announced</h3>
-        <p>Files land here as they come in.</p>
+      <div class="build">
+        <div class="rank">Build two &middot; Ezekiel presents</div>
+        <h3>Non-League</h3>
+        <p>A season in the sixth tier. Browser-based football management &mdash; squads, fixtures, a full season simulated in the page.</p>
+        <div class="go">
+          <a class="btn" href="non-league/">Play it</a>
+          <a class="btn ghost" href="non-league/non-league-breakdown.pdf" target="_blank" rel="noopener">The breakdown (PDF)</a>
+        </div>
       </div>
-      <div class="build empty">
+      <div class="build">
         <div class="rank">Build three &middot; Sophia presents</div>
-        <h3>To be announced</h3>
-        <p>Files land here as they come in.</p>
+        <h3>Math Kingdom</h3>
+        <p>Chaos of Numbers. The arithmetic <em>is</em> the combat system &mdash; ten classes, nine regions, twenty-seven fights, and a Remainder Warlock who gives hints.</p>
+        <div class="go">
+          <a class="btn" href="math-kingdom/">Play it</a>
+          <a class="btn ghost" href="math-kingdom/math-kingdom-design.pptx" download>Design deck</a>
+        </div>
       </div>
     </div>
   </section>
@@ -264,9 +286,9 @@ footer a:hover{color:var(--gold)}
     <h2>The Telling</h2>
     <table class="slots">
       <tr><th>Time</th><th>Who</th><th>Build</th></tr>
-      <tr><td>15:25</td><td>Ezekiel</td><td>Build one</td></tr>
-      <tr><td>15:51</td><td>Arthur</td><td>Build two</td></tr>
-      <tr><td>16:17</td><td>Sophia</td><td>Build three</td></tr>
+      <tr><td>15:25</td><td>Ezekiel</td><td>Non-League</td></tr>
+      <tr><td>15:51</td><td>Arthur</td><td>Ninja Academy</td></tr>
+      <tr><td>16:17</td><td>Sophia</td><td>Math Kingdom</td></tr>
     </table>
     <p class="dim" style="margin-top:14px;font-size:14.5px">Seven minutes each, then two for Grandma's questions. Hand signal at five minutes.</p>
   </section>

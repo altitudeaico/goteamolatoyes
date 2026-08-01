@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Math Kingdom — Chaos of Numbers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Spectral:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#070c22; --deep:#0e1740; --panel:#152159; --panel2:#1b2a6f; --line:#31408c; --star:#9fb4f0; --dim:#6f81c4;
+  --parch:#f3e8cf; --gold:#e6c46a;
+  --add:#4fd8a3; --sub:#ff7a8f; --mul:#ffb347; --div:#b98bff;
+  --r:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:
+    radial-gradient(1200px 700px at 78% -10%, #1d2a6b 0%, transparent 60%),
+    radial-gradient(900px 600px at 10% 110%, #17204f 0%, transparent 55%),
+    var(--night);
+  color:var(--parch);
+  font-family:Spectral, Georgia, serif;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;
+  background-image:
+    radial-gradient(1.4px 1.4px at 20% 30%, #fff8, transparent),
+    radial-gradient(1.2px 1.2px at 70% 15%, #fff6, transparent),
+    radial-gradient(1.6px 1.6px at 45% 70%, #fff5, transparent),
+    radial-gradient(1.2px 1.2px at 88% 62%, #fff6, transparent),
+    radial-gradient(1.1px 1.1px at 12% 85%, #fff5, transparent),
+    radial-gradient(1.3px 1.3px at 60% 92%, #fff4, transparent);
+}
+.wrap{max-width:1080px;margin:0 auto;padding:18px 16px 60px;position:relative}
+h1,h2,h3,.disp{font-family:Cinzel, Georgia, serif;letter-spacing:.04em;margin:0}
+.num{font-family:"IBM Plex Mono", ui-monospace, monospace;font-variant-numeric:tabular-nums}
+.muted{color:var(--dim)}
+.small{font-size:13px}
+
+/* ---- top bar ---- */
+.topbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+  border:1px solid var(--line);background:linear-gradient(180deg,#152159cc,#0e1740cc);
+  border-radius:var(--r);padding:10px 14px;backdrop-filter:blur(4px)}
+.crest{display:flex;align-items:center;gap:10px}
+.crest .mark{width:30px;height:30px;border-radius:50%;border:2px solid var(--gold);
+  display:grid;place-items:center;font-family:"IBM Plex Mono",monospace;color:var(--gold);font-size:15px}
+.res{display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:14px}
+.res b{font-family:"IBM Plex Mono",monospace;font-weight:600}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{font-family:Cinzel,serif;font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+  background:transparent;border:1px solid var(--line);color:var(--star);padding:7px 12px;border-radius:9px;cursor:pointer}
+.tab:hover{border-color:var(--gold);color:var(--parch)}
+.tab[aria-current="true"]{background:var(--gold);border-color:var(--gold);color:#2a1d05;font-weight:700}
+
+/* ---- panels ---- */
+.card{border:1px solid var(--line);background:linear-gradient(180deg,#16225acc,#101a44cc);
+  border-radius:var(--r);padding:18px}
+.grid{display:grid;gap:14px}
+.g3{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.g2{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+hr.rule{border:0;border-top:1px solid var(--line);margin:16px 0}
+
+/* ---- buttons ---- */
+button{font-family:inherit}
+.btn{font-family:Cinzel,serif;letter-spacing:.05em;background:var(--gold);color:#2a1d05;border:0;
+  padding:11px 18px;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px}
+.btn:hover{filter:brightness(1.08)}
+.btn[disabled]{opacity:.35;cursor:not-allowed;filter:none}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--star)}
+.btn.ghost:hover{border-color:var(--gold);color:var(--parch)}
+.btn.sm{padding:7px 12px;font-size:12px}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+/* ---- title ---- */
+.hero{text-align:center;padding:40px 10px 26px}
+.hero h1{font-size:clamp(34px,7vw,60px);color:var(--parch);line-height:1.05}
+.hero .sub{color:var(--gold);font-family:Cinzel,serif;letter-spacing:.28em;font-size:12px;text-transform:uppercase;margin-top:12px}
+.hero p{max-width:640px;margin:18px auto 0;color:#cdd6f5;font-size:16.5px;line-height:1.6}
+.classcard{cursor:pointer;text-align:left;border:1px solid var(--line);background:#101a44aa;border-radius:var(--r);padding:16px;color:inherit}
+.classcard:hover,.classcard.sel{border-color:var(--gold);background:#1b2a6f88}
+.classcard h3{font-size:17px;margin-bottom:6px}
+.classcard .tagline{color:var(--gold);font-size:12.5px;font-style:italic;margin-bottom:8px}
+
+/* ---- map ---- */
+.region{position:relative;border:1px solid var(--line);background:#101a44aa;border-radius:var(--r);padding:16px;cursor:pointer;text-align:left;color:inherit;display:block;width:100%}
+.region:hover:not(.locked){border-color:var(--gold);transform:translateY(-2px)}
+.region{transition:transform .15s ease,border-color .15s ease}
+.region.locked{opacity:.42;cursor:not-allowed}
+.region h3{font-size:16px}
+.region .concept{font-size:12.5px;color:var(--gold);margin:6px 0 8px;font-style:italic}
+.pips{display:flex;gap:5px;margin-top:10px}
+.pip{width:22px;height:5px;border-radius:3px;background:#2b3a80}
+.pip.on{background:var(--add)}
+.pip.boss.on{background:var(--gold)}
+
+/* ---- battle ---- */
+.bhead{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:flex-start}
+.bar{height:11px;border-radius:6px;background:#0b1233;border:1px solid var(--line);overflow:hidden;min-width:180px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,#4fd8a3,#2fae7f)}
+.bar.foe i{background:linear-gradient(90deg,#ff7a8f,#c8455f)}
+.sigilwrap{display:grid;place-items:center;margin:14px 0 6px}
+.sigil{width:190px;height:190px}
+.sigil .ring{fill:none;stroke:var(--line);stroke-width:2}
+.sigil .arc{fill:none;stroke-width:5;stroke-linecap:round;opacity:.9}
+.sigil .spin{transform-origin:100px 100px;animation:spin 26s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.wardval{font-family:"IBM Plex Mono",monospace;font-size:44px;fill:var(--parch);font-weight:600}
+.wardval.small{font-size:30px}
+.clue{text-align:center;color:var(--gold);font-style:italic;max-width:520px;margin:0 auto 6px;font-size:15px}
+.spellbar{min-height:56px;border:1px dashed var(--line);border-radius:12px;background:#0b123366;
+  display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:10px;margin:12px 0}
+.tok{font-family:"IBM Plex Mono",monospace;font-size:22px;padding:2px 6px}
+.tok.op-add{color:var(--add)} .tok.op-sub{color:var(--sub)} .tok.op-mul{color:var(--mul)} .tok.op-div{color:var(--div)}
+.result{font-family:"IBM Plex Mono",monospace;font-size:20px;color:var(--star)}
+.result.hit{color:var(--add)}
+.tiles{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.tile{width:60px;height:66px;border-radius:12px;border:1px solid var(--line);background:linear-gradient(180deg,#1d2b73,#121c4c);
+  color:var(--parch);font-family:"IBM Plex Mono",monospace;font-size:24px;cursor:pointer;transition:transform .12s}
+.tile:hover:not(:disabled){transform:translateY(-3px);border-color:var(--gold)}
+.tile:disabled{opacity:.22;cursor:default}
+.ops{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+.op{width:52px;height:52px;border-radius:12px;background:#0f1946;border:1px solid var(--line);font-size:22px;cursor:pointer;font-family:"IBM Plex Mono",monospace}
+.op:disabled{opacity:.25;cursor:default}
+.op.add{color:var(--add)} .op.sub{color:var(--sub)} .op.mul{color:var(--mul)} .op.div{color:var(--div)}
+.op.util{color:var(--star);font-size:16px;width:auto;padding:0 14px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:16px}
+.log{margin-top:14px;max-height:150px;overflow:auto;font-size:14px;line-height:1.55}
+.log div{padding:3px 0;border-bottom:1px solid #1c2760}
+.log .good{color:var(--add)} .log .bad{color:var(--sub)} .log .note{color:var(--gold)}
+.trait{font-size:13px;color:var(--div);margin-top:4px}
+.kindrow{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:10px 0 4px}
+.kindtag{font-family:Cinzel,serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid var(--line);border-radius:99px;padding:4px 12px;color:var(--star)}
+.kindtag.exact{border-color:var(--add);color:var(--add)}
+.kindtag.multiple{border-color:var(--mul);color:var(--mul)}
+.kindtag.range{border-color:var(--star);color:var(--star)}
+.kindtag.prime{border-color:var(--sub);color:var(--sub)}
+.kindtag.greed{border-color:var(--gold);color:var(--gold)}
+.kindtag.surge{border-color:var(--sub);color:var(--sub);background:rgba(255,122,143,.10)}
+.kindtag.res{border-color:var(--gold);color:var(--gold);background:rgba(230,196,106,.10)}
+
+/* ---- kingdom ---- */
+.bld{border:1px solid var(--line);border-radius:var(--r);padding:15px;background:#101a44aa}
+.bld h3{font-size:15px}
+.lvlchips{display:flex;gap:4px;margin:8px 0}
+.chip{width:18px;height:6px;border-radius:3px;background:#2b3a80}
+.chip.on{background:var(--gold)}
+.mast{margin-bottom:12px}
+.mbar{height:9px;background:#0b1233;border:1px solid var(--line);border-radius:5px;overflow:hidden}
+.mbar i{display:block;height:100%;background:linear-gradient(90deg,var(--div),var(--add))}
+.float{position:fixed;pointer-events:none;font-family:"IBM Plex Mono",monospace;font-size:30px;
+  color:var(--gold);animation:fl 1s ease-out forwards;text-shadow:0 2px 10px #000}
+@keyframes fl{to{transform:translateY(-60px);opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.hidden{display:none!important}
+
+/* ---- relics ---- */
+.relics{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}
+.relic{display:flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:99px;
+  padding:4px 11px 4px 6px;background:#101a44aa;font-size:12px;color:var(--star)}
+.relic .rg{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;
+  border:1px solid var(--gold);color:var(--gold);font-family:"IBM Plex Mono",monospace;font-size:11px}
+.relicgrid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));margin-top:12px}
+.rcard{border:1px solid var(--line);border-radius:var(--r);padding:14px;background:#101a44aa;position:relative}
+.rcard.have{border-color:var(--gold);background:linear-gradient(180deg,#1d2456aa,#101a44aa)}
+.rcard h4{margin:0;font-family:Cinzel,serif;font-size:14px;letter-spacing:.03em}
+.rcard .eff{font-size:12.5px;color:var(--add);margin-top:6px}
+.rcard .src{font-size:11.5px;color:var(--dim);margin-top:6px}
+.rcard.miss h4,.rcard.miss .eff{color:#4d5c9c}
+.drop{border:1px solid var(--gold);border-radius:var(--r);padding:14px;margin:14px auto 0;max-width:440px;
+  background:radial-gradient(200px 90px at 50% 0%,rgba(230,196,106,.16),transparent);animation:dropin .6s ease-out}
+@keyframes dropin{from{transform:translateY(12px);opacity:0}}
+
+/* ---- the warlock ---- */
+.warlock{display:flex;gap:13px;align-items:flex-start;margin-top:16px;padding:13px;
+  border:1px solid #3a3070;border-radius:var(--r);background:linear-gradient(180deg,#1a1548cc,#120e33cc)}
+.warlock .face{flex:0 0 46px;height:46px;border-radius:50%;display:grid;place-items:center;
+  border:1px solid var(--div);color:var(--div);font-family:"IBM Plex Mono",monospace;font-size:20px;
+  box-shadow:0 0 18px rgba(185,139,255,.25)}
+.warlock .who{font-family:Cinzel,serif;font-size:13px;color:var(--div);letter-spacing:.06em}
+.warlock .say{font-size:14px;line-height:1.55;margin-top:4px;min-height:20px}
+.warlock .say .num{color:var(--gold)}
+.wbtns{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.wbtn{font-size:12px;background:#171149;border:1px solid #3a3070;color:var(--star);
+  padding:6px 11px;border-radius:8px;cursor:pointer}
+.wbtn:hover:not(:disabled){border-color:var(--div);color:var(--parch)}
+.wbtn:disabled{opacity:.35;cursor:default}
+.wbtn b{color:var(--gold);font-family:"IBM Plex Mono",monospace}
+
+/* ---- living background ---- */
+#bg{position:fixed;inset:0;z-index:0;display:block}
+.wrap{z-index:2}
+
+/* ---- animated cursor ---- */
+/* the pointer is a crown. it bobs, it tilts into the direction you move,
+   it flares over anything you can click, and it presses down when you do. */
+#cur{position:fixed;top:0;left:0;z-index:9999;pointer-events:none;
+  opacity:0;transition:opacity .18s ease;will-change:transform}
+#cur.on{opacity:1}
+#cur .crown{display:block;font-size:30px;line-height:1;margin:-5px 0 0 -5px;
+  font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji","Twemoji Mozilla",sans-serif;
+  filter:drop-shadow(0 0 9px rgba(230,196,106,.75));
+  transform-origin:30% 80%;transition:font-size .16s ease,filter .16s ease}
+#cur .bob{display:block;animation:crownbob 2.6s ease-in-out infinite}
+@keyframes crownbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+#cur.hot .crown{font-size:38px;filter:drop-shadow(0 0 18px rgba(230,196,106,1))}
+#cur.press .crown{font-size:24px}
+.spark{position:fixed;pointer-events:none;z-index:9998;
+  font-size:12px;color:var(--gold);text-shadow:0 0 8px rgba(230,196,106,.8);
+  animation:sparkfade .9s ease-out forwards}
+@keyframes sparkfade{to{transform:translateY(-26px) scale(.5) rotate(25deg);opacity:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---- name entry ---- */
+.namebox{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+#heroname{font-family:Cinzel,serif;font-size:20px;letter-spacing:.06em;text-align:center;
+  background:#0c1436;border:1px solid var(--line);border-bottom:2px solid var(--gold);
+  color:var(--parch);padding:12px 18px;border-radius:10px;min-width:280px;outline:none}
+#heroname:focus{border-color:var(--gold);box-shadow:0 0 22px rgba(230,196,106,.22)}
+#heroname::placeholder{color:#4d5c9c;letter-spacing:.04em}
+.sigilrow{display:flex;gap:16px;justify-content:center;margin-top:26px;font-family:"IBM Plex Mono",monospace;
+  font-size:22px;color:var(--star);opacity:.55;letter-spacing:.3em}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div id="cur" aria-hidden="true"><span class="bob"><span class="crown">👑</span></span></div>
+
+<div class="wrap">
+  <div class="topbar" id="topbar" hidden>
+    <div class="crest"><div class="mark num">∑</div>
+      <div><div class="disp" style="font-size:15px">Math Kingdom</div>
+      <div class="small muted" id="whoami">—</div></div>
+    </div>
+    <div class="res">
+      <span>Level <b class="num" id="rLvl">1</b></span>
+      <span style="color:var(--gold)">Gold <b class="num" id="rGold">0</b></span>
+      <span style="color:var(--div)">Insight <b class="num" id="rIns">0</b></span>
+      <span>XP <b class="num" id="rXp">0</b></span>
+    </div>
+    <div class="tabs">
+      <button class="tab" data-go="map">Realm</button>
+      <button class="tab" data-go="kingdom">Kingdom</button>
+      <button class="tab" data-go="hero">Hero</button>
+    </div>
+  </div>
+
+  <main id="view"></main>
+</div>
+
+<script>
+
+/* ---------- storage shim ----------
+   The game was authored inside Claude, which provides window.storage.
+   On a normal web host that object does not exist, so fall back to
+   localStorage: same shape, same promise-based API, per-browser only. */
+if(!window.storage){
+  const K='mk:';
+  const ok=(()=>{try{localStorage.setItem(K+'_t','1');localStorage.removeItem(K+'_t');return true;}catch(e){return false;}})();
+  window.storage={
+    get:async k=>{if(!ok)return null;const v=localStorage.getItem(K+k);return v===null?null:{key:k,value:v,shared:false};},
+    set:async (k,v)=>{if(!ok)return null;localStorage.setItem(K+k,v);return{key:k,value:v,shared:false};},
+    delete:async k=>{if(!ok)return null;localStorage.removeItem(K+k);return{key:k,deleted:true,shared:false};},
+    list:async (p)=>({keys:ok?Object.keys(localStorage).filter(x=>x.startsWith(K+(p||''))).map(x=>x.slice(K.length)):[],shared:false})
+  };
+}
+/* ============================================================
+   MATH KINGDOM — a playable prototype
+   Design rule: the maths IS the mechanic, not a toll gate.
+   Every turn you are handed number tiles and a target (the Ward).
+   Build an expression that equals the Ward. More tiles = more power.
+   ============================================================ */
+
+/* ---------- exact rational arithmetic (so fractions stay honest) ---------- */
+function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){const t=b;b=a%b;a=t;}return a||1;}
+function R(n,d){d=(d===undefined?1:d);if(d===0)throw new Error('div0');if(d<0){n=-n;d=-d;}const g=gcd(n,d);return{n:n/g,d:d/g};}
+const radd=(a,b)=>R(a.n*b.d+b.n*a.d,a.d*b.d);
+const rsub=(a,b)=>R(a.n*b.d-b.n*a.d,a.d*b.d);
+const rmul=(a,b)=>R(a.n*b.n,a.d*b.d);
+const rdiv=(a,b)=>{if(b.n===0)throw new Error('div0');return R(a.n*b.d,a.d*b.n);};
+const req=(a,b)=>a.n===b.n&&a.d===b.d;
+const rint=a=>a.d===1;
+const rnum=a=>a.n/a.d;
+const rstr=a=>a.d===1?String(a.n):(a.n<0?'-':'')+Math.abs(a.n)+'/'+a.d;
+
+/* ---------- expression parser (real order of operations) ---------- */
+function evaluate(tokens){
+  let i=0;
+  function expr(){let v=term();while(i<tokens.length&&tokens[i].t==='op'&&(tokens[i].v==='+'||tokens[i].v==='-')){const o=tokens[i++].v;const r=term();v=(o==='+')?radd(v,r):rsub(v,r);}return v;}
+  function term(){let v=fac();while(i<tokens.length&&tokens[i].t==='op'&&(tokens[i].v==='*'||tokens[i].v==='/')){const o=tokens[i++].v;const r=fac();v=(o==='*')?rmul(v,r):rdiv(v,r);}return v;}
+  function fac(){const tk=tokens[i];if(!tk)throw new Error('incomplete');
+    if(tk.t==='num'){i++;return tk.v;}
+    if(tk.t==='lp'){i++;const v=expr();if(!tokens[i]||tokens[i].t!=='rp')throw new Error('unclosed');i++;return v;}
+    throw new Error('unexpected');}
+  const v=expr();
+  if(i!==tokens.length)throw new Error('trailing');
+  return v;
+}
+
+/* ---------- world data ---------- */
+const CLASSES={
+  knight:{name:'Number Knight',tag:'Steel is just arithmetic with edges.',
+    desc:'Hits harder when the Ward is matched exactly. Ability: Double Strike doubles your next spell.',
+    hp:110,pow:1.0,ability:'Double Strike'},
+  wizard:{name:'Equation Wizard',tag:'Every spell is a sentence made of numbers.',
+    desc:'Draws one extra tile every turn. Ability: Rewrite deals you a fresh hand and a fresh Ward.',
+    hp:90,pow:1.05,ability:'Rewrite'},
+  guardian:{name:'Geometry Guardian',tag:'A shape held firmly holds everything else.',
+    desc:'Starts with more health and takes less damage. Ability: Bulwark absorbs the next 40 damage.',
+    hp:135,pow:0.92,ability:'Bulwark'},
+  ranger:{name:'Fraction Ranger',tag:'She counts the parts nobody else sees.',
+    desc:'Deals +25% damage with any spell that uses division. Ability: Divide and Conquer cuts a quarter off the foe.',
+    hp:100,pow:1.0,ability:'Divide and Conquer'},
+  rogue:{name:'Logic Rogue',tag:'Knowing the answer is a kind of theft.',
+    desc:'Deals +30% damage with spells that use four or more tiles. Ability: Deduce writes a working solution for you.',
+    hp:95,pow:1.02,ability:'Deduce'},
+  berserker:{name:'Prime Berserker',tag:'What cannot be divided cannot be broken.',
+    desc:'Deals +55% damage when every tile in the spell is a prime number. Ability: Indivisible turns your missing health into damage.',
+    hp:120,pow:0.98,ability:'Indivisible'},
+  sentinel:{name:'Sigma Sentinel',tag:'She does not strike once. She strikes the sum of everything.',
+    desc:'Long spells scale far harder: +18% damage for every tile past the second. Ability: Total Sum shields you for twice the tiles left in hand.',
+    hp:125,pow:0.9,ability:'Total Sum'},
+  monk:{name:'Modulo Monk',tag:'He is interested in what is left over.',
+    desc:'Begins every battle with two extra Study uses and heals more from them. Ability: Empty Hand deals fresh tiles but keeps the Ward.',
+    hp:105,pow:0.97,ability:'Empty Hand'},
+  duelist:{name:'Decimal Duelist',tag:'A near miss is still a hit if your footwork is good.',
+    desc:'Near misses graze for 80% damage instead of 40%. Ability: Round Up makes your next near miss count as exact.',
+    hp:100,pow:1.0,ability:'Round Up'},
+  warden:{name:'Bracket Warden',tag:'Order of operations is a kind of law enforcement.',
+    desc:'Starts with brackets unlocked, before the Tower is built, and deals +35% damage with any spell using them.',
+    hp:112,pow:0.96,ability:'Reorder'}
+};
+const PRIMES={2:1,3:1,5:1,7:1,11:1,13:1,17:1,19:1,23:1,29:1,31:1,37:1};
+
+const ARTIFACTS={
+  abacus:{name:'Abacus of the First Counters',g:'⌗',from:'forest',
+    eff:'One extra tile in hand every turn',
+    lore:'Counted the kingdom into existence, one bead at a time.'},
+  minus:{name:'The Broken Minus',g:'−',from:'swamp',
+    eff:'Spells that subtract deal +25% damage',
+    lore:'Snapped in half during the Chaos. Both halves still take.'},
+  factor:{name:'Factor Stone',g:'×',from:'mountains',
+    eff:'Spells that multiply deal +25% damage',
+    lore:'A rock that cannot be split into anything but itself and one.'},
+  compass:{name:"The Divider's Compass",g:'÷',from:'desert',
+    eff:'Spells that divide deal +30% damage',
+    lore:'Points not north, but toward the fairest possible share.'},
+  half:{name:'Phantom Half',g:'½',from:'fraction',
+    eff:'Near misses always graze for 80% instead of 40%',
+    lore:'The part of a number that got away.'},
+  ratio:{name:'Golden Ratio Ring',g:'φ',from:'geometry',
+    eff:'Spells of three or more tiles deal +20% damage',
+    lore:'Worn thin by architects who kept measuring it.'},
+  unknown:{name:'The Unknown X',g:'𝑥',from:'fortress',
+    eff:'One extra hand reroll every battle',
+    lore:'Nobody has solved for it. It has been solving for you.'},
+  die:{name:'Loaded Die',g:'⚄',from:'islands',
+    eff:'One spell in four deals double damage',
+    lore:'Fair in the long run. Impatient in the short one.'},
+  crown:{name:'Crown of the Zero King',g:'0',from:'final',
+    eff:'Every exact match restores 8% of your health',
+    lore:'It weighs nothing at all, which was rather the point.'},
+  tally:{name:'Tally Bracelet',g:'|||',from:'common',
+    eff:'+30 maximum health',
+    lore:'Four strokes and a line through them. The oldest arithmetic there is.'},
+  chalk:{name:"Warlock's Chalk",g:'✎',from:'common',
+    eff:"One extra Study per battle, and Vantor's Guide costs nothing",
+    lore:'Still warm. He would like it back eventually.'},
+  lens:{name:'Prime Lens',g:'◉',from:'common',
+    eff:'Vantor reads each new Ward aloud, unprompted and free',
+    lore:'Looks through a number to whatever it was multiplied out of.'},
+  weight:{name:'Counterweight Pendant',g:'⚖',from:'common',
+    eff:'The first spell of every battle deals +60% damage',
+    lore:'Balances a scale that has nothing on the other side.'}
+};
+const COMMON=['tally','chalk','lens','weight'];
+function hasArt(id){return !!(S&&S.arts&&S.arts[id]);}
+
+const REGIONS=[
+ {id:'forest',name:'Addition Forest',concept:'Addition and number bonds',ops:['+'],lo:1,hi:9,depth:2,clue:null,kinds:['exact','exact','range'],
+  blurb:'Bark grows in tallies here. The trees only remember how to add.',
+  foes:[{n:'Sum Sprite',hp:70,atk:8},{n:'Tally Boar',hp:95,atk:10},{n:'Glitch Goblin',hp:175,atk:13,boss:1,trait:'complex'}]},
+ {id:'swamp',name:'Subtraction Swamp',concept:'Subtraction and negative numbers',ops:['+','-'],lo:2,hi:14,depth:2,clue:null,neg:1,kinds:['exact','exact','range'],
+  blurb:'The water takes something from everything it touches. Wards here can fall below zero.',
+  foes:[{n:'Leech of Loss',hp:110,atk:12},{n:'Mire Wraith',hp:130,atk:14},{n:'Negative Number Knight',hp:250,atk:17,boss:1,trait:'complex'}]},
+ {id:'mountains',name:'Multiplication Mountains',concept:'Times tables and factors',ops:['+','-','*'],lo:2,hi:12,depth:2,kinds:['exact','exact','multiple'],
+  blurb:'Every ledge is a multiple of the one below it. Climb by grouping.',
+  foes:[{n:'Prime Golem',hp:150,atk:15},{n:'Grid Wyvern',hp:175,atk:17},{n:'Factor Titan',hp:320,atk:20,boss:1,trait:'complex'}]},
+ {id:'desert',name:'Division Desert',concept:'Division, factors and remainders',ops:['+','-','*','/'],lo:2,hi:12,depth:3,kinds:['exact','multiple','multiple'],
+  blurb:'Water is shared exactly or not at all. Spells that divide cut deepest here.',
+  foes:[{n:'Sand Divider',hp:180,atk:17,trait:'division'},{n:'Remainder Wisp',hp:200,atk:18},{n:'Divide Djinn',hp:375,atk:22,boss:1,trait:'division'}]},
+ {id:'fraction',name:'Fraction Kingdom',concept:'Fractions and parts of a whole',ops:['+','-','*','/'],lo:1,hi:10,depth:2,frac:1,kinds:['exact'],
+  blurb:'Nothing is whole here, and nothing needs to be. Wards arrive in pieces.',
+  foes:[{n:'Half Hound',hp:200,atk:19,trait:'division'},{n:'Quarter Serpent',hp:225,atk:20},{n:'Fraction Phantom',hp:400,atk:24,boss:1,trait:'division'}]},
+ {id:'geometry',name:'Geometry City',concept:'Area, perimeter and angles',ops:['+','-','*'],lo:2,hi:12,depth:3,clue:'geometry',kinds:['exact','exact','multiple'],
+  blurb:'The streets are proofs. Every Ward is hidden inside a shape.',
+  foes:[{n:'Angle Wyrm',hp:230,atk:21},{n:'Marble Sentinel',hp:260,atk:22},{n:'Architect of Ruin',hp:520,atk:26,boss:1,trait:'complex'}]},
+ {id:'fortress',name:'Algebra Fortress',concept:'Solving for the unknown',ops:['+','-','*','/'],lo:2,hi:12,depth:3,clue:'algebra',kinds:['exact','exact','prime'],
+  blurb:'The gates open for whoever can name the thing that was hidden.',
+  foes:[{n:'Variable Warden',hp:260,atk:23},{n:'Balance Colossus',hp:300,atk:25},{n:'Equation Dragon',hp:620,atk:29,boss:1,trait:'complex'}]},
+ {id:'islands',name:'Probability Islands',concept:'Percentages, chance and ratio',ops:['+','-','*','/'],lo:2,hi:12,depth:3,clue:'percent',kinds:['exact','range','greed'],
+  blurb:'Nothing here is certain except the arithmetic underneath it.',
+  foes:[{n:'Chance Kraken',hp:290,atk:25},{n:'Odds Corsair',hp:320,atk:26,trait:'division'},{n:'The Gambler',hp:720,atk:30,boss:1,trait:'complex'}]},
+ {id:'final',name:'Final Number Realm',concept:'Everything, at once',ops:['+','-','*','/'],lo:2,hi:14,depth:4,clue:'mixed',kinds:['exact','multiple','range','prime','greed'],
+  blurb:'Where the Chaos of Numbers began. The Zero King waits at the centre of it.',
+  foes:[{n:'Null Herald',hp:340,atk:28},{n:'Chaos Cipher',hp:400,atk:30},{n:'The Zero King',hp:850,atk:34,boss:1,trait:'complex'}]}
+];
+
+const BUILDINGS=[
+ {id:'academy',name:'Academy of Numbers',cost:60,
+  eff:l=>'+'+(l*20)+'% experience from every victory',
+  why:'Scholars turn your battle notes into training. Levels faster.'},
+ {id:'workshop',name:'Geometry Workshop',cost:90,max:2,
+  eff:l=>'+'+l+' tile in hand each turn',
+  why:'More tiles means more ways to reach the same Ward.'},
+ {id:'arena',name:'Training Arena',cost:70,
+  eff:l=>'+'+(l*25)+' maximum health',
+  why:'Room to be wrong a few more times before it costs you.'},
+ {id:'library',name:'Royal Library',cost:80,
+  eff:l=>(l+0)+' extra Study use per battle',
+  why:'Study reveals a worked solution and heals you. Learning as a tactic.'},
+ {id:'tower',name:'Wizard Tower of Algebra',cost:120,max:1,
+  eff:l=>l?'Brackets unlocked in every spell':'Locked',
+  why:'Brackets change the order of operations, and therefore the answer.'},
+ {id:'farm',name:'Fraction Farm',cost:70,
+  eff:l=>'+'+(l*12)+' gold per victory',
+  why:'Land divided carefully feeds a kingdom.'},
+ {id:'lab',name:'Math Laboratory',cost:100,max:1,
+  eff:l=>l?'One hand reroll per battle':'Locked',
+  why:'A bad hand should be a puzzle, not a punishment.'}
+];
+
+/* ---------- state ---------- */
+let S=null;
+function newState(cls,name){
+  return{cls:cls,name:name||'Wanderer',lvl:1,xp:0,gold:0,ins:0,hp:CLASSES[cls].hp,arts:{},
+    prog:{},blds:{},casts:0,exact:0,byRegion:{},byKind:{},diff:0,tab:'map'};
+}
+function maxHp(){return CLASSES[S.cls].hp+(S.lvl-1)*12+(S.blds.arena||0)*25+(hasArt('tally')?30:0);}
+function power(){return (9+S.lvl*2.6)*CLASSES[S.cls].pow;}
+function handSize(){return 5+(S.blds.workshop||0)+(S.cls==='wizard'?1:0)+(hasArt('abacus')?1:0);}
+function xpNeed(){return 70+S.lvl*45;}
+function cleared(id){return S.prog[id]||0;}
+function unlocked(i){return i===0||cleared(REGIONS[i-1].id)>=3;}
+
+/* ---------- ward generation: build the target FROM the hand, so it always has a solution ---------- */
+function rnd(a,b){return a+Math.floor(Math.random()*(b-a+1));}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=rnd(0,i);const t=a[i];a[i]=a[j];a[j]=t;}return a;}
+
+function deal(region){
+  const n=handSize(),h=[];
+  for(let i=0;i<n;i++)h.push({id:i,v:rnd(region.lo,region.hi),used:false});
+  return h;
+}
+function asR(x){return (x&&x.d!==undefined)?x:R(x);}
+function seqValue(nums,ops){
+  const toks=[{t:'num',v:asR(nums[0])}];
+  for(let i=0;i<ops.length;i++){toks.push({t:'op',v:ops[i]});toks.push({t:'num',v:asR(nums[i+1])});}
+  try{return evaluate(toks);}catch(e){return null;}
+}
+/* narrates a spell the way it actually resolves: × and ÷ first, left to right, then + and − */
+function explainSeq(nums,ops){
+  let n=nums.map(asR),o=ops.slice(),steps=[],inter=[];
+  for(let i=0;i<o.length;){
+    if(o[i]==='*'||o[i]==='/'){
+      let v;try{v=o[i]==='*'?rmul(n[i],n[i+1]):rdiv(n[i],n[i+1]);}catch(e){return null;}
+      steps.push(rstr(n[i])+' '+sym(o[i])+' '+rstr(n[i+1])+' = '+rstr(v));
+      inter.push(v);n.splice(i,2,v);o.splice(i,1);
+    }else i++;
+  }
+  while(o.length){
+    const v=o[0]==='+'?radd(n[0],n[1]):rsub(n[0],n[1]);
+    steps.push(rstr(n[0])+' '+sym(o[0])+' '+rstr(n[1])+' = '+rstr(v));
+    inter.push(v);n.splice(0,2,v);o.splice(0,1);
+  }
+  return{steps:steps,val:n[0],inter:inter};
+}
+
+function makeWard(region,hand,depth){
+  const ops=region.ops;
+  for(let attempt=0;attempt<500;attempt++){
+    const idx=shuffle(hand.map(t=>t.id)).slice(0,depth);
+    const nums=idx.map(i=>hand.find(t=>t.id===i).v);
+    if(nums.length<2)continue;
+    const seq=[];for(let k=1;k<nums.length;k++)seq.push(ops[rnd(0,ops.length-1)]);
+    if(region.frac&&seq.indexOf('/')<0)seq[rnd(0,seq.length-1)]='/';
+    const ex=explainSeq(nums,seq);
+    if(!ex)continue;
+    const acc=ex.val;
+    let bad=false;
+    for(const v of ex.inter){
+      if(!region.frac&&!rint(v))bad=true;
+      if(Math.abs(rnum(v))>420||v.d>12)bad=true;
+    }
+    if(bad)continue;
+    if(!region.neg&&!region.frac&&rnum(acc)<0)continue;
+    if(rnum(acc)<-40)continue;
+    if(region.frac&&acc.d===1)continue;              // Fraction Kingdom deals in pieces
+    if(!region.frac&&Math.abs(rnum(acc))<5)continue; // too trivial to be worth casting
+    if(hand.some(t=>!t.used&&acc.d===1&&R(t.v).n===acc.n))continue; // don't let a lone tile be the answer
+    return{v:acc,steps:ex.steps,used:idx};
+  }
+  const a=hand[0].v,b=hand[1].v;
+  return{v:R(a+b),steps:[a+' + '+b+' = '+(a+b)],used:[hand[0].id,hand[1].id]};
+}
+const sym=o=>o==='*'?'×':o==='/'?'÷':o;
+
+
+/* ---------- Ward kinds ----------
+   A Ward is no longer always "equal this number". Each kind asks a different
+   mathematical question, and each is verified solvable from the dealt hand
+   before it is ever shown to the player. ---------- */
+function wardPredFor(w){
+  if(w.kind==='exact')   return v=>req(v,w.target);
+  if(w.kind==='multiple')return v=>rint(v)&&v.n>0&&v.n%w.m===0&&v.n/w.m>=2;
+  if(w.kind==='range')   return v=>rnum(v)>=w.lo&&rnum(v)<=w.hi;
+  if(w.kind==='prime')   return v=>rint(v)&&v.n>10&&isPrime(v.n);
+  if(w.kind==='greed')   return v=>rnum(v)>=w.par*0.9;
+  return v=>req(v,w.target);
+}
+function wardCheck(w,val){
+  const v=rnum(val);
+  if(w.kind==='exact'){
+    const d=Math.abs(v-rnum(w.target));
+    return{hit:req(val,w.target),near:d<=2,diff:d};
+  }
+  if(w.kind==='multiple'){
+    if(!rint(val)||val.n<=0)return{hit:false,near:false,diff:99};
+    const r=val.n%w.m, off=Math.min(r,w.m-r);
+    return{hit:r===0&&val.n/w.m>=2,near:off===1,diff:off};
+  }
+  if(w.kind==='range'){
+    const hit=v>=w.lo&&v<=w.hi;
+    const d=hit?0:(v<w.lo?w.lo-v:v-w.hi);
+    return{hit:hit,near:!hit&&d<=3,diff:d};
+  }
+  if(w.kind==='prime'){
+    if(!rint(val)||val.n<=1)return{hit:false,near:false,diff:99};
+    if(isPrime(val.n)&&val.n>10)return{hit:true,near:false,diff:0};
+    let d=99;for(let k=1;k<=2;k++){if(isPrime(val.n-k)||isPrime(val.n+k)){d=k;break;}}
+    return{hit:false,near:d<=2,diff:d};
+  }
+  if(w.kind==='greed'){
+    return{hit:v>=w.par*0.9,near:v>=w.par*0.6,diff:Math.max(0,w.par-v)};
+  }
+  return{hit:false,near:false,diff:99};
+}
+/* how much the kind is worth: harder questions pay more */
+function wardBonus(w,val){
+  if(w.kind==='multiple')return 1+0.05*w.m;
+  if(w.kind==='prime')return 1.4;
+  if(w.kind==='range')return 1+Math.max(0,(12-(w.hi-w.lo))*0.03);
+  if(w.kind==='greed')return Math.min(1.5,0.9+0.6*(rnum(val)/Math.max(1,w.par)));
+  return 1;
+}
+/* what the sigil shows, and the sentence underneath it */
+function wardFace(w){
+  if(w.kind==='exact')   return{big:rstr(w.target), cond:'Match the Ward exactly.'};
+  if(w.kind==='multiple')return{big:'×'+w.m, cond:'Build any multiple of '+w.m+' (at least '+(w.m*2)+').'};
+  if(w.kind==='range')   return{big:w.lo+'–'+w.hi, cond:'Land anywhere inside the band. Tighter bands pay more.'};
+  if(w.kind==='prime')   return{big:'P', cond:'Build any prime number above 10.'};
+  if(w.kind==='greed')   return{big:'MAX', cond:'No target. Build as large a number as you can — '+Math.round(w.par*0.9)+' or more breaks it.'};
+  return{big:'?',cond:''};
+}
+const KINDNAME={exact:'Exact Ward',multiple:'Multiple Ward',range:'Band Ward',prime:'Prime Ward',greed:'Greed Ward'};
+
+function makeWardSpec(region,hand,depth){
+  const pool=region.kinds||['exact'];
+  const kind=pool[rnd(0,pool.length-1)];
+  const base=makeWard(region,hand,depth);   // always available as the fallback
+
+  if(kind==='multiple'){
+    const pick=region.ops.indexOf('*')>=0?[3,4,6,7,8,9]:[3,4,5,6];
+    for(let a=0;a<4;a++){
+      const m=pick[rnd(0,pick.length-1)];
+      const w={kind:'multiple',m:m};
+      const sol=solveFor(hand,wardPredFor(w),region.ops,Math.min(4,depth+1));
+      if(sol){w.steps=sol.steps;w.sample=sol.expr;return w;}
+    }
+  }
+  if(kind==='range'){
+    const v=rnum(base.v);
+    if(rint(base.v)&&v>6){
+      const pad=Math.max(2,Math.round(Math.abs(v)*0.14));
+      return{kind:'range',lo:Math.round(v-pad),hi:Math.round(v+pad),steps:base.steps,target:base.v};
+    }
+  }
+  if(kind==='prime'){
+    const w={kind:'prime'};
+    const sol=solveFor(hand,wardPredFor(w),region.ops,Math.min(4,depth+1));
+    if(sol){w.steps=sol.steps;w.sample=sol.expr;return w;}
+  }
+  if(kind==='greed'){
+    const par=bestValue(hand,region.ops,Math.min(3,depth+1));
+    if(par>=25){
+      const w={kind:'greed',par:par};
+      const sol=solveFor(hand,wardPredFor(w),region.ops,Math.min(4,depth+1));
+      if(sol){w.steps=sol.steps;w.sample=sol.expr;return w;}
+    }
+  }
+  return{kind:'exact',target:base.v,steps:base.steps};
+}
+
+/* ---------- clue skins: dress the same target in a different concept ---------- */
+function makeClue(region,ward){
+  const kinds=region.clue==='mixed'?['geometry','algebra','percent']:[region.clue];
+  const kind=kinds[rnd(0,kinds.length-1)];
+  if(!rint(ward)||rnum(ward)<=0)return null;
+  const W=ward.n;
+  if(kind==='geometry'){
+    if(W%4===0)return{text:'The Ward is the perimeter of a square whose side is '+(W/4)+'.',answer:W};
+    for(let a=2;a<=12;a++)if(W%a===0&&W/a<=20)return{text:'The Ward is the area of a rectangle '+a+' by '+(W/a)+'.',answer:W};
+    return{text:'The Ward is the sum of the angles in a triangle, minus '+(180-W)+'.',answer:W};
+  }
+  if(kind==='algebra'){
+    const k=rnd(2,6),m=rnd(1,12);
+    return{text:'The Ward is x, where '+k+'x + '+m+' = '+(k*W+m)+'.',answer:W};
+  }
+  if(kind==='percent'){
+    if(W>120){const k=rnd(2,6),m=rnd(1,12);return{text:'The Ward is x, where '+k+'x + '+m+' = '+(k*W+m)+'.',answer:W};}
+    const opts=[[10,10],[20,5],[25,4],[50,2]];
+    const o=opts[rnd(0,opts.length-1)];
+    return{text:'The Ward is '+o[0]+'% of '+(W*o[1])+'.',answer:W};
+  }
+  return null;
+}
+
+/* ---------- battle ---------- */
+/* ---------- the solver Vantor thinks with: a left-to-right search, because that is
+   exactly what the player can physically build without brackets ---------- */
+function solveFor(tiles,pred,ops,maxDepth){
+  const n=tiles.length;if(n<2)return null;
+  let budget=150000;
+  const chosen=[],opseq=[];
+  function record(){
+    const nums=chosen.map(t=>t.v);
+    const ex=explainSeq(nums,opseq);
+    if(!ex)return null;
+    const expr=nums.map((v,i)=>i?sym(opseq[i-1])+' '+v:String(v)).join(' ');
+    return{expr:expr,steps:ex.steps,tiles:nums.length,val:ex.val,
+      first:nums.length>1?(nums[0]+' '+sym(opseq[0])+' '+nums[1]):String(nums[0])};
+  }
+  function walk(k,used){
+    if(budget<=0)return null;
+    if(chosen.length>=2){
+      budget--;
+      const v=seqValue(chosen.map(t=>t.v),opseq);
+      if(v&&pred(v,chosen.length))return record();
+    }
+    if(chosen.length>=k)return null;
+    for(let i=0;i<n;i++){
+      if(used[i])continue;
+      used[i]=1;chosen.push(tiles[i]);
+      if(chosen.length===1){ const r=walk(k,used);if(r)return r; }
+      else{
+        for(const o of ops){
+          opseq.push(o);
+          const r=walk(k,used);if(r)return r;
+          opseq.pop();
+        }
+      }
+      chosen.pop();used[i]=0;
+    }
+    return null;
+  }
+  for(let k=2;k<=Math.min(maxDepth,n);k++){
+    const r=walk(k,new Array(n).fill(0));
+    if(r)return r;
+  }
+  return null;
+}
+function solveWard(tiles,target,ops,maxDepth){
+  return solveFor(tiles,v=>req(v,target),ops,maxDepth);
+}
+/* the largest value reachable from this hand — the par a Greed Ward is measured against */
+function bestValue(tiles,ops,maxDepth){
+  const n=tiles.length;if(n<2)return 0;
+  let budget=90000,best=-1e9;
+  const chosen=[],opseq=[];
+  function walk(k,used){
+    if(budget<=0)return;
+    if(chosen.length>=2){
+      budget--;
+      const v=seqValue(chosen.map(t=>t.v),opseq);
+      if(v&&rnum(v)>best&&rnum(v)<100000)best=rnum(v);
+    }
+    if(chosen.length>=k)return;
+    for(let i=0;i<n;i++){
+      if(used[i])continue;
+      used[i]=1;chosen.push(tiles[i]);
+      if(chosen.length===1)walk(k,used);
+      else for(const o of ops){opseq.push(o);walk(k,used);opseq.pop();}
+      chosen.pop();used[i]=0;
+    }
+  }
+  walk(Math.min(maxDepth,n),new Array(n).fill(0));
+  return best>-1e8?best:0;
+}
+function freeTiles(){return B.hand.filter(t=>!t.used);}
+function currentSolution(){
+  if(B._sol&&B._solKey===solKey())return B._sol;
+  B._solKey=solKey();
+  B._sol=solveFor(freeTiles(),wardPredFor(B.wspec),B.rg.ops,Math.min(4,Math.max(2,B.depth+1)));
+  return B._sol;
+}
+function solKey(){return freeTiles().map(t=>t.v).join(',')+'|'+B.wspec.kind+'|'+
+  (B.wspec.target?rstr(B.wspec.target):'')+(B.wspec.m||'')+(B.wspec.lo||'')+(B.wspec.par||'');}
+
+const VANTOR_IDLE=[
+  'Take your time. The Ward is not going anywhere and neither, apparently, am I.',
+  'Read what the Ward is asking before you read your tiles. They are not always asking the same thing.',
+  'A number nobody has looked at properly is just a rumour.',
+  'I was the part of an equation that got left over. It gives one perspective.'
+];
+function isPrime(n){if(n<2)return false;for(let i=2;i*i<=n;i++)if(n%i===0)return false;return true;}
+function nudgeText(){
+  const w=B.wspec,bits=[];
+  if(w.kind==='exact'){
+    const v=rnum(w.target);
+    if(w.target.d!==1)bits.push('The Ward is <span class="num">'+rstr(w.target)+'</span> — not a whole number, so a division has to happen somewhere.');
+    else{
+      if(v<0)bits.push('It sits below zero. Whatever you build must end on a subtraction that goes past nothing.');
+      bits.push('<span class="num">'+rstr(w.target)+'</span> is '+(Math.abs(v)%2===0?'even':'odd')+'.');
+      if(v>1&&isPrime(v))bits.push('It is prime, so you will not reach it by multiplying two tiles together. Something must be added or taken away at the end.');
+      const big=Math.max.apply(null,freeTiles().map(t=>t.v));
+      if(v>big*2)bits.push('It is far larger than any tile you hold. Multiply first, adjust after.');
+      else if(v>0&&v<=big)bits.push('It is smaller than your largest tile. Subtract or divide your way down.');
+    }
+  }
+  else if(w.kind==='multiple'){
+    bits.push('Any multiple of <span class="num">'+w.m+'</span> will do — you have a whole family of answers, not one.');
+    bits.push(w.m%2===0?'It is an even divisor, so your result must be even too.'
+      :(w.m===5?'Multiples of five end in nought or five. Aim your last step at one of those.'
+      :'The quickest route is usually to make '+w.m+' by multiplication, then scale it.'));
+  }
+  else if(w.kind==='range'){
+    bits.push('You need to land between <span class="num">'+w.lo+'</span> and <span class="num">'+w.hi+'</span> — a band '+(w.hi-w.lo+1)+' wide.');
+    bits.push('Estimate before you build. Get the size roughly right and the exact value stops mattering.');
+  }
+  else if(w.kind==='prime'){
+    bits.push('Any prime above ten: 11, 13, 17, 19, 23, 29, 31, 37 and onward.');
+    bits.push('A prime is never even, and never a multiple of anything but itself and one — so a product of two tiles will never do it alone.');
+  }
+  else if(w.kind==='greed'){
+    bits.push('No target at all. Anything from <span class="num">'+Math.round(w.par*0.9)+'</span> upward breaks it.');
+    bits.push('Multiply your two largest tiles first, then add. Adding before multiplying wastes the multiplication.');
+  }
+  const sol=currentSolution();
+  if(sol)bits.push('There is a route through it using <span class="num">'+sol.tiles+'</span> tiles.');
+  else bits.push('I cannot find a clean route in this hand. Aim close and take the graze — or reroll.');
+  return bits.slice(0,2).join(' ');
+}
+function wsay(t){B.wsay=t;}
+function warlockNudge(){wsay(nudgeText());render();}
+function warlockGuide(){
+  const cost=hasArt('chalk')?0:2;
+  if(S.ins<cost)return wsay('Insight buys my attention, and you are short. Win something first.'),render();
+  const sol=currentSolution();
+  if(!sol)return wsay('There is no exact route in this hand. I will not invent one for you.'),render();
+  S.ins-=cost;
+  wsay('Begin with <span class="num">'+sol.first+'</span>. I will not tell you the rest — see where it leaves you.');
+  save();render();
+}
+function warlockSolve(){
+  const cost=5;
+  if(S.ins<cost)return wsay('Five insight. I am cheap, not free.'),render();
+  const sol=currentSolution();
+  if(!sol)return wsay('Nothing exact lives in this hand. Graze it, or reroll and call me back.'),render();
+  S.ins-=cost;
+  wsay('<span class="num">'+sol.expr+'</span>. Step by step: '+sol.steps.join(', then ')+'. Now cast it yourself — my saying it does nothing to the Ward.');
+  save();render();
+}
+function warlockReact(val,hit,chk){
+  const w=B.wspec,used=tilesUsed();
+  if(hit){
+    B.wfeed=used>=4?'Four tiles or more. That is the difference between arithmetic and a spell.'
+      :(B.res>=3?'Three in a row. Whatever you are doing, keep doing it.'
+      :'Clean. The Ward had no argument with that.');
+    return;
+  }
+  const v=rnum(val);
+  if(w.kind==='exact'){
+    const over=v>rnum(w.target), gap=Math.abs(v-rnum(w.target));
+    B.wfeed='You landed <span class="num">'+rstr(val)+'</span> against <span class="num">'+rstr(w.target)+
+      '</span> — '+(gap<1?'a fraction':(Math.round(gap*100)/100))+' too '+(over?'high':'low')+'. '+
+      (gap<=2?'One different tile would have closed that.':over?'Trade a tile down, or subtract at the end.':'You need more from the multiplication, or one more tile.');
+  }
+  else if(w.kind==='multiple'){
+    const r=rint(val)?((val.n%w.m)+w.m)%w.m:null;
+    B.wfeed=r===null?'<span class="num">'+rstr(val)+'</span> is not even a whole number, so it cannot be a multiple of anything.'
+      :'<span class="num">'+val.n+'</span> leaves a remainder of <span class="num">'+r+'</span> when divided by '+w.m+
+        '. You were '+Math.min(r,w.m-r)+' away from a multiple in one direction or the other.';
+  }
+  else if(w.kind==='range'){
+    B.wfeed='<span class="num">'+rstr(val)+'</span> sits '+(v<w.lo?'below':'above')+' the band by <span class="num">'+
+      (Math.round(chk.diff*100)/100)+'</span>. Estimation is a skill like any other — you were '+(chk.diff<=3?'nearly there':'some way out')+'.';
+  }
+  else if(w.kind==='prime'){
+    if(!rint(val))B.wfeed='<span class="num">'+rstr(val)+'</span> is not whole, and primes always are.';
+    else{
+      let f=0;for(let i=2;i*i<=Math.abs(val.n);i++)if(val.n%i===0){f=i;break;}
+      B.wfeed=f?'<span class="num">'+val.n+'</span> divides by <span class="num">'+f+'</span>, so it is not prime. Try landing one or two either side.'
+        :'<span class="num">'+val.n+'</span> is too small — I asked for a prime above ten.';
+    }
+  }
+  else if(w.kind==='greed'){
+    B.wfeed='<span class="num">'+rstr(val)+'</span> is short of <span class="num">'+Math.round(w.par*0.9)+
+      '</span>. Multiplying your two largest tiles before you add anything is almost always the bigger number.';
+  }
+}
+
+let B=null;
+function startBattle(regionIdx,foeIdx){
+  const rg=REGIONS[regionIdx],foe=rg.foes[foeIdx];
+  const depth=Math.max(2,Math.min(4,rg.depth+S.diff));
+  B={rgi:regionIdx,fi:foeIdx,rg:rg,foe:foe,ehp:foe.hp,emax:foe.hp,
+     hand:[],ward:null,steps:[],clue:null,tokens:[],shield:0,
+     study:1+(S.blds.library||0)+(S.cls==='monk'?2:0)+(hasArt('chalk')?1:0),
+     reroll:(S.blds.lab||0)+(hasArt('unknown')?1:0),ability:1,dbl:0,roundup:0,first:1,
+     wsay:VANTOR_IDLE[rnd(0,VANTOR_IDLE.length-1)],wfeed:null,
+     res:0,turnNo:0,surge:0,
+     log:[],depth:depth,exact:0,casts:0};
+  refreshTurn(true);
+  render();
+}
+function refreshTurn(){
+  B.hand=deal(B.rg);
+  B.wspec=makeWardSpec(B.rg,B.hand,B.depth);
+  B.ward=B.wspec.target||null;
+  B.steps=B.wspec.steps;B.tokens=[];B.revealed=0;B._sol=null;B._solKey=null;
+  B.turnNo++;
+  B.surge=(B.turnNo%4===0)?1:0;                    // every fourth turn the foe seals its Ward
+  B.clue=(B.rg.clue&&B.wspec.kind==='exact')?makeClue(B.rg,B.ward):null;
+  if(B.surge)log('The '+B.foe.n+' surges. This Ward is sealed — only a clean answer will break it, and it strikes for double.','note');
+  const carry=B.wfeed;B.wfeed=null;
+  B.wsay=(carry?carry+' ':'')+(hasArt('lens')?nudgeText():(carry?'':VANTOR_IDLE[rnd(0,VANTOR_IDLE.length-1)]));
+}
+function tokStr(t){return t.t==='num'?rstr(t.v):t.t==='lp'?'(':t.t==='rp'?')':sym(t.v);}
+function liveValue(){
+  if(!B.tokens.length)return null;
+  try{return evaluate(B.tokens);}catch(e){return null;}
+}
+function canCast(){return liveValue()!==null;}
+function lastTok(){return B.tokens[B.tokens.length-1];}
+function canNum(){const l=lastTok();return !l||l.t==='op'||l.t==='lp';}
+function canOp(){const l=lastTok();return l&&(l.t==='num'||l.t==='rp');}
+function openParens(){let c=0;B.tokens.forEach(t=>{if(t.t==='lp')c++;if(t.t==='rp')c--;});return c;}
+
+function pushNum(tile){
+  if(!canNum()||tile.used)return;
+  tile.used=true;B.tokens.push({t:'num',v:R(tile.v),tile:tile.id});render();
+}
+function pushOp(o){if(!canOp())return;B.tokens.push({t:'op',v:o});render();}
+function pushLp(){if(!canNum())return;B.tokens.push({t:'lp'});render();}
+function pushRp(){if(!canOp()||openParens()<=0)return;B.tokens.push({t:'rp'});render();}
+function undo(){const t=B.tokens.pop();if(t&&t.t==='num'){const h=B.hand.find(x=>x.id===t.tile);if(h)h.used=false;}render();}
+function clearSpell(){B.hand.forEach(t=>t.used=false);B.tokens=[];render();}
+
+function tilesUsed(){return B.tokens.filter(t=>t.t==='num').length;}
+function usesOp(o){return B.tokens.some(t=>t.t==='op'&&t.v===o);}
+
+function cast(){
+  if(!canCast())return;
+  const val=evaluate(B.tokens),used=tilesUsed();
+  const w=B.wspec, chk=wardCheck(w,val);
+  const hit=chk.hit, near=chk.near&&!B.surge;
+
+  let dmg=power()*(0.75+0.42*used)*wardBonus(w,val);
+  if(usesOp('*'))dmg*=1.1;
+  if(S.cls==='ranger'&&usesOp('/'))dmg*=1.25;
+  if(S.cls==='rogue'&&used>=4)dmg*=1.3;
+  if(S.cls==='knight'&&hit)dmg*=1.15;
+  if(S.cls==='berserker'&&allPrime())dmg*=1.55;
+  if(S.cls==='sentinel'&&used>2)dmg*=(1+0.18*(used-2));
+  if(S.cls==='warden'&&B.tokens.some(t=>t.t==='lp'))dmg*=1.35;
+  if(hasArt('minus')&&usesOp('-'))dmg*=1.25;
+  if(hasArt('factor')&&usesOp('*'))dmg*=1.25;
+  if(hasArt('compass')&&usesOp('/'))dmg*=1.30;
+  if(hasArt('ratio')&&used>=3)dmg*=1.20;
+  if(hasArt('weight')&&B.first)dmg*=1.60;
+  let lucky=0;
+  if(hasArt('die')&&Math.random()<0.25){dmg*=2;lucky=1;}
+  B.first=0;B._sol=null;
+  if(B.foe.trait==='division'&&usesOp('/'))dmg*=1.35;
+  if(B.foe.trait==='complex'&&used>=3)dmg*=1.3;
+  if(B.dbl){dmg*=2;B.dbl=0;}
+  const resMult=1+0.15*Math.min(B.res,5);
+  dmg*=resMult;
+  if(B.surge)dmg*=2;
+
+  S.casts++;B.casts++;
+  const rid=B.rg.id;S.byRegion[rid]=S.byRegion[rid]||{c:0,e:0};S.byRegion[rid].c++;
+  S.byKind=S.byKind||{};S.byKind[w.kind]=S.byKind[w.kind]||{c:0,e:0};S.byKind[w.kind].c++;
+  const face=wardFace(w);
+
+  if(hit||(near&&B.roundup)){
+    if(!hit){B.roundup=0;}
+    dmg=Math.round(dmg);S.exact++;B.exact++;S.byRegion[rid].e++;S.byKind[w.kind].e++;
+    B.res++;
+    const tag=B.res>=2?' Resonance ×'+B.res+'.':'';
+    log((hit?'Perfect resonance. ':'Round Up forces it to count. ')+spellText()+' = '+rstr(val)+
+        ' — '+KINDNAME[w.kind].toLowerCase()+' broken. '+dmg+' damage.'+tag+
+        (B.surge?' The seal shatters, doubled.':'')+(lucky?' The Loaded Die falls your way — doubled.':''),'good');
+    bgPulse();
+    if(hasArt('crown')){const h=Math.round(maxHp()*0.08);S.hp=Math.min(maxHp(),S.hp+h);log('The Crown of the Zero King returns '+h+' health.','note');}
+  }else if(near){
+    dmg=Math.round(dmg*((S.cls==='duelist'||hasArt('half'))?0.8:0.4));
+    B.res=0;
+    log('Close. '+spellText()+' = '+rstr(val)+', but the Ward wanted '+face.big+'. The spell grazes for '+dmg+'. Resonance broken.','note');
+  }else{
+    dmg=Math.max(3,Math.round(dmg*0.20));
+    B.res=0;
+    log(spellText()+' = '+rstr(val)+', against a Ward of '+face.big+'. The spell scatters for '+dmg+'.','bad');
+  }
+  warlockReact(val,hit,chk);
+  B.ehp-=dmg;float('-'+dmg);
+  if(B.ehp<=0){return victory();}
+  enemyTurn();
+  if(S.hp<=0)return;
+  adapt();
+  refreshTurn();
+  render();
+}
+function allPrime(){const n=B.tokens.filter(t=>t.t==='num');
+  return n.length>0&&n.every(t=>t.v.d===1&&PRIMES[t.v.n]);}
+function spellText(){return B.tokens.map(tokStr).join(' ');}
+function enemyTurn(){
+  let d=Math.round(B.foe.atk*(0.85+Math.random()*0.3)*(B.surge?1.5:1));
+  if(S.cls==='guardian')d=Math.round(d*0.8);
+  if(B.shield>0){const a=Math.min(B.shield,d);B.shield-=a;d-=a;if(a)log('Bulwark absorbs '+a+'.','note');}
+  if(d>0){S.hp-=d;log(B.foe.n+' strikes for '+d+'.','bad');}
+  if(S.hp<=0)defeat();
+}
+function adapt(){
+  const acc=B.casts?B.exact/B.casts:0;
+  if(B.casts>=3&&acc>0.8&&B.depth<4){B.depth++;log('The Ward grows more intricate.','note');}
+  if(B.casts>=3&&acc<0.35&&B.depth>2){B.depth--;log('The Ward simplifies itself. Steady on.','note');}
+}
+function study(){
+  if(B.study<=0)return;
+  B.study--;
+  B.revealed=1;
+  const heal=Math.round(maxHp()*(S.cls==='monk'?0.2:0.12));S.hp=Math.min(maxHp(),S.hp+heal);
+  const sol=currentSolution();
+  const path=sol?sol.steps:B.steps;
+  log('You study the Sigil. '+KINDNAME[B.wspec.kind]+': '+wardFace(B.wspec).cond+' One route is '+
+      (path?path.join(', then '):'not visible from this hand')+'. You recover '+heal+'.','note');
+  let d=Math.round(B.foe.atk*0.5);S.hp-=d;log(B.foe.n+' lands a glancing blow for '+d+' while you read.','bad');
+  if(S.hp<=0)return defeat();
+  render();
+}
+function reroll(){if(B.reroll<=0)return;B.reroll--;refreshTurn();log('The Laboratory deals you a fresh hand.','note');render();}
+function useAbility(){
+  if(!B.ability)return;B.ability=0;
+  const c=S.cls;
+  if(c==='knight'){B.dbl=1;log('Double Strike: your next spell hits twice as hard.','note');}
+  if(c==='wizard'){refreshTurn();log('Rewrite: a new hand and a new Ward.','note');}
+  if(c==='guardian'){B.shield=40;log('Bulwark raised. 40 damage absorbed.','note');}
+  if(c==='ranger'){const d=Math.round(B.ehp*0.25);B.ehp-=d;float('-'+d);log('Divide and Conquer takes a quarter: '+d+' damage.','note');if(B.ehp<=0)return victory();}
+  if(c==='berserker'){const miss=maxHp()-S.hp;const d=Math.round(20+miss*0.9);B.ehp-=d;float('-'+d);
+    log('Indivisible: every wound you carry becomes '+d+' damage.','note');if(B.ehp<=0)return victory();}
+  if(c==='sentinel'){const left=B.hand.filter(t=>!t.used).reduce((a,t)=>a+t.v,0);
+    B.shield=left*2;log('Total Sum: the '+left+' still in your hand becomes '+(left*2)+' shield.','note');}
+  if(c==='monk'){const kc=B.clue;clearSpell();
+    const pred=wardPredFor(B.wspec);
+    let h=null,sol=null;
+    for(let i=0;i<40;i++){h=deal(B.rg);sol=solveFor(h,pred,B.rg.ops,4);if(sol)break;}
+    B.hand=h;B.clue=kc;B._sol=null;B._solKey=null;
+    B.steps=sol?sol.steps:B.steps;
+    log('Empty Hand: new tiles, same Ward. Find another route to '+wardFace(B.wspec).big+'.','note');}
+  if(c==='duelist'){B.roundup=1;log('Round Up: your next near miss will be forced to count as exact.','note');}
+  if(c==='warden'){const keep=B.hand;clearSpell();B.hand=shuffle(keep).map((t,i)=>({id:i,v:t.v,used:false}));
+    B.hand.push({id:B.hand.length,v:rnd(B.rg.lo,B.rg.hi),used:false});
+    log('Reorder: the hand is rearranged and one more tile is drawn.','note');}
+  if(c==='rogue'){
+    clearSpell();
+    const w=makeWardSpec(B.rg,B.hand,B.depth);
+    B.wspec=w;B.ward=w.target||null;B.steps=w.steps;
+    B.clue=(B.rg.clue&&w.kind==='exact')?makeClue(B.rg,B.ward):null;
+    B.revealed=1;
+    log('Deduce: '+KINDNAME[w.kind]+' — '+wardFace(w).cond+' One path is '+
+        (B.steps?B.steps.join(', then '):'yours to find')+'. Cast it yourself.','note');
+  }
+  render();
+}
+function victory(){
+  const idx=B.fi,rg=B.rg;
+  const bonus=1+((S.blds.academy||0)*0.2);
+  const xp=Math.round((30+idx*14+(B.foe.boss?45:0))*bonus);
+  const gold=25+idx*10+(B.foe.boss?40:0)+(S.blds.farm||0)*12;
+  const ins=3+B.exact+(B.foe.boss?6:0);
+  S.xp+=xp;S.gold+=gold;S.ins+=ins;
+  S.prog[rg.id]=Math.max(cleared(rg.id),idx+1);
+  let lv='';
+  while(S.xp>=xpNeed()){S.xp-=xpNeed();S.lvl++;S.hp=maxHp();lv=' You reach level '+S.lvl+'.';}
+  const acc=B.casts?Math.round(100*B.exact/B.casts):0;
+  if(acc>=80&&S.diff<1)S.diff++;
+  if(acc<35&&S.diff>-1)S.diff--;
+  const got=rollDrop(rg,B.foe);
+  save();
+  view.innerHTML=`<div class="card" style="text-align:center">
+    <h2 style="color:var(--gold);font-size:26px">${B.foe.n} unravels</h2>
+    <p class="muted">${B.foe.boss?rg.name+' is restored to the kingdom.':'The land steadies a little.'}${lv}</p>
+    <p class="num" style="font-size:18px">+${xp} XP &nbsp; +${gold} gold &nbsp; +${ins} insight</p>
+    <p class="small muted">Perfect resonance on ${B.exact} of ${B.casts} spells (${acc}%).</p>
+    ${got?`<div class="drop">
+      <div class="small" style="color:var(--gold);letter-spacing:.14em;text-transform:uppercase">Legendary artifact recovered</div>
+      <div style="display:flex;gap:12px;align-items:center;justify-content:center;margin-top:10px">
+        <div class="rg" style="width:38px;height:38px;font-size:18px;border:1px solid var(--gold);border-radius:50%;display:grid;place-items:center;color:var(--gold);font-family:'IBM Plex Mono',monospace">${ARTIFACTS[got].g}</div>
+        <div style="text-align:left">
+          <h3 style="font-size:16px">${ARTIFACTS[got].name}</h3>
+          <div class="small" style="color:var(--add)">${ARTIFACTS[got].eff}</div>
+        </div>
+      </div>
+      <p class="small muted" style="margin:10px 0 0;font-style:italic">${ARTIFACTS[got].lore}</p>
+    </div>`:''}
+    <div class="actions">
+      ${idx+1<rg.foes.length?`<button class="btn" onclick="startBattle(${B.rgi},${idx+1})">Press on</button>`:''}
+      <button class="btn ghost" onclick="go('map')">Return to the realm</button>
+      <button class="btn ghost" onclick="go('kingdom')">Spend it on the kingdom</button>
+    </div></div>`;
+}
+function rollDrop(rg,foe){
+  if(foe.boss){
+    const id=Object.keys(ARTIFACTS).find(k=>ARTIFACTS[k].from===rg.id);
+    if(id&&!hasArt(id)){S.arts[id]=1;return id;}
+    return null;
+  }
+  const pool=COMMON.filter(k=>!hasArt(k));
+  if(pool.length&&Math.random()<0.22){const id=pool[rnd(0,pool.length-1)];S.arts[id]=1;return id;}
+  return null;
+}
+function defeat(){
+  S.hp=Math.max(1,Math.round(maxHp()*0.5));save();
+  view.innerHTML=`<div class="card" style="text-align:center">
+    <h2 style="font-size:24px">You are carried home</h2>
+    <p class="muted">Nothing is lost but time. The last Ward asked you to ${wardFace(B.wspec).cond.charAt(0).toLowerCase()+wardFace(B.wspec).cond.slice(1)}${B.steps?' One way there was '+B.steps.join(', then ')+'.':''}</p>
+    <div class="actions">
+      <button class="btn" onclick="startBattle(${B.rgi},${B.fi})">Try ${B.foe.n} again</button>
+      <button class="btn ghost" onclick="go('kingdom')">Build something first</button>
+    </div></div>`;
+}
+function log(t,c){B.log.unshift('<div class="'+(c||'')+'">'+t+'</div>');B.log=B.log.slice(0,30);}
+function float(t){const e=document.createElement('div');e.className='float';e.textContent=t;
+  e.style.left=(window.innerWidth/2-20)+'px';e.style.top='38%';document.body.appendChild(e);setTimeout(()=>e.remove(),1000);}
+
+/* ---------- rendering ---------- */
+const view=document.getElementById('view'),topbar=document.getElementById('topbar');
+function go(tab){S.tab=tab;B=null;render();}
+function esc(s){return String(s).replace(/[<>&"']/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));}
+
+let stage='title';
+function render(){
+  if(!S){return stage==='class'?classScreen():titleScreen();}
+  bgTheme(B?B.rg.id:'home');
+  topbar.hidden=false;
+  document.getElementById('whoami').textContent=(S.name?S.name+' — ':'')+CLASSES[S.cls].name;
+  document.getElementById('rLvl').textContent=S.lvl;
+  document.getElementById('rGold').textContent=S.gold;
+  document.getElementById('rIns').textContent=S.ins;
+  document.getElementById('rXp').textContent=S.xp+' / '+xpNeed();
+  document.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-current',String(!B&&t.dataset.go===S.tab)));
+  if(B)return battleScreen();
+  if(S.tab==='kingdom')return kingdomScreen();
+  if(S.tab==='hero')return heroScreen();
+  return mapScreen();
+}
+
+let heroName='';
+function titleScreen(){
+  topbar.hidden=true;bgTheme('title');
+  view.innerHTML=`
+  <div class="hero">
+    <div class="sub">Chapter One</div>
+    <h1>Math Kingdom</h1>
+    <div class="sub" style="color:var(--star)">The Chaos of Numbers</div>
+    <p>Every wall, harvest and spell in this kingdom was held up by arithmetic — until the Zero King pulled the answers out from underneath it. Magic here is not spoken. It is <em>built</em>: you are handed number tiles and a Ward, and you assemble an expression that equals it. Reach the Ward exactly and the spell lands whole. Use more tiles and it lands harder.</p>
+    <p class="small muted">The Ward-stone at the gate takes a name before it takes an oath. Write yours.</p>
+    <div class="namebox">
+      <input id="heroname" maxlength="18" autocomplete="off" spellcheck="false" placeholder="Name your hero" value="${esc(heroName)}">
+      <button class="btn" onclick="submitName()">Approach the gate</button>
+    </div>
+    <div class="sigilrow">+ &nbsp;−&nbsp; ×&nbsp; ÷&nbsp; =</div>
+  </div>
+  <div style="text-align:center;margin-top:22px"><button class="btn ghost sm" onclick="load()">Continue a saved kingdom</button></div>`;
+  const inp=document.getElementById('heroname');
+  if(inp){inp.focus();inp.onkeydown=e=>{if(e.key==='Enter')submitName();};}
+}
+function submitName(){
+  const inp=document.getElementById('heroname');
+  const v=(inp?inp.value:'').trim();
+  if(!v){inp.placeholder='The stone needs a name';inp.focus();return;}
+  heroName=v.slice(0,18);stage='class';render();
+}
+function backToName(){stage='title';render();}
+function classScreen(){
+  topbar.hidden=true;bgTheme('class');
+  view.innerHTML=`
+  <div class="hero" style="padding-bottom:6px">
+    <div class="sub">Second question</div>
+    <h1 style="font-size:clamp(28px,5vw,44px)">What kind of hero is ${esc(heroName)}?</h1>
+    <p class="small muted">Ten disciplines, ten different ways of being right. Choose the one you want to be <em>wrong</em> as — being wrong is survivable here, and it is how you find out what the Ward wanted.</p>
+    <div style="margin-top:14px"><button class="btn ghost sm" onclick="backToName()">Change the name</button></div>
+  </div>
+  <div class="grid g2">
+    ${Object.keys(CLASSES).map(k=>`<button class="classcard" onclick="choose('${k}')">
+      <h3>${CLASSES[k].name}</h3>
+      <div class="tagline">${CLASSES[k].tag}</div>
+      <div class="small">${CLASSES[k].desc}</div>
+      <div class="small muted num" style="margin-top:8px">HP ${CLASSES[k].hp} · POWER ${Math.round(CLASSES[k].pow*100)}%</div>
+    </button>`).join('')}
+  </div>`;
+}
+function choose(k){S=newState(k,heroName);stage='play';save();render();}
+
+function mapScreen(){
+  view.innerHTML=`<div class="card" style="margin-bottom:14px">
+    <h2 style="font-size:20px">The Realm</h2>
+    <p class="small muted" style="margin:8px 0 0">Nine regions, three foes each. Clear all three to open the road onward. Health carries between fights — the Training Arena and a night in the kingdom are how you get it back.</p>
+    <div style="margin-top:10px"><span class="small">Health</span>
+      <div class="bar" style="max-width:280px"><i style="width:${Math.max(0,100*S.hp/maxHp())}%"></i></div>
+      <span class="small num">${S.hp} / ${maxHp()}</span>
+      <button class="btn ghost sm" style="margin-left:8px" ${S.gold>=30&&S.hp<maxHp()?'':'disabled'} onclick="rest()">Rest (30 gold)</button></div>
+  </div>
+  <div class="grid g3">${REGIONS.map((r,i)=>{
+    const un=unlocked(i),c=cleared(r.id);
+    return `<button class="region ${un?'':'locked'}" ${un?`onclick="openRegion(${i})"`:'disabled'}>
+      <h3>${r.name}</h3><div class="concept">${r.concept}</div>
+      <div class="small muted">${un?r.blurb:'Sealed until '+REGIONS[i-1].name+' is cleared.'}</div>
+      <div class="pips">${r.foes.map((f,j)=>`<span class="pip ${f.boss?'boss':''} ${j<c?'on':''}"></span>`).join('')}</div>
+    </button>`;}).join('')}</div>`;
+}
+function rest(){if(S.gold<30)return;S.gold-=30;S.hp=maxHp();save();render();}
+
+function openRegion(i){
+  const r=REGIONS[i],c=cleared(r.id);
+  view.innerHTML=`<div class="card">
+    <button class="btn ghost sm" onclick="go('map')">← Realm</button>
+    <h2 style="font-size:22px;margin-top:12px">${r.name}</h2>
+    <p class="muted" style="margin:6px 0 2px">${r.blurb}</p>
+    <p class="small" style="color:var(--gold)">Teaches: ${r.concept} &nbsp;·&nbsp; Operators available: ${r.ops.map(sym).join(' ')}</p>
+    <hr class="rule">
+    <div class="grid g3">${r.foes.map((f,j)=>{
+      const open=j<=c;
+      return `<div class="bld">
+        <h3>${f.n}${f.boss?' <span style="color:var(--gold)">·  guardian</span>':''}</h3>
+        <div class="small muted num">HP ${f.hp} · attack ${f.atk}</div>
+        ${f.trait==='division'?'<div class="trait">Weak to spells that divide (+35%).</div>':''}
+        ${f.trait==='complex'?'<div class="trait">Weak to spells using 3+ tiles (+30%).</div>':''}
+        <div style="margin-top:10px">${open?`<button class="btn sm" onclick="startBattle(${i},${j})">${j<c?'Fight again':'Fight'}</button>`:'<span class="small muted">Defeat the one before it.</span>'}</div>
+      </div>`;}).join('')}</div></div>`;
+}
+
+function battleScreen(){
+  const val=liveValue();
+  const face=wardFace(B.wspec);
+  const chkNow=val?wardCheck(B.wspec,val):null;
+  const exactNow=chkNow&&chkNow.hit;
+  const hidden=B.clue&&!B.revealed;
+  const arcs=[['--add',0],['--sub',90],['--mul',180],['--div',270]];
+  view.innerHTML=`<div class="card">
+    <div class="bhead">
+      <div>
+        <h2 style="font-size:19px">${B.foe.n}</h2>
+        <div class="bar foe"><i style="width:${Math.max(0,100*B.ehp/B.emax)}%"></i></div>
+        <div class="small num muted">${Math.max(0,B.ehp)} / ${B.emax}</div>
+        ${B.foe.trait==='division'?'<div class="trait">Weak to division</div>':''}
+        ${B.foe.trait==='complex'?'<div class="trait">Weak to spells of 3+ tiles</div>':''}
+      </div>
+      <div style="text-align:right">
+        <h2 style="font-size:19px">${CLASSES[S.cls].name}</h2>
+        <div class="bar"><i style="width:${Math.max(0,100*S.hp/maxHp())}%"></i></div>
+        <div class="small num muted">${Math.max(0,S.hp)} / ${maxHp()}${B.shield?' · shield '+B.shield:''}</div>
+      </div>
+    </div>
+
+    <div class="sigilwrap">
+      <svg class="sigil" viewBox="0 0 200 200" role="img" aria-label="${KINDNAME[B.wspec.kind]}: ${face.cond}">
+        <circle class="ring" cx="100" cy="100" r="86"></circle>
+        <g class="spin">
+          ${arcs.map(a=>`<path class="arc" stroke="var(${a[0]})" d="${arcPath(100,100,74,a[1]+6,a[1]+72)}"/>`).join('')}
+        </g>
+        <circle class="ring" cx="100" cy="100" r="60" stroke-dasharray="4 7"></circle>
+        <text class="wardval ${(hidden?'?':face.big).length>3?'small':''}" x="100" y="100" text-anchor="middle" dominant-baseline="central">${hidden?'?':face.big}</text>
+      </svg>
+    </div>
+    <div class="kindrow">
+      <span class="kindtag ${B.wspec.kind}">${KINDNAME[B.wspec.kind]}</span>
+      ${B.surge?'<span class="kindtag surge">Sealed surge — no grazes, double damage both ways</span>':''}
+      ${B.res>=2?'<span class="kindtag res">Resonance ×'+B.res+' &nbsp;·&nbsp; +'+Math.round(15*Math.min(B.res,5))+'% damage</span>':''}
+    </div>
+    ${B.clue?`<div class="clue">${B.clue.text} <span class="small muted">Work it out, then build it.</span></div>`
+      :`<div class="clue small">${face.cond}</div>`}
+
+    <div class="spellbar">${B.tokens.length?B.tokens.map(t=>`<span class="tok ${t.t==='op'?'op-'+({'+':'add','-':'sub','*':'mul','/':'div'})[t.v]:''}">${tokStr(t)}</span>`).join('')
+      +`<span class="result ${exactNow?'hit':''}">= ${val?rstr(val):'…'}</span>`
+      :'<span class="muted small">Tap tiles and operators to build a spell.</span>'}</div>
+
+    <div class="tiles">${B.hand.map(t=>`<button class="tile num" ${t.used||!canNum()?'disabled':''} onclick="pickTile(${t.id})">${t.v}</button>`).join('')}</div>
+
+    <div class="ops">
+      ${B.rg.ops.map(o=>`<button class="op ${({'+':'add','-':'sub','*':'mul','/':'div'})[o]}" ${canOp()?'':'disabled'} onclick="pushOp('${o}')">${sym(o)}</button>`).join('')}
+      ${(S.blds.tower||S.cls==='warden')?`<button class="op util" ${canNum()?'':'disabled'} onclick="pushLp()">(</button>
+        <button class="op util" ${(canOp()&&openParens()>0)?'':'disabled'} onclick="pushRp()">)</button>`:''}
+      <button class="op util" ${B.tokens.length?'':'disabled'} onclick="undo()">Undo</button>
+      <button class="op util" ${B.tokens.length?'':'disabled'} onclick="clearSpell()">Clear</button>
+    </div>
+
+    <div class="actions">
+      <button class="btn" ${canCast()?'':'disabled'} onclick="cast()">Cast spell</button>
+      <button class="btn ghost" ${B.study>0?'':'disabled'} onclick="study()">Study the Sigil (${B.study})</button>
+      ${S.blds.lab?`<button class="btn ghost" ${B.reroll>0?'':'disabled'} onclick="reroll()">Reroll hand (${B.reroll})</button>`:''}
+      <button class="btn ghost" ${B.ability?'':'disabled'} onclick="useAbility()">${CLASSES[S.cls].ability}</button>
+      <button class="btn ghost" onclick="go('map')">Retreat</button>
+    </div>
+
+    <div class="warlock">
+      <div class="face">∴</div>
+      <div style="flex:1">
+        <div class="who">Vantor, the Remainder Warlock</div>
+        <div class="say">${B.wsay||''}</div>
+        <div class="wbtns">
+          <button class="wbtn" onclick="warlockNudge()">Read the Ward <b>free</b></button>
+          <button class="wbtn" ${(S.ins>=(hasArt('chalk')?0:2))?'':'disabled'} onclick="warlockGuide()">Give me the first move <b>${hasArt('chalk')?'free':'2'}</b></button>
+          <button class="wbtn" ${S.ins>=5?'':'disabled'} onclick="warlockSolve()">Work it out for me <b>5</b></button>
+        </div>
+      </div>
+    </div>
+
+    ${Object.keys(S.arts).length?`<div class="relics">${Object.keys(S.arts).map(k=>`<span class="relic"><span class="rg">${ARTIFACTS[k].g}</span>${ARTIFACTS[k].name}</span>`).join('')}</div>`:''}
+
+    <div class="log">${B.log.join('')||'<div class="muted small">The Ward hums. Build something.</div>'}</div>
+  </div>`;
+}
+function pickTile(id){const t=B.hand.find(x=>x.id===id);if(t)pushNum(t);}
+function arcPath(cx,cy,r,a1,a2){
+  const p=(a)=>[cx+r*Math.cos(a*Math.PI/180),cy+r*Math.sin(a*Math.PI/180)];
+  const s=p(a1),e=p(a2);
+  return `M ${s[0].toFixed(1)} ${s[1].toFixed(1)} A ${r} ${r} 0 0 1 ${e[0].toFixed(1)} ${e[1].toFixed(1)}`;
+}
+
+function kingdomScreen(){
+  view.innerHTML=`<div class="card" style="margin-bottom:14px">
+    <h2 style="font-size:20px">The Kingdom</h2>
+    <p class="small muted" style="margin-top:8px">Nothing here is decoration. Every building changes what happens inside a battle — more tiles to work with, more chances to study, brackets to bend the order of operations. Build costs gold; upgrades also cost insight, which you earn by getting Wards exactly right.</p>
+  </div>
+  <div class="grid g2">${BUILDINGS.map(b=>{
+    const l=S.blds[b.id]||0,max=b.max||3;
+    const cost=b.cost*(l+1),ins=l*4;
+    const can=l<max&&S.gold>=cost&&S.ins>=ins;
+    return `<div class="bld">
+      <h3>${b.name}</h3>
+      <div class="lvlchips">${Array.from({length:max},(_,i)=>`<span class="chip ${i<l?'on':''}"></span>`).join('')}</div>
+      <div class="small" style="color:var(--gold)">${l?b.eff(l):'Not built yet'}</div>
+      <div class="small muted" style="margin:6px 0 10px">${b.why}</div>
+      ${l>=max?'<span class="small num muted">Fully built</span>':
+        `<button class="btn sm" ${can?'':'disabled'} onclick="build('${b.id}')">${l?'Upgrade':'Build'} — <span class="num">${cost}g${ins?' + '+ins+'i':''}</span></button>`}
+    </div>`;}).join('')}</div>`;
+}
+function build(id){
+  const b=BUILDINGS.find(x=>x.id===id),l=S.blds[id]||0,max=b.max||3;
+  const cost=b.cost*(l+1),ins=l*4;
+  if(l>=max||S.gold<cost||S.ins<ins)return;
+  S.gold-=cost;S.ins-=ins;S.blds[id]=l+1;
+  if(id==='arena')S.hp+=25;
+  save();render();
+}
+
+function heroScreen(){
+  const rows=REGIONS.filter(r=>S.byRegion[r.id]).map(r=>{
+    const d=S.byRegion[r.id],p=Math.round(100*d.e/d.c);
+    return `<div class="mast"><div class="small" style="display:flex;justify-content:space-between">
+      <span>${r.name}</span><span class="num">${p}% exact · ${d.c} spells</span></div>
+      <div class="mbar"><i style="width:${p}%"></i></div></div>`;}).join('');
+  const acc=S.casts?Math.round(100*S.exact/S.casts):0;
+  view.innerHTML=`<div class="card" style="margin-bottom:14px">
+    <h2 style="font-size:20px">${CLASSES[S.cls].name}</h2>
+    <p class="small muted" style="margin:6px 0 0">${CLASSES[S.cls].desc}</p>
+    <hr class="rule">
+    <div class="grid g3">
+      <div><div class="small muted">Level</div><div class="num" style="font-size:24px">${S.lvl}</div></div>
+      <div><div class="small muted">Health</div><div class="num" style="font-size:24px">${S.hp} / ${maxHp()}</div></div>
+      <div><div class="small muted">Spell power</div><div class="num" style="font-size:24px">${Math.round(power())}</div></div>
+      <div><div class="small muted">Tiles per turn</div><div class="num" style="font-size:24px">${handSize()}</div></div>
+      <div><div class="small muted">Spells cast</div><div class="num" style="font-size:24px">${S.casts}</div></div>
+      <div><div class="small muted">Exact matches</div><div class="num" style="font-size:24px">${acc}%</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2 style="font-size:18px">Where you are strong</h2>
+    <p class="small muted">Exact-match rate per region. A low number is not a failure, it is where the next lesson is. The Ward difficulty follows this line up and down on its own.</p>
+    <div style="margin-top:12px">${rows||'<div class="small muted">Fight something and this fills in.</div>'}</div>
+    <hr class="rule">
+    <h2 style="font-size:18px">Where you are strong by question</h2>
+    <p class="small muted">The realm asks five different mathematical questions. This is which ones you answer cleanly.</p>
+    <div style="margin-top:12px">${Object.keys(KINDNAME).filter(k=>S.byKind&&S.byKind[k]).map(k=>{
+      const d=S.byKind[k],pc=Math.round(100*d.e/d.c);
+      return `<div class="mast"><div class="small" style="display:flex;justify-content:space-between">
+        <span>${KINDNAME[k]}</span><span class="num">${pc}% broken · ${d.c} attempts</span></div>
+        <div class="mbar"><i style="width:${pc}%"></i></div></div>`;
+    }).join('')||'<div class="small muted">No data yet — the later regions raise the stranger Wards.</div>'}</div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <h2 style="font-size:18px">Legendary artifacts <span class="num muted small">${Object.keys(S.arts).length} / ${Object.keys(ARTIFACTS).length}</span></h2>
+    <p class="small muted">Region bosses always surrender theirs. The four lesser relics turn up on ordinary foes about one fight in five.</p>
+    <div class="relicgrid">${Object.keys(ARTIFACTS).map(k=>{
+      const a=ARTIFACTS[k],have=hasArt(k);
+      const src=a.from==='common'?'Found on any foe':'Held by the boss of '+(REGIONS.find(r=>r.id===a.from)||{name:'?'}).name;
+      return `<div class="rcard ${have?'have':'miss'}">
+        <div style="display:flex;gap:9px;align-items:center">
+          <span class="rg">${have?a.g:'?'}</span><h4>${have?a.name:'Unrecovered'}</h4>
+        </div>
+        <div class="eff">${have?a.eff:'—'}</div>
+        <div class="src">${have?a.lore:src}</div>
+      </div>`;}).join('')}</div>
+    <hr class="rule">
+    <button class="btn ghost sm" onclick="wipe()">Abandon this kingdom and start again</button>
+  </div>`;
+}
+
+
+/* ---------- living background: a field of loose numerals the Chaos never put back ---------- */
+const BGC={title:[159,180,240],class:[159,180,240],home:[230,196,106],
+  forest:[79,216,163],swamp:[255,122,143],mountains:[255,179,71],desert:[240,206,120],
+  fraction:[185,139,255],geometry:[110,220,255],fortress:[255,140,120],
+  islands:[100,230,205],final:[210,190,255]};
+let bgCur=[159,180,240],bgTgt=[159,180,240],bgFlash=0;
+function bgTheme(k){bgTgt=BGC[k]||BGC.home;}
+const cv=document.getElementById('bg'),cx=cv.getContext('2d');
+const GLY='0123456789+-×÷=∑π√∞≠<>'.split('');
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+let W=0,H=0,glyphs=[],rings=[],M={x:-999,y:-999,active:0};
+function sizeBg(){
+  const d=Math.min(window.devicePixelRatio||1,2);
+  W=window.innerWidth;H=window.innerHeight;
+  cv.width=W*d;cv.height=H*d;cv.style.width=W+'px';cv.style.height=H+'px';
+  cx.setTransform(d,0,0,d,0,0);
+  const want=Math.round(Math.min(120,Math.max(45,W*H/16000)));
+  glyphs=[];
+  for(let i=0;i<want;i++)glyphs.push({
+    x:Math.random()*W,y:Math.random()*H,
+    vx:(Math.random()-.5)*.22,vy:(Math.random()-.5)*.22,
+    s:9+Math.random()*20,a:.10+Math.random()*.28,
+    c:GLY[Math.floor(Math.random()*GLY.length)],
+    r:Math.random()*Math.PI*2,vr:(Math.random()-.5)*.004,home:0});
+}
+window.addEventListener('resize',sizeBg);
+window.addEventListener('mousemove',e=>{M.x=e.clientX;M.y=e.clientY;M.active=1;});
+window.addEventListener('mouseleave',()=>{M.active=0;M.x=M.y=-999;});
+window.addEventListener('mousedown',e=>{rings.push({x:e.clientX,y:e.clientY,r:0,a:.55});});
+window.addEventListener('touchstart',e=>{const t=e.touches[0];if(t){M.x=t.clientX;M.y=t.clientY;M.active=1;rings.push({x:t.clientX,y:t.clientY,r:0,a:.55});}},{passive:true});
+window.addEventListener('touchmove',e=>{const t=e.touches[0];if(t){M.x=t.clientX;M.y=t.clientY;}},{passive:true});
+function bgPulse(){rings.push({x:W/2,y:H*0.38,r:0,a:.9,gold:1});bgFlash=1;}
+function drawBg(){
+  for(let i=0;i<3;i++)bgCur[i]+=(bgTgt[i]-bgCur[i])*0.03;
+  const col=bgCur.map(Math.round);
+  cx.clearRect(0,0,W,H);
+  if(bgFlash>0){cx.fillStyle='rgba(230,196,106,'+(bgFlash*0.05)+')';cx.fillRect(0,0,W,H);bgFlash-=0.03;}
+  cx.textAlign='center';cx.textBaseline='middle';
+  for(const g of glyphs){
+    if(!reduce){g.x+=g.vx;g.y+=g.vy;g.r+=g.vr;}
+    const dx=g.x-M.x,dy=g.y-M.y,d2=dx*dx+dy*dy;
+    let lit=0;
+    if(M.active&&d2<32400){                       /* within 180px the cursor disturbs them */
+      const d=Math.sqrt(d2)||1,f=(180-d)/180;
+      lit=f;
+      if(!reduce){g.x+=dx/d*f*2.4;g.y+=dy/d*f*2.4;g.r+=f*0.05;}
+      cx.strokeStyle='rgba('+col[0]+','+col[1]+','+col[2]+','+(f*f*0.16)+')';
+      cx.lineWidth=1;cx.beginPath();cx.moveTo(g.x,g.y);cx.lineTo(M.x,M.y);cx.stroke();
+    }
+    for(const sh of rings){                        /* click shockwaves shove them outward */
+      const rx=g.x-sh.x,ry=g.y-sh.y,rd=Math.hypot(rx,ry)||1;
+      if(Math.abs(rd-sh.r)<40&&!reduce){g.x+=rx/rd*1.9;g.y+=ry/rd*1.9;lit=Math.max(lit,.7);}
+    }
+    if(g.x<-40)g.x=W+40;if(g.x>W+40)g.x=-40;
+    if(g.y<-40)g.y=H+40;if(g.y>H+40)g.y=-40;
+    cx.save();cx.translate(g.x,g.y);cx.rotate(g.r);
+    cx.font=(g.s+lit*7).toFixed(1)+'px "IBM Plex Mono", monospace';
+    cx.fillStyle='rgba('+col[0]+','+col[1]+','+col[2]+','+(g.a+lit*0.55)+')';
+    cx.fillText(g.c,0,0);cx.restore();
+  }
+  for(let i=rings.length-1;i>=0;i--){
+    const sh=rings[i];sh.r+=sh.gold?9:6;sh.a-=0.022;
+    if(sh.a<=0){rings.splice(i,1);continue;}
+    cx.beginPath();cx.arc(sh.x,sh.y,sh.r,0,Math.PI*2);
+    cx.strokeStyle=sh.gold?'rgba(230,196,106,'+sh.a+')':'rgba('+col[0]+','+col[1]+','+col[2]+','+sh.a+')';
+    cx.lineWidth=sh.gold?2.5:1.4;cx.stroke();
+  }
+  requestAnimationFrame(drawBg);
+}
+sizeBg();drawBg();
+
+/* ---------- the crown cursor ----------
+   Deliberately NOT gated on `pointer:fine`. Touchscreen laptops report a coarse
+   primary pointer, which silently disabled the old cursor on exactly the machines
+   most likely to be running this. Instead: wait for a real mouse movement, and
+   stand down again the moment anything is touched. ---------- */
+(function(){
+  const cur=document.getElementById('cur');
+  const crown=cur.querySelector('.crown');
+  const HOT='button,input,a,.tile,.op,.classcard,.region,.tab,.bld,.wbtn,[onclick]';
+  const SPARK=['\u2726','\u2727','\u00b7','\u2734'];
+  let live=false,touch=false,tx=-99,ty=-99,rx=-99,ry=-99,last=0,tilt=0;
+
+  function stand(){
+    if(live||touch)return;
+    live=true;
+    document.body.classList.add('hidecursor');
+    cur.classList.add('on');
+  }
+  function standDown(){
+    live=false;touch=true;
+    document.body.classList.remove('hidecursor');
+    cur.classList.remove('on');
+  }
+
+  window.addEventListener('mousemove',e=>{
+    stand();
+    if(!live)return;
+    tx=e.clientX;ty=e.clientY;
+    const hot=e.target&&e.target.closest&&e.target.closest(HOT);
+    cur.classList.toggle('hot',!!hot);
+    const now=performance.now();
+    if(!reduce&&now-last>85&&Math.random()<0.45){
+      last=now;
+      const sp=document.createElement('div');
+      sp.className='spark';
+      sp.textContent=SPARK[Math.floor(Math.random()*SPARK.length)];
+      sp.style.left=(tx+(Math.random()-.5)*22)+'px';
+      sp.style.top=(ty+6+(Math.random()-.5)*16)+'px';
+      document.body.appendChild(sp);
+      setTimeout(()=>sp.remove(),900);
+    }
+  },{passive:true});
+
+  window.addEventListener('mousedown',()=>cur.classList.add('press'));
+  window.addEventListener('mouseup',()=>cur.classList.remove('press'));
+  document.addEventListener('mouseleave',()=>cur.classList.remove('on'));
+  document.addEventListener('mouseenter',()=>{if(live)cur.classList.add('on');});
+  window.addEventListener('touchstart',standDown,{passive:true});
+  window.addEventListener('blur',()=>cur.classList.remove('on'));
+
+  (function follow(){
+    const px=rx;
+    rx+=(tx-rx)*0.22;ry+=(ty-ry)*0.22;
+    const want=Math.max(-16,Math.min(16,(rx-px)*1.6));   // lean into the movement
+    tilt+=(want-tilt)*0.18;
+    cur.style.transform='translate('+rx+'px,'+ry+'px)';
+    crown.style.transform='rotate('+tilt.toFixed(2)+'deg)';
+    requestAnimationFrame(follow);
+  })();
+})();
+
+/* ---------- persistence (silently optional) ---------- */
+async function save(){try{if(window.storage)await window.storage.set('mk_save',JSON.stringify(S));}catch(e){}}
+async function load(){
+  try{const r=await window.storage.get('mk_save');if(r&&r.value){S=JSON.parse(r.value);S.arts=S.arts||{};S.byKind=S.byKind||{};B=null;render();return;}}catch(e){}
+  alert('No saved kingdom found in this browser. Choose a hero to begin.');
+}
+async function wipe(){try{if(window.storage)await window.storage.delete('mk_save');}catch(e){}S=null;B=null;stage='title';render();}
+
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>go(t.dataset.go));
+(async function(){try{const r=await window.storage.get('mk_save');if(r&&r.value){S=JSON.parse(r.value);S.arts=S.arts||{};S.byKind=S.byKind||{};}}catch(e){}render();})();
+</script>
+</body>
+</html>
