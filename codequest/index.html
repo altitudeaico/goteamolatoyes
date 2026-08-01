@@ -142,19 +142,20 @@ section{padding:28px 0 0}
 .progress i{display:block;height:100%;width:0;background:var(--gold);transition:width .25s linear}
 
 .roster{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px
+  display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:10px
 }
 .champ{
   position:relative;padding:0;border:1px solid var(--line-soft);border-radius:3px;
   background:var(--stone);cursor:pointer;overflow:hidden;line-height:0;
+  aspect-ratio:1/1;
   transition:border-color .18s,transform .18s
 }
-.champ img{width:100%;height:auto;display:block;opacity:.72;transition:opacity .18s}
+.champ img{width:100%;height:100%;display:block;object-fit:cover;object-position:50% 12%;opacity:.72;transition:opacity .18s}
 .champ .cname{
-  position:absolute;left:0;right:0;bottom:0;padding:14px 2px 5px;line-height:1;
-  font-family:var(--sys);font-size:9.5px;font-weight:700;letter-spacing:.12em;
-  text-transform:uppercase;color:var(--parch-dim);
-  background:linear-gradient(180deg,transparent,rgba(7,6,12,.92) 55%)
+  position:absolute;left:0;right:0;bottom:0;padding:10px 1px 3px;line-height:1;
+  font-family:var(--sys);font-size:7.5px;font-weight:700;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--parch-dim);white-space:nowrap;overflow:hidden;
+  background:linear-gradient(180deg,transparent,rgba(7,6,12,.94) 55%)
 }
 .champ::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:transparent;z-index:2}
 .champ.a::before{background:var(--rubric)}
@@ -164,7 +165,7 @@ section{padding:28px 0 0}
 .champ.on{border-color:var(--gold);transform:translateY(-2px)}
 .champ.on .cname{color:var(--gold-hi)}
 .champ.on::after{
-  content:"";position:absolute;top:6px;right:6px;width:6px;height:6px;border-radius:50%;
+  content:"";position:absolute;top:4px;right:4px;width:5px;height:5px;border-radius:50%;
   background:var(--phos);box-shadow:0 0 8px var(--phos);animation:pulse 2.4s ease-in-out infinite;z-index:2
 }
 
@@ -255,7 +256,8 @@ footer{
 
 /* very narrow phones — stack the time above the stage name */
 @media (max-width:359px){
-  .roster{grid-template-columns:repeat(3,1fr)}
+  .roster{gap:4px}
+  .champ .cname{font-size:7px}
   .slot{grid-template-columns:1fr;gap:4px}
   .slot .t{padding-top:0}
   .decrees li{grid-template-columns:26px 1fr;gap:11px}
@@ -269,8 +271,8 @@ footer{
   section{padding-top:34px}
 }
 @media (min-width:720px){
-  .roster{grid-template-columns:repeat(7,1fr);gap:10px}
-  .champ .cname{font-size:10px;padding-bottom:6px}
+  .roster{gap:8px}
+  .champ .cname{font-size:9px;padding-bottom:5px;letter-spacing:.1em}
   body{font-size:18px}
   .houses{grid-template-columns:1fr 1fr}
   .slot{grid-template-columns:72px 1fr}
