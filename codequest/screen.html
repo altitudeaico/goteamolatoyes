@@ -109,7 +109,7 @@ body::after{
 .rail{
   position:fixed;left:clamp(20px,4vw,64px);right:clamp(20px,4vw,64px);
   bottom:clamp(30px,5vh,54px);z-index:3;display:grid;gap:clamp(4px,.6vw,8px);
-  grid-template-columns:repeat(7,1fr)
+  grid-template-columns:repeat(9,1fr)
 }
 .rail .st{position:relative;padding-top:9px}
 .rail .st::before{
@@ -226,9 +226,11 @@ body.showcursor .fsbtn{opacity:1}
     ['10:30','12:00','First Forge'],
     ['12:00','12:45','The Feast'],
     ['12:45','14:15','Second Forge'],
-    ['14:15','15:15','The Rehearsal'],
-    ['15:15','16:15','The Telling'],
-    ['16:15','16:45','The Reckoning']
+    ['14:15','14:25','The Setting'],
+    ['14:25','14:35','The Summons'],
+    ['14:35','15:53','The Telling'],
+    ['15:53','16:18','Deliberation'],
+    ['16:18','16:48','The Reckoning']
   ];
 
   function at(hhmm){
