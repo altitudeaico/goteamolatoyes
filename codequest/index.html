@@ -142,8 +142,8 @@ section{padding:28px 0 0}
 .progress i{display:block;height:100%;width:0;background:var(--gold);transition:width .25s linear}
 
 .roster{
-  display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:10px;
-  max-width:330px;margin-left:auto;margin-right:auto
+  display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px;
+  max-width:240px;margin-left:auto;margin-right:auto
 }
 .champ{
   position:relative;padding:0;border:1px solid var(--line-soft);border-radius:3px;
@@ -153,7 +153,7 @@ section{padding:28px 0 0}
 }
 .champ img{width:100%;height:100%;display:block;object-fit:cover;object-position:50% 8%;opacity:.72;transition:opacity .18s}
 .champ .cname{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-.champ::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:transparent;z-index:2}
+.champ::before{content:"";position:absolute;left:0;right:0;top:0;height:1.5px;background:transparent;z-index:2}
 .champ.a::before{background:var(--rubric)}
 .champ.b::before{background:var(--phos)}
 .champ.n::before{background:var(--gold)}
@@ -161,7 +161,7 @@ section{padding:28px 0 0}
 .champ.on{border-color:var(--gold);transform:translateY(-2px)}
 .champ.on .cname{color:var(--gold-hi)}
 .champ.on::after{
-  content:"";position:absolute;top:4px;right:4px;width:5px;height:5px;border-radius:50%;
+  content:"";position:absolute;top:3px;right:3px;width:4px;height:4px;border-radius:50%;
   background:var(--phos);box-shadow:0 0 8px var(--phos);animation:pulse 2.4s ease-in-out infinite;z-index:2
 }
 
@@ -252,7 +252,7 @@ footer{
 
 /* very narrow phones — stack the time above the stage name */
 @media (max-width:359px){
-  .roster{gap:4px;max-width:none}
+  .roster{gap:3px;max-width:210px}
   .slot{grid-template-columns:1fr;gap:4px}
   .slot .t{padding-top:0}
   .decrees li{grid-template-columns:26px 1fr;gap:11px}
@@ -266,7 +266,7 @@ footer{
   section{padding-top:34px}
 }
 @media (min-width:720px){
-  .roster{gap:7px;max-width:380px}
+  .roster{gap:5px;max-width:280px}
   body{font-size:18px}
   .houses{grid-template-columns:1fr 1fr}
   .slot{grid-template-columns:72px 1fr}
