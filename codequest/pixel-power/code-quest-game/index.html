@@ -18,61 +18,77 @@
     --line:rgba(217,169,76,.2);
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{background:var(--void);color:var(--parch);min-height:100%}
+  html,body{height:100%;background:var(--void);color:var(--parch)}
   body{
-    font-family:system-ui,-apple-system,'Segoe UI',sans-serif;
-    -webkit-font-smoothing:antialiased;
-    padding:0 max(14px,env(safe-area-inset-left)) calc(40px + env(safe-area-inset-bottom))
+    display:flex;flex-direction:column;overflow:hidden;
+    font-family:system-ui,-apple-system,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased
   }
+
   .bar{
-    display:flex;align-items:center;justify-content:space-between;gap:14px;
-    max-width:1240px;margin:0 auto;padding:16px 2px 14px
+    flex:none;display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:10px max(12px,env(safe-area-inset-left)) 10px max(12px,env(safe-area-inset-right));
+    border-bottom:1px solid var(--line)
   }
   .who{
-    font-family:ui-monospace,monospace;font-size:10px;font-weight:700;
-    letter-spacing:.24em;text-transform:uppercase;color:var(--phos)
+    font-family:ui-monospace,monospace;font-size:9px;font-weight:700;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--phos);line-height:1.5
   }
-  .who b{display:block;color:var(--gold-hi);font-size:15px;letter-spacing:.06em;margin-top:5px;
-         font-family:system-ui,sans-serif;font-weight:700;text-transform:none}
-  .back{
-    font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.18em;
-    text-transform:uppercase;color:var(--parch-dim);text-decoration:none;
-    border:1px solid var(--line);border-radius:3px;padding:9px 14px;white-space:nowrap
+  .who b{
+    display:block;color:var(--gold-hi);font-size:14px;letter-spacing:0;
+    font-family:system-ui,sans-serif;font-weight:700;text-transform:none
   }
-  .back:hover{color:var(--gold);border-color:var(--gold)}
-  .frame{
-    max-width:1240px;margin:0 auto;border:1px solid var(--line);border-radius:4px;
-    overflow:hidden;background:#000;line-height:0
+  .acts{display:flex;gap:7px;flex:none}
+  .acts a,.acts button{
+    font-family:ui-monospace,monospace;font-size:9px;font-weight:700;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--parch-dim);text-decoration:none;cursor:pointer;
+    border:1px solid var(--line);border-radius:3px;padding:8px 12px;background:transparent;
+    white-space:nowrap
   }
-  .frame img{width:100%;height:auto;display:block;cursor:zoom-in}
-  .frame img.zoom{cursor:zoom-out}
-  .note{
-    max-width:1240px;margin:14px auto 0;font-size:13.5px;color:var(--parch-dim);
-    text-align:center;line-height:1.6
+  .acts a:hover,.acts button:hover{color:var(--gold-hi);border-color:var(--gold)}
+
+  /* the slide fills whatever is left, always whole on screen */
+  .stage{
+    flex:1;min-height:0;display:grid;place-items:center;overflow:auto;
+    padding:12px;background:
+      radial-gradient(60% 50% at 50% 0%, rgba(69,227,196,.07), transparent 70%)
   }
-  .note a{color:var(--gold-hi)}
-  @media (min-width:900px){ body{padding-left:24px;padding-right:24px} }
+  .stage img{
+    max-width:100%;max-height:100%;width:auto;height:auto;display:block;
+    border:1px solid var(--line);border-radius:3px;cursor:zoom-in;
+    box-shadow:0 24px 70px rgba(0,0,0,.6)
+  }
+  .stage.zoomed{place-items:start center}
+  .stage.zoomed img{max-width:none;max-height:none;width:1448px;cursor:zoom-out}
 </style>
 </head>
 <body>
   <div class="bar">
-    <div class="who">Pixel Power &middot; Build three<b>Elsie</b></div>
-    <a class="back" href="../">&larr; Pixel Power</a>
+    <div class="who">Pixel Power &middot; Build three<b>Code Quest &mdash; the game &middot; Elsie</b></div>
+    <div class="acts">
+      <button id="zoom" type="button">Zoom</button>
+      <a href="slides.jpg" download>Download</a>
+      <a href="../">&larr; Team</a>
+    </div>
   </div>
 
-  <div class="frame">
+  <div class="stage" id="stage">
     <img id="slide" src="slides.jpg" alt="Code Quest game presentation board: what the game is, how to play in four steps, the three characters Elsie, Hannah and Theodore with their level-up transformations, and the skills it teaches.">
   </div>
 
-  <p class="note">Tap the board to zoom. <a href="slides.jpg" download>Download the full image</a></p>
-
 <script>
-  var img = document.getElementById('slide');
-  img.addEventListener('click', function(){
-    var on = img.classList.toggle('zoom');
-    img.parentElement.style.overflow = on ? 'auto' : 'hidden';
-    img.style.width = on ? 'auto' : '100%';
-    img.style.maxWidth = on ? 'none' : '100%';
+  var stage = document.getElementById('stage');
+  var slide = document.getElementById('slide');
+  var zoom  = document.getElementById('zoom');
+
+  function toggle(){
+    var on = stage.classList.toggle('zoomed');
+    zoom.textContent = on ? 'Fit' : 'Zoom';
+    if (!on) stage.scrollTop = stage.scrollLeft = 0;
+  }
+  slide.addEventListener('click', toggle);
+  zoom.addEventListener('click', toggle);
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'z' || e.key === 'Z') toggle();
   });
 </script>
 </body>
