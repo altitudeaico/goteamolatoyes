@@ -30,7 +30,8 @@
 html,body{overflow-x:hidden}
 body{
   margin:0;background:var(--void);color:var(--parch);
-  font-family:var(--body);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased
+  font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;
+  scroll-behavior:smooth
 }
 body::before{
   content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
@@ -39,13 +40,29 @@ body::before{
     radial-gradient(40% 30% at 4% 42%, rgba(204,58,46,.08), transparent 70%),
     radial-gradient(40% 30% at 96% 62%, rgba(69,227,196,.08), transparent 70%);
 }
+.jump{
+  position:sticky;top:0;z-index:20;display:flex;gap:2px;overflow-x:auto;
+  background:rgba(11,9,18,.94);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line-soft);
+  padding:0 max(10px,env(safe-area-inset-left));
+  -webkit-overflow-scrolling:touch;scrollbar-width:none
+}
+.jump::-webkit-scrollbar{display:none}
+.jump a{
+  flex:1 0 auto;text-align:center;white-space:nowrap;text-decoration:none;
+  font-family:var(--sys);font-size:10px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--parch-dim);padding:14px 13px;
+  border-bottom:2px solid transparent
+}
+.jump a:hover,.jump a:active{color:var(--gold-hi);border-bottom-color:var(--gold)}
+
 .wrap{
   position:relative;z-index:1;max-width:680px;margin:0 auto;
   padding:0 max(16px,env(safe-area-inset-left)) calc(70px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-right))
 }
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 h2,h3{font-family:var(--gothic);margin:0;line-height:1.04;font-weight:800}
-h2{font-size:clamp(28px,7vw,40px)}
+h2{font-size:clamp(25px,6.6vw,38px)}
 h3{font-size:clamp(19px,4.4vw,23px);font-weight:700}
 p{margin:0 0 15px}
 .eyebrow{
@@ -57,8 +74,8 @@ b,strong{color:#F5EEDC;font-weight:700}
 a{color:var(--gold-hi)}
 :where(a,button):focus-visible{outline:2px solid var(--phos);outline-offset:3px}
 
-header{padding:36px 0 6px;text-align:center}
-.crestwrap{position:relative;width:min(180px,44vw);margin:0 auto 18px;filter:drop-shadow(0 0 44px rgba(217,169,76,.24))}
+header{padding:26px 0 4px;text-align:center}
+.crestwrap{position:relative;width:min(140px,36vw);margin:0 auto 14px;filter:drop-shadow(0 0 44px rgba(217,169,76,.24))}
 .crestwrap img{width:100%;height:auto;display:block;position:relative;z-index:1}
 .gemglow{
   position:absolute;left:50.7%;top:34.9%;width:34%;padding-bottom:34%;
@@ -75,13 +92,13 @@ header{padding:36px 0 6px;text-align:center}
   margin-top:6px;font-family:var(--sys);font-size:10px;letter-spacing:.26em;
   text-transform:uppercase;color:var(--parch-dim)
 }
-.lede{font-size:19px;color:#D8CFB8;margin-top:22px;text-align:left}
+.lede{font-size:17px;color:#D8CFB8;margin-top:20px;text-align:left}
 
-.orn{display:flex;align-items:center;gap:12px;margin:38px 0 0}
+.orn{display:flex;align-items:center;gap:12px;margin:30px 0 0}
 .orn::before,.orn::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,var(--line),transparent)}
 .orn i{width:8px;height:8px;background:var(--gold);opacity:.65;transform:rotate(45deg);flex:none}
 
-section{padding:26px 0 0}
+section{padding:22px 0 0;scroll-margin-top:64px}
 
 /* film */
 .film{
@@ -92,45 +109,49 @@ section{padding:26px 0 0}
 
 /* result */
 .result{
-  margin-top:20px;border:1px solid var(--line);border-radius:3px;padding:26px 22px;
+  margin-top:18px;border:1px solid var(--line);border-radius:3px;padding:22px 18px;
   background:linear-gradient(160deg,rgba(217,169,76,.13),rgba(217,169,76,.03));
   text-align:center;position:relative
 }
 .result::before{content:"";position:absolute;inset:5px;border:1px solid var(--line-soft);pointer-events:none}
 .result .tag{font-family:var(--sys);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--parch-dim)}
 .result .big{
-  font-family:var(--gothic);font-weight:800;font-size:clamp(34px,9vw,54px);
+  font-family:var(--gothic);font-weight:800;font-size:clamp(32px,8.6vw,52px);
   line-height:1.02;color:var(--gold-hi);margin:8px 0 10px
 }
 .result p{margin:0;font-size:15.5px;color:var(--parch-dim)}
 
 /* team cards */
-.teams{display:grid;gap:14px;margin-top:22px}
+.teams{display:grid;gap:12px;margin-top:18px}
 .team{
   position:relative;display:block;text-decoration:none;color:var(--parch);
   border:1px solid var(--line-soft);border-radius:3px;background:var(--stone);
-  padding:22px 20px;transition:border-color .2s,transform .2s
+  padding:20px 17px;transition:border-color .2s,transform .2s
 }
 .team::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px}
 .team.a::before{background:var(--rubric)}
 .team.b::before{background:var(--phos)}
 .team:hover{border-color:var(--gold);transform:translateY(-2px)}
 .team .tag{font-family:var(--sys);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--parch-dim)}
-.team .name{font-family:var(--gothic);font-weight:800;font-size:clamp(28px,7.4vw,36px);line-height:1;margin:5px 0 12px}
+.team .name{font-family:var(--gothic);font-weight:800;font-size:clamp(26px,7vw,34px);line-height:1;margin:4px 0 11px}
 .team.a .name{color:var(--rubric-hi)}
 .team.b .name{color:var(--phos)}
 .faces{display:flex;gap:7px;margin-bottom:12px}
+.faces{gap:6px}
 .faces img{
-  width:52px;height:52px;border-radius:3px;object-fit:cover;object-position:50% 12%;
-  border:1px solid var(--line-soft);display:block
+  width:46px;height:46px;border-radius:3px;object-fit:cover;object-position:50% 10%;
+  border:1px solid var(--line-soft);display:block;flex:none
 }
 .team ul{list-style:none;margin:0;padding:0;font-size:15px}
-.team ul li{padding:5px 0;border-top:1px solid var(--line-soft);color:var(--parch-dim)}
+.team ul li{padding:8px 0;border-top:1px solid var(--line-soft);color:var(--parch-dim);font-size:14.5px;line-height:1.45}
 .team ul li b{color:var(--parch)}
 .team .more{
-  display:inline-block;margin-top:14px;font-family:var(--sys);font-size:10px;
-  letter-spacing:.16em;text-transform:uppercase;color:var(--gold-hi)
+  display:block;margin-top:15px;padding:11px;text-align:center;border-radius:3px;
+  font-family:var(--sys);font-size:10px;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--void)
 }
+.team.a .more{background:var(--rubric-hi)}
+.team.b .more{background:var(--phos)}
 
 /* awards */
 .awards{width:100%;border-collapse:collapse;margin-top:20px}
@@ -139,14 +160,22 @@ section{padding:26px 0 0}
   font-family:var(--sys);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
   color:var(--parch-dim);font-weight:700;border-top:0;padding-top:0
 }
-.awards td:first-child{font-family:var(--gothic);font-weight:700;font-size:19px;color:var(--gold-hi);width:110px}
+.awards td:first-child{font-family:var(--gothic);font-weight:700;font-size:19px;color:var(--gold-hi);width:92px}
+@media (max-width:420px){
+  .awards,.awards tbody,.awards tr,.awards td{display:block;width:auto}
+  .awards thead,.awards th{display:none}
+  .awards tr{border-top:1px solid var(--line-soft);padding:12px 0}
+  .awards tr:last-child{border-bottom:1px solid var(--line-soft)}
+  .awards td{border:0;padding:0}
+  .awards td:first-child{font-size:21px;margin-bottom:3px}
+}
 .awards tr:last-child td{border-bottom:1px solid var(--line-soft)}
 .awards small{display:block;color:var(--parch-dim);font-size:13.5px;margin-top:2px}
 
 /* verdict quotes */
 .said{
-  border-left:2px solid var(--line);padding:4px 0 4px 18px;margin:18px 0;
-  font-size:17px;color:#D8CFB8;font-style:italic
+  border-left:2px solid var(--line);padding:2px 0 2px 15px;margin:16px 0;
+  font-size:16px;color:#D8CFB8;font-style:italic
 }
 .said cite{
   display:block;font-style:normal;font-family:var(--sys);font-size:9.5px;
@@ -160,7 +189,7 @@ section{padding:26px 0 0}
   background:var(--stone);text-decoration:none;color:var(--parch);transition:border-color .2s
 }
 .links a:hover{border-color:var(--gold)}
-.links a b{display:block;font-family:var(--gothic);font-size:20px;color:var(--gold-hi);font-weight:700;line-height:1.2}
+.links a b{display:block;font-family:var(--gothic);font-size:19px;color:var(--gold-hi);font-weight:700;line-height:1.2}
 .links a span{display:block;font-size:14px;color:var(--parch-dim);margin-top:2px}
 
 footer{
@@ -169,10 +198,19 @@ footer{
   color:var(--parch-dim);text-align:center
 }
 
-@media (min-width:640px){
+@media (min-width:480px){
+  .faces img{width:54px;height:54px}
+  .jump a{font-size:10.5px;padding:15px 16px}
+}
+@media (min-width:700px){
   body{font-size:17px}
   .teams{grid-template-columns:1fr 1fr}
   .faces img{width:58px;height:58px}
+  .crestwrap{width:170px}
+  header{padding:38px 0 6px}
+  .lede{font-size:19px}
+  .jump{justify-content:center}
+  .jump a{flex:0 0 auto}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important}
@@ -181,6 +219,13 @@ footer{
 </style>
 </head>
 <body>
+<nav class="jump" id="jump">
+  <a href="#builds">The builds</a>
+  <a href="#result">Result</a>
+  <a href="#awards">Awards</a>
+  <a href="#film">The film</a>
+</nav>
+
 <div class="wrap">
   <h1 class="vh">Code Quest 2026 — what happened</h1>
 
@@ -196,30 +241,7 @@ footer{
   <div class="orn"><i></i></div>
 
   <section>
-    <p class="eyebrow">How it opened</p>
-    <h2>The Awakening</h2>
-    <p>Played at ten o'clock, before a word was said. Every cousin, drawn from a photograph taken outside a caf&eacute; the week before, taking up the crest.</p>
-    <div class="film">
-      <video controls playsinline preload="none" poster="../codequest-og.jpg" src="../codequest-the-awakening.mp4"></video>
-    </div>
-  </section>
-
-  <div class="orn"><i></i></div>
-
-  <section>
-    <p class="eyebrow">The verdict</p>
-    <h2>How it ended</h2>
-    <div class="result">
-      <div class="tag">First place</div>
-      <div class="big">A tie</div>
-      <p>Triad Labs built the stronger thing. Pixel Power explained theirs better. Neither could honestly be placed above the other, so both took first and both took &pound;20.</p>
-    </div>
-  </section>
-
-  <div class="orn"><i></i></div>
-
-  <section>
-    <p class="eyebrow">The two houses</p>
+    <p class="eyebrow" id="builds">The two houses</p>
     <h2>Who built what</h2>
     <div class="teams">
       <a class="team a" href="../triad-labs/">
@@ -259,7 +281,37 @@ footer{
   <div class="orn"><i></i></div>
 
   <section>
-    <p class="eyebrow">Named by the judge</p>
+    <p class="eyebrow" id="result">The verdict</p>
+    <h2>How it ended</h2>
+    <div class="result">
+      <div class="tag">First place</div>
+      <div class="big">A tie</div>
+      <p>Triad Labs built the stronger thing. Pixel Power explained theirs better. Neither could honestly be placed above the other, so both took first and both took &pound;20.</p>
+    </div>
+  </section>
+
+  <div class="orn"><i></i></div>
+
+  <section>
+    <p class="eyebrow" id="film">How it opened</p>
+    <h2>The Awakening</h2>
+    <p>Played at ten o'clock, before a word was said. Every cousin, drawn from a photograph taken outside a caf&eacute; the week before, taking up the crest.</p>
+    <div class="film">
+      <video controls playsinline preload="none" poster="../codequest-og.jpg" src="../codequest-the-awakening.mp4"></video>
+    </div>
+  </section>
+
+
+  <div class="orn"><i></i></div>
+
+
+  <div class="orn"><i></i></div>
+
+
+  <div class="orn"><i></i></div>
+
+  <section>
+    <p class="eyebrow" id="awards">Named by the judge</p>
     <h2>The awards</h2>
     <p class="dim" style="font-size:15px">Grandma found something to name in every one of them.</p>
     <table class="awards">
