@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Rainbow Sprinkle Dash — by Emma</title>
+<meta name="description" content="Fly through the sky and eat the rainbow sprinkles. A game made by Emma for Code Quest 2026.">
+<meta property="og:title" content="Rainbow Sprinkle Dash — by Emma">
+<meta property="og:description" content="Fly through the sky and eat the rainbow sprinkles. Made by Emma, Code Quest 2026.">
+<meta property="og:image" content="https://altitudeaico.github.io/goteamolatoyes/codequest/emma/og.jpg">
+<meta property="og:url" content="https://altitudeaico.github.io/goteamolatoyes/codequest/emma/game/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#2B1B4D">
+<style>
+  :root{
+    --night:#2B1B4D;
+    --grape:#4A2C8F;
+    --candy:#FF8FD6;
+    --mint:#7DF0D3;
+    --sun:#FFD84D;
+    --cream:#FFF6E8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;overflow:hidden;background:var(--night)}
+  body{
+    font-family:"Trebuchet MS","Verdana",system-ui,sans-serif;
+    color:var(--cream);
+    display:flex;align-items:center;justify-content:center;
+    touch-action:none;
+  }
+  #wrap{position:relative;width:100%;height:100%;max-width:900px}
+  canvas{display:block;width:100%;height:100%}
+
+  .screen{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:18px;padding:24px;text-align:center;
+    background:radial-gradient(120% 90% at 50% 20%, rgba(74,44,143,.92), rgba(43,27,77,.97));
+    backdrop-filter:blur(2px);
+  }
+  .screen.hidden{display:none}
+
+  h1{
+    font-size:clamp(30px,8vw,58px);
+    line-height:.95;
+    letter-spacing:-1px;
+    text-transform:uppercase;
+    background:linear-gradient(90deg,#FF6B9E,#FFD84D,#7DF0D3,#8FC5FF,#C48FFF);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 4px 0 rgba(0,0,0,.15);
+  }
+  p.lead{font-size:clamp(15px,4vw,19px);opacity:.9;max-width:22ch}
+
+  .pick{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:420px}
+  .pick button{
+    font:inherit;font-size:15px;font-weight:bold;
+    color:var(--night);
+    background:var(--cream);
+    border:0;border-radius:22px;
+    padding:14px 18px;min-width:104px;
+    cursor:pointer;
+    box-shadow:0 5px 0 rgba(0,0,0,.28);
+    transition:transform .12s ease;
+  }
+  .pick button .face{display:block;font-size:30px;line-height:1.1}
+  .pick button:hover{transform:translateY(-3px)}
+  .pick button:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.28)}
+  .pick button:focus-visible{outline:4px solid var(--sun);outline-offset:3px}
+
+  .hud{
+    position:absolute;top:0;left:0;right:0;
+    display:flex;justify-content:space-between;align-items:flex-start;
+    padding:14px 16px;pointer-events:none;font-weight:bold;
+  }
+  .chip{
+    background:rgba(43,27,77,.55);
+    border-radius:16px;padding:8px 14px;
+    font-size:clamp(14px,3.6vw,18px);
+    letter-spacing:.5px;
+  }
+  .chip small{display:block;font-size:10px;opacity:.65;letter-spacing:2px;text-transform:uppercase}
+  button.sound{
+    pointer-events:auto;cursor:pointer;
+    font:inherit;font-weight:bold;color:var(--cream);
+    border:2px solid rgba(255,246,232,.35);
+  }
+  button.sound:active{transform:scale(.94)}
+  button.sound:focus-visible{outline:4px solid var(--sun);outline-offset:3px}
+
+  .tip{
+    position:absolute;bottom:18px;left:0;right:0;text-align:center;
+    font-size:14px;opacity:.75;pointer-events:none;
+    animation:bob 2.4s ease-in-out infinite;
+  }
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  @media (prefers-reduced-motion: reduce){.tip{animation:none}}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <canvas id="game"></canvas>
+
+  <div class="hud" id="hud" style="display:none">
+    <div class="chip"><small>Sprinkles</small><span id="score">0</span></div>
+    <div class="chip"><small>Speed</small><span id="speed">1</span>x</div>
+    <button class="chip sound" id="soundBtn" aria-label="Turn music off">🔊 Music</button>
+  </div>
+
+  <div class="tip" id="tip" style="display:none">Tap and hold to fly up</div>
+
+  <div class="screen" id="start">
+    <h1>Rainbow<br>Sprinkle Dash</h1>
+    <p class="lead">Fly through the sky, eat the rainbow sprinkles, pop the bubbles. Every sprinkle makes you faster, and the music speeds up too.</p>
+    <div class="pick" id="pick">
+      <button data-hero="unicorn"><span class="face">🦄</span>Unicorn</button>
+      <button data-hero="cat1"><span class="face">🐱</span>Fluffy Cat</button>
+      <button data-hero="cat2"><span class="face">😻</span>Sparkle Cat</button>
+      <button data-hero="anna"><span class="face">👧</span>Anna</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* older browsers (iPad, Safari < 16) have no roundRect — without this the
+   sprinkles throw and the game stops drawing */
+if (!CanvasRenderingContext2D.prototype.roundRect){
+  CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r){
+    if (typeof r === 'number') r = [r, r, r, r];
+    if (!Array.isArray(r)) r = [4, 4, 4, 4];
+    const rr = Math.min(Math.abs(r[0]), Math.abs(w)/2, Math.abs(h)/2);
+    this.beginPath();
+    this.moveTo(x + rr, y);
+    this.arcTo(x + w, y,     x + w, y + h, rr);
+    this.arcTo(x + w, y + h, x,     y + h, rr);
+    this.arcTo(x,     y + h, x,     y,     rr);
+    this.arcTo(x,     y,     x + w, y,     rr);
+    this.closePath();
+    return this;
+  };
+}
+
+const cvs = document.getElementById('game');
+const ctx = cvs.getContext('2d');
+const startScreen = document.getElementById('start');
+const hud = document.getElementById('hud');
+const tip = document.getElementById('tip');
+const scoreEl = document.getElementById('score');
+const speedEl = document.getElementById('speed');
+
+/* ---------- music and sounds ---------- */
+let AC = null, musicOn = true, master = null, musicGain = null;
+let step = 0, nextNoteTime = 0, schedTimer = null;
+
+const N = f => f;
+// happy pentatonic melody, one bar of 8 steps, four bars long
+const MELODY = [
+  523,659,784,659, 880,784,659,523,
+  587,784,880,784, 1046,880,784,659,
+  523,659,784,1046, 880,784,659,587,
+  659,784,880,1046, 1174,1046,880,784
+];
+const BASS = [131,131,196,196, 165,165,196,196, 147,147,196,196, 165,165,175,196];
+
+function initAudio(){
+  if (AC) return;
+  AC = new (window.AudioContext || window.webkitAudioContext)();
+  master = AC.createGain(); master.gain.value = 0.9; master.connect(AC.destination);
+  musicGain = AC.createGain(); musicGain.gain.value = 0.16; musicGain.connect(master);
+  nextNoteTime = AC.currentTime + 0.1;
+  schedTimer = setInterval(scheduler, 40);
+}
+
+function blip(freq, time, dur, type, gainVal, dest){
+  const o = AC.createOscillator(), g = AC.createGain();
+  o.type = type; o.frequency.setValueAtTime(freq, time);
+  g.gain.setValueAtTime(0.0001, time);
+  g.gain.exponentialRampToValueAtTime(gainVal, time + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001, time + dur);
+  o.connect(g); g.connect(dest || musicGain);
+  o.start(time); o.stop(time + dur + 0.05);
+}
+
+function scheduler(){
+  if (!AC) return;
+  const beat = 60 / (132 + Math.min(40, score * 0.6)) / 2; // gets a bit faster as you speed up
+  while (nextNoteTime < AC.currentTime + 0.2){
+    const i = step % MELODY.length;
+    if (musicOn && running){
+      blip(MELODY[i], nextNoteTime, beat * 1.6, 'triangle', 0.5);
+      if (step % 2 === 0) blip(BASS[(step/2) % BASS.length], nextNoteTime, beat * 2.4, 'sine', 0.55);
+      if (step % 8 === 4) blip(1568, nextNoteTime, 0.12, 'square', 0.08);
+    }
+    nextNoteTime += beat;
+    step++;
+  }
+}
+
+function sfxSprinkle(){
+  if (!AC || !musicOn) return;
+  const t = AC.currentTime;
+  blip(880 + Math.random()*260, t, 0.14, 'square', 0.16, master);
+  blip(1320, t + 0.06, 0.12, 'sine', 0.12, master);
+}
+function sfxPop(){
+  if (!AC || !musicOn) return;
+  const t = AC.currentTime;
+  const o = AC.createOscillator(), g = AC.createGain();
+  o.type = 'sine';
+  o.frequency.setValueAtTime(320, t);
+  o.frequency.exponentialRampToValueAtTime(1400, t + 0.18);
+  g.gain.setValueAtTime(0.22, t);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+  o.connect(g); g.connect(master);
+  o.start(t); o.stop(t + 0.25);
+}
+
+const soundBtn = document.getElementById('soundBtn');
+soundBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  musicOn = !musicOn;
+  soundBtn.textContent = musicOn ? '🔊 Music' : '🔇 Music';
+  soundBtn.setAttribute('aria-label', musicOn ? 'Turn music off' : 'Turn music on');
+  if (musicOn && AC && AC.state === 'suspended') AC.resume();
+});
+
+let W = 0, H = 0, DPR = 1;
+function resize(){
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = cvs.clientWidth; H = cvs.clientHeight;
+  cvs.width = W * DPR; cvs.height = H * DPR;
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+}
+window.addEventListener('resize', resize);
+
+const RAINBOW = ['#FF6B9E','#FF9A52','#FFD84D','#7DF0D3','#8FC5FF','#C48FFF'];
+const HEROES = {
+  unicorn:{emoji:'🦄', name:'Unicorn'},
+  cat1:{emoji:'🐱', name:'Fluffy Cat'},
+  cat2:{emoji:'😻', name:'Sparkle Cat'},
+  anna:{emoji:'👧', name:'Anna'}
+};
+
+let running = false, holding = false;
+let hero = 'unicorn';
+let score = 0, speed = 3, t = 0;
+let player, sprinkles, bubbles, trail, sparks, clouds, sunGlow;
+
+function reset(){
+  score = 0; speed = 3; t = 0;
+  player = { x: W*0.26, y: H/2, vy: 0, tilt: 0 };
+  sprinkles = []; bubbles = []; trail = []; sparks = [];
+  clouds = Array.from({length:6}, () => ({
+    x: Math.random()*W, y: Math.random()*H*0.7, r: 26+Math.random()*40, s: .2+Math.random()*.4
+  }));
+  sunGlow = 0;
+}
+
+function spawn(){
+  if (t % Math.max(24, 46 - Math.floor(speed*2)) === 0){
+    const y = 60 + Math.random()*(H-140);
+    const count = 3 + Math.floor(Math.random()*4);
+    for(let i=0;i<count;i++){
+      sprinkles.push({
+        x: W + 30 + i*26,
+        y: y + Math.sin(i*0.9)*22,
+        c: RAINBOW[(i + t) % RAINBOW.length],
+        a: Math.random()*Math.PI
+      });
+    }
+  }
+  if (t % 130 === 0){
+    bubbles.push({ x: W+60, y: 80 + Math.random()*(H-180), r: 20+Math.random()*22, wob: Math.random()*Math.PI });
+  }
+}
+
+function burst(x,y,color,n){
+  for(let i=0;i<n;i++){
+    const a = Math.random()*Math.PI*2, sp = 1.5+Math.random()*4;
+    sparks.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:1,c:color||RAINBOW[i%6]});
+  }
+}
+
+function update(){
+  t++;
+  spawn();
+
+  // player physics: hold to rise, let go to drift down
+  player.vy += holding ? -0.62 : 0.52;
+  player.vy = Math.max(-8.5, Math.min(8.5, player.vy));
+  player.y += player.vy;
+  player.tilt = player.vy * 0.045;
+
+  // soft bounce, never a game over
+  if (player.y < 34){ player.y = 34; player.vy *= -0.45; }
+  if (player.y > H-34){ player.y = H-34; player.vy *= -0.45; }
+
+  trail.push({x: player.x-16, y: player.y+6, life: 1});
+  if (trail.length > 90) trail.shift();
+  trail.forEach(p => { p.life -= 0.012; p.x -= speed*0.55; });
+  trail = trail.filter(p => p.life > 0);
+
+  sprinkles.forEach(s => { s.x -= speed; s.a += 0.14; s.y += Math.sin(s.a)*0.7; });
+  bubbles.forEach(b => { b.x -= speed*0.75; b.wob += 0.05; b.y += Math.sin(b.wob)*0.9; });
+  clouds.forEach(c => { c.x -= c.s * speed * 0.35; if (c.x < -c.r*2){ c.x = W + c.r; c.y = Math.random()*H*0.7; } });
+
+  sprinkles = sprinkles.filter(s => {
+    if (Math.hypot(s.x-player.x, s.y-player.y) < 30){
+      score++; speed = Math.min(11, 3 + score*0.05);
+      sunGlow = Math.min(1, sunGlow + 0.03);
+      burst(s.x, s.y, s.c, 8);
+      sfxSprinkle();
+      return false;
+    }
+    return s.x > -30;
+  });
+
+  bubbles = bubbles.filter(b => {
+    if (Math.hypot(b.x-player.x, b.y-player.y) < b.r + 20){
+      burst(b.x, b.y, null, 22);
+      sfxPop();
+      score += 5;
+      return false;
+    }
+    return b.x > -80;
+  });
+
+  sparks.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += 0.08; p.life -= 0.025; });
+  sparks = sparks.filter(p => p.life > 0);
+
+  scoreEl.textContent = score;
+  speedEl.textContent = (speed/3).toFixed(1);
+}
+
+function draw(){
+  // sky
+  const sky = ctx.createLinearGradient(0,0,0,H);
+  sky.addColorStop(0, '#3B2470');
+  sky.addColorStop(0.6, '#5B3AA8');
+  sky.addColorStop(1, '#8E5BC8');
+  ctx.fillStyle = sky; ctx.fillRect(0,0,W,H);
+
+  // rainbow sun, brighter the more sprinkles you eat
+  const cx = W*0.82, cy = H*0.2;
+  ctx.save();
+  ctx.globalAlpha = 0.25 + sunGlow*0.55;
+  RAINBOW.forEach((c,i) => {
+    ctx.beginPath();
+    ctx.arc(cx, cy, 34 + i*13 + sunGlow*10, 0, Math.PI*2);
+    ctx.strokeStyle = c; ctx.lineWidth = 9; ctx.stroke();
+  });
+  ctx.globalAlpha = 0.5 + sunGlow*0.5;
+  ctx.beginPath(); ctx.arc(cx, cy, 26, 0, Math.PI*2);
+  ctx.fillStyle = '#FFD84D'; ctx.fill();
+  ctx.restore();
+
+  // clouds
+  ctx.save(); ctx.globalAlpha = 0.16; ctx.fillStyle = '#FFF6E8';
+  clouds.forEach(c => {
+    ctx.beginPath();
+    ctx.arc(c.x, c.y, c.r, 0, Math.PI*2);
+    ctx.arc(c.x + c.r*0.8, c.y + 6, c.r*0.7, 0, Math.PI*2);
+    ctx.arc(c.x - c.r*0.8, c.y + 8, c.r*0.6, 0, Math.PI*2);
+    ctx.fill();
+  });
+  ctx.restore();
+
+  // rainbow trail, the signature
+  ctx.save(); ctx.lineCap = 'round';
+  trail.forEach((p,i) => {
+    const band = RAINBOW[i % RAINBOW.length];
+    ctx.globalAlpha = p.life * 0.75;
+    ctx.strokeStyle = band; ctx.lineWidth = 4 + p.life*10;
+    ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x - 10, p.y + (i%6-3)*1.6); ctx.stroke();
+  });
+  ctx.restore();
+
+  // sprinkles
+  sprinkles.forEach(s => {
+    ctx.save(); ctx.translate(s.x, s.y); ctx.rotate(s.a);
+    ctx.fillStyle = s.c;
+    ctx.beginPath(); ctx.roundRect(-9,-3.5,18,7,4); ctx.fill();
+    ctx.restore();
+  });
+
+  // bubbles
+  bubbles.forEach(b => {
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 3;
+    ctx.fillStyle = 'rgba(255,255,255,.14)';
+    ctx.beginPath(); ctx.arc(b.x,b.y,b.r,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.globalAlpha = .8; ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.arc(b.x - b.r*0.35, b.y - b.r*0.35, b.r*0.16, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+  });
+
+  // sparks
+  sparks.forEach(p => {
+    ctx.globalAlpha = p.life; ctx.fillStyle = p.c;
+    ctx.beginPath(); ctx.arc(p.x,p.y,3.4,0,Math.PI*2); ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+
+  // hero
+  ctx.save();
+  ctx.translate(player.x, player.y);
+  ctx.rotate(player.tilt);
+  ctx.font = '46px serif';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(HEROES[hero].emoji, 0, 0);
+  ctx.restore();
+}
+
+function loop(){
+  if (!running) return;
+  update(); draw();
+  requestAnimationFrame(loop);
+}
+
+function startGame(which){
+  hero = which;
+  initAudio();
+  if (AC && AC.state === 'suspended') AC.resume();
+  resize(); reset();
+  startScreen.classList.add('hidden');
+  hud.style.display = 'flex';
+  tip.style.display = 'block';
+  setTimeout(() => { tip.style.display = 'none'; }, 5000);
+  running = true;
+  loop();
+}
+
+document.getElementById('pick').addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if (btn) startGame(btn.dataset.hero);
+});
+
+function down(e){ if (running){ holding = true; e.preventDefault(); } }
+function up(){ holding = false; }
+cvs.addEventListener('pointerdown', down);
+window.addEventListener('pointerup', up);
+window.addEventListener('pointercancel', up);
+window.addEventListener('keydown', e => {
+  if (e.code === 'Space' || e.code === 'ArrowUp'){ holding = true; e.preventDefault(); }
+});
+window.addEventListener('keyup', e => {
+  if (e.code === 'Space' || e.code === 'ArrowUp') holding = false;
+});
+
+resize();
+</script>
+</body>
+</html>
