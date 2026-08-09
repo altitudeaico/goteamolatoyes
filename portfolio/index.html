@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B0912">
+<title>GoTeam Olatoyes · The Portfolio</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#0B0912; --stone:#15121F; --parch:#E9DFC7; --dim:#9A8F7A;
+  --gold:#D9A94C; --gold-hi:#F2CE7B; --phos:#45E3C4; --rubric:#E4574A;
+  --line:rgba(217,169,76,.22); --soft:rgba(217,169,76,.1);
+  --gothic:'Grenze Gotisch',serif; --body:'DM Sans',sans-serif; --sys:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box}
+html,body{overflow-x:hidden}
+body{margin:0;background:var(--void);color:var(--parch);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(55% 34% at 50% -2%, rgba(217,169,76,.13), transparent 68%)}
+.wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;
+  padding:0 max(16px,env(safe-area-inset-left)) calc(64px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-right))}
+h1{font-family:var(--gothic);font-weight:800;font-size:clamp(34px,9vw,54px);line-height:1;margin:0;color:var(--gold-hi)}
+h2{font-family:var(--gothic);font-weight:800;font-size:clamp(24px,6vw,32px);line-height:1.05;margin:0}
+p{margin:0 0 14px}
+.eyebrow{font-family:var(--sys);font-size:10px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--phos);margin:0 0 10px}
+.dim{color:var(--dim)}
+b{color:#F5EEDC}
+header{padding:34px 0 4px;text-align:center}
+.strap{margin-top:10px;font-family:var(--sys);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim)}
+.lede{font-size:17px;color:#D8CFB8;margin-top:18px;text-align:left}
+.orn{display:flex;align-items:center;gap:12px;margin:32px 0 0}
+.orn::before,.orn::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,var(--line),transparent)}
+.orn i{width:8px;height:8px;background:var(--gold);opacity:.6;transform:rotate(45deg);flex:none}
+section{padding:24px 0 0}
+
+.tip{position:relative;display:inline;border:0;background:none;padding:0;margin:0;
+  font:inherit;color:var(--gold-hi);border-bottom:1px dashed var(--gold);cursor:help;text-align:left}
+.tip::after{
+  content:attr(data-t);position:absolute;left:50%;bottom:calc(100% + 9px);transform:translateX(-50%);
+  width:min(270px,74vw);background:#1D1830;border:1px solid var(--line);border-radius:8px;
+  padding:10px 12px;font-size:13px;line-height:1.5;color:var(--parch);font-family:var(--body);
+  opacity:0;pointer-events:none;transition:opacity .15s;z-index:30;font-weight:400
+}
+.tip::before{
+  content:"";position:absolute;left:50%;bottom:calc(100% + 3px);transform:translateX(-50%) rotate(45deg);
+  width:10px;height:10px;background:#1D1830;border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+  opacity:0;transition:opacity .15s;z-index:31
+}
+.tip:hover::after,.tip:focus::after,.tip:hover::before,.tip:focus::before{opacity:1}
+
+.frame{
+  margin-top:18px;border:1px solid var(--line);border-radius:4px;padding:22px 20px;text-align:center;
+  background:linear-gradient(160deg,rgba(217,169,76,.12),rgba(217,169,76,.02));position:relative
+}
+.frame::before{content:"";position:absolute;inset:5px;border:1px solid var(--soft);pointer-events:none}
+.frame .small{font-family:var(--sys);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim)}
+.frame .big{font-family:var(--gothic);font-weight:800;font-size:clamp(22px,5.6vw,30px);line-height:1.2;color:var(--gold-hi);margin:8px 0}
+.frame p{margin:0;font-size:14.5px;color:var(--dim)}
+
+/* three flows */
+.flows{display:grid;gap:12px;margin-top:16px}
+@media(min-width:600px){.flows{grid-template-columns:1fr 1fr 1fr}}
+.flow{border:1px solid var(--soft);border-radius:4px;background:var(--stone);padding:17px 16px;position:relative}
+.flow::before{content:"";position:absolute;left:0;top:0;right:0;height:3px}
+.flow.a::before{background:var(--gold)}
+.flow.b::before{background:var(--phos)}
+.flow.c::before{background:var(--rubric)}
+.flow .tag{font-family:var(--sys);font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.flow h3{font-family:var(--gothic);font-weight:800;font-size:21px;margin:4px 0 6px;color:var(--gold-hi);line-height:1.1}
+.flow.b h3{color:var(--phos)}
+.flow.c h3{color:var(--rubric)}
+.flow p{margin:0;font-size:13.5px;color:var(--dim)}
+
+/* split bar */
+.bar{margin-top:16px;border:1px solid var(--soft);border-radius:4px;overflow:hidden;display:flex;height:52px}
+.bar div{display:grid;place-items:center;font-family:var(--sys);font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--void)}
+.bar .s1{width:40%;background:var(--gold)}
+.bar .s2{width:40%;background:var(--phos)}
+.bar .s3{width:20%;background:#B08AD9}
+.barnote{font-family:var(--sys);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);text-align:center;margin-top:8px}
+
+/* houses */
+.houses{display:grid;gap:10px;margin-top:16px;grid-template-columns:1fr 1fr}
+@media(min-width:600px){.houses{grid-template-columns:1fr 1fr 1fr 1fr}}
+.house{border:1px solid var(--soft);border-radius:4px;background:var(--stone);padding:14px 13px;text-align:center}
+.house h3{font-family:var(--gothic);font-weight:800;font-size:19px;margin:0 0 3px;color:var(--gold-hi)}
+.house p{margin:0;font-size:12.5px;color:var(--dim);line-height:1.5}
+.house .pct{font-family:var(--sys);font-size:10px;font-weight:700;color:var(--phos);margin-top:7px;letter-spacing:.12em}
+
+/* governance */
+.gov{display:grid;gap:10px;margin-top:16px}
+.gcard{border:1px solid var(--soft);border-radius:4px;background:var(--stone);padding:16px 17px}
+.gcard .tag{font-family:var(--sys);font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.gcard h3{font-family:var(--gothic);font-weight:800;font-size:21px;margin:3px 0 6px;color:var(--gold-hi);line-height:1.1}
+.gcard p{margin:0;font-size:14.5px;color:#CFC5AC}
+.gcard ul{list-style:none;margin:8px 0 0;padding:0}
+.gcard li{padding:6px 0;border-top:1px solid var(--soft);font-size:14px;color:#CFC5AC}
+.gcard li b{color:#F5EEDC}
+
+/* skills */
+.skills{width:100%;border-collapse:collapse;margin-top:14px}
+.skills td{padding:10px 0;border-top:1px solid var(--soft);font-size:14.5px;vertical-align:top}
+.skills td:first-child{font-family:var(--gothic);font-weight:700;font-size:18px;color:var(--gold-hi);width:96px}
+.skills td span{color:var(--dim)}
+.draft{display:inline-block;font-family:var(--sys);font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  background:rgba(228,87,74,.14);color:var(--rubric);padding:5px 9px;border-radius:3px;margin-left:8px;vertical-align:middle}
+
+.invite{margin-top:18px;border:1px solid rgba(69,227,196,.3);border-radius:4px;padding:17px 18px;
+  background:linear-gradient(160deg,rgba(69,227,196,.08),transparent 60%)}
+.invite .tag{font-family:var(--sys);font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--phos)}
+.invite p{margin:6px 0 0;font-size:15px}
+
+.steps{display:grid;gap:10px;margin-top:16px}
+.step{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--soft);border-radius:4px;background:var(--stone);padding:15px 16px}
+.step i{font-style:normal;font-family:var(--gothic);font-weight:800;font-size:24px;color:var(--gold);line-height:1;flex:none;width:26px}
+.step b{display:block;margin-bottom:2px}
+.step p{margin:0;font-size:14px;color:var(--dim)}
+
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--soft);
+  font-family:var(--sys);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);text-align:center;line-height:2}
+footer a{color:var(--dim);text-decoration:none}
+footer a:hover{color:var(--gold)}
+:where(a,button):focus-visible{outline:2px solid var(--phos);outline-offset:3px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>The<br>Portfolio</h1>
+    <div class="strap">GoTeam Olatoyes &middot; Working Draft &middot; Aug 2026</div>
+    <p class="lede">Family wealth is the aim of the game. One structure, many initiatives: Code Quest is the first through the door, not the whole house. Everything below is a proposal for the family to argue with.</p>
+  </header>
+
+  <div class="orn"><i></i></div>
+
+  <section>
+    <p class="eyebrow">The design problem</p>
+    <div class="frame">
+      <div class="small">Why family ventures fail</div>
+      <div class="big">One structure must pay three different things<br>without mixing them up.</div>
+      <p>Being family. Driving an initiative. Doing a job. Pay all three with the same instrument and resentment does the rest.</p>
+    </div>
+
+    <div class="flows">
+      <div class="flow a">
+        <div class="tag">Equity &middot; automatic</div>
+        <h3>The commons</h3>
+        <p>Every house holds a baseline stake in every initiative, involved or not. The asset is family wealth and the family name. Held at
+          <button class="tip" data-t="House-level, not per-person: the maths stays clean as kids grow up, and each house decides internally how its stake benefits its children.">house level</button>.</p>
+      </div>
+      <div class="flow b">
+        <div class="tag">Equity &middot; vesting</div>
+        <h3>The driver pool</h3>
+        <p>A meaningful slice reserved for whoever actually drives the initiative,
+          <button class="tip" data-t="Vesting with contribution going forward means nobody relitigates who did what in the past. The future is the mechanism; the past stops being an argument.">vesting with contribution</button>
+          over ~4 years. Drive Code Quest, vest here. Drive the next thing, vest there.</p>
+      </div>
+      <div class="flow c">
+        <div class="tag">Cash &middot; per job</div>
+        <h3>Fees</h3>
+        <p>Event logistics, a training day, an edit &mdash; paid work at an agreed rate, invoiced, done. Fees are not equity, and equity is not an obligation to work.</p>
+      </div>
+    </div>
+
+    <div class="bar" role="img" aria-label="Strawman equity split: 40 percent commons, 40 percent driver pool, 20 percent treasury">
+      <div class="s1">COMMONS 40%</div>
+      <div class="s2">DRIVERS 40%</div>
+      <div class="s3">TREASURY 20%</div>
+    </div>
+    <div class="barnote">Strawman split per initiative &middot; argue with the numbers, keep the shape</div>
+    <p class="dim" style="font-size:14px;margin-top:12px">The
+      <button class="tip" data-t="The treasury funds the next initiative. It's what makes this a portfolio rather than a set of siblings' side projects — and it's where 'reinvest first' lives.">treasury</button>
+      is the portfolio's own stake: it funds whatever the family builds next.</p>
+  </section>
+
+  <div class="orn"><i></i></div>
+
+  <section>
+    <p class="eyebrow">The commons, named</p>
+    <h2>Four houses</h2>
+    <div class="houses">
+      <div class="house"><h3>Radlett</h3><p>Grandma</p><div class="pct">10%</div></div>
+      <div class="house"><h3>New York</h3><p>Gbenga &amp; May May<br>Theodore &middot; Arthur</p><div class="pct">10%</div></div>
+      <div class="house"><h3>Middleton</h3><p>Ayo &amp; Lina<br>Ezekiel &middot; Hannah &middot; Sophia</p><div class="pct">10%</div></div>
+      <div class="house"><h3>Gravesend</h3><p>Bolaji &amp; Funmi<br>Elsie &middot; Emma</p><div class="pct">10%</div></div>
+    </div>
+    <p class="dim" style="font-size:14px;margin-top:12px">Equal at house level. Radlett counts fully &mdash; Grandma is a member, not a mascot, and she has already worked an event as its judge.</p>
+  </section>
+
+  <div class="orn"><i></i></div>
+
+  <section>
+    <p class="eyebrow">Who decides what</p>
+    <h2>Governance</h2>
+    <div class="gov">
+      <div class="gcard">
+        <div class="tag">The holding layer</div>
+        <h3>The family council</h3>
+        <p>One seat per house. Four seats. Meets quarterly. It does <b>not</b> run initiatives &mdash; it approves new ones into the portfolio, appoints each CEO, and holds the reserved matters below. Nothing else.</p>
+      </div>
+      <div class="gcard">
+        <div class="tag">The initiative layer</div>
+        <h3>One CEO each, with real authority</h3>
+        <p>Not co-CEOs, not a committee. One accountable driver who decides everything not on the reserved list, and informs the council. Proposed for Code Quest: <b>Bolaji</b>, confirmed by the council. The precedent is the point &mdash; whoever brings the next initiative gets the same deal.</p>
+      </div>
+      <div class="gcard">
+        <div class="tag">The veto list &middot; kept short on purpose</div>
+        <h3>Reserved matters</h3>
+        <ul>
+          <li><b>Outside money or debt</b> &mdash; taking investment, loans, or giving guarantees</li>
+          <li><b>Selling or licensing</b> anything the portfolio owns</li>
+          <li><b>The family name and the kids' images</b> &mdash; how both are used, anywhere</li>
+          <li><b>The children</b> &mdash; anything involving them beyond what each parent individually consents to</li>
+          <li><b>Distributions</b> versus reinvestment</li>
+          <li><b>Removing a CEO</b></li>
+        </ul>
+        <p style="margin-top:10px">
+          <button class="tip" data-t="A long veto list becomes a way for the least involved to slow the most involved — which kills family ventures as reliably as theft does.">Why so short?</button>
+          Everything not on this list, the CEO decides.</p>
+      </div>
+      <div class="gcard">
+        <div class="tag">Decided now, while it's hypothetical</div>
+        <h3>Reinvest first</h3>
+        <p>Profits compound in the treasury until the council votes a distribution. Agreed out loud early, because &ldquo;when do we see money&rdquo; is a far uglier conversation once there is money.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="orn"><i></i></div>
+
+  <section>
+    <p class="eyebrow">What each house brings</p>
+    <h2>The skills map <span class="draft">Draft &middot; correct me</span></h2>
+    <table class="skills">
+      <tr><td>Gbenga</td><td>Technical build, analytical, ships pipelines. High-level interface and the investment door his MD seat opens. <span>&rarr; Platform &middot; Capital</span></td></tr>
+      <tr><td>May May</td><td>Detail focus and delivery discipline. <span>&rarr; Operations (to be corrected by May May)</span></td></tr>
+      <tr><td>Ayo</td><td>Product mindset, product marketing, executive and stakeholder comms. The doctor's diagnostic eye. Delivered training. <span>&rarr; Product &middot; Investor story</span></td></tr>
+      <tr><td>Lina</td><td>Great with children; creates experiences kids actually want. <span>&rarr; Curriculum &middot; Event experience</span></td></tr>
+      <tr><td>Funmi</td><td>Technical and warm: builds, trains, explains. People warm to her fast. Public speaking coaching. <span>&rarr; Head coach archetype the belt system must replicate</span></td></tr>
+      <tr><td>Bolaji</td><td>Vision and assembly. Stages and large-scale events run, in Nigeria and beyond. Project drive, mindset coaching. <span>&rarr; CEO, Code Quest &middot; Events</span></td></tr>
+      <tr><td>Grandma</td><td>Judge of record, Code Quest 2026. The standard everything is presented to: if she can follow it, it ships. <span>&rarr; The audience test</span></td></tr>
+    </table>
+  </section>
+
+  <div class="orn"><i></i></div>
+
+  <section>
+    <p class="eyebrow">The clause that makes it a portfolio</p>
+    <div class="invite">
+      <div class="tag">The standing invitation</div>
+      <p>Any house may propose an initiative to the council with a <b>one-pager and a named driver</b>, and receives the same structure Code Quest is taking: commons for all, a driver pool for them, a CEO seat confirmed by the council. Code Quest is not the exception. It is the template, going first.</p>
+    </div>
+  </section>
+
+  <div class="orn"><i></i></div>
+
+  <section>
+    <p class="eyebrow">Paperwork matched to money</p>
+    <h2>Formality, phased</h2>
+    <div class="steps">
+      <div class="step"><i>1</i><div><b>Now &middot; the memorandum</b><p>One page: the three flows, the splits, the reserved matters, the CEO appointments. Signed nowhere, agreed everywhere.</p></div></div>
+      <div class="step"><i>2</i><div><b>First real revenue &middot; the company</b><p>A UK Ltd for the initiative, share classes mirroring the memo.</p></div></div>
+      <div class="step"><i>3</i><div><b>If it compounds &middot; the family holding</b><p>The
+        <button class="tip" data-t="A family investment company — the standard UK instrument for holding and compounding family wealth across generations. An accountant conversation for when there is something to hold.">family investment company</button>
+        at the portfolio layer. The actual instrument for &ldquo;family wealth is the aim of the game&rdquo;.</p></div></div>
+    </div>
+
+    <div class="gov" style="margin-top:16px">
+      <div class="gcard">
+        <div class="tag">Baked in from day one</div>
+        <h3>Two guardrails</h3>
+        <p>The kids' own earnings stay <b>100% theirs</b> &mdash; already decided on the product page, restated here in the memo. And anything touching a child's visibility sits behind <b>parental consent per child</b>, never a council vote.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <a href="../codequest/product/">The Product</a> &nbsp;&middot;&nbsp; <a href="../codequest/engagement/">Engagement</a> &nbsp;&middot;&nbsp; <a href="../codequest/architecture/">Architecture</a><br>
+    Working Draft &middot; A Proposal, Not a Decision
+  </footer>
+</div>
+</body>
+</html>
