@@ -155,13 +155,13 @@ footer a:hover{color:var(--gold)}
         </g>
         <g>
           <rect x="250" y="146" width="200" height="88" rx="6" fill="#15121F" stroke="rgba(217,169,76,.4)"/>
-          <text x="350" y="178" text-anchor="middle" font-family="DM Sans" font-weight="700" font-size="15.5" fill="#E9DFC7">The rig</text>
-          <text x="350" y="199" text-anchor="middle" font-family="DM Sans" font-size="12" fill="#9A8F7A">editor &middot; live preview</text>
-          <text x="350" y="217" text-anchor="middle" font-family="DM Sans" font-size="12" fill="#9A8F7A">AI pane &middot; publish button</text>
+          <text x="350" y="176" text-anchor="middle" font-family="DM Sans" font-weight="700" font-size="15.5" fill="#E9DFC7">The rig &middot; app domain</text>
+          <text x="350" y="197" text-anchor="middle" font-family="DM Sans" font-size="12" fill="#9A8F7A">editor &middot; preview &middot; AI pane</text>
+          <text x="350" y="215" text-anchor="middle" font-family="DM Sans" font-size="12" fill="#9A8F7A">upload &amp; publish live here</text>
         </g>
         <g>
           <rect x="476" y="146" width="200" height="88" rx="6" fill="#15121F" stroke="rgba(69,227,196,.45)"/>
-          <text x="576" y="178" text-anchor="middle" font-family="DM Sans" font-weight="700" font-size="15.5" fill="#45E3C4">Marketplace</text>
+          <text x="576" y="178" text-anchor="middle" font-family="DM Sans" font-weight="700" font-size="15.5" fill="#45E3C4">Marketplace &middot; dist domain</text>
           <text x="576" y="199" text-anchor="middle" font-family="DM Sans" font-size="12" fill="#9A8F7A">static, manifest-driven</text>
           <text x="576" y="217" text-anchor="middle" font-family="JetBrains Mono" font-size="10.5" fill="#45E3C4">dino.builtby.kids?ref=</text>
         </g>
@@ -229,6 +229,20 @@ footer a:hover{color:var(--gold)}
         <p>The Guardian holds the only real login. Delegates are
           <button class="tip" data-t="Netflix-kids pattern: the child picks their profile and enters a PIN. No child email, no child password, no child credential problem — and it matches the COPPA/AADC posture on the product page.">profiles with a PIN</button>,
           not accounts. Players need nothing at all.</p>
+      </div>
+      <div class="layer">
+        <div class="tag">Domains</div>
+        <h3>Two domains, on purpose</h3>
+        <p>The <b>app domain</b> holds login, the rig and upload. The <b>distribution domain</b> serves the marketplace and every kid's project, cookie-free and static. Kids' uploaded content
+          <button class="tip" data-t="User content on a separate domain can never touch the app's cookies or session — the same reason GitHub serves user files from githubusercontent.com rather than github.com. Security by DNS.">never shares a domain</button>
+          with the app it was uploaded through.</p>
+      </div>
+      <div class="layer">
+        <div class="tag">Spaces</div>
+        <h3>Spaces, distinct from accounts</h3>
+        <p>The unit of work is a <b>space</b>, not an account: a project container a delegate can hold several of, and a team can
+          <button class="tip" data-t="Pixel Power was three kids on one project. Accounts can't model that; a shared space can. Membership of a space is granted by Guardians; publishing promotes the space's build to the distribution domain.">share one</button>.
+          Accounts are who you are; spaces are what you're building. Publishing promotes a space to the distribution domain.</p>
       </div>
       <div class="layer">
         <div class="tag">The rig</div>
