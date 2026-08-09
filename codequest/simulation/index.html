@@ -2,519 +2,602 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0B0912">
-<title>Code Quest · The Simulation</title>
+<title>Code Quest · The Realm</title>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --void:#0B0912; --stone:#15121F; --card:#1B1728; --parch:#E9DFC7; --dim:#9A8F7A;
+  --void:#0B0912; --stone:#15121F; --parch:#E9DFC7; --dim:#9A8F7A;
   --gold:#D9A94C; --gold-hi:#F2CE7B; --phos:#45E3C4; --rubric:#E4574A;
-  --line:rgba(217,169,76,.22); --soft:rgba(217,169,76,.1);
+  --line:rgba(217,169,76,.25); --soft:rgba(217,169,76,.12);
   --gothic:'Grenze Gotisch',serif; --body:'DM Sans',sans-serif; --sys:'JetBrains Mono',monospace;
 }
 *{box-sizing:border-box}
-html,body{overflow-x:hidden}
-body{margin:0;background:var(--void);color:var(--parch);font-family:var(--body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(55% 30% at 50% -2%, rgba(217,169,76,.12), transparent 68%)}
-.wrap{position:relative;z-index:1;max-width:460px;margin:0 auto;
-  padding:0 max(12px,env(safe-area-inset-left)) calc(56px + env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-right))}
-header{padding:26px 0 12px;text-align:center}
-h1{font-family:var(--gothic);font-weight:800;font-size:clamp(30px,8vw,42px);line-height:1;margin:0;color:var(--gold-hi)}
-.strap{margin-top:8px;font-family:var(--sys);font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim)}
-.dim{color:var(--dim)}
-b{color:#F5EEDC}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--void);color:var(--parch);
+  font-family:var(--body);-webkit-font-smoothing:antialiased;touch-action:none}
+#cv{position:fixed;inset:0;width:100%;height:100%;display:block}
 
-/* persona tabs */
-.tabs{position:sticky;top:0;z-index:20;display:flex;gap:2px;background:rgba(11,9,18,.95);
-  backdrop-filter:blur(10px);border-bottom:1px solid var(--soft);margin:0 -12px;padding:0 12px}
-.tabs button{
-  flex:1;border:0;background:none;color:var(--dim);cursor:pointer;
-  font-family:var(--sys);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
-  padding:14px 4px;border-bottom:2px solid transparent
-}
-.tabs button.on{color:var(--gold-hi);border-bottom-color:var(--gold)}
-.tabs button:focus-visible{outline:2px solid var(--phos);outline-offset:-2px}
+/* HUD */
+#hud{position:fixed;top:0;left:0;right:0;z-index:10;pointer-events:none;
+  padding:calc(10px + env(safe-area-inset-top)) 12px 10px;
+  background:linear-gradient(rgba(11,9,18,.92),rgba(11,9,18,0))}
+#quest{font-family:var(--sys);font-size:10px;font-weight:700;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--gold-hi);text-align:center;text-shadow:0 2px 8px #000}
+#dots{display:flex;gap:5px;justify-content:center;margin-top:7px}
+#dots i{width:26px;height:3px;border-radius:2px;background:rgba(233,223,199,.15)}
+#dots i.hit{background:var(--phos)}
 
-.pane{display:none;padding-top:16px}
-.pane.on{display:block}
+/* dialogue */
+#dlg{position:fixed;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;
+  bottom:calc(120px + env(safe-area-inset-bottom));width:min(520px,calc(100vw - 24px));
+  background:rgba(21,18,31,.97);border:1px solid var(--line);border-radius:12px;
+  padding:14px 16px;z-index:20;transition:.18s;pointer-events:none}
+#dlg.show{opacity:1;transform:translateX(-50%);pointer-events:auto}
+#dlg .who{font-family:var(--gothic);font-weight:800;font-size:19px;color:var(--gold-hi);line-height:1.1}
+#dlg .txt{font-size:14.5px;line-height:1.55;margin-top:5px;color:#E4DBC4;min-height:44px}
+#dlg .more{font-family:var(--sys);font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--dim);text-align:right;margin-top:6px}
+#dlg .btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+#dlg .btns button{border:1px solid var(--line);background:none;color:var(--gold-hi);cursor:pointer;
+  font-size:13px;border-radius:99px;padding:9px 15px;font-family:var(--body)}
+#dlg .btns button.go{background:var(--gold);border-color:var(--gold);color:var(--void);font-weight:700}
+#dlg .btns button.aye{background:var(--phos);border-color:var(--phos);color:var(--void);font-weight:700}
 
-.note{
-  border:1px solid var(--soft);border-radius:10px;background:var(--stone);
-  padding:12px 14px;font-size:13px;color:var(--dim);margin-bottom:14px
-}
-.note b{color:var(--gold-hi)}
+/* prompt */
+#prompt{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(196px + env(safe-area-inset-bottom));
+  z-index:15;font-family:var(--sys);font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  background:rgba(11,9,18,.85);border:1px solid var(--gold);border-radius:99px;color:var(--gold-hi);
+  padding:9px 16px;opacity:0;transition:.15s;pointer-events:none}
+#prompt.show{opacity:1}
 
-/* cards */
-.c{border:1px solid var(--soft);border-radius:12px;background:var(--card);padding:15px 15px;margin-bottom:12px}
-.c h3{font-family:var(--gothic);font-weight:800;font-size:20px;margin:0 0 4px;color:var(--gold-hi);line-height:1.1}
-.c .sub{font-size:13px;color:var(--dim);margin:0 0 10px}
+/* controls */
+#pad{position:fixed;left:calc(18px + env(safe-area-inset-left));bottom:calc(18px + env(safe-area-inset-bottom));
+  width:112px;height:112px;border-radius:50%;z-index:15;
+  background:radial-gradient(circle, rgba(233,223,199,.06), rgba(233,223,199,.02));
+  border:1px solid rgba(233,223,199,.16)}
+#nub{position:absolute;left:50%;top:50%;width:46px;height:46px;border-radius:50%;
+  transform:translate(-50%,-50%);background:rgba(217,169,76,.3);border:1px solid var(--gold)}
+#act{position:fixed;right:calc(20px + env(safe-area-inset-right));bottom:calc(30px + env(safe-area-inset-bottom));
+  width:76px;height:76px;border-radius:50%;z-index:15;border:1px solid var(--gold);
+  background:radial-gradient(circle, rgba(217,169,76,.32), rgba(217,169,76,.1));
+  color:var(--gold-hi);font-family:var(--gothic);font-weight:800;font-size:24px;cursor:pointer}
+#act:active{background:rgba(217,169,76,.5)}
+@media(hover:hover) and (pointer:fine){ #pad,#act{display:none} }
 
-/* referral banner */
-.ref{
-  border:1px solid rgba(69,227,196,.35);border-radius:12px;padding:13px 14px;margin-bottom:14px;
-  background:linear-gradient(160deg,rgba(69,227,196,.1),transparent 65%);font-size:13.5px
-}
-.ref .code{font-family:var(--sys);font-size:11px;color:var(--phos)}
+/* keys hint */
+#keys{position:fixed;left:0;right:0;bottom:12px;z-index:9;text-align:center;pointer-events:none;
+  font-family:var(--sys);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+@media(hover:none){ #keys{display:none} }
 
-/* stalls */
-.stall{display:flex;gap:12px;align-items:center;border:1px solid var(--soft);border-radius:12px;
-  background:var(--card);padding:12px;margin-bottom:10px}
-.stall .art{
-  width:52px;height:52px;border-radius:10px;flex:none;display:grid;place-items:center;
-  font-size:26px;background:var(--stone);border:1px solid var(--soft)
-}
-.stall .who{flex:1;min-width:0}
-.stall .who b{display:block;font-size:15px;line-height:1.2}
-.stall .who span{font-size:12px;color:var(--dim)}
-.stall a,.stall button.play{
-  flex:none;border:0;cursor:pointer;text-decoration:none;display:inline-block;
-  background:var(--phos);color:var(--void);font-family:var(--sys);font-size:10px;font-weight:700;
-  letter-spacing:.12em;text-transform:uppercase;padding:10px 14px;border-radius:99px
-}
-.new{font-family:var(--sys);font-size:8.5px;font-weight:700;letter-spacing:.14em;color:var(--void);
-  background:var(--gold);border-radius:3px;padding:3px 6px;margin-left:6px;vertical-align:middle}
+/* preview modal */
+#modal{position:fixed;inset:0;z-index:40;background:rgba(11,9,18,.88);display:none;
+  place-items:center;padding:18px}
+#modal.show{display:grid}
+#mcard{width:min(430px,94vw);background:var(--stone);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+#mhead{display:flex;align-items:center;justify-content:space-between;padding:12px 15px;border-bottom:1px solid var(--soft)}
+#mhead b{font-family:var(--gothic);font-weight:800;font-size:19px;color:var(--gold-hi)}
+#mhead button{border:0;background:none;color:var(--dim);font-size:22px;cursor:pointer;line-height:1}
+#mframe{width:100%;height:min(58vh,470px);border:0;display:block;background:#fff}
 
-.nudge{
-  border:1px dashed var(--line);border-radius:12px;padding:14px;margin:14px 0;text-align:center;font-size:13.5px
-}
-.nudge .cta{display:inline-block;margin-top:10px;background:var(--gold);color:var(--void);border:0;cursor:pointer;
-  font-family:var(--sys);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
-  padding:11px 18px;border-radius:99px;text-decoration:none}
-
-/* rig */
-.rig-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
-.space-pill{font-family:var(--sys);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
-  border:1px solid var(--line);border-radius:99px;padding:8px 13px;color:var(--gold-hi)}
-.belt{font-family:var(--sys);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--phos)}
-.rig{border:1px solid var(--soft);border-radius:12px;overflow:hidden;background:var(--card)}
-.rig .bar{display:flex;border-bottom:1px solid var(--soft)}
-.rig .bar button{flex:1;border:0;background:none;color:var(--dim);cursor:pointer;
-  font-family:var(--sys);font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:11px 4px}
-.rig .bar button.on{color:var(--phos);background:rgba(69,227,196,.07)}
-.rig .view{display:none}
-.rig .view.on{display:block}
-#ed{width:100%;height:250px;border:0;resize:vertical;background:#0E0B17;color:#CFE3D8;
-  font-family:var(--sys);font-size:11.5px;line-height:1.5;padding:12px;display:block}
-#ed:focus{outline:none}
-#pv{width:100%;height:290px;border:0;display:block;background:#fff}
-.ai{padding:12px}
-.ai .msgs{display:grid;gap:8px;margin-bottom:11px}
-.ai .m{border-radius:10px;padding:10px 12px;font-size:13px;max-width:88%}
-.ai .m.bot{background:var(--stone);border:1px solid var(--soft)}
-.ai .m.me{background:rgba(69,227,196,.1);border:1px solid rgba(69,227,196,.3);justify-self:end}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chips button{border:1px solid var(--line);background:none;color:var(--gold-hi);cursor:pointer;
-  font-size:12.5px;border-radius:99px;padding:8px 13px}
-.rig-foot{display:flex;gap:10px;padding:12px;border-top:1px solid var(--soft);align-items:center}
-.pub{flex:1;border:0;cursor:pointer;background:var(--gold);color:var(--void);
-  font-family:var(--sys);font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
-  padding:13px;border-radius:99px}
-.pub[disabled]{opacity:.45;cursor:default}
-.pstate{font-family:var(--sys);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
-.pstate.pend{color:var(--gold-hi)}
-.pstate.live{color:var(--phos)}
-
-/* guardian */
-.kids{display:flex;gap:10px;margin-bottom:12px}
-.kid{flex:1;text-align:center;border:1px solid var(--soft);border-radius:12px;background:var(--card);padding:13px 8px}
-.kid .face{font-size:30px}
-.kid b{display:block;font-size:13.5px;margin-top:4px}
-.kid span{font-size:11px;color:var(--dim)}
-.appr{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:14px;margin-bottom:12px}
-.appr .row{display:flex;align-items:center;gap:11px}
-.appr .row b{flex:1;font-size:14.5px}
-.ok{border:0;cursor:pointer;background:var(--phos);color:var(--void);font-family:var(--sys);
-  font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:10px 14px;border-radius:99px}
-.empty{font-size:13px;color:var(--dim);text-align:center;padding:8px 0}
-.togs{display:grid;gap:9px}
-.tog{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13.5px;
-  border-top:1px solid var(--soft);padding-top:9px}
-.sw{width:40px;height:22px;border-radius:99px;background:var(--stone);border:1px solid var(--line);
-  position:relative;cursor:pointer;flex:none}
-.sw::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;
-  background:var(--dim);transition:.15s}
-.sw.on{background:rgba(69,227,196,.2);border-color:var(--phos)}
-.sw.on::after{left:20px;background:var(--phos)}
-
-.toast{
-  position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(80px);
-  background:#1D1830;border:1px solid var(--gold);border-radius:99px;padding:12px 20px;
-  font-size:13.5px;z-index:50;opacity:0;transition:.25s;white-space:nowrap;max-width:92vw
-}
+.toast{position:fixed;left:50%;top:calc(64px + env(safe-area-inset-top));transform:translateX(-50%) translateY(-16px);
+  background:#1D1830;border:1px solid var(--gold);border-radius:99px;padding:11px 19px;
+  font-size:13.5px;z-index:50;opacity:0;transition:.25s;white-space:nowrap;max-width:92vw}
 .toast.show{transform:translateX(-50%);opacity:1}
-
-/* loop tracker */
-.track{display:flex;gap:4px;margin:0 0 14px}
-.track span{flex:1;height:3px;border-radius:2px;background:var(--stone)}
-.track span.hit{background:var(--phos)}
-.tracklab{font-family:var(--sys);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);text-align:center;margin-bottom:14px}
-
-footer{margin-top:36px;padding-top:18px;border-top:1px solid var(--soft);
-  font-family:var(--sys);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);text-align:center;line-height:2}
-footer a{color:var(--dim);text-decoration:none}
-footer a:hover{color:var(--gold)}
-:where(a,button):focus-visible{outline:2px solid var(--phos);outline-offset:2px}
 </style>
 </head>
 <body>
-<div class="wrap">
+<canvas id="cv"></canvas>
 
-  <header>
-    <h1>The Simulation</h1>
-    <div class="strap">Code Quest &middot; tap through the loop</div>
-  </header>
-
-  <div class="track" aria-hidden="true">
-    <span id="t1" class="hit"></span><span id="t2"></span><span id="t3"></span><span id="t4"></span>
-  </div>
-  <div class="tracklab" id="tracklab">1 of 4 &middot; a friend arrives on a share link</div>
-
-  <nav class="tabs" aria-label="Personas">
-    <button id="tabP" class="on" type="button">Player</button>
-    <button id="tabD" type="button">Delegate</button>
-    <button id="tabG" type="button">Guardian</button>
-  </nav>
-
-  <!-- ══ PLAYER ══ -->
-  <div class="pane on" id="paneP">
-    <div class="note">You are <b>a friend</b>. Elsie sent you a link on WhatsApp. It opened here &mdash; in the browser, no install.</div>
-
-    <div class="ref">You were invited by <b>Elsie</b> <span class="code">&middot; ?ref=elsie</span> &mdash; the referral survives because it lives in the URL.</div>
-
-    <div class="c">
-      <h3>The marketplace</h3>
-      <p class="sub">Real builds from Code Quest 2026 &mdash; every Play button below is the actual game.</p>
-      <div id="feed">
-        <div class="stall"><div class="art">🦋</div><div class="who"><b>Butterfly Dash</b><span>by Elsie &middot; Butterflii Art Studio</span></div><a href="../elsie/game/" target="_blank" rel="noopener">Play</a></div>
-        <div class="stall"><div class="art">🌈</div><div class="who"><b>Rainbow Sprinkle Dash</b><span>by Emma</span></div><a href="../emma/game/" target="_blank" rel="noopener">Play</a></div>
-        <div class="stall"><div class="art">🐉</div><div class="who"><b>Dragonball Flight</b><span>by Theodore &middot; Pixel Power</span></div><a href="../pixel-power/dragonball-flight/" target="_blank" rel="noopener">Play</a></div>
-        <div class="stall"><div class="art">🥷</div><div class="who"><b>Ninja Academy</b><span>by Ezekiel &middot; Triad Labs</span></div><a href="../triad-labs/ninja-academy/" target="_blank" rel="noopener">Play</a></div>
-        <div class="stall"><div class="art">⚽</div><div class="who"><b>Non-League</b><span>Triad Labs</span></div><a href="../triad-labs/non-league/" target="_blank" rel="noopener">Play</a></div>
-        <div class="stall"><div class="art">🎵</div><div class="who"><b>Song Gallery</b><span>by Hannah &middot; Pixel Power</span></div><a href="../pixel-power/song-gallery/" target="_blank" rel="noopener">Play</a></div>
-      </div>
-    </div>
-
-    <div class="nudge">
-      Everything here was <b>built by a kid like you</b>.<br>
-      <span class="dim" style="font-size:12.5px">The next cohort has spaces open.</span><br>
-      <button class="cta" id="joinBtn" type="button">I want to build one</button>
-    </div>
-  </div>
-
-  <!-- ══ DELEGATE ══ -->
-  <div class="pane" id="paneD">
-    <div class="note">Now you are <b>the delegate</b>. This is the rig: your space, a live preview, and the AI pane. The code below is real &mdash; edit it and watch.</div>
-
-    <div class="rig-head">
-      <span class="space-pill">Space &middot; Sky Bounce</span>
-      <span class="belt">Quester &middot; belt one</span>
-    </div>
-
-    <div class="rig">
-      <div class="bar">
-        <button id="vEd" class="on" type="button">Code</button>
-        <button id="vPv" type="button">Preview</button>
-        <button id="vAi" type="button">Ask the AI</button>
-      </div>
-
-      <div class="view on" id="viewEd">
-        <textarea id="ed" spellcheck="false" aria-label="Your code"></textarea>
-      </div>
-
-      <div class="view" id="viewPv">
-        <iframe id="pv" title="Live preview of your space"></iframe>
-      </div>
-
-      <div class="view ai" id="viewAi">
-        <div class="msgs" id="msgs">
-          <div class="m bot">Hello, builder. Tap a suggestion and I will change your code &mdash; then check the Preview tab to see it happen.</div>
-        </div>
-        <div class="chips">
-          <button type="button" data-do="purple">Make the sky purple</button>
-          <button type="button" data-do="fast">Make it faster</button>
-          <button type="button" data-do="star">Bounce a star instead</button>
-        </div>
-      </div>
-
-      <div class="rig-foot">
-        <button class="pub" id="pubBtn" type="button">Publish to the marketplace</button>
-        <span class="pstate" id="pstate">Draft</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══ GUARDIAN ══ -->
-  <div class="pane" id="paneG">
-    <div class="note">Now you are <b>the parent</b>. One account, your kids as profiles, and nothing goes public without you.</div>
-
-    <div class="kids">
-      <div class="kid"><div class="face">🧒</div><b>Kid one</b><span>Quester</span></div>
-      <div class="kid"><div class="face">👧</div><b>Kid two</b><span>Builder</span></div>
-    </div>
-
-    <div class="appr">
-      <h3 style="font-family:var(--gothic);font-weight:800;font-size:19px;margin:0 0 8px;color:var(--gold-hi)">Waiting for your approval</h3>
-      <div id="queue"><div class="empty">Nothing pending. When a kid hits Publish, it lands here first.</div></div>
-    </div>
-
-    <div class="c">
-      <h3>Visibility</h3>
-      <p class="sub">Per child, held by you &mdash; never a default.</p>
-      <div class="togs">
-        <div class="tog"><span>Kid one &middot; name shown on their stall</span><div class="sw on" role="switch" aria-checked="true" tabindex="0"></div></div>
-        <div class="tog"><span>Kid one &middot; face in event photos</span><div class="sw" role="switch" aria-checked="false" tabindex="0"></div></div>
-        <div class="tog"><span>Kid two &middot; name shown on their stall</span><div class="sw on" role="switch" aria-checked="true" tabindex="0"></div></div>
-      </div>
-    </div>
-
-    <div class="c">
-      <h3>Subscription</h3>
-      <p class="sub" style="margin-bottom:0">Family plan &middot; active. Event fee was credited against month one. Kids keep 100% of anything their builds ever earn.</p>
-    </div>
-  </div>
-
-  <div class="toast" id="toast"></div>
-
-  <footer>
-    <a href="../product/">The Product</a> &middot; <a href="../engagement/">Engagement</a> &middot; <a href="../architecture/">Architecture</a><br>
-    A simulation &middot; the games are real
-  </footer>
+<div id="hud">
+  <div id="quest">The realm of Code Quest</div>
+  <div id="dots"><i></i><i></i><i></i><i></i><i></i></div>
 </div>
+
+<div id="prompt">&#9876; Speak</div>
+
+<div id="dlg" role="dialog" aria-live="polite">
+  <div class="who" id="dwho"></div>
+  <div class="txt" id="dtxt"></div>
+  <div class="more" id="dmore">tap to continue</div>
+  <div class="btns" id="dbtns"></div>
+</div>
+
+<div id="pad"><div id="nub"></div></div>
+<button id="act" type="button" aria-label="Action">A</button>
+<div id="keys">Arrows or WASD to walk &middot; E to speak</div>
+
+<div id="modal"><div id="mcard">
+  <div id="mhead"><b id="mtitle">Preview</b><button id="mclose" type="button" aria-label="Close">&times;</button></div>
+  <iframe id="mframe" title="Build preview"></iframe>
+</div></div>
+
+<div class="toast" id="toast"></div>
 
 <script>
 (function(){
-  'use strict';
+"use strict";
 
-  /* ── state ── */
-  var state = { step: 1, pending: null, live: false };
+/* ═══ canvas ═══ */
+var cv = document.getElementById("cv"), cx = cv.getContext("2d");
+var DPR = Math.min(window.devicePixelRatio || 1, 2), VW = 0, VH = 0;
+function size(){
+  VW = window.innerWidth; VH = window.innerHeight;
+  cv.width = VW * DPR; cv.height = VH * DPR;
+  cx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+window.addEventListener("resize", size); size();
 
-  /* ── tabs ── */
-  var tabs = { P: document.getElementById('tabP'), D: document.getElementById('tabD'), G: document.getElementById('tabG') };
-  var panes = { P: document.getElementById('paneP'), D: document.getElementById('paneD'), G: document.getElementById('paneG') };
-  function show(which){
-    Object.keys(tabs).forEach(function(k){
-      tabs[k].classList.toggle('on', k === which);
-      panes[k].classList.toggle('on', k === which);
-    });
-    if (which === 'D' && state.step < 2) setStep(2);
-    if (which === 'G' && state.pending && state.step < 3) setStep(3);
-    window.scrollTo({ top: 0 });
+var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ═══ world ═══ */
+var W = 1400, H = 1050;
+var player = { x: 700, y: 940, r: 14, fx: 0, fy: -1, moving: false, bob: 0 };
+
+var walls = [
+  {x:0,y:0,w:W,h:26},{x:0,y:H-26,w:W,h:26},{x:0,y:0,w:26,h:H},{x:W-26,y:0,w:26,h:H},
+  {x:150,y:180,w:60,h:330},   /* west grove */
+  {x:1190,y:180,w:60,h:330},  /* east grove */
+  {x:560,y:560,w:110,h:60},   /* ruin */
+  {x:760,y:560,w:110,h:60}
+];
+
+var quest = { step: 0, choices: { purple:false, star:false, fast:false }, forged:false, blessed:false, live:false };
+
+var stalls = [
+  { name:"Butterfly Dash",  by:"Elsie",    icon:"\uD83E\uDD8B", url:"../elsie/game/" },
+  { name:"Sprinkle Dash",   by:"Emma",     icon:"\uD83C\uDF08", url:"../emma/game/" },
+  { name:"Dragonball",      by:"Theodore", icon:"\uD83D\uDC09", url:"../pixel-power/dragonball-flight/" },
+  { name:"Ninja Academy",   by:"Ezekiel",  icon:"\uD83E\uDD77", url:"../triad-labs/ninja-academy/" }
+];
+
+/* stations */
+var ST = [
+  { id:"herald", x:700, y:830, r:74, label:"The Herald", kind:"npc" },
+  { id:"keeper", x:250, y:330, r:80, label:"The Marketplace", kind:"market" },
+  { id:"forge",  x:1120, y:330, r:80, label:"The Forge", kind:"forge" },
+  { id:"tower",  x:700, y:210, r:84, label:"The Guardian's Tower", kind:"tower" },
+  { id:"beacon", x:700, y:430, r:66, label:"The Beacon", kind:"beacon" }
+];
+/* market stall interactables */
+stalls.forEach(function(s, i){
+  ST.push({ id:"stall"+i, x:150 + i*110, y:470, r:52, label:s.name, kind:"stall", stall:s });
+});
+
+var QUESTS = [
+  "Quest I \u00b7 Answer the summons \u2014 speak to the Herald",
+  "Quest II \u00b7 Walk the Marketplace \u2014 speak to the Keeper",
+  "Quest III \u00b7 Forge your build at the eastern Forge",
+  "Quest IV \u00b7 Seek the Guardian's blessing at the Tower",
+  "Quest V \u00b7 Light the Beacon \u2014 ship it",
+  "The loop is closed \u00b7 Quester belt earned \u00b7 the realm is yours"
+];
+
+function setQuest(n){
+  quest.step = n;
+  document.getElementById("quest").textContent = QUESTS[n];
+  var dots = document.querySelectorAll("#dots i");
+  for (var i = 0; i < dots.length; i++) dots[i].classList.toggle("hit", i < n);
+}
+setQuest(0);
+
+/* ═══ dialogue ═══ */
+var dlg = document.getElementById("dlg"), dwho = document.getElementById("dwho"),
+    dtxt = document.getElementById("dtxt"), dmore = document.getElementById("dmore"),
+    dbtns = document.getElementById("dbtns");
+var talk = null;
+
+function say(who, lines, buttons){
+  talk = { who: who, lines: lines.slice(), buttons: buttons || null };
+  dwho.textContent = who;
+  next();
+  dlg.classList.add("show");
+}
+function next(){
+  if (!talk) return;
+  if (talk.lines.length){
+    dtxt.textContent = talk.lines.shift();
+    var last = !talk.lines.length;
+    dmore.style.display = (last && talk.buttons) ? "none" : "block";
+    dbtns.innerHTML = "";
+    if (last && talk.buttons) renderBtns();
+  } else {
+    close_();
   }
-  tabs.P.addEventListener('click', function(){ show('P'); });
-  tabs.D.addEventListener('click', function(){ show('D'); });
-  tabs.G.addEventListener('click', function(){ show('G'); });
+}
+function renderBtns(){
+  dbtns.innerHTML = "";
+  talk.buttons.forEach(function(b){
+    var el = document.createElement("button");
+    el.type = "button"; el.textContent = b.label;
+    if (b.cls) el.className = b.cls;
+    el.addEventListener("click", function(ev){ ev.stopPropagation(); b.fn(); });
+    dbtns.appendChild(el);
+  });
+}
+function close_(){ talk = null; dlg.classList.remove("show"); }
+dlg.addEventListener("click", function(){ if (talk && talk.lines.length) next(); else if (talk && !talk.buttons) close_(); });
 
-  /* ── loop tracker ── */
-  var labels = {
-    1: '1 of 4 · a friend arrives on a share link',
-    2: '2 of 4 · the delegate builds in the rig',
-    3: '3 of 4 · the guardian approves',
-    4: '4 of 4 · live on the marketplace — the loop closes'
-  };
-  function setStep(n){
-    state.step = n;
-    for (var i = 1; i <= 4; i++){
-      document.getElementById('t' + i).classList.toggle('hit', i <= n);
+/* ═══ toast ═══ */
+var toastEl = document.getElementById("toast"), tT = null;
+function toast(m){
+  toastEl.textContent = m; toastEl.classList.add("show");
+  clearTimeout(tT); tT = setTimeout(function(){ toastEl.classList.remove("show"); }, 2600);
+}
+
+/* ═══ the build ═══ */
+function buildHTML(){
+  var sky = quest.choices.purple ? "linear-gradient(#4A2C8F,#C48FFF)" : "linear-gradient(#7EC8E3,#EAF6FF)";
+  var chr = quest.choices.star ? "&#11088;" : "&#9917;";
+  var spd = quest.choices.fast ? "2" : "1";
+  return ["<!DOCTYPE html><html><head>",
+    "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">",
+    "<style>body{margin:0;overflow:hidden;background:" + sky + ";font-family:sans-serif}",
+    "#b{position:absolute;font-size:52px;left:40%;top:20%;cursor:pointer;user-select:none;transition:transform .1s}",
+    "#s{position:absolute;top:10px;left:14px;font-size:22px;font-weight:bold;color:#234}</style></head><body>",
+    "<div id=\"s\">0</div><div id=\"b\">" + chr + "</div>",
+    "<scr" + "ipt>var b=document.getElementById(\"b\"),s=document.getElementById(\"s\");",
+    "var y=60,v=0,sc=0,SP=" + spd + ";",
+    "function L(){v+=0.5*SP;y+=v;if(y>innerHeight-90){y=innerHeight-90;v=-12*SP;}b.style.top=y+\"px\";requestAnimationFrame(L);}",
+    "b.onclick=function(){sc++;s.textContent=sc;v=-14*SP;b.style.transform=\"scale(1.25)\";setTimeout(function(){b.style.transform=\"scale(1)\"},90);};",
+    "L();</scr" + "ipt></body></html>"].join("");
+}
+
+/* modal */
+var modal = document.getElementById("modal"), mframe = document.getElementById("mframe"), mtitle = document.getElementById("mtitle");
+function preview(title){
+  mtitle.textContent = title;
+  mframe.srcdoc = buildHTML();
+  modal.classList.add("show");
+}
+document.getElementById("mclose").addEventListener("click", function(){
+  modal.classList.remove("show"); mframe.srcdoc = "";
+});
+
+/* ═══ station scripts ═══ */
+function forgeButtons(){
+  function chip(key, label){
+    return { label: (quest.choices[key] ? "\u2713 " : "") + label, fn: function(){
+      quest.choices[key] = !quest.choices[key];
+      say("The Forge", ["The metal shifts. Your build changes with every choice."], forgeButtons());
+    }};
+  }
+  return [
+    chip("purple", "Purple sky"),
+    chip("star", "Bounce a star"),
+    chip("fast", "Twice the speed"),
+    { label: "Behold it", cls:"go", fn: function(){ preview("Your build \u00b7 Sky Bounce"); } },
+    { label: "It is ready \u2014 to the Tower", cls:"aye", fn: function(){
+        quest.forged = true; close_(); setQuest(3);
+        toast("Forged. The Guardian's Tower stands north.");
+      }}
+  ];
+}
+
+function interact(st){
+  if (st.kind === "npc"){
+    if (quest.step === 0){
+      say("The Herald", [
+        "Hail, traveller. Elsie of Pixel Power sent a summons \u2014 and you carried it here yourself.",
+        "Look at the seal: ?ref=elsie. The mark of who sent you survives in the scroll itself. No matter where the link travels, the realm remembers.",
+        "The Marketplace lies west. Go and see what children have forged."
+      ], [ { label:"Westward, then", cls:"go", fn:function(){ close_(); setQuest(1); } } ]);
+    } else {
+      say("The Herald", ["The realm is open to you. Walk it."]);
     }
-    document.getElementById('tracklab').innerHTML = labels[n];
   }
-
-  /* ── toast ── */
-  var toastEl = document.getElementById('toast'), toastTimer = null;
-  function toast(msg){
-    toastEl.textContent = msg;
-    toastEl.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, 2600);
-  }
-
-  /* ── player: join ── */
-  document.getElementById('joinBtn').addEventListener('click', function(){
-    toast('Referral credited to Elsie. Welcome, Quester.');
-    setTimeout(function(){ show('D'); }, 900);
-  });
-
-  /* ── the rig ── */
-  var STARTER = [
-    '<!DOCTYPE html>',
-    '<html><head><meta name="viewport" content="width=device-width, initial-scale=1">',
-    '<style>',
-    '  body{margin:0;overflow:hidden;font-family:sans-serif}',
-    '  /* THE SKY — try changing this colour */',
-    '  body{background:linear-gradient(#7EC8E3,#EAF6FF)}',
-    '  #b{position:absolute;font-size:52px;left:40%;top:20%;cursor:pointer;',
-    '     transition:transform .1s;user-select:none}',
-    '  #s{position:absolute;top:10px;left:14px;font-size:22px;font-weight:bold;color:#234}',
-    '</style></head><body>',
-    '<div id="s">0</div>',
-    '<div id="b">&#9917;</div>',
-    '<scr' + 'ipt>',
-    'var b=document.getElementById("b"),s=document.getElementById("s");',
-    'var y=60,v=0,score=0,SPEED=1;',
-    'function loop(){',
-    '  v+=0.5*SPEED; y+=v;',
-    '  if(y>window.innerHeight-90){y=window.innerHeight-90;v=-12*SPEED;}',
-    '  b.style.top=y+"px";',
-    '  requestAnimationFrame(loop);',
-    '}',
-    'b.onclick=function(){score++;s.textContent=score;v=-14*SPEED;',
-    '  b.style.transform="scale(1.25)";',
-    '  setTimeout(function(){b.style.transform="scale(1)"},90);};',
-    'loop();',
-    '</scr' + 'ipt>',
-    '</body></html>'
-  ].join('\n');
-
-  var ed = document.getElementById('ed');
-  var pv = document.getElementById('pv');
-  ed.value = STARTER;
-
-  var rTimer = null;
-  function render(){ pv.srcdoc = ed.value; }
-  ed.addEventListener('input', function(){
-    clearTimeout(rTimer);
-    rTimer = setTimeout(render, 350);
-  });
-
-  /* rig tabs */
-  var rv = {
-    Ed: [document.getElementById('vEd'), document.getElementById('viewEd')],
-    Pv: [document.getElementById('vPv'), document.getElementById('viewPv')],
-    Ai: [document.getElementById('vAi'), document.getElementById('viewAi')]
-  };
-  function rigShow(k){
-    Object.keys(rv).forEach(function(x){
-      rv[x][0].classList.toggle('on', x === k);
-      rv[x][1].classList.toggle('on', x === k);
-    });
-    if (k === 'Pv') render();
-  }
-  rv.Ed[0].addEventListener('click', function(){ rigShow('Ed'); });
-  rv.Pv[0].addEventListener('click', function(){ rigShow('Pv'); });
-  rv.Ai[0].addEventListener('click', function(){ rigShow('Ai'); });
-
-  /* AI pane: scripted edits applied to real code */
-  var msgs = document.getElementById('msgs');
-  function say(text, mine){
-    var d = document.createElement('div');
-    d.className = 'm ' + (mine ? 'me' : 'bot');
-    d.textContent = text;
-    msgs.appendChild(d);
-    msgs.scrollTop = msgs.scrollHeight;
-  }
-  var moves = {
-    purple: {
-      ask: 'Make the sky purple',
-      reply: 'Done — I swapped the sky gradient for a purple one. Preview it.',
-      apply: function(c){ return c.replace('linear-gradient(#7EC8E3,#EAF6FF)', 'linear-gradient(#4A2C8F,#C48FFF)'); }
-    },
-    fast: {
-      ask: 'Make it faster',
-      reply: 'I raised SPEED from 1 to 2 — gravity and bounce both scale with it.',
-      apply: function(c){ return c.replace('SPEED=1;', 'SPEED=2;'); }
-    },
-    star: {
-      ask: 'Bounce a star instead',
-      reply: 'Swapped the football for a star. One character changed everything on screen.',
-      apply: function(c){ return c.replace('&#9917;', '&#11088;'); }
+  else if (st.kind === "market"){
+    if (quest.step <= 1){
+      say("The Keeper of Stalls", [
+        "Every banner here is a real build from the Quest of 2026. Step to any stall and it will open \u2014 truly. These are not paintings.",
+        "All of it forged by kids no older than you.",
+        "When wonder turns to wanting, the Forge in the east has an anvil free."
+      ], [ { label:"To the Forge", cls:"go", fn:function(){ close_(); setQuest(2); } },
+           { label:"Let me browse first", fn:function(){ close_(); if (quest.step < 1) setQuest(1); } } ]);
+    } else {
+      say("The Keeper of Stalls", ["Browse freely. The stalls are real \u2014 tap one."]);
     }
-  };
-  document.getElementById('viewAi').addEventListener('click', function(e){
-    var btn = e.target.closest('button[data-do]');
-    if (!btn) return;
-    var mv = moves[btn.getAttribute('data-do')];
-    if (!mv) return;
-    say(mv.ask, true);
-    ed.value = mv.apply(ed.value);
-    setTimeout(function(){ say(mv.reply, false); }, 350);
-  });
+  }
+  else if (st.kind === "stall"){
+    var s = st.stall;
+    say(s.name, ["Forged by " + s.by + ". This is the genuine build \u2014 it will open in a new scroll."],
+      [ { label:"Play it", cls:"aye", fn:function(){ window.open(s.url, "_blank", "noopener"); } },
+        { label:"Not now", fn: close_ } ]);
+  }
+  else if (st.kind === "forge"){
+    if (quest.step < 2){ say("The Forge", ["The anvil sleeps until the Keeper sends you."]); return; }
+    if (quest.forged){ say("The Forge", ["Your build is forged. The Tower awaits, north."]); return; }
+    say("The Forge", [
+      "Here is the secret of the realm: the whole build is one file, and the browser itself is the anvil.",
+      "Choose, and watch your build change. Nothing is pretend \u2014 Behold it whenever you like."
+    ], forgeButtons());
+  }
+  else if (st.kind === "tower"){
+    if (quest.step < 3){ say("The Guardian's Tower", ["The gate answers only to those who carry a forged build."]); return; }
+    if (quest.blessed){ say("The Guardian", ["You have my blessing. Light the Beacon."]); return; }
+    say("The Guardian", [
+      "Halt. Nothing a child forges goes into the world without a Guardian's eye. That is the law of this realm, and it is a kind law.",
+      "Show me the build."
+    ], [ { label:"Present it", cls:"go", fn:function(){ preview("Before the Guardian"); } },
+         { label:"Grant the blessing", cls:"aye", fn:function(){
+             quest.blessed = true; close_(); setQuest(4);
+             toast("Blessed. The Beacon burns at the realm's heart.");
+           }} ]);
+  }
+  else if (st.kind === "beacon"){
+    if (quest.step < 4){ say("The Beacon", ["Cold and dark. It lights only for blessed builds."]); return; }
+    if (quest.live){ say("The Beacon", ["Your build burns among the stalls. The loop feeds itself now."]); return; }
+    say("The Beacon", ["One touch, and Sky Bounce goes live in the Marketplace \u2014 with your maker's mark on it, ready to be shared on, exactly as Elsie's was shared to you."],
+      [ { label:"Light it", cls:"aye", fn: shipIt } ]);
+  }
+}
 
-  /* publish */
-  var pubBtn = document.getElementById('pubBtn');
-  var pstate = document.getElementById('pstate');
-  pubBtn.addEventListener('click', function(){
-    if (state.pending || state.live) return;
-    state.pending = { name: 'Sky Bounce', code: ed.value };
-    pubBtn.disabled = true;
-    pstate.textContent = 'Pending approval';
-    pstate.className = 'pstate pend';
-    renderQueue();
-    setStep(3);
-    toast('Sent to your Guardian for approval.');
-  });
+function shipIt(){
+  quest.live = true; close_();
+  stalls.push({ name:"Sky Bounce", by:"You", icon:"\u2B50", url:null, mine:true });
+  ST.push({ id:"mine", x:150 + 4*110, y:470, r:52, label:"Sky Bounce", kind:"mystall" });
+  burst(700, 430);
+  setQuest(5);
+  toast("LIVE. Your stall stands in the Marketplace, west.");
+}
 
-  /* guardian queue */
-  function renderQueue(){
-    var q = document.getElementById('queue');
-    if (!state.pending){
-      q.innerHTML = '<div class="empty">Nothing pending. When a kid hits Publish, it lands here first.</div>';
-      return;
+/* my stall interaction */
+function interactMine(){
+  say("Sky Bounce", ["Your own build, live on a stall. A friend who taps Play here starts their own journey \u2014 carrying your mark: ?ref=you."],
+    [ { label:"Play your build", cls:"aye", fn:function(){ preview("Sky Bounce \u00b7 live"); } },
+      { label:"Stand proud", fn: close_ } ]);
+}
+
+/* ═══ particles ═══ */
+var parts = [];
+function burst(x, y){
+  if (reduced) return;
+  for (var i = 0; i < 60; i++){
+    var a = Math.random() * 6.283, sp = 1.5 + Math.random() * 3.6;
+    parts.push({ x:x, y:y, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp - 1.2, life: 60 + Math.random()*40,
+                 c: Math.random() < 0.5 ? "#45E3C4" : "#F2CE7B" });
+  }
+}
+
+/* ═══ input ═══ */
+var keys = {};
+window.addEventListener("keydown", function(e){
+  keys[e.key.toLowerCase()] = true;
+  if (e.key === "e" || e.key === "E" || e.key === "Enter" || e.key === " "){
+    if (talk){ if (talk.lines.length) next(); else if (!talk.buttons) close_(); }
+    else doAction();
+  }
+});
+window.addEventListener("keyup", function(e){ keys[e.key.toLowerCase()] = false; });
+
+var joy = { on:false, dx:0, dy:0 };
+var pad = document.getElementById("pad"), nub = document.getElementById("nub");
+function padPoint(t){
+  var r = pad.getBoundingClientRect(), cxp = r.left + r.width/2, cyp = r.top + r.height/2;
+  var dx = t.clientX - cxp, dy = t.clientY - cyp, d = Math.hypot(dx, dy) || 1, m = Math.min(d, 42);
+  joy.dx = (dx/d) * (m/42); joy.dy = (dy/d) * (m/42);
+  nub.style.transform = "translate(calc(-50% + " + (joy.dx*30) + "px), calc(-50% + " + (joy.dy*30) + "px))";
+}
+pad.addEventListener("touchstart", function(e){ joy.on = true; padPoint(e.touches[0]); e.preventDefault(); }, {passive:false});
+pad.addEventListener("touchmove", function(e){ padPoint(e.touches[0]); e.preventDefault(); }, {passive:false});
+pad.addEventListener("touchend", function(){ joy.on = false; joy.dx = joy.dy = 0; nub.style.transform = "translate(-50%,-50%)"; });
+document.getElementById("act").addEventListener("click", function(){
+  if (talk){ if (talk.lines.length) next(); else if (!talk.buttons) close_(); }
+  else doAction();
+});
+
+/* ═══ proximity + action ═══ */
+var near = null;
+var promptEl = document.getElementById("prompt");
+function doAction(){
+  if (!near) return;
+  if (near.kind === "mystall") interactMine();
+  else interact(near);
+}
+
+/* ═══ physics ═══ */
+function collide(nx, ny){
+  for (var i = 0; i < walls.length; i++){
+    var w = walls[i];
+    if (nx > w.x - player.r && nx < w.x + w.w + player.r &&
+        ny > w.y - player.r && ny < w.y + w.h + player.r) return true;
+  }
+  return false;
+}
+
+function step(){
+  var dx = 0, dy = 0;
+  if (!talk && !modal.classList.contains("show")){
+    if (keys["arrowleft"] || keys["a"]) dx -= 1;
+    if (keys["arrowright"] || keys["d"]) dx += 1;
+    if (keys["arrowup"] || keys["w"]) dy -= 1;
+    if (keys["arrowdown"] || keys["s"]) dy += 1;
+    if (joy.on){ dx += joy.dx; dy += joy.dy; }
+  }
+  var m = Math.hypot(dx, dy);
+  player.moving = m > 0.15;
+  if (player.moving){
+    dx /= m; dy /= m;
+    var sp = 3.4;
+    var nx = player.x + dx * sp, ny = player.y + dy * sp;
+    if (!collide(nx, player.y)) player.x = nx;
+    if (!collide(player.x, ny)) player.y = ny;
+    player.fx = dx; player.fy = dy;
+    player.bob += 0.22;
+  }
+  player.x = Math.max(40, Math.min(W - 40, player.x));
+  player.y = Math.max(40, Math.min(H - 40, player.y));
+
+  near = null;
+  var best = 1e9;
+  ST.forEach(function(s){
+    var d = Math.hypot(s.x - player.x, s.y - player.y);
+    if (d < s.r && d < best){ best = d; near = s; }
+  });
+  promptEl.classList.toggle("show", !!near && !talk && !modal.classList.contains("show"));
+  if (near) promptEl.innerHTML = "&#9876; " + near.label;
+
+  for (var i = parts.length - 1; i >= 0; i--){
+    var p = parts[i];
+    p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.life--;
+    if (p.life <= 0) parts.splice(i, 1);
+  }
+}
+
+/* ═══ render ═══ */
+var t0 = 0;
+function cam(){
+  var cxo = Math.max(0, Math.min(W - VW, player.x - VW/2));
+  var cyo = Math.max(0, Math.min(H - VH, player.y - VH/2));
+  if (W < VW) cxo = (W - VW)/2;
+  if (H < VH) cyo = (H - VH)/2;
+  return { x: cxo, y: cyo };
+}
+
+function draw(t){
+  var c = cam(), pulse = reduced ? 0.5 : (Math.sin(t/540) + 1)/2;
+  cx.fillStyle = "#0B0912"; cx.fillRect(0, 0, VW, VH);
+  cx.save(); cx.translate(-c.x, -c.y);
+
+  /* ground */
+  cx.fillStyle = "#100D1A"; cx.fillRect(0, 0, W, H);
+  cx.strokeStyle = "rgba(217,169,76,.05)"; cx.lineWidth = 1;
+  for (var gx = 0; gx <= W; gx += 70){ cx.beginPath(); cx.moveTo(gx, 0); cx.lineTo(gx, H); cx.stroke(); }
+  for (var gy = 0; gy <= H; gy += 70){ cx.beginPath(); cx.moveTo(0, gy); cx.lineTo(W, gy); cx.stroke(); }
+
+  /* gold paths */
+  cx.fillStyle = "rgba(217,169,76,.1)";
+  cx.fillRect(660, 190, 80, 760);          /* spine */
+  cx.fillRect(220, 300, 940, 66);          /* crossroad */
+  cx.fillRect(120, 440, 560, 60);          /* market row */
+
+  /* walls / groves / ruins */
+  walls.slice(4).forEach(function(w){
+    cx.fillStyle = "#191527"; cx.fillRect(w.x, w.y, w.w, w.h);
+    cx.strokeStyle = "rgba(217,169,76,.2)"; cx.strokeRect(w.x + 0.5, w.y + 0.5, w.w - 1, w.h - 1);
+  });
+  cx.strokeStyle = "rgba(217,169,76,.3)"; cx.lineWidth = 3;
+  cx.strokeRect(26, 26, W - 52, H - 52);
+
+  /* ── stations ── */
+  /* herald */
+  drawNPC(700, 830, "#D9A94C");
+  glyph(700, 786, "The Herald");
+
+  /* marketplace stalls */
+  stalls.forEach(function(s, i){
+    var x = 150 + i * 110, y = 470;
+    cx.fillStyle = "#1B1728"; cx.fillRect(x - 40, y - 34, 80, 62);
+    cx.fillStyle = s.mine ? "rgba(69,227,196,.8)" : "rgba(217,169,76,.75)";
+    cx.fillRect(x - 44, y - 44, 88, 14);
+    cx.fillStyle = "#0B0912";
+    for (var st = 0; st < 4; st++) cx.fillRect(x - 44 + st * 22 + 11, y - 44, 11, 14);
+    cx.font = "22px serif"; cx.textAlign = "center"; cx.fillText(s.icon, x, y + 4);
+    cx.fillStyle = "#9A8F7A"; cx.font = "700 9px 'JetBrains Mono'";
+    cx.fillText(s.name.toUpperCase(), x, y + 42);
+    if (s.mine){
+      cx.fillStyle = "#45E3C4"; cx.fillText("JUST SHIPPED", x, y - 54);
     }
-    q.innerHTML = '';
-    var row = document.createElement('div');
-    row.className = 'row';
-    var art = document.createElement('div');
-    art.className = 'art'; art.style.cssText = 'width:44px;height:44px;border-radius:9px;display:grid;place-items:center;font-size:22px;background:var(--stone);border:1px solid var(--soft)';
-    art.textContent = '⚽';
-    var name = document.createElement('b');
-    name.textContent = 'Sky Bounce — Kid one';
-    var ok = document.createElement('button');
-    ok.className = 'ok'; ok.type = 'button'; ok.textContent = 'Approve';
-    ok.addEventListener('click', approve);
-    row.appendChild(art); row.appendChild(name); row.appendChild(ok);
-    q.appendChild(row);
+  });
+  glyph(250, 268, "The Marketplace");
+
+  /* forge */
+  cx.fillStyle = "#1B1728"; cx.fillRect(1070, 290, 100, 78);
+  cx.fillStyle = "#2A2338"; cx.fillRect(1092, 310, 56, 26);
+  cx.fillStyle = "rgba(69,227,196," + (0.35 + pulse * 0.4) + ")";
+  cx.beginPath(); cx.arc(1120, 323, 9 + pulse * 4, 0, 6.283); cx.fill();
+  glyph(1120, 268, "The Forge");
+
+  /* tower */
+  cx.fillStyle = "#1B1728"; cx.fillRect(660, 120, 80, 130);
+  cx.strokeStyle = "rgba(217,169,76,.45)"; cx.lineWidth = 2;
+  cx.strokeRect(661, 121, 78, 128);
+  cx.fillStyle = "rgba(217,169,76,.7)";
+  cx.beginPath(); cx.moveTo(652, 122); cx.lineTo(700, 88); cx.lineTo(748, 122); cx.closePath(); cx.fill();
+  cx.fillStyle = "#0B0912"; cx.fillRect(688, 200, 24, 50);
+  glyph(700, 74, "The Guardian's Tower");
+
+  /* beacon */
+  var lit = quest.live;
+  cx.strokeStyle = lit ? "#45E3C4" : "rgba(233,223,199,.28)"; cx.lineWidth = 2.5;
+  cx.beginPath(); cx.arc(700, 430, 26, 0, 6.283); cx.stroke();
+  cx.fillStyle = lit ? "rgba(69,227,196," + (0.5 + pulse * 0.5) + ")" : "rgba(233,223,199,.12)";
+  cx.beginPath(); cx.arc(700, 430, 13 + (lit ? pulse * 6 : 0), 0, 6.283); cx.fill();
+  glyph(700, 384, "The Beacon");
+
+  /* nearest ring */
+  if (near){
+    cx.strokeStyle = "rgba(242,206,123," + (0.35 + pulse * 0.4) + ")";
+    cx.lineWidth = 2; cx.setLineDash([6, 7]);
+    cx.beginPath(); cx.arc(near.x, near.y, 40 + pulse * 5, 0, 6.283); cx.stroke();
+    cx.setLineDash([]);
   }
 
-  function approve(){
-    state.live = true;
-    var code = state.pending.code;
-    state.pending = null;
-    renderQueue();
-    pstate.textContent = 'Live on the marketplace';
-    pstate.className = 'pstate live';
-
-    /* the new stall appears in the player feed */
-    var feed = document.getElementById('feed');
-    var stall = document.createElement('div');
-    stall.className = 'stall';
-    var art = document.createElement('div'); art.className = 'art'; art.textContent = '⚽';
-    var who = document.createElement('div'); who.className = 'who';
-    var b = document.createElement('b'); b.textContent = 'Sky Bounce';
-    var nw = document.createElement('span'); nw.className = 'new'; nw.textContent = 'Just shipped';
-    b.appendChild(nw);
-    var s = document.createElement('span'); s.textContent = 'by Kid one · your family';
-    who.appendChild(b); who.appendChild(s);
-    var play = document.createElement('button');
-    play.className = 'play'; play.type = 'button'; play.textContent = 'Play';
-    play.addEventListener('click', function(){
-      show('D'); rigShow('Pv'); pv.srcdoc = code;
-      toast('That is the shipped build, playable.');
-    });
-    stall.appendChild(art); stall.appendChild(who); stall.appendChild(play);
-    feed.insertBefore(stall, feed.firstChild);
-
-    setStep(4);
-    toast('Approved. Sky Bounce is live — check the Player tab.');
-  }
-
-  /* visibility switches (cosmetic) */
-  document.querySelectorAll('.sw').forEach(function(sw){
-    function flip(){
-      var on = sw.classList.toggle('on');
-      sw.setAttribute('aria-checked', on ? 'true' : 'false');
-    }
-    sw.addEventListener('click', flip);
-    sw.addEventListener('keydown', function(e){
-      if (e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); flip(); }
-    });
+  /* particles */
+  parts.forEach(function(p){
+    cx.globalAlpha = Math.min(1, p.life / 40);
+    cx.fillStyle = p.c; cx.fillRect(p.x - 2, p.y - 2, 4, 4);
   });
+  cx.globalAlpha = 1;
 
-  render();
+  /* player */
+  drawPlayer(t);
+
+  cx.restore();
+  cx.textAlign = "left";
+}
+
+function glyph(x, y, s){
+  cx.fillStyle = "#9A8F7A"; cx.font = "700 10px 'JetBrains Mono'"; cx.textAlign = "center";
+  cx.fillText(s.toUpperCase(), x, y);
+}
+
+function drawNPC(x, y, col){
+  cx.fillStyle = "#241E33"; cx.beginPath(); cx.ellipse(x, y + 16, 14, 5, 0, 0, 6.283); cx.fill();
+  cx.fillStyle = col; cx.fillRect(x - 9, y - 12, 18, 24);
+  cx.fillStyle = "#E9DFC7"; cx.beginPath(); cx.arc(x, y - 20, 8, 0, 6.283); cx.fill();
+}
+
+function drawPlayer(t){
+  var bobY = player.moving ? Math.sin(player.bob) * 2.2 : 0;
+  var x = player.x, y = player.y + bobY;
+  cx.fillStyle = "rgba(0,0,0,.4)"; cx.beginPath(); cx.ellipse(player.x, player.y + 15, 12, 4.5, 0, 0, 6.283); cx.fill();
+  /* cape */
+  cx.fillStyle = "#3E6EA8";
+  cx.beginPath(); cx.moveTo(x - 8, y - 8); cx.lineTo(x + 8, y - 8);
+  cx.lineTo(x + 5 - player.fx * 4, y + 13); cx.lineTo(x - 5 - player.fx * 4, y + 13); cx.closePath(); cx.fill();
+  /* armour */
+  cx.fillStyle = "#D9A94C"; cx.fillRect(x - 8, y - 10, 16, 21);
+  cx.fillStyle = "#B8893A"; cx.fillRect(x - 8, y + 3, 16, 4);
+  /* gem */
+  var pulse = reduced ? 0.5 : (Math.sin(t / 380) + 1) / 2;
+  cx.fillStyle = "rgba(69,227,196," + (0.6 + pulse * 0.4) + ")";
+  cx.fillRect(x - 2, y - 5, 4, 6);
+  /* head */
+  cx.fillStyle = "#8D5B3A"; cx.beginPath(); cx.arc(x, y - 17, 7.5, 0, 6.283); cx.fill();
+  cx.fillStyle = "#D9A94C"; cx.beginPath(); cx.arc(x, y - 19, 7.5, 3.34, 6.08); cx.fill();
+}
+
+/* ═══ loop ═══ */
+function frame(t){
+  step();
+  draw(t);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+/* opening */
+setTimeout(function(){
+  say("The Realm", [
+    "Welcome to Code Quest \u2014 walked, not read.",
+    "You arrived by a friend's share link. Everything that happens next is the product working.",
+    "Find the Herald on the road south of the ruins."
+  ]);
+}, 500);
+
 })();
 </script>
 </body>
