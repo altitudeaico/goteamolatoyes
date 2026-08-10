@@ -3,326 +3,405 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0B0912">
-<title>The Code Quest Story</title>
+<meta name="theme-color" content="#000000">
+<title>Code Quest</title>
 <meta name="robots" content="noindex">
-<meta property="og:title" content="The Code Quest Story">
-<meta property="og:description" content="Kids build real apps. In one day. Then keep going.">
+<meta property="og:title" content="Code Quest">
+<meta property="og:description" content="Kids build real apps. In one day. Then they keep going.">
 <meta property="og:image" content="https://altitudeaico.github.io/goteamolatoyes/codequest/2026/og.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --void:#0B0912; --stone:#15121F; --parch:#E9DFC7; --dim:#9A8F7A;
-  --gold:#D9A94C; --gold-hi:#F2CE7B; --phos:#45E3C4; --rubric:#E4574A;
-  --line:rgba(217,169,76,.25); --soft:rgba(217,169,76,.12);
-  --gothic:'Grenze Gotisch',serif; --body:'DM Sans',sans-serif; --sys:'JetBrains Mono',monospace;
+  --bg:#000; --ink:#f5f5f7; --grey:#a1a1a6; --grey2:#6e6e73;
+  --teal:#45E3C4; --card:#101013; --line:rgba(255,255,255,.1);
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;
 }
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;overflow:hidden;background:var(--void);color:var(--parch);
-  font-family:var(--body);-webkit-font-smoothing:antialiased}
-#deck{height:100%;display:flex;transition:transform .45s cubic-bezier(.22,.9,.3,1)}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);
+  font-family:var(--sans);-webkit-font-smoothing:antialiased;overscroll-behavior:none}
+#deck{height:100%;display:flex;will-change:transform;cursor:grab;touch-action:pan-y}
+#deck.drag{cursor:grabbing}
 .slide{
-  min-width:100vw;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:56px max(20px,env(safe-area-inset-left)) 84px max(20px,env(safe-area-inset-right));
-  text-align:center;position:relative;overflow:hidden
+  min-width:100vw;height:100%;display:flex;align-items:center;justify-content:center;
+  padding:60px max(22px,env(safe-area-inset-left)) 92px max(22px,env(safe-area-inset-right));
+  position:relative;overflow:hidden;user-select:none;-webkit-user-select:none
 }
-.slide::before{content:"";position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(55% 34% at 50% 0%, rgba(217,169,76,.11), transparent 68%)}
-.inner{position:relative;max-width:640px;width:100%}
-.eyebrow{font-family:var(--sys);font-size:10px;font-weight:700;letter-spacing:.28em;
-  text-transform:uppercase;color:var(--phos);margin:0 0 14px}
-h1{font-family:var(--gothic);font-weight:800;font-size:clamp(40px,10vw,76px);line-height:.98;margin:0;color:var(--gold-hi)}
-h2{font-family:var(--gothic);font-weight:800;font-size:clamp(28px,7vw,48px);line-height:1.02;margin:0;color:var(--gold-hi)}
-p.big{font-size:clamp(17px,4.4vw,22px);line-height:1.5;color:#E0D6BE;margin:18px 0 0}
-p.small{font-size:14px;color:var(--dim);margin:14px 0 0}
-b{color:#fff}
-.gold{color:var(--gold-hi)} .phos{color:var(--phos)}
+.glow{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(46% 34% at 50% 8%, rgba(69,227,196,.09), transparent 70%)}
+.inner{position:relative;max-width:680px;width:100%;text-align:center;will-change:transform}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--grey2);margin:0 0 18px}
+h1{font-size:clamp(46px,10.5vw,104px);font-weight:800;letter-spacing:-0.03em;line-height:1.0;margin:0}
+h2{font-size:clamp(34px,7.5vw,68px);font-weight:800;letter-spacing:-0.025em;line-height:1.04;margin:0}
+.grad{background:linear-gradient(100deg,#fff 20%,var(--teal) 80%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+p.big{font-size:clamp(17px,4.2vw,23px);line-height:1.5;color:var(--grey);margin:22px auto 0;max-width:560px;font-weight:500}
+p.small{font-size:13.5px;color:var(--grey2);margin:18px auto 0;max-width:520px;line-height:1.55}
+b{color:var(--ink);font-weight:700}
+.teal{color:var(--teal)}
 
-.stat{display:flex;gap:14px;justify-content:center;margin-top:26px;flex-wrap:wrap}
-.stat div{border:1px solid var(--soft);border-radius:10px;background:var(--stone);padding:14px 18px;min-width:96px}
-.stat b{display:block;font-family:var(--gothic);font-size:34px;line-height:1;color:var(--gold-hi)}
-.stat span{font-size:11.5px;color:var(--dim);letter-spacing:.04em}
+.stat{display:flex;gap:12px;justify-content:center;margin-top:34px;flex-wrap:wrap}
+.stat div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 26px;min-width:104px}
+.stat b{display:block;font-size:44px;font-weight:800;letter-spacing:-0.03em;line-height:1}
+.stat span{font-size:12px;color:var(--grey2);display:block;margin-top:6px}
 
-.pickers{display:flex;gap:10px;justify-content:center;margin-top:30px;flex-wrap:wrap}
-.pickers button{border:1px solid var(--line);background:var(--stone);color:var(--parch);cursor:pointer;
-  font-family:var(--sys);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
-  padding:14px 20px;border-radius:99px}
-.pickers button.on{background:var(--gold);border-color:var(--gold);color:var(--void)}
+.pickers{display:flex;gap:10px;justify-content:center;margin-top:36px;flex-wrap:wrap}
+.pickers button{border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;
+  font-family:var(--sans);font-size:14px;font-weight:600;padding:15px 24px;border-radius:99px;transition:.2s}
+.pickers button:hover{border-color:var(--grey2)}
+.pickers button.on{background:var(--ink);border-color:var(--ink);color:#000}
 
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:24px;text-align:left}
-@media(min-width:560px){.grid.three{grid-template-columns:1fr 1fr 1fr}}
-.cell{border:1px solid var(--soft);border-radius:10px;background:var(--stone);padding:13px 14px}
-.cell b{display:block;font-size:14.5px;line-height:1.25}
-.cell span{font-size:12.5px;color:var(--dim);display:block;margin-top:3px;line-height:1.45}
-.cell .n{font-family:var(--gothic);font-weight:800;font-size:22px;color:var(--gold);line-height:1;margin-bottom:4px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:30px;text-align:left}
+@media(min-width:600px){.grid.three{grid-template-columns:1fr 1fr 1fr}}
+.cell{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.cell b{display:block;font-size:15.5px;letter-spacing:-0.01em}
+.cell span{font-size:13px;color:var(--grey);display:block;margin-top:5px;line-height:1.5}
+.cell .n{font-size:13px;font-weight:700;color:var(--teal);margin-bottom:8px}
 
-.hero-img{width:100%;max-width:560px;border-radius:12px;border:1px solid var(--line);margin-top:22px;display:block}
+.hero-img{width:100%;max-width:560px;border-radius:18px;margin-top:28px;display:block;
+  box-shadow:0 24px 80px rgba(0,0,0,.6)}
 
-.games{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
-.games a{display:flex;align-items:center;gap:10px;border:1px solid var(--soft);border-radius:12px;
-  background:var(--stone);padding:12px 13px;text-decoration:none;color:var(--parch);text-align:left}
-.games a:hover{border-color:var(--gold)}
-.games .ico{font-size:24px}
-.games b{display:block;font-size:14px;line-height:1.2}
-.games span{font-size:11px;color:var(--dim)}
-.games em{margin-left:auto;font-style:normal;font-family:var(--sys);font-size:9px;font-weight:700;
-  letter-spacing:.12em;color:var(--void);background:var(--phos);border-radius:99px;padding:6px 10px}
+.games{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:28px}
+.games a{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);
+  border-radius:16px;padding:15px 16px;text-decoration:none;color:var(--ink);text-align:left;transition:.2s}
+.games a:hover{border-color:var(--teal);transform:translateY(-2px)}
+.games .ico{font-size:26px}
+.games b{display:block;font-size:14.5px;letter-spacing:-0.01em}
+.games span{font-size:11.5px;color:var(--grey2)}
+.games em{margin-left:auto;font-style:normal;font-size:11px;font-weight:700;
+  color:#000;background:var(--teal);border-radius:99px;padding:7px 13px}
 
-.beltrow{display:flex;gap:8px;justify-content:center;margin-top:26px;flex-wrap:wrap}
-.belt{border:1px solid var(--line);border-radius:99px;padding:12px 18px;font-family:var(--gothic);
-  font-weight:800;font-size:19px;color:var(--parch);background:var(--stone)}
-.belt.mogul{background:var(--gold);color:var(--void);border-color:var(--gold)}
-.beltarrow{align-self:center;color:var(--dim)}
+.beltrow{display:flex;gap:10px;justify-content:center;margin-top:34px;flex-wrap:wrap;align-items:center}
+.belt{border:1px solid var(--line);border-radius:99px;padding:13px 22px;font-size:17px;font-weight:700;
+  letter-spacing:-0.01em;background:var(--card)}
+.belt.mogul{background:linear-gradient(100deg,#fff,var(--teal));color:#000;border:0}
+.beltarrow{color:var(--grey2)}
 
-.timeline{margin-top:22px;text-align:left;border-left:2px solid var(--soft);padding-left:16px}
-.timeline div{margin-bottom:12px}
-.timeline .t{font-family:var(--sys);font-size:10px;font-weight:700;letter-spacing:.14em;color:var(--phos)}
-.timeline b{display:block;font-size:15.5px}
-.timeline span{font-size:13px;color:var(--dim)}
+.timeline{margin:30px auto 0;text-align:left;max-width:520px}
+.timeline div{display:flex;gap:16px;padding:13px 0;border-bottom:1px solid var(--line)}
+.timeline div:last-child{border-bottom:0}
+.timeline .t{font-size:12px;font-weight:700;color:var(--teal);flex:none;width:74px;padding-top:2px}
+.timeline b{display:block;font-size:15.5px;letter-spacing:-0.01em}
+.timeline span{font-size:13px;color:var(--grey);line-height:1.45}
 
-.qr{width:132px;height:132px;border-radius:10px;border:4px solid #fff;margin:22px auto 0;display:block}
+.qr{width:128px;height:128px;border-radius:14px;margin:28px auto 0;display:block;background:#fff;padding:6px}
 
-svg.loop{width:100%;max-width:520px;height:auto;margin-top:18px}
-.flow{stroke-dasharray:6 7;animation:flow 1.6s linear infinite}
+svg.loop{width:100%;max-width:520px;height:auto;margin-top:24px}
+.flow{stroke-dasharray:5 8;animation:flow 1.5s linear infinite}
 @keyframes flow{to{stroke-dashoffset:-13}}
 @media(prefers-reduced-motion:reduce){.flow{animation:none}}
 
-/* nav */
-#dots{position:fixed;left:0;right:0;bottom:calc(16px + env(safe-area-inset-bottom));z-index:20;
-  display:flex;gap:6px;justify-content:center;pointer-events:none}
-#dots i{width:22px;height:3px;border-radius:2px;background:rgba(233,223,199,.16);transition:.2s}
-#dots i.on{background:var(--gold)}
-#hint{position:fixed;right:16px;bottom:calc(34px + env(safe-area-inset-bottom));z-index:20;
-  font-family:var(--sys);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
-.tapzone{position:fixed;top:0;bottom:70px;width:26%;z-index:15;cursor:pointer}
-#zl{left:0} #zr{right:0}
-:where(a,button):focus-visible{outline:3px solid var(--phos);outline-offset:3px}
+#dots{position:fixed;left:0;right:0;bottom:calc(20px + env(safe-area-inset-bottom));z-index:20;
+  display:flex;gap:7px;justify-content:center;pointer-events:none}
+#dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.18);transition:.25s}
+#dots i.on{background:var(--ink);transform:scale(1.15)}
+#hint{position:fixed;right:18px;bottom:calc(20px + env(safe-area-inset-bottom));z-index:20;
+  font-size:11px;color:var(--grey2);letter-spacing:.06em}
+:where(a,button):focus-visible{outline:2px solid var(--teal);outline-offset:3px}
 </style>
 </head>
 <body>
 
 <div id="deck">
 
-  <!-- 0 · TITLE + AUDIENCE -->
-  <section class="slide"><div class="inner">
-    <p class="eyebrow">The Code Quest Story</p>
-    <h1>Kids build<br>real apps.</h1>
-    <p class="big">In one day. Then they keep going.<br><span class="gold">Build apps, build yourself.</span></p>
+  <!-- 0 -->
+  <section class="slide"><div class="glow"></div><div class="inner">
+    <p class="eyebrow">Code Quest</p>
+    <h1>Kids build<br><span class="grad">real apps.</span></h1>
+    <p class="big">In one day. Then they keep going.</p>
     <div class="pickers" id="aud">
       <button data-a="parent" type="button">I'm a parent</button>
       <button data-a="partner" type="button">Delivery partner</button>
       <button data-a="investor" type="button">Investor</button>
     </div>
-    <p class="small">Pick who you are, then swipe or use arrow keys.</p>
+    <p class="small">Choose who you are. Then drag, swipe, or use arrow keys.</p>
   </div></section>
 
-  <!-- 1 · THE PROBLEM -->
-  <section class="slide"><div class="inner">
+  <!-- 1 -->
+  <section class="slide"><div class="glow"></div><div class="inner">
     <p class="eyebrow">Why now</p>
-    <h2>Kids consume tech all day.<br>Almost none of them make it.</h2>
-    <p class="big">Meanwhile AI has made building things <b>easier than it has ever been</b>, and most parents tell surveys they are anxious about preparing their children for an AI economy.</p>
-    <p class="small">Kids coding education is a multi billion pound category growing around 20% a year (market reports, directional).</p>
+    <h2>Every kid consumes technology.<br><span class="grad">Almost none create it.</span></h2>
+    <p class="big">AI just made building things easier than it has ever been. Most parents say they are anxious about preparing their children for what comes next.</p>
+    <p class="small">Kids coding education is a multi billion pound category growing around 20% a year. Market reports, directional.</p>
   </div></section>
 
-  <!-- 2 · THE PROOF -->
-  <section class="slide"><div class="inner">
-    <p class="eyebrow">Not a concept. It has already run.</p>
-    <h2>Code Quest 2026</h2>
-    <img class="hero-img" src="../2026/og.jpg" alt="The seven Code Quest 2026 questers in armour" width="560" height="294" loading="lazy">
+  <!-- 2 -->
+  <section class="slide"><div class="glow"></div><div class="inner">
+    <p class="eyebrow">Not a concept</p>
+    <h2>We ran it.<br>It worked.</h2>
+    <img class="hero-img" src="../2026/og.jpg" alt="The Code Quest 2026 kids" width="560" height="294" loading="lazy" draggable="false">
     <div class="stat">
       <div><b>6</b><span>kids, ages 6 to 13</span></div>
       <div><b>6</b><span>apps shipped</span></div>
       <div><b>1</b><span>day</span></div>
     </div>
-    <p class="small">Every child presented their build to a live audience and was judged on how well they explained it. All six builds are still online and playable.</p>
+    <p class="small">Every child presented their build to a live audience. Every build is still online.</p>
   </div></section>
 
-  <!-- 3 · PLAY ONE NOW -->
-  <section class="slide"><div class="inner">
+  <!-- 3 -->
+  <section class="slide"><div class="glow"></div><div class="inner">
     <p class="eyebrow">The demo is the product</p>
-    <h2>Play one. Right now.</h2>
-    <p class="big">These are the actual builds, live on the open web. No install, ten seconds to fun.</p>
+    <h2>Play one.<br><span class="grad">Right now.</span></h2>
     <div class="games">
       <a href="../elsie/game/" target="_blank" rel="noopener"><span class="ico">&#129419;</span><span><b>Butterfly Dash</b><span>Elsie, 9</span></span><em>Play</em></a>
       <a href="../emma/game/" target="_blank" rel="noopener"><span class="ico">&#127752;</span><span><b>Sprinkle Dash</b><span>Emma, 6</span></span><em>Play</em></a>
       <a href="../triad-labs/ninja-academy/" target="_blank" rel="noopener"><span class="ico">&#129333;</span><span><b>Ninja Academy</b><span>Ezekiel, 13</span></span><em>Play</em></a>
       <a href="../pixel-power/dragonball-flight/" target="_blank" rel="noopener"><span class="ico">&#128009;</span><span><b>Dragonball Flight</b><span>Theodore</span></span><em>Play</em></a>
     </div>
-    <p class="small">A game made by a child, shareable by a link: that single fact powers everything on the next slide.</p>
+    <p class="small">Real builds, live on the open web. No install. Ten seconds to fun. A game made by a child, shareable by a link: that fact powers the whole model.</p>
   </div></section>
 
-  <!-- 4 · THE DAY -->
-  <section class="slide"><div class="inner">
+  <!-- 4 -->
+  <section class="slide"><div class="glow"></div><div class="inner">
     <p class="eyebrow">The front door</p>
-    <h2>A code party worth travelling for</h2>
+    <h2>One day.<br>Designed like a keynote.</h2>
     <div class="timeline">
-      <div><span class="t">BEFORE, AT HOME</span><b>15 minutes of anticipation</b><span>Parent creates the family account, the child creates their avatar</span></div>
-      <div><span class="t">09:30</span><b>Kids arrive to their avatars on the big screen</b><span>One build session, every child ships something</span></div>
-      <div><span class="t">14:30</span><b>Parents arrive to watch their own child present</b><span>The single most convincing moment any programme can offer</span></div>
-      <div><span class="t">16:30</span><b>The child's build is live at a link, on a stall</b><span>Families leave with something real: a game, a film clip, their character in print</span></div>
+      <div><span class="t">Before</span><span><b>15 minutes at home</b><span>Parent sets up the account. The child creates their avatar.</span></span></div>
+      <div><span class="t">09:30</span><span><b>Kids walk in to their avatars on screen</b><span>One build session. Every child ships something.</span></span></div>
+      <div><span class="t">14:30</span><span><b>Parents watch their own child present</b><span>The most convincing moment any programme can offer.</span></span></div>
+      <div><span class="t">16:30</span><span><b>The build is live at a link</b><span>Families leave with a game, a film clip, and their child's character in print.</span></span></div>
     </div>
   </div></section>
 
-  <!-- 5 · THE LOOP -->
-  <section class="slide"><div class="inner">
+  <!-- 5 -->
+  <section class="slide"><div class="glow"></div><div class="inner">
     <p class="eyebrow">How it grows</p>
-    <h2>The loop</h2>
-    <svg class="loop" viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A kid builds and publishes, shares a link, a friend plays in the browser, and joins the next cohort.">
+    <h2>Share. Play. <span class="grad">Join.</span></h2>
+    <svg class="loop" viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A kid ships a game, shares the link, a friend plays in the browser, and joins the next cohort.">
       <defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#45E3C4"/></marker></defs>
-      <path class="flow" d="M260 62 C 420 62 468 120 468 150 C 468 208 380 240 265 240" fill="none" stroke="#D9A94C" stroke-width="2" marker-end="url(#a)"/>
+      <path class="flow" d="M260 62 C 420 62 468 120 468 150 C 468 208 380 240 265 240" fill="none" stroke="#3a3a3f" stroke-width="2" marker-end="url(#a)"/>
       <path class="flow" d="M255 240 C 140 240 52 208 52 150 C 52 120 100 62 260 62" fill="none" stroke="#45E3C4" stroke-width="2" marker-end="url(#a)"/>
-      <rect x="175" y="30" width="170" height="52" rx="8" fill="#15121F" stroke="#D9A94C"/>
-      <text x="260" y="52" text-anchor="middle" font-family="DM Sans" font-weight="700" font-size="15" fill="#F2CE7B">A kid ships a game</text>
-      <text x="260" y="70" text-anchor="middle" font-family="DM Sans" font-size="11" fill="#9A8F7A">published on their stall</text>
-      <rect x="388" y="122" width="120" height="56" rx="8" fill="#15121F" stroke="rgba(217,169,76,.4)"/>
-      <text x="448" y="146" text-anchor="middle" font-family="DM Sans" font-weight="700" font-size="13" fill="#E9DFC7">Shares the link</text>
-      <text x="448" y="164" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#45E3C4">?ref=elsie</text>
-      <rect x="168" y="216" width="184" height="52" rx="8" fill="#15121F" stroke="rgba(69,227,196,.5)"/>
-      <text x="260" y="238" text-anchor="middle" font-family="DM Sans" font-weight="700" font-size="14" fill="#45E3C4">A friend plays in browser</text>
-      <text x="260" y="256" text-anchor="middle" font-family="DM Sans" font-size="11" fill="#9A8F7A">no install, referral survives</text>
-      <rect x="14" y="122" width="118" height="56" rx="8" fill="#15121F" stroke="rgba(69,227,196,.5)"/>
-      <text x="73" y="146" text-anchor="middle" font-family="DM Sans" font-weight="700" font-size="13" fill="#E9DFC7">Joins the next</text>
-      <text x="73" y="163" text-anchor="middle" font-family="DM Sans" font-weight="700" font-size="13" fill="#E9DFC7">cohort</text>
+      <rect x="175" y="30" width="170" height="52" rx="12" fill="#101013" stroke="#2a2a2e"/>
+      <text x="260" y="52" text-anchor="middle" font-family="Inter" font-weight="700" font-size="14" fill="#f5f5f7">A kid ships a game</text>
+      <text x="260" y="70" text-anchor="middle" font-family="Inter" font-size="11" fill="#6e6e73">published on their page</text>
+      <rect x="388" y="122" width="120" height="56" rx="12" fill="#101013" stroke="#2a2a2e"/>
+      <text x="448" y="146" text-anchor="middle" font-family="Inter" font-weight="700" font-size="12.5" fill="#f5f5f7">Shares the link</text>
+      <text x="448" y="164" text-anchor="middle" font-family="Inter" font-size="10" fill="#45E3C4">?ref=elsie</text>
+      <rect x="168" y="216" width="184" height="52" rx="12" fill="#101013" stroke="#2a2a2e"/>
+      <text x="260" y="238" text-anchor="middle" font-family="Inter" font-weight="700" font-size="13" fill="#45E3C4">A friend plays in browser</text>
+      <text x="260" y="256" text-anchor="middle" font-family="Inter" font-size="10.5" fill="#6e6e73">no install, referral survives</text>
+      <rect x="14" y="122" width="118" height="56" rx="12" fill="#101013" stroke="#2a2a2e"/>
+      <text x="73" y="146" text-anchor="middle" font-family="Inter" font-weight="700" font-size="12.5" fill="#f5f5f7">Joins the next</text>
+      <text x="73" y="163" text-anchor="middle" font-family="Inter" font-weight="700" font-size="12.5" fill="#f5f5f7">cohort</text>
     </svg>
-    <p class="small">The event ignites. The platform retains. The kids' own excitement fills the next event. Word of mouth is the engine, and the product manufactures it.</p>
+    <p class="small">The event ignites. The platform retains. The kids' own excitement fills the next event. The product manufactures its own word of mouth.</p>
   </div></section>
 
-  <!-- 6 · THE PLATFORM -->
-  <section class="slide"><div class="inner">
+  <!-- 6 -->
+  <section class="slide"><div class="glow"></div><div class="inner">
     <p class="eyebrow">After the day</p>
     <h2>The platform</h2>
     <div class="grid three">
-      <div class="cell"><b>The rig</b><span>A kid friendly builder in the browser: editor, live preview, an AI guide. Nothing to install.</span></div>
-      <div class="cell"><b>The marketplace</b><span>Every child gets a stall: avatar, trailer, playable build, share link.</span></div>
-      <div class="cell"><b>The realm</b><span>Progress is a world that opens up, not a percent bar. Built like a game because it is one.</span></div>
+      <div class="cell"><b>The builder</b><span>A kid friendly studio in the browser. Editor, live preview, an AI guide. Nothing to install.</span></div>
+      <div class="cell"><b>The marketplace</b><span>Every child gets a page. Avatar, trailer, playable build, share link.</span></div>
+      <div class="cell"><b>The world</b><span>Progress unlocks places, not percent bars. Built like a game, because it is one.</span></div>
     </div>
     <p class="small">Everything a child publishes is approved by a human before it goes live.</p>
   </div></section>
 
-  <!-- 7 · THE BELTS -->
-  <section class="slide"><div class="inner">
-    <p class="eyebrow">Progression, the martial arts way</p>
-    <h2>Belts you earn by shipping</h2>
+  <!-- 7 -->
+  <section class="slide"><div class="glow"></div><div class="inner">
+    <p class="eyebrow">Progression</p>
+    <h2>Belts you earn<br>by shipping.</h2>
     <div class="beltrow">
       <span class="belt">Quester</span><span class="beltarrow">&rarr;</span>
       <span class="belt">Builder</span><span class="beltarrow">&rarr;</span>
       <span class="belt">Mentor</span><span class="beltarrow">&rarr;</span>
       <span class="belt mogul">Mogul</span>
     </div>
-    <p class="big">The best graduates help teach the next cohort. Teaching <b>is</b> the confidence curriculum: presenting, empathy, leadership.</p>
-    <p class="small">Nobody names the dojo Confidence Club. The activity is on the door; the transformation is the reputation.</p>
+    <p class="big">The best graduates help teach the next cohort. Teaching is the confidence curriculum: presenting, empathy, leadership.</p>
+    <p class="small">Nobody names the dojo Confidence Club. The activity is on the door. The transformation is the reputation.</p>
   </div></section>
 
-  <!-- 8 · SAFETY -->
-  <section class="slide"><div class="inner">
-    <p class="eyebrow">Built for parents to trust</p>
-    <h2>Safety by design</h2>
+  <!-- 8 -->
+  <section class="slide"><div class="glow"></div><div class="inner">
+    <p class="eyebrow">Trust</p>
+    <h2>Safe.<br><span class="grad">By design.</span></h2>
     <div class="grid">
-      <div class="cell"><b>Parents hold the account</b><span>Kids are profiles with a PIN. No child emails, no child passwords.</span></div>
+      <div class="cell"><b>Parents hold the account</b><span>Kids are profiles with a PIN. No child emails. No child passwords.</span></div>
       <div class="cell"><b>No ads to children</b><span>Ever. Subscription is the only model.</span></div>
       <div class="cell"><b>Human approval</b><span>Nothing a child makes goes public unreviewed.</span></div>
-      <div class="cell"><b>Visibility is per child, per parent</b><span>A child's work can be famous. The child is exactly as visible as their parent chooses.</span></div>
+      <div class="cell"><b>Visibility is the parent's choice</b><span>A child's work can be famous. The child is exactly as visible as their parent decides.</span></div>
     </div>
   </div></section>
 
-  <!-- 9 · MONEY -->
-  <section class="slide"><div class="inner">
+  <!-- 9 -->
+  <section class="slide"><div class="glow"></div><div class="inner">
     <p class="eyebrow" id="m-eye">How it sustains</p>
-    <h2 id="m-head">Simple, honest money</h2>
-    <div class="grid three" id="m-grid">
-      <div class="cell"><div class="n">I</div><b>The event ticket</b><span>Priced as an experience. Parents attend the showcase on general admission.</span></div>
-      <div class="cell"><div class="n">II</div><b>The merch stall</b><span>The child's own character, printed: poster, card, shirt.</span></div>
-      <div class="cell"><div class="n">III</div><b>The subscription</b><span>Converted on the day, ticket credited against month one. Kids keep 100% of anything their builds ever earn.</span></div>
+    <h2 id="m-head">Simple, honest money.</h2>
+    <div class="grid three">
+      <div class="cell"><div class="n">01</div><b>The ticket</b><span>Priced as an experience. Parents attend the showcase on general admission.</span></div>
+      <div class="cell"><div class="n">02</div><b>The merch</b><span>The child's own character, printed. Poster, card, shirt.</span></div>
+      <div class="cell"><div class="n">03</div><b>The subscription</b><span>Converted on the day. Ticket credited against month one. Kids keep 100% of anything their builds ever earn.</span></div>
     </div>
     <p class="small" id="m-note">Infrastructure costs are pennies by design. The cost of this business is coaches and venues, never servers.</p>
   </div></section>
 
-  <!-- 10 · NEXT -->
-  <section class="slide"><div class="inner">
+  <!-- 10 -->
+  <section class="slide"><div class="glow"></div><div class="inner">
     <p class="eyebrow">Where this goes</p>
-    <h2>The Tour</h2>
-    <p class="big">Pop up events: a hall, twenty kids, two coaches. Five locations puts <b>a hundred families</b> in the ecosystem, and every event manufactures the content that fills the next one.</p>
+    <h2>The Tour.</h2>
+    <p class="big">Pop up events. A hall, twenty kids, two coaches. Five locations puts <b>a hundred families</b> in the ecosystem, and every event creates the content that fills the next one.</p>
     <div class="stat">
       <div><b>1</b><span>pilot event next</span></div>
       <div><b>20</b><span>kids per stop</span></div>
       <div><b>6</b><span>Saturdays per cohort</span></div>
     </div>
-    <p class="small">The riskiest assumption is already retired: the format works. The pilot tests it beyond the founding family.</p>
+    <p class="small">The format is proven. The pilot tests it beyond the founding family.</p>
   </div></section>
 
-  <!-- 11 · CTA -->
-  <section class="slide"><div class="inner">
-    <p class="eyebrow" id="c-eye">The ask</p>
-    <h2 id="c-head">Join the Quest</h2>
+  <!-- 11 -->
+  <section class="slide"><div class="glow"></div><div class="inner">
+    <p class="eyebrow" id="c-eye">Next step</p>
+    <h2 id="c-head">See it for yourself.</h2>
     <p class="big" id="c-body">Everything you just saw is live on the open web today.</p>
-    <img class="qr" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASgAAAEoAQAAAADDfFG0AAAB9ElEQVR4nO2ayY4jMQxDyUH+/5ffHCTZTk8a6FNJjbGzwKkiUAQhyVpi9IP15yegi7qof9ZLcuyQkWTkta87U9m36CUkyXLq43RRU3fGsu/RS07NkLGRLBn2nansu1HhhX7wib8N9drbsKc6L/Fxck5l36RXKWNFvAenXHTxmooSy6A+vAoylX2LfS2/c33HlS3YWPYtqCWTsIwoxWzJdhevkSgjR7SypNQqFKyMlbnse1DWKVcckgh5ueZk9s+iBCjfypgFGf0pyFT2Xf4oLEx637rlm098QGFwWpaIQtJVRtq+9eO5WJ6H0hXZ23DP648nikjpqbLRYWlKF+Xa11eU43wk/dIpl6pLMZv98yhkE+0v508hMESzYjT7x1EoE1ULlGmX5Wogzmb/LCr7hdW9MSu/J7PYWw+d66XqEkb1GAIt+XI7lX1PvY0tgRGOLMIV71PMwewfRpkvxSM1GdoWNpd9F4rMTsPKVAF/tfJns38SleNGKXs6+3N0dcayb9Frb4+wpSi2szc2lX3L+VhTbI5OYfQqauA9ln1PPlFTbKvKbumtKhrLvi1f1U5XV7LqPC+vP36LikysAr6oJKOb11BUZF6WFRX3FF6DUO/zbdgTo7x0/2/ytl7alc+appHtwoj493w81vmvkmeeeFH/E+ov3Xv4K3emQIgAAAAASUVORK5CYII=" alt="QR code to the Code Quest 2026 site" width="132" height="132">
-    <p class="small">Scan for the 2026 event site, or visit goteamolatoyes on GitHub Pages. Every build is playable.</p>
+    <img class="qr" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASgAAAEoAQAAAADDfFG0AAAB9ElEQVR4nO2ayY4jMQxDyUH+/5ffHCTZTk8a6FNJjbGzwKkiUAQhyVpi9IP15yegi7qof9ZLcuyQkWTkta87U9m36CUkyXLq43RRU3fGsu/RS07NkLGRLBn2nansu1HhhX7wib8N9drbsKc6L/Fxck5l36RXKWNFvAenXHTxmooSy6A+vAoylX2LfS2/c33HlS3YWPYtqCWTsIwoxWzJdhevkSgjR7SypNQqFKyMlbnse1DWKVcckgh5ueZk9s+iBCjfypgFGf0pyFT2Xf4oLEx637rlm098QGFwWpaIQtJVRtq+9eO5WJ6H0hXZ23DP648nikjpqbLRYWlKF+Xa11eU43wk/dIpl6pLMZv98yhkE+0v508hMESzYjT7x1EoE1ULlGmX5Wogzmb/LCr7hdW9MSu/J7PYWw+d66XqEkb1GAIt+XI7lX1PvY0tgRGOLMIV71PMwewfRpkvxSM1GdoWNpd9F4rMTsPKVAF/tfJns38SleNGKXs6+3N0dcayb9Frb4+wpSi2szc2lX3L+VhTbI5OYfQqauA9ln1PPlFTbKvKbumtKhrLvi1f1U5XV7LqPC+vP36LikysAr6oJKOb11BUZF6WFRX3FF6DUO/zbdgTo7x0/2/ytl7alc+appHtwoj493w81vmvkmeeeFH/E+ov3Xv4K3emQIgAAAAASUVORK5CYII=" alt="QR code to the Code Quest 2026 site" width="128" height="128" draggable="false">
+    <p class="small">Scan for the 2026 event site. Every build is playable.</p>
   </div></section>
 
 </div>
 
 <div id="dots"></div>
-<div id="hint">swipe or &larr; &rarr;</div>
-<div class="tapzone" id="zl"></div>
-<div class="tapzone" id="zr"></div>
+<div id="hint">drag &middot; &larr; &rarr;</div>
 
 <script>
 (function(){
 "use strict";
 var deck = document.getElementById("deck");
-var slides = deck.children.length;
-var i = 0;
+var slides = deck.children;
+var N = slides.length;
+var vw = innerWidth;
+var idx = 0;
+var pos = 0;            /* current translate in px (negative going right) */
+var target = 0;
+var dragging = false;
+var startX = 0, startPos = 0, lastX = 0, lastT = 0, vel = 0;
+var anim = null;
+
+var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 var dots = document.getElementById("dots");
-for (var d = 0; d < slides; d++){
-  var el = document.createElement("i");
-  dots.appendChild(el);
-}
-function go(n){
-  i = Math.max(0, Math.min(slides - 1, n));
-  deck.style.transform = "translateX(" + (-i * 100) + "vw)";
+for (var d = 0; d < N; d++) dots.appendChild(document.createElement("i"));
+function paintDots(){
   var ds = dots.children;
-  for (var k = 0; k < ds.length; k++) ds[k].classList.toggle("on", k === i);
+  for (var k = 0; k < ds.length; k++) ds[k].classList.toggle("on", k === idx);
 }
-go(0);
 
-document.getElementById("zr").addEventListener("click", function(){ go(i + 1); });
-document.getElementById("zl").addEventListener("click", function(){ go(i - 1); });
-addEventListener("keydown", function(e){
-  if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") go(i + 1);
-  if (e.key === "ArrowLeft" || e.key === "PageUp") go(i - 1);
-  if (e.key === "Home") go(0);
+function apply(p){
+  pos = p;
+  deck.style.transform = "translate3d(" + p + "px,0,0)";
+  /* parallax + depth: inner content drifts and scales as slides travel */
+  for (var k = 0; k < N; k++){
+    var off = (k * vw + p) / vw;          /* 0 when centered */
+    var a = Math.max(-1, Math.min(1, off));
+    var inner = slides[k].firstElementChild.nextElementSibling || slides[k].firstElementChild;
+    inner.style.transform = "translateX(" + (a * -46) + "px) scale(" + (1 - Math.min(0.05, Math.abs(a) * 0.05)) + ")";
+    inner.style.opacity = String(1 - Math.min(0.35, Math.abs(a) * 0.35));
+  }
+}
+
+function snapTo(n, withVel){
+  idx = Math.max(0, Math.min(N - 1, n));
+  target = -idx * vw;
+  paintDots();
+  if (reduced){ apply(target); return; }
+  cancelAnimationFrame(anim);
+  var from = pos, dist = target - from;
+  var dur = Math.max(280, Math.min(620, Math.abs(dist) * 0.9 - Math.abs(withVel || 0) * 80));
+  var t0 = performance.now();
+  function ease(t){ return 1 - Math.pow(1 - t, 3); }
+  function step(now){
+    var t = Math.min(1, (now - t0) / dur);
+    apply(from + dist * ease(t));
+    if (t < 1) anim = requestAnimationFrame(step);
+  }
+  anim = requestAnimationFrame(step);
+}
+
+/* ── drag ── */
+function isInteractive(el){ return !!(el.closest && el.closest("a,button")); }
+deck.addEventListener("pointerdown", function(e){
+  if (isInteractive(e.target)) return;
+  dragging = true;
+  deck.classList.add("drag");
+  cancelAnimationFrame(anim);
+  startX = lastX = e.clientX; startPos = pos; lastT = performance.now(); vel = 0;
+  deck.setPointerCapture(e.pointerId);
 });
-var tx = null;
-addEventListener("touchstart", function(e){ tx = e.touches[0].clientX; }, {passive:true});
-addEventListener("touchend", function(e){
-  if (tx === null) return;
-  var dx = e.changedTouches[0].clientX - tx;
-  if (Math.abs(dx) > 46) go(i + (dx < 0 ? 1 : -1));
-  tx = null;
-}, {passive:true});
+deck.addEventListener("pointermove", function(e){
+  if (!dragging) return;
+  var now = performance.now();
+  var dx = e.clientX - lastX;
+  var dt = now - lastT || 16;
+  vel = vel * 0.7 + (dx / dt) * 0.3;
+  lastX = e.clientX; lastT = now;
+  var p = startPos + (e.clientX - startX);
+  var min = -(N - 1) * vw, max = 0;
+  if (p > max) p = max + (p - max) * 0.3;          /* rubber band */
+  if (p < min) p = min + (p - min) * 0.3;
+  apply(p);
+});
+function endDrag(){
+  if (!dragging) return;
+  dragging = false;
+  deck.classList.remove("drag");
+  var moved = pos - startPos;
+  var n = idx;
+  if (vel < -0.45 || moved < -vw * 0.28) n = idx + 1;
+  else if (vel > 0.45 || moved > vw * 0.28) n = idx - 1;
+  snapTo(n, vel);
+}
+deck.addEventListener("pointerup", endDrag);
+deck.addEventListener("pointercancel", endDrag);
 
-/* audience personalisation */
+/* ── wheel (trackpads) ── */
+var wheelAcc = 0, wheelLock = false;
+addEventListener("wheel", function(e){
+  var d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+  if (wheelLock){ return; }
+  wheelAcc += d;
+  if (Math.abs(wheelAcc) > 90){
+    snapTo(idx + (wheelAcc > 0 ? 1 : -1));
+    wheelAcc = 0; wheelLock = true;
+    setTimeout(function(){ wheelLock = false; }, 550);
+  }
+}, { passive: true });
+
+/* ── keys ── */
+addEventListener("keydown", function(e){
+  if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") snapTo(idx + 1);
+  if (e.key === "ArrowLeft" || e.key === "PageUp") snapTo(idx - 1);
+  if (e.key === "Home") snapTo(0);
+  if (e.key === "End") snapTo(N - 1);
+});
+
+addEventListener("resize", function(){
+  vw = innerWidth;
+  apply(-idx * vw);
+  target = -idx * vw;
+});
+
+/* ── audience personalisation ── */
 var COPY = {
   parent: {
-    mEye: "What it costs", mHead: "One fee, everything included",
+    mEye: "What it costs", mHead: "One fee. Everything included.",
     mNote: "The event ticket is credited against your first month if you continue. Cancel any time. Your child keeps everything they make.",
-    cEye: "For your family", cHead: "Give them a day they will not stop talking about",
+    cEye: "For your family", cHead: "Give them a day they will not stop talking about.",
     cBody: "Bring your child to a Code Quest day. Watch them present something they built that morning. Decide afterwards."
   },
   partner: {
-    mEye: "How it sustains", mHead: "Simple, honest money",
-    mNote: "Venues and schools partner on hosting; safeguarding, DBS checked coaches and insurance are ours to carry. You bring the room and the community, we bring the day.",
-    cEye: "For delivery partners", cHead: "Host a Code Quest day",
+    mEye: "How it sustains", mHead: "Simple, honest money.",
+    mNote: "Venues and schools partner on hosting. Safeguarding, DBS checked coaches and insurance are ours to carry. You bring the room and the community. We bring the day.",
+    cEye: "For delivery partners", cHead: "Host a Code Quest day.",
     cBody: "A hall, a Saturday, twenty kids from your community. We run everything. Your organisation is on every banner of a day families remember."
   },
   investor: {
-    mEye: "The model", mHead: "Three revenue moments, one loop",
-    mNote: "Ticket revenue funds the day, merch is high margin and personal, the subscription compounds. Infrastructure is around $44 a year until scale; the growth loop serves static files, so spreading is free.",
-    cEye: "The ask", cHead: "Back the pilot tour",
-    cBody: "The format is proven on cohort zero. The next step is five pilot locations, a hundred families, and the numbers that price the round. Come and see a day first."
+    mEye: "The model", mHead: "Three revenue moments. One loop.",
+    mNote: "Ticket revenue funds the day. Merch is high margin and personal. The subscription compounds. Infrastructure runs about $44 a year until scale, and the growth loop serves static files, so spreading is free.",
+    cEye: "The ask", cHead: "Back the pilot tour.",
+    cBody: "The format is proven on cohort zero. Next: five pilot locations, a hundred families, and the numbers that price the round. Come and see a day first."
   }
 };
 document.getElementById("aud").addEventListener("click", function(e){
@@ -338,8 +417,11 @@ document.getElementById("aud").addEventListener("click", function(e){
   document.getElementById("c-eye").textContent = c.cEye;
   document.getElementById("c-head").textContent = c.cHead;
   document.getElementById("c-body").textContent = c.cBody;
-  setTimeout(function(){ go(1); }, 350);
+  setTimeout(function(){ snapTo(1); }, 320);
 });
+
+apply(0);
+paintDots();
 })();
 </script>
 </body>
