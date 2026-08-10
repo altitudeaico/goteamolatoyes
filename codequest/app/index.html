@@ -138,6 +138,60 @@ body{display:grid;place-items:center;overflow:hidden}
 .ok{margin-left:auto;border:0;cursor:pointer;background:var(--phos);color:var(--void);font-family:var(--sys);
   font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:10px 14px;border-radius:99px}
 
+/* clips feed */
+#clips .feed{position:absolute;inset:0;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none}
+#clips .feed::-webkit-scrollbar{display:none}
+.clip{height:100%;scroll-snap-align:start;scroll-snap-stop:always;position:relative;overflow:hidden;background:#000}
+.clip video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.clip .bgles{position:absolute;inset:0;background:linear-gradient(160deg,#241D33,#0B0912 55%),radial-gradient(60% 40% at 70% 20%, rgba(69,227,196,.25), transparent);display:grid;place-items:center}
+.clip .bgles span{font-size:84px;filter:drop-shadow(0 12px 30px rgba(0,0,0,.6))}
+.clip .bgnew{position:absolute;inset:0;background:linear-gradient(150deg,#4A2C8F,#1B0F35 60%);display:grid;place-items:center}
+.clip .bgnew span{font-size:84px}
+.clip .scrim{position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,.32),transparent 30%,transparent 55%,rgba(0,0,0,.72))}
+.shield{position:absolute;top:58px;left:14px;z-index:5;display:inline-flex;align-items:center;gap:6px;
+  background:rgba(11,9,18,.72);border:1px solid rgba(69,227,196,.4);border-radius:99px;
+  padding:6px 11px;font-family:var(--sys);font-size:8.5px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--phos)}
+.lestag{position:absolute;top:58px;right:14px;z-index:5;background:var(--gold);color:var(--void);
+  border-radius:6px;padding:5px 9px;font-family:var(--sys);font-size:8.5px;font-weight:700;letter-spacing:.12em}
+.newtag{background:var(--rubric);color:#fff}
+.rail{position:absolute;right:10px;bottom:120px;z-index:6;display:grid;gap:16px;justify-items:center}
+.rail button{border:0;background:none;color:#fff;cursor:pointer;display:grid;gap:3px;justify-items:center;font-family:var(--body)}
+.rail .ic{width:46px;height:46px;border-radius:50%;background:rgba(11,9,18,.55);border:1px solid rgba(255,255,255,.18);
+  display:grid;place-items:center;font-size:20px;transition:.15s}
+.rail button.hit .ic{background:rgba(69,227,196,.25);border-color:var(--phos);transform:scale(1.12)}
+.rail span{font-size:10px;font-weight:700;text-shadow:0 1px 4px #000}
+.cmeta{position:absolute;left:14px;right:74px;bottom:34px;z-index:6}
+.cmeta .who{font-family:var(--sys);font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--gold-hi)}
+.cmeta .cap{font-size:14.5px;font-weight:500;margin-top:5px;line-height:1.4;text-shadow:0 1px 6px #000}
+.cmeta .try{margin-top:10px}
+.lesprog{margin-top:8px;font-family:var(--sys);font-size:9px;color:var(--phos);letter-spacing:.1em}
+.seg{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;justify-content:center;gap:18px;
+  padding:46px 0 8px;background:linear-gradient(rgba(0,0,0,.5),transparent)}
+@media(max-width:759px){.seg{padding-top:calc(42px + env(safe-area-inset-top))}}
+.seg button{border:0;background:none;color:rgba(255,255,255,.55);cursor:pointer;font-family:var(--body);
+  font-size:14px;font-weight:700;padding:6px 2px;border-bottom:2px solid transparent}
+.seg button.on{color:#fff;border-bottom-color:var(--gold)}
+#postBtn{position:absolute;right:14px;bottom:110px;z-index:25;width:52px;height:52px;border-radius:50%;
+  border:0;cursor:pointer;background:var(--gold);color:var(--void);font-size:26px;font-weight:700;
+  box-shadow:0 10px 30px rgba(0,0,0,.5)}
+/* collections */
+.colcard{display:flex;gap:13px;align-items:center;background:var(--s1);border:1px solid var(--line);
+  border-radius:16px;padding:14px;margin-top:12px}
+.colcard .art{width:52px;height:52px;border-radius:12px;background:var(--s3);display:grid;place-items:center;font-size:24px;flex:none}
+.colcard b{display:block;font-size:14.5px}
+.colcard span{font-size:11.5px;color:var(--dim2);display:block;margin-top:2px}
+.colcard .pr{height:4px;border-radius:99px;background:var(--s3);margin-top:7px;overflow:hidden;width:120px}
+.colcard .pr i{display:block;height:100%;background:var(--gold)}
+/* post sheet */
+#sheet{position:absolute;inset:0;z-index:75;background:rgba(8,6,13,.7);display:none;align-items:flex-end}
+#sheet.show{display:flex}
+#sheet .body{width:100%;background:var(--s1);border-radius:22px 22px 0 0;border-top:1px solid var(--line);
+  padding:22px 20px calc(26px + env(safe-area-inset-bottom))}
+#sheet h3{font-family:var(--gothic);font-size:22px;color:var(--gold-hi)}
+#sheet .st{display:flex;gap:12px;margin-top:14px;font-size:13.5px}
+#sheet .st i{font-style:normal;font-family:var(--gothic);font-weight:800;color:var(--gold);font-size:18px;width:20px;flex:none}
+#sheet .st span{color:var(--dim);line-height:1.45}
 /* PIN modal */
 #pin{position:absolute;inset:0;z-index:70;background:rgba(8,6,13,.94);display:none;place-items:center;text-align:center}
 #pin.show{display:grid}
@@ -336,7 +390,12 @@ ball.onclick = () =&gt; {
           <span><b>Sky Bounce II</b><span>Zara wants to publish &middot; just now</span></span>
           <button class="ok" id="apprBtn" type="button">Review &amp; approve</button>
         </div>
-        <div class="sub" id="apprEmpty" style="display:none;padding:6px 0">Nothing pending. When a kid hits publish, it lands here first.</div>
+        <div class="appr" id="clipRow">
+          <span class="art">&#127909;</span>
+          <span><b>Zara's clip</b><span>"My butterfly game!!" &middot; 22 seconds</span></span>
+          <button class="ok" id="clipBtn" type="button">Review &amp; approve</button>
+        </div>
+        <div class="sub" id="apprEmpty" style="display:none;padding:6px 0">Nothing pending. When a kid publishes a build or a clip, it lands here first.</div>
       </div>
 
       <div class="card toggles">
@@ -353,6 +412,140 @@ ball.onclick = () =&gt; {
         <p>Event ticket credited against month one. Cancel any time. Your kids keep 100% of anything their builds ever earn.</p>
         <button class="cta ghost" type="button">Manage in Stripe</button>
       </div>
+    </div>
+  </div>
+
+  <!-- ═ CLIPS ═ -->
+  <div class="scr" id="clips">
+    <div class="feed" id="feed">
+
+      <div class="clip">
+        <video src="../codequest-elsie.mp4" muted loop playsinline preload="metadata"></video>
+        <div class="scrim"></div>
+        <span class="shield">&#10003; Guardian approved</span>
+        <div class="rail">
+          <button class="spark" type="button"><span class="ic">&#9889;</span><span class="n">128</span></button>
+          <button class="save" type="button"><span class="ic">&#128278;</span><span>Save</span></button>
+          <button class="shr" type="button"><span class="ic">&#8599;</span><span>Share</span></button>
+        </div>
+        <div class="cmeta">
+          <div class="who">@ELSIE &middot; QUESTER</div>
+          <div class="cap">My awakening &#129419; Butterfly Dash is LIVE on my stall. Three modes. Go play it.</div>
+        </div>
+      </div>
+
+      <div class="clip">
+        <div class="bgles"><span>&#128257;</span></div>
+        <div class="scrim"></div>
+        <span class="shield">&#10003; Code Quest original</span>
+        <span class="lestag">LESSON</span>
+        <div class="rail">
+          <button class="spark" type="button"><span class="ic">&#9889;</span><span class="n">64</span></button>
+          <button class="save" type="button"><span class="ic">&#128278;</span><span>Save</span></button>
+          <button class="shr" type="button"><span class="ic">&#8599;</span><span>Share</span></button>
+        </div>
+        <div class="cmeta">
+          <div class="who">LOOPS IN 60 SECONDS &middot; PART 2 OF 4</div>
+          <div class="cap">One loop can draw a hundred sprinkles. Watch what repeat really means, then make yours.</div>
+          <div class="lesprog">BUILDER PATH &middot; COUNTS TOWARD YOUR BELT</div>
+          <button class="cta try" data-go="rig" type="button">Try it in the rig</button>
+        </div>
+      </div>
+
+      <div class="clip">
+        <video src="../codequest-theodore.mp4" muted loop playsinline preload="metadata"></video>
+        <div class="scrim"></div>
+        <span class="shield">&#10003; Guardian approved</span>
+        <div class="rail">
+          <button class="spark" type="button"><span class="ic">&#9889;</span><span class="n">92</span></button>
+          <button class="save" type="button"><span class="ic">&#128278;</span><span>Save</span></button>
+          <button class="shr" type="button"><span class="ic">&#8599;</span><span>Share</span></button>
+        </div>
+        <div class="cmeta">
+          <div class="who">@THEODORE &middot; QUESTER</div>
+          <div class="cap">Flight test &#128009; Dragonball. Tap my stall to fly it yourself.</div>
+        </div>
+      </div>
+
+      <div class="clip">
+        <div class="bgles"><span>&#127919;</span></div>
+        <div class="scrim"></div>
+        <span class="shield">&#10003; Code Quest original</span>
+        <span class="lestag">LESSON</span>
+        <div class="rail">
+          <button class="spark" type="button"><span class="ic">&#9889;</span><span class="n">41</span></button>
+          <button class="save" type="button"><span class="ic">&#128278;</span><span>Save</span></button>
+          <button class="shr" type="button"><span class="ic">&#8599;</span><span>Share</span></button>
+        </div>
+        <div class="cmeta">
+          <div class="who">GAME JUICE &middot; PART 1 OF 3</div>
+          <div class="cap">Why does tapping feel GOOD? Squash, stretch and a tiny delay. Sixty seconds on game feel.</div>
+          <div class="lesprog">BUILDER PATH &middot; COUNTS TOWARD YOUR BELT</div>
+          <button class="cta try" data-go="rig" type="button">Try it in the rig</button>
+        </div>
+      </div>
+
+      <div class="clip">
+        <video src="../codequest-emma.mp4" muted loop playsinline preload="metadata"></video>
+        <div class="scrim"></div>
+        <span class="shield">&#10003; Guardian approved</span>
+        <div class="rail">
+          <button class="spark" type="button"><span class="ic">&#9889;</span><span class="n">203</span></button>
+          <button class="save" type="button"><span class="ic">&#128278;</span><span>Save</span></button>
+          <button class="shr" type="button"><span class="ic">&#8599;</span><span>Share</span></button>
+        </div>
+        <div class="cmeta">
+          <div class="who">@EMMA &middot; YOUNGEST QUESTER</div>
+          <div class="cap">I am SIX and I made a game &#127752; Nobody can lose in it. That is on purpose.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="seg">
+      <button class="on" id="segFeed" type="button">For you</button>
+      <button id="segCol" type="button">Collections</button>
+    </div>
+    <button id="postBtn" type="button" aria-label="Make a clip">+</button>
+  </div>
+
+  <!-- ═ COLLECTIONS ═ -->
+  <div class="scr" id="collections">
+    <div class="hd"><button id="backFeed" type="button">&#8249;</button><b>Collections</b></div>
+    <div class="scroll">
+      <div class="eyebrow">Yours</div>
+      <div class="colcard"><span class="art">&#128278;</span>
+        <span style="flex:1"><b>My Collection</b><span><span id="savedN">0</span> saved clips</span></span></div>
+
+      <div class="eyebrow" style="margin-top:22px">Learning paths &middot; lessons in the feed</div>
+      <div class="colcard"><span class="art">&#129521;</span>
+        <span style="flex:1"><b>Builder Path</b><span>7 lessons &middot; counts toward your Builder belt</span>
+        <span class="pr"><i style="width:43%"></i></span></span>
+        <span style="font-family:var(--sys);font-size:10px;color:var(--gold-hi)">3/7</span></div>
+      <div class="colcard"><span class="art">&#128257;</span>
+        <span style="flex:1"><b>Loops in 60 seconds</b><span>4 parts &middot; you are on part 2</span>
+        <span class="pr"><i style="width:50%"></i></span></span>
+        <span style="font-family:var(--sys);font-size:10px;color:var(--gold-hi)">2/4</span></div>
+      <div class="colcard"><span class="art">&#127919;</span>
+        <span style="flex:1"><b>Game Juice</b><span>3 parts &middot; make taps feel good</span>
+        <span class="pr"><i style="width:0%"></i></span></span>
+        <span style="font-family:var(--sys);font-size:10px;color:var(--gold-hi)">0/3</span></div>
+
+      <div class="eyebrow" style="margin-top:22px">From the realm</div>
+      <div class="colcard"><span class="art">&#127914;</span>
+        <span style="flex:1"><b>Tour hype</b><span>Clips from Code Quest days across the country</span></span></div>
+      <p class="sub" style="margin-top:18px">Lessons live in the same feed as everything else. Watching is learning; every path feeds a belt.</p>
+    </div>
+  </div>
+
+  <!-- post sheet -->
+  <div id="sheet">
+    <div class="body">
+      <h3>Make a clip</h3>
+      <div class="st"><i>1</i><span>Record in the app. Your build, your face, your call.</span></div>
+      <div class="st"><i>2</i><span>Your Guardian reviews it. Nothing goes live without them.</span></div>
+      <div class="st"><i>3</i><span>It lands in the realm feed. Reactions only. No DMs, no strangers, ever.</span></div>
+      <button class="cta gold" id="recBtn" style="width:100%;text-align:center;margin-top:18px" type="button">Start recording</button>
     </div>
   </div>
 
@@ -377,6 +570,8 @@ ball.onclick = () =&gt; {
       <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Realm</button>
     <button data-go="rig" type="button">
       <svg viewBox="0 0 24 24"><path d="M14 4l6 6-9 9H5v-6zM12 6l6 6"/></svg>Build</button>
+    <button data-go="clips" type="button">
+      <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5l5 2.5-5 2.5z"/></svg>Clips</button>
     <button data-go="market" type="button">
       <svg viewBox="0 0 24 24"><path d="M4 8h16l-1 12H5zM4 8l2-4h12l2 4M9 12v3M15 12v3"/></svg>Market</button>
     <button data-go="quests" type="button">
@@ -400,7 +595,7 @@ function go(id){
   var inApp = (id !== "gate" && id !== "guardian");
   tabs.classList.toggle("show", inApp);
   var tb = tabs.children;
-  var map = { home:0, rig:1, market:2, stall:2, quests:3 };
+  var map = { home:0, rig:1, clips:2, collections:2, market:3, stall:3, quests:4 };
   for (var k = 0; k < tb.length; k++) tb[k].classList.toggle("on", map[id] === k);
 }
 
@@ -534,6 +729,85 @@ document.querySelectorAll(".sw").forEach(function(sw){
   sw.addEventListener("keydown", function(e){
     if (e.key === " " || e.key === "Enter"){ e.preventDefault(); flip(); }
   });
+});
+
+/* ── clips feed ── */
+var feed = document.getElementById("feed");
+var vids = feed.querySelectorAll("video");
+var io = new IntersectionObserver(function(es){
+  es.forEach(function(en){
+    var v = en.target;
+    if (en.intersectionRatio > 0.6){ v.play().catch(function(){}); }
+    else v.pause();
+  });
+}, { root: feed, threshold: [0, 0.6, 1] });
+vids.forEach(function(v){
+  io.observe(v);
+  v.addEventListener("click", function(){ if (v.paused) v.play().catch(function(){}); else v.pause(); });
+});
+
+var savedN = 0;
+feed.addEventListener("click", function(e){
+  var sp = e.target.closest(".spark");
+  if (sp){
+    var n = sp.querySelector(".n");
+    if (!sp.classList.contains("hit")){ sp.classList.add("hit"); n.textContent = String(parseInt(n.textContent, 10) + 1); }
+    else { sp.classList.remove("hit"); n.textContent = String(parseInt(n.textContent, 10) - 1); }
+    return;
+  }
+  var sv = e.target.closest(".save");
+  if (sv){
+    if (!sv.classList.contains("hit")){
+      sv.classList.add("hit"); savedN++;
+      document.getElementById("savedN").textContent = String(savedN);
+      toast("Saved to My Collection");
+    }
+    return;
+  }
+  var sh = e.target.closest(".shr");
+  if (sh){ toast("Link copied, with your mark: ?ref=zara"); return; }
+});
+
+document.getElementById("segCol").addEventListener("click", function(){ go("collections"); });
+document.getElementById("segFeed").addEventListener("click", function(){ go("clips"); });
+document.getElementById("backFeed").addEventListener("click", function(){ go("clips"); });
+
+/* pause all videos when leaving clips */
+var _go = go;
+go = function(id){
+  _go(id);
+  if (id !== "clips") vids.forEach(function(v){ v.pause(); });
+};
+
+/* post sheet */
+var sheet = document.getElementById("sheet");
+document.getElementById("postBtn").addEventListener("click", function(){ sheet.classList.add("show"); });
+sheet.addEventListener("click", function(e){ if (e.target === sheet) sheet.classList.remove("show"); });
+document.getElementById("recBtn").addEventListener("click", function(){
+  sheet.classList.remove("show");
+  toast("Camera opens here in the real app");
+});
+
+/* guardian approves Zara's clip → lands in feed */
+document.getElementById("clipBtn").addEventListener("click", function(){
+  document.getElementById("clipRow").style.display = "none";
+  if (document.getElementById("apprRow").style.display === "none")
+    document.getElementById("apprEmpty").style.display = "block";
+  var c = document.createElement("div");
+  c.className = "clip";
+  c.innerHTML = '<div class="bgnew"><span>&#129419;</span></div>' +
+    '<div class="scrim"></div>' +
+    '<span class="shield">&#10003; Approved by you, just now</span>' +
+    '<span class="lestag newtag">NEW</span>' +
+    '<div class="rail">' +
+      '<button class="spark" type="button"><span class="ic">&#9889;</span><span class="n">0</span></button>' +
+      '<button class="save" type="button"><span class="ic">&#128278;</span><span>Save</span></button>' +
+      '<button class="shr" type="button"><span class="ic">&#8599;</span><span>Share</span></button>' +
+    '</div>' +
+    '<div class="cmeta"><div class="who">@ZARA &middot; QUESTER</div>' +
+    '<div class="cap">My butterfly game!! &#129419; It has a draw mode where YOU make the character.</div></div>';
+  feed.insertBefore(c, feed.firstChild);
+  toast("Approved. Zara's clip is live in the feed.");
 });
 
 /* profile avatar returns to gate */
