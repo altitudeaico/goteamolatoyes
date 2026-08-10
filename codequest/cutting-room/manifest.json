@@ -34,6 +34,38 @@
       "status": "new",
       "instructions": [],
       "cuts": []
+    },
+    {
+      "id": "C04",
+      "file": "src/C04-grandma-purple.mp4",
+      "label": "Grandma \u00b7 the judge, in purple, dancing \u00b7 13s \u00b7 portrait",
+      "status": "new",
+      "instructions": [],
+      "cuts": []
+    },
+    {
+      "id": "C05",
+      "file": "src/C05-room-wide-REVIEW.mp4",
+      "label": "The room at Native \u00b7 continuous wide around the sofas \u00b7 11m 45s \u00b7 REVIEW PROXY 360p, master held for cutting",
+      "status": "new",
+      "instructions": [],
+      "cuts": []
+    },
+    {
+      "id": "C06A",
+      "file": "src/C06A-presentations-REVIEW.mp4",
+      "label": "The gathering, part A \u00b7 kids presenting to the room \u00b7 first 13m 45s \u00b7 REVIEW PROXY 360p, master held",
+      "status": "new",
+      "instructions": [],
+      "cuts": []
+    },
+    {
+      "id": "C06B",
+      "file": "src/C06B-presentations-REVIEW.mp4",
+      "label": "The gathering, part B \u00b7 continues from part A (add 13:45 for master timecode) \u00b7 13m 45s \u00b7 REVIEW PROXY 360p, master held",
+      "status": "new",
+      "instructions": [],
+      "cuts": []
     }
   ]
 }
