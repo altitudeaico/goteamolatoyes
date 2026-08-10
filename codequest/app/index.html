@@ -50,11 +50,11 @@ body{display:grid;place-items:center;overflow:hidden}
 
 /* cards */
 .card{background:var(--s1);border:1px solid var(--line);border-radius:18px;padding:16px;margin-top:14px}
-.card h3{font-family:var(--gothic);font-weight:800;font-size:19px;color:var(--gold-hi);line-height:1.1}
-.card p{font-size:13px;color:var(--dim);margin-top:4px;line-height:1.5}
+.card h3{font-family:var(--gothic);font-weight:800;font-size:21px;color:var(--gold-hi);line-height:1.1}
+.card p{font-size:14px;color:#C9BEA6;margin-top:5px;line-height:1.5}
 .cta{display:inline-block;margin-top:12px;background:var(--phos);color:var(--void);border:0;cursor:pointer;
-  font-family:var(--sys);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
-  padding:12px 18px;border-radius:99px;text-decoration:none}
+  font-family:var(--body);font-size:14px;font-weight:700;
+  padding:13px 20px;border-radius:99px;text-decoration:none}
 .cta.gold{background:var(--gold)}
 .cta.ghost{background:none;border:1px solid var(--line);color:var(--parch)}
 
@@ -323,28 +323,28 @@ body{display:grid;place-items:center;overflow:hidden}
       <div style="margin-top:12px"><span class="beltchip"><i></i>Level: Quester &middot; 3 of 5 to Builder</span></div>
 
       <div class="card">
-        <div class="eyebrow" style="color:var(--gold)">Continue &middot; The Second Build</div>
-        <h3>Sky Bounce II</h3>
-        <p>Add a score that saves. Two steps left, then publish it. Publishing is how you level up.</p>
+        <div class="eyebrow" style="color:var(--gold)">Keep going!</div>
+        <h3>&#127919; Sky Bounce II</h3>
+        <p>Add a score. 2 steps left. Then publish it and level up!</p>
         <div class="progress"><i style="width:60%"></i></div>
-        <button class="cta" data-go="rig" type="button">Open the rig</button>
+        <button class="cta" data-go="rig" type="button">Keep building</button>
       </div>
 
       <div class="card" style="border-color:rgba(217,169,76,.4)">
-        <div class="eyebrow" style="color:var(--gold)">The archive &middot; where it began</div>
-        <h3>Code Quest MMXXVI</h3>
-        <p>Saturday 1 August 2026. Six cousins, two teams, one day. Relive the whole thing.</p>
-        <button class="cta gold" data-go="event" type="button">Enter the archive</button>
+        <div class="eyebrow" style="color:var(--gold)">Remember this?</div>
+        <h3>&#128081; Code Quest 2026</h3>
+        <p>6 cousins. 6 games. 1 day. See it all again.</p>
+        <button class="cta gold" data-go="event" type="button">See the day</button>
       </div>
 
       <div class="card">
-        <div class="eyebrow" style="color:var(--rubric)">Quest alert</div>
-        <h3>Code Quest Tour &middot; Manchester</h3>
-        <p>Saturday 12 September. Your cohort presents at 14:45. Mum and Dad have showcase tickets.</p>
+        <div class="eyebrow" style="color:var(--rubric)">Coming up!</div>
+        <h3>&#127914; Code Quest Tour</h3>
+        <p>Manchester. Saturday 12 September. You present at 14:45. Mum and Dad will be watching!</p>
         <button class="cta ghost" type="button">Add to calendar</button>
       </div>
 
-      <div class="eyebrow" style="margin-top:22px">Fresh from the Marketplace</div>
+      <div class="eyebrow" style="margin-top:22px">New games to play</div>
       <div class="row">
         <a class="mini" href="../elsie/game/" target="_blank" rel="noopener"><span class="art">&#129419;</span><b>Butterfly Dash</b><span>by Elsie</span></a>
         <a class="mini" href="../emma/game/" target="_blank" rel="noopener"><span class="art">&#127752;</span><b>Sprinkle Dash</b><span>by Emma</span></a>
@@ -379,7 +379,7 @@ ball.onclick = () =&gt; {
       <iframe id="pv" title="Live preview"></iframe>
 
       <div class="ai" id="rvai">
-        <div class="m bot">Hello, builder. Want me to change something? Tap a suggestion, then check Preview.</div>
+        <div class="m bot">Hi Zara! Want to change your game? Tap one, then look at Preview.</div>
         <div id="aims"></div>
         <div class="chips">
           <button data-ai="purple" type="button">Make the sky purple</button>
@@ -388,8 +388,8 @@ ball.onclick = () =&gt; {
         </div>
       </div>
 
-      <button class="cta gold" id="pubBtn" style="width:100%;text-align:center;margin-top:16px" type="button">Publish to the Marketplace</button>
-      <p class="sub" style="text-align:center;margin-top:10px">Publishing sends it to your Guardian first. Nothing goes live unreviewed.</p>
+      <button class="cta gold" id="pubBtn" style="width:100%;text-align:center;margin-top:16px" type="button">&#128640; Publish my game</button>
+      <p class="sub" style="text-align:center;margin-top:10px;font-size:13px">When you publish, your parent checks it first. Then it goes live!</p>
     </div>
   </div>
 
@@ -398,7 +398,7 @@ ball.onclick = () =&gt; {
     <div class="hd"><b>Games</b><span class="subt">The Marketplace</span><span class="sp"></span>
       <span class="hdicons"><button class="helpB" type="button" aria-label="Help">?</button><button class="parB" type="button" aria-label="Parent zone">&#128737;</button></span></div>
     <div class="scroll">
-      <div class="eyebrow">Real builds by real kids</div>
+      <div class="eyebrow">Real games by real kids</div>
       <div class="mgrid">
         <button class="stallc" id="myStall" type="button" style="text-align:left;border-color:rgba(69,227,196,.4)">
           <span class="art">&#127919;</span><b>Sky Bounce <span class="badge" id="liveBadge" style="display:none">LIVE</span></b><span>by Zara &middot; your stall</span>
@@ -421,14 +421,14 @@ ball.onclick = () =&gt; {
         <h3 style="font-size:24px;margin-top:6px">Sky Bounce</h3>
         <p>by Zara &middot; Quester</p>
         <div style="margin-top:12px;font-family:var(--sys);font-size:11px;color:var(--phos);background:var(--s2);border:1px solid var(--line);border-radius:10px;padding:11px" id="shareUrl">zara.builtby.kids?ref=zara</div>
-        <button class="cta" id="copyBtn" type="button">Copy share link</button>
-        <button class="cta ghost" data-go="rig" type="button">Open in the rig</button>
-        <p class="sub" style="margin-top:12px">A friend who taps this link plays in the browser first. No install. Your mark travels with it.</p>
+        <button class="cta" id="copyBtn" type="button">Copy my link</button>
+        <button class="cta ghost" data-go="rig" type="button">Keep building it</button>
+        <p class="sub" style="margin-top:12px;font-size:13px">Send this to a friend. They tap, they play. And everyone knows you made it.</p>
       </div>
       <div class="card">
         <div class="eyebrow">This week</div>
-        <h3>14 plays &middot; 3 shares</h3>
-        <p>Two friends followed your link. One asked their parent about the next cohort.</p>
+        <h3>&#127942; 14 plays this week!</h3>
+        <p>3 friends got your link. 2 played your game. Nice one.</p>
       </div>
     </div>
   </div>
@@ -438,18 +438,18 @@ ball.onclick = () =&gt; {
     <div class="hd"><b>Progress</b><span class="subt">The Path</span><span class="sp"></span>
       <span class="hdicons"><button class="helpB" type="button" aria-label="Help">?</button><button class="parB" type="button" aria-label="Parent zone">&#128737;</button></span></div>
     <div class="scroll">
-      <div class="eyebrow">Belts are earned by shipping</div>
+      <div class="eyebrow">You level up by making things</div>
       <div class="h1" style="font-size:26px">Quester &rarr; Mogul</div>
       <div class="ladder">
-        <div class="rung done"><span class="dot">&#10003;</span><span><b>Quester</b><span>Ship your first build at a Code Quest day. Done: Sky Bounce, 1 Aug.</span></span></div>
-        <div class="rung now"><span class="dot">&#9679;</span><span><b>Builder</b><span>Ship three builds from home. Sky Bounce II is 2 of 3.</span></span></div>
-        <div class="rung lock"><span class="dot">&#128274;</span><span><b>Mentor</b><span>Help teach a cohort. Presenting, patience, leadership.</span></span></div>
-        <div class="rung lock"><span class="dot">&#128274;</span><span><b>Mogul</b><span>The summit. Earned, never bought. New powers unlock in the Realm.</span></span></div>
+        <div class="rung done"><span class="dot">&#10003;</span><span><b>Quester</b><span>Publish your first game. You did it! Sky Bounce, 1 Aug.</span></span></div>
+        <div class="rung now"><span class="dot">&#9679;</span><span><b>Builder</b><span>Publish 3 games from home. You are on 2 of 3!</span></span></div>
+        <div class="rung lock"><span class="dot">&#128274;</span><span><b>Mentor</b><span>Help teach the next kids. Big kid energy.</span></span></div>
+        <div class="rung lock"><span class="dot">&#128274;</span><span><b>Mogul</b><span>The very top. You earn it. You can never buy it.</span></span></div>
       </div>
       <div class="card" style="border-color:rgba(217,169,76,.3)">
         <div class="eyebrow" style="color:var(--gold)">Sealed</div>
         <h3>The Awakening</h3>
-        <p>A transformation earned through creating, shipping, presenting and helping. Questers who reach it are changed.</p>
+        <p>Keep making things. Keep helping. One day, something amazing happens to your character.</p>
       </div>
     </div>
   </div>
@@ -749,7 +749,7 @@ ball.onclick = () =&gt; {
     <div class="body">
       <h3>The words, in plain English</h3>
       <div class="g"><b>Code Quest</b><span>A programme where kids build real apps and games, starting with a one day event.</span></div>
-      <div class="g"><b>Quester</b><span>A kid on the programme. Also the first level.</span></div>
+      <div class="g"><b>Quester</b><span>A kid on Code Quest. Also level one.</span></div>
       <div class="g"><b>Levels</b><span>Quester, then Builder, then Mentor, then Mogul. You level up by publishing things, not by watching videos.</span></div>
       <div class="g"><b>Creator Studio</b><span>Where kids build. Code on one side, the live game on the other, an AI helper alongside. We call it the Rig.</span></div>
       <div class="g"><b>Games</b><span>The marketplace. Every published game gets its own page with a share link. We call a kid's page their stall.</span></div>
