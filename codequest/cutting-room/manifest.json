@@ -39,9 +39,19 @@
       "id": "C04",
       "file": "src/C04-grandma-purple.mp4",
       "label": "Grandma \u00b7 the judge, in purple, dancing \u00b7 13s \u00b7 portrait",
-      "status": "new",
-      "instructions": [],
-      "cuts": []
+      "status": "cut",
+      "instructions": [
+        {
+          "when": "10 Aug",
+          "text": "Push onto the app simulation Clips feed. Context: Grandma arriving midway through the August event, getting ready to judge all the questers."
+        }
+      ],
+      "cuts": [
+        {
+          "file": "../clips/grandma-arrives.mp4",
+          "note": "Feed version \u00b7 as shot, no trims \u00b7 live in the app as clip two"
+        }
+      ]
     },
     {
       "id": "C05",
