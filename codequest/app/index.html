@@ -3,294 +3,320 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0B0912">
+<meta name="theme-color" content="#F6F7FB">
 <title>Code Quest · App Concept</title>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --void:#0B0912; --s1:#14101F; --s2:#1B1628; --s3:#241D33;
-  --parch:#E9DFC7; --dim:#9A8F7A; --dim2:#6E6478;
-  --gold:#D9A94C; --gold-hi:#F2CE7B; --phos:#45E3C4; --rubric:#E4574A;
-  --line:rgba(233,223,199,.09);
-  --gothic:'Grenze Gotisch',serif; --body:'DM Sans',sans-serif; --sys:'JetBrains Mono',monospace;
+  --bg:#F6F7FB; --card:#FFFFFF; --ink:#232946; --mut:#6B7280; --soft:#EEF0F6;
+  --purple:#7C5CFC; --teal:#12B5A5; --coral:#FF6B6B; --amber:#FFB020; --green:#3EC26B;
+  --purple-s:#F0EBFF; --teal-s:#E2F7F5; --coral-s:#FFECEC; --amber-s:#FFF4DE; --green-s:#E6F8ED;
+  --line:#E7E9F0; --sans:'Nunito',system-ui,sans-serif;
+  --sh:0 6px 20px rgba(35,41,70,.08);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;background:#08060d;font-family:var(--body);color:var(--parch);-webkit-font-smoothing:antialiased}
+html,body{height:100%;background:#E9EBF2;font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased}
 body{display:grid;place-items:center;overflow:hidden}
 
-/* phone frame on desktop, full bleed on mobile */
-#phone{position:relative;width:100%;height:100%;background:var(--void);overflow:hidden}
+#phone{position:relative;width:100%;height:100%;background:var(--bg);overflow:hidden}
 @media(min-width:760px){
-  body{background:radial-gradient(60% 60% at 50% 40%, #17121f, #08060d)}
-  #phone{width:392px;height:min(846px,94vh);border-radius:48px;border:1px solid rgba(255,255,255,.12);
-    box-shadow:0 40px 120px rgba(0,0,0,.7), inset 0 0 0 8px #000}
+  body{background:radial-gradient(60% 60% at 50% 40%, #f2ecff, #dfe3ee)}
+  #phone{width:392px;height:min(846px,94vh);border-radius:48px;border:1px solid rgba(35,41,70,.15);
+    box-shadow:0 40px 110px rgba(35,41,70,.35), inset 0 0 0 8px #111;}
   #notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:118px;height:28px;
-    background:#000;border-radius:99px;z-index:60}
+    background:#111;border-radius:99px;z-index:60}
 }
 #notch{display:none}
 @media(min-width:760px){#notch{display:block}}
 
-/* status bar */
 #status{position:absolute;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;
-  padding:14px 26px 6px;font-size:12.5px;font-weight:700;pointer-events:none}
+  padding:14px 26px 6px;font-size:12.5px;font-weight:800;color:var(--ink);pointer-events:none}
 @media(max-width:759px){#status{padding-top:calc(8px + env(safe-area-inset-top))}}
 
-/* screens */
-.scr{position:absolute;inset:0;display:none;flex-direction:column;overflow:hidden}
+.scr{position:absolute;inset:0;display:none;flex-direction:column;overflow:hidden;background:var(--bg)}
 .scr.on{display:flex}
-.scroll{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:64px 18px 110px;scrollbar-width:none}
+.scroll{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:64px 18px 116px;scrollbar-width:none}
 .scroll::-webkit-scrollbar{display:none}
 
-.h1{font-family:var(--gothic);font-weight:800;font-size:30px;line-height:1;color:var(--gold-hi)}
-.eyebrow{font-family:var(--sys);font-size:9px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--phos);margin-bottom:6px}
-.sub{font-size:13px;color:var(--dim);margin-top:4px}
+.h1{font-weight:900;font-size:28px;line-height:1.12;color:var(--ink)}
+.eyebrow{font-size:12.5px;font-weight:800;color:var(--mut);margin-bottom:4px}
+.sub{font-size:13.5px;color:var(--mut);margin-top:6px;line-height:1.55;font-weight:600}
 
-/* cards */
-.card{background:var(--s1);border:1px solid var(--line);border-radius:18px;padding:16px;margin-top:14px}
-.card h3{font-family:var(--gothic);font-weight:800;font-size:21px;color:var(--gold-hi);line-height:1.1}
-.card p{font-size:14px;color:#C9BEA6;margin-top:5px;line-height:1.5}
-.cta{display:inline-block;margin-top:12px;background:var(--phos);color:var(--void);border:0;cursor:pointer;
-  font-family:var(--body);font-size:14px;font-weight:700;
-  padding:13px 20px;border-radius:99px;text-decoration:none}
-.cta.gold{background:var(--gold)}
-.cta.ghost{background:none;border:1px solid var(--line);color:var(--parch)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:17px;margin-top:14px;box-shadow:var(--sh)}
+.card h3{font-weight:900;font-size:19px;color:var(--ink);line-height:1.15}
+.card p{font-size:14px;color:var(--mut);margin-top:5px;line-height:1.5;font-weight:600}
+.cta{display:inline-block;margin-top:13px;background:var(--purple);color:#fff;border:0;cursor:pointer;
+  font-family:var(--sans);font-size:15px;font-weight:800;padding:14px 22px;border-radius:99px;text-decoration:none;
+  box-shadow:0 6px 16px rgba(124,92,252,.35)}
+.cta.teal{background:var(--teal);box-shadow:0 6px 16px rgba(18,181,165,.3)}
+.cta.amber{background:var(--amber);color:#5C3D00;box-shadow:0 6px 16px rgba(255,176,32,.3)}
+.cta.ghost{background:var(--soft);color:var(--ink);box-shadow:none}
+.bigicon{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:26px;flex:none}
 
-.progress{height:6px;border-radius:99px;background:var(--s3);margin-top:12px;overflow:hidden}
-.progress i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--gold),var(--gold-hi))}
+.progress{height:10px;border-radius:99px;background:var(--soft);margin-top:12px;overflow:hidden}
+.progress i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--purple),#A78BFF)}
+.stars{display:inline-flex;gap:4px;font-size:17px;letter-spacing:1px}
 
-.beltchip{display:inline-flex;align-items:center;gap:7px;background:var(--s2);border:1px solid var(--line);
-  border-radius:99px;padding:8px 14px;font-family:var(--sys);font-size:9.5px;font-weight:700;
-  letter-spacing:.14em;text-transform:uppercase;color:var(--gold-hi)}
-.beltchip i{width:8px;height:8px;border-radius:50%;background:var(--phos)}
-
-.row{display:flex;gap:10px;overflow-x:auto;margin:12px -18px 0;padding:2px 18px 6px;scrollbar-width:none}
+.row{display:flex;gap:12px;overflow-x:auto;margin:12px -18px 0;padding:4px 18px 10px;scrollbar-width:none}
 .row::-webkit-scrollbar{display:none}
-.mini{flex:none;width:140px;background:var(--s1);border:1px solid var(--line);border-radius:16px;
-  padding:13px;text-decoration:none;color:var(--parch)}
-.mini .art{font-size:30px}
-.mini b{display:block;font-size:13.5px;margin-top:8px;line-height:1.2}
-.mini span{font-size:10.5px;color:var(--dim2)}
+.mini{flex:none;width:132px;background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:13px;text-decoration:none;color:var(--ink);box-shadow:var(--sh)}
+.mini .art{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:24px}
+.mini b{display:block;font-size:14px;margin-top:9px;line-height:1.2;font-weight:800}
+.mini span{font-size:11.5px;color:var(--mut);font-weight:700}
 
-/* profile gate */
-#gate{background:radial-gradient(70% 45% at 50% 0%, rgba(217,169,76,.14), transparent 70%), var(--void)}
+/* gate */
+#gate{background:linear-gradient(180deg,#F0EBFF, var(--bg) 55%)}
 #gate .scroll{display:flex;flex-direction:column;justify-content:center;text-align:center;padding-bottom:60px}
-.fam{font-family:var(--sys);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);margin-top:8px}
-.profiles{display:flex;gap:16px;justify-content:center;margin-top:30px;flex-wrap:wrap}
-.prof{width:96px;cursor:pointer;background:none;border:0;color:var(--parch);font-family:var(--body)}
-.prof .face{width:84px;height:84px;border-radius:26px;display:grid;place-items:center;font-size:40px;
-  background:var(--s2);border:2px solid var(--line);margin:0 auto;transition:.15s}
-.prof:hover .face{border-color:var(--gold)}
-.prof b{display:block;font-size:14px;margin-top:9px}
-.prof span{font-size:10.5px;color:var(--dim2);display:block}
-.prof.g .face{border-style:dashed}
+.logo{font-weight:900;font-size:34px;color:var(--ink)}
+.logo span{color:var(--purple)}
+.fam{font-size:13px;font-weight:800;color:var(--mut);margin-top:6px}
+.profiles{display:flex;gap:16px;justify-content:center;margin-top:28px;flex-wrap:wrap}
+.prof{width:100px;cursor:pointer;background:none;border:0;color:var(--ink);font-family:var(--sans)}
+.prof .face{width:86px;height:86px;border-radius:28px;display:grid;place-items:center;font-size:42px;
+  background:#fff;border:3px solid var(--line);margin:0 auto;box-shadow:var(--sh);transition:.15s}
+.prof:hover .face{border-color:var(--purple);transform:scale(1.04)}
+.prof b{display:block;font-size:15.5px;margin-top:9px;font-weight:900}
+.prof span{font-size:12px;color:var(--mut);display:block;font-weight:700}
+.prof.g .face{background:var(--soft)}
 
-/* rig */
-.rigbar{display:flex;background:var(--s1);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:14px}
-.rigbar button{flex:1;border:0;background:none;color:var(--dim);cursor:pointer;font-family:var(--sys);
-  font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:12px 4px}
-.rigbar button.on{color:var(--phos);background:rgba(69,227,196,.08)}
-.code{background:#0D0A16;border:1px solid var(--line);border-radius:14px;margin-top:10px;padding:14px;
-  font-family:var(--sys);font-size:11px;line-height:1.65;color:#CFE3D8;overflow-x:auto;white-space:pre}
-.code .k{color:#C48FFF}.code .s{color:#F2CE7B}.code .c{color:#6E6478}
-#pv{width:100%;height:320px;border:1px solid var(--line);border-radius:14px;margin-top:10px;background:#fff;display:none}
-.ai{margin-top:10px;display:none}
-.ai .m{border-radius:12px;padding:10px 13px;font-size:13px;margin-top:8px;max-width:90%}
-.ai .bot{background:var(--s2);border:1px solid var(--line)}
-.ai .me{background:rgba(69,227,196,.1);border:1px solid rgba(69,227,196,.3);margin-left:auto}
+/* make (rig) */
+.rigbar{display:flex;background:var(--soft);border-radius:16px;padding:5px;margin-top:14px;gap:5px}
+.rigbar button{flex:1;border:0;background:none;color:var(--mut);cursor:pointer;font-family:var(--sans);
+  font-size:13.5px;font-weight:800;padding:11px 4px;border-radius:12px}
+.rigbar button.on{color:var(--ink);background:#fff;box-shadow:var(--sh)}
+.code{background:#232946;border-radius:16px;margin-top:12px;padding:15px;
+  font-family:ui-monospace,Menlo,monospace;font-size:11.5px;line-height:1.7;color:#D9E1FF;overflow-x:auto;white-space:pre}
+.code .k{color:#B8A6FF}.code .s{color:#FFD479}.code .c{color:#7C86B4}
+#pv{width:100%;height:320px;border:1px solid var(--line);border-radius:16px;margin-top:12px;background:#fff;display:none}
+.ai{margin-top:12px;display:none}
+.ai .m{border-radius:16px;padding:11px 14px;font-size:14px;margin-top:8px;max-width:90%;font-weight:600}
+.ai .bot{background:var(--soft);color:var(--ink)}
+.ai .me{background:var(--purple-s);color:#4A2FC7;margin-left:auto}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.chips button{border:1px solid var(--line);background:var(--s1);color:var(--gold-hi);cursor:pointer;
-  font-size:12px;border-radius:99px;padding:8px 13px;font-family:var(--body)}
+.chips button{border:2px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;
+  font-size:13.5px;font-weight:800;border-radius:99px;padding:9px 14px;font-family:var(--sans)}
+.chips button:active{border-color:var(--teal)}
 
-/* market grid */
+/* games grid */
 .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
-.stallc{background:var(--s1);border:1px solid var(--line);border-radius:18px;padding:14px;text-decoration:none;color:var(--parch);display:block}
-.stallc .art{width:100%;aspect-ratio:1.6;border-radius:12px;background:var(--s3);display:grid;place-items:center;font-size:34px}
-.stallc b{display:block;font-size:13.5px;margin-top:9px;line-height:1.2}
-.stallc span{font-size:10.5px;color:var(--dim2)}
-.badge{display:inline-block;font-family:var(--sys);font-size:8px;font-weight:700;letter-spacing:.12em;
-  color:var(--void);background:var(--phos);border-radius:4px;padding:3px 6px;margin-left:5px;vertical-align:middle}
+.stallc{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:13px;text-decoration:none;color:var(--ink);display:block;box-shadow:var(--sh)}
+.stallc .art{width:100%;aspect-ratio:1.5;border-radius:14px;display:grid;place-items:center;font-size:36px}
+.stallc b{display:block;font-size:14px;margin-top:9px;line-height:1.2;font-weight:800}
+.stallc span{font-size:11.5px;color:var(--mut);font-weight:700}
+.badge{display:inline-block;font-size:9.5px;font-weight:900;color:#fff;background:var(--green);border-radius:6px;padding:3px 7px;margin-left:4px;vertical-align:middle}
 
-/* belts screen */
-.ladder{margin-top:16px}
-.rung{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line)}
-.rung .dot{width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;
-  background:var(--s2);border:2px solid var(--line);font-size:15px}
-.rung.done .dot{background:var(--gold);border-color:var(--gold);color:var(--void)}
-.rung.now .dot{border-color:var(--phos)}
-.rung b{display:block;font-family:var(--gothic);font-size:19px;color:var(--gold-hi)}
-.rung span{font-size:12.5px;color:var(--dim);line-height:1.45}
-.rung.lock{opacity:.45}
+/* levels journey */
+.ladder{margin-top:14px}
+.rung{display:flex;gap:14px;align-items:flex-start;padding:8px 0}
+.rung .dot{width:52px;height:52px;border-radius:50%;flex:none;display:grid;place-items:center;
+  background:#fff;border:3px solid var(--line);font-size:21px;box-shadow:var(--sh)}
+.rung .stem{position:relative}
+.rung .stem::after{content:"";position:absolute;left:50%;top:54px;bottom:-10px;width:4px;border-radius:2px;background:var(--line);transform:translateX(-50%)}
+.rung:last-child .stem::after{display:none}
+.rung.done .dot{background:var(--green);border-color:var(--green);color:#fff}
+.rung.done .stem::after{background:var(--green)}
+.rung.now .dot{border-color:var(--purple);background:var(--purple-s)}
+.rung .tx{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px 14px;flex:1;box-shadow:var(--sh)}
+.rung b{display:block;font-size:15.5px;font-weight:900}
+.rung span{font-size:13px;color:var(--mut);line-height:1.45;font-weight:600}
+.rung.lock{opacity:.55}
 
-/* guardian */
-.toggles .tog{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;
-  border-bottom:1px solid var(--line);font-size:13.5px}
-.sw{width:42px;height:24px;border-radius:99px;background:var(--s3);border:1px solid var(--line);position:relative;cursor:pointer;flex:none}
-.sw::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--dim2);transition:.15s}
-.sw.on{background:rgba(69,227,196,.2);border-color:var(--phos)}
-.sw.on::after{left:20px;background:var(--phos)}
-.appr{display:flex;align-items:center;gap:11px;margin-top:10px}
-.appr .art{width:44px;height:44px;border-radius:10px;background:var(--s3);display:grid;place-items:center;font-size:22px;flex:none}
-.appr b{font-size:14px;display:block}
-.appr span{font-size:11px;color:var(--dim2)}
-.ok{margin-left:auto;border:0;cursor:pointer;background:var(--phos);color:var(--void);font-family:var(--sys);
-  font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:10px 14px;border-radius:99px}
+/* parent zone */
+.safe{display:flex;gap:12px;align-items:center;background:var(--green-s);border:1px solid #CBEBD7;border-radius:18px;padding:13px 15px;margin-top:14px}
+.safe .bigicon{background:#fff}
+.safe b{font-size:14.5px;font-weight:900;display:block}
+.safe span{font-size:12.5px;color:#2E7D4F;font-weight:700}
+.toggles .tog{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px 0;
+  border-bottom:1px solid var(--line);font-size:14px;font-weight:700}
+.toggles .tog:last-child{border-bottom:0}
+.sw{width:48px;height:28px;border-radius:99px;background:#D8DBE6;position:relative;cursor:pointer;flex:none;border:0}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:.15s;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.sw.on{background:var(--green)}
+.sw.on::after{left:23px}
+.appr{display:flex;align-items:center;gap:12px;margin-top:12px}
+.appr .bigicon{background:var(--amber-s)}
+.appr b{font-size:14.5px;display:block;font-weight:900}
+.appr span{font-size:12px;color:var(--mut);font-weight:700}
+.ok{margin-left:auto;border:0;cursor:pointer;background:var(--green);color:#fff;font-family:var(--sans);
+  font-size:13px;font-weight:900;padding:12px 16px;border-radius:99px;box-shadow:0 6px 14px rgba(62,194,107,.35)}
 
-/* intro + help */
-#intro{position:absolute;inset:0;z-index:90;background:rgba(8,6,13,.97);display:flex;flex-direction:column;
-  justify-content:center;padding:34px 26px calc(34px + env(safe-area-inset-bottom));text-align:center}
-#intro.off{display:none}
-#intro .k{font-family:var(--sys);font-size:9px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--phos)}
-#intro h2{font-family:var(--gothic);font-weight:800;font-size:34px;color:var(--gold-hi);line-height:1.05;margin-top:10px}
-#intro p{font-size:14.5px;color:var(--dim);line-height:1.6;margin-top:12px}
-#intro p b{color:var(--parch)}
-.ipts{margin-top:18px;text-align:left;display:grid;gap:12px}
-.ipt{display:flex;gap:12px;background:var(--s1);border:1px solid var(--line);border-radius:14px;padding:13px 14px;font-size:13.5px;line-height:1.5;color:var(--dim)}
-.ipt i{font-style:normal;font-size:20px;flex:none}
-.ipt b{color:var(--parch)}
-#intro .cta{margin-top:22px}
-#introSkip{margin-top:12px;background:none;border:0;color:var(--dim2);font-size:13px;cursor:pointer;text-decoration:underline;font-family:var(--body)}
-#help{position:absolute;inset:0;z-index:85;background:rgba(8,6,13,.72);display:none;align-items:flex-end}
-#help.show{display:flex}
-#help .body{width:100%;max-height:82%;overflow-y:auto;background:var(--s1);border-radius:22px 22px 0 0;
-  border-top:1px solid var(--line);padding:20px 20px calc(28px + env(safe-area-inset-bottom))}
-#help h3{font-family:var(--gothic);font-size:24px;color:var(--gold-hi)}
-#help .g{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px;line-height:1.5}
-#help .g:last-of-type{border-bottom:0}
-#help .g b{color:var(--gold-hi);flex:none;width:96px;font-weight:700}
-#help .g span{color:var(--dim)}
+/* PIN */
+#pin{position:absolute;inset:0;z-index:70;background:rgba(246,247,251,.97);display:none;place-items:center;text-align:center}
+#pin.show{display:grid}
+#pin .h1{font-size:23px}
+.dots{display:flex;gap:12px;justify-content:center;margin:18px 0 22px}
+.dots i{width:14px;height:14px;border-radius:50%;border:2.5px solid #C9CDDB;transition:.1s}
+.dots i.f{background:var(--purple);border-color:var(--purple)}
+.numpad{display:grid;grid-template-columns:repeat(3,66px);gap:12px;justify-content:center}
+.numpad button{height:66px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--ink);
+  font-size:23px;font-weight:800;cursor:pointer;font-family:var(--sans);box-shadow:var(--sh)}
+.pinhint{margin-top:16px;font-size:12.5px;color:var(--mut);font-weight:700}
+
+/* tabs */
+#tabs{position:absolute;left:0;right:0;bottom:0;z-index:40;display:none;
+  background:rgba(255,255,255,.94);backdrop-filter:blur(16px);border-top:1px solid var(--line);
+  padding:8px 6px calc(14px + env(safe-area-inset-bottom))}
+#tabs.show{display:flex}
+#tabs button{flex:1;border:0;background:none;color:#9AA0B5;cursor:pointer;font-family:var(--sans);
+  font-size:10.5px;font-weight:800;padding:6px 2px;display:grid;gap:4px;justify-items:center}
+#tabs button .ti{width:40px;height:30px;border-radius:12px;display:grid;place-items:center;font-size:17px}
+#tabs button.on{color:var(--ink)}
+#tabs button.on:nth-child(1) .ti{background:var(--purple-s)}
+#tabs button.on:nth-child(2) .ti{background:var(--teal-s)}
+#tabs button.on:nth-child(3) .ti{background:var(--coral-s)}
+#tabs button.on:nth-child(4) .ti{background:var(--amber-s)}
+#tabs button.on:nth-child(5) .ti{background:var(--green-s)}
+
+/* header */
+.hd{position:absolute;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;gap:8px;
+  padding:44px 16px 10px;background:linear-gradient(var(--bg) 62%,transparent)}
+@media(max-width:759px){.hd{padding-top:calc(40px + env(safe-area-inset-top))}}
+.hd button.bk{border:0;background:#fff;border:1px solid var(--line);width:34px;height:34px;border-radius:12px;
+  color:var(--ink);cursor:pointer;font-size:19px;font-weight:800;box-shadow:var(--sh)}
+.hd b{font-size:19px;color:var(--ink);font-weight:900}
+.hd .sp{flex:1}
 .hdicons{display:flex;gap:8px;align-items:center}
-.hdicons button{width:32px;height:32px;border-radius:10px;background:var(--s2);border:1px solid var(--line);
-  color:var(--gold-hi);display:grid;place-items:center;font-size:15px;cursor:pointer;font-family:var(--body);font-weight:700}
-.subt{font-family:var(--sys);font-size:8px;font-weight:700;letter-spacing:.18em;color:var(--dim2);text-transform:uppercase;margin-left:2px}
-#swipehint{position:absolute;left:50%;bottom:130px;transform:translateX(-50%);z-index:30;pointer-events:none;
-  font-family:var(--sys);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
-  color:#fff;background:rgba(11,9,18,.72);border:1px solid rgba(255,255,255,.25);border-radius:99px;
-  padding:10px 16px;opacity:0;transition:.4s}
-#swipehint.show{opacity:1;animation:bob 1.4s ease-in-out infinite}
-@keyframes bob{50%{transform:translateX(-50%) translateY(-8px)}}
-@media(prefers-reduced-motion:reduce){#swipehint.show{animation:none}}
-/* event retrospective */
-.evhero{width:100%;border-radius:14px;border:1px solid var(--line);display:block;margin-top:6px}
-.verdict{background:linear-gradient(150deg,#241D33,#14101F);border:1px solid rgba(217,169,76,.35);
-  border-radius:18px;padding:18px;margin-top:14px;text-align:center}
-.verdict .vt{font-family:var(--gothic);font-weight:800;font-size:34px;color:var(--gold-hi);line-height:1}
-.verdict p{font-size:12.5px;color:var(--dim);margin-top:8px;line-height:1.5}
-.award{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line)}
-.award:last-child{border-bottom:0}
-.award .who{font-family:var(--gothic);font-weight:800;font-size:17px;color:var(--gold-hi);width:86px;flex:none}
-.award b{font-size:13px;display:block;color:var(--phos);font-weight:700}
-.award span{font-size:12px;color:var(--dim);line-height:1.45;display:block;margin-top:2px}
-.awkrow{display:flex;gap:10px;overflow-x:auto;margin:12px -18px 0;padding:2px 18px 6px;scrollbar-width:none}
-.awkrow::-webkit-scrollbar{display:none}
-.awk{flex:none;width:96px;background:var(--s1);border:1px solid var(--line);border-radius:14px;
-  padding:11px 8px;text-align:center;cursor:pointer;color:var(--parch);font-family:var(--body)}
-.awk .pl{width:40px;height:40px;border-radius:50%;margin:0 auto;background:var(--s3);border:1px solid var(--line);
-  display:grid;place-items:center;font-size:15px;color:var(--phos)}
-.awk b{display:block;font-size:12px;margin-top:8px}
-.ph{border:1px dashed rgba(233,223,199,.25);border-radius:16px;padding:15px;margin-top:12px;display:flex;gap:12px;align-items:center;opacity:.8}
-.ph .art{width:44px;height:44px;border-radius:12px;background:var(--s2);display:grid;place-items:center;font-size:20px;flex:none}
-.ph b{font-size:13.5px;display:block}
-.ph span{font-size:11.5px;color:var(--dim2);display:block;margin-top:2px}
-.ph em{margin-left:auto;font-style:normal;font-family:var(--sys);font-size:8px;font-weight:700;
-  letter-spacing:.12em;color:var(--gold-hi);border:1px solid rgba(217,169,76,.4);border-radius:99px;padding:5px 9px;white-space:nowrap}
-#vmodal{position:absolute;inset:0;z-index:78;background:rgba(0,0,0,.92);display:none;flex-direction:column}
-#vmodal.show{display:flex}
-#vmodal video{flex:1;width:100%;object-fit:contain;min-height:0}
-#vmodal .bar{display:flex;align-items:center;justify-content:space-between;padding:48px 16px 10px}
-#vmodal .bar b{font-family:var(--gothic);font-size:18px;color:var(--gold-hi)}
-#vmodal .bar button{border:0;background:none;color:#fff;font-size:26px;cursor:pointer}
-/* clips feed */
+.hdicons button,.hd .av{width:34px;height:34px;border-radius:12px;background:#fff;border:1px solid var(--line);
+  color:var(--ink);display:grid;place-items:center;font-size:15px;cursor:pointer;font-family:var(--sans);font-weight:900;box-shadow:var(--sh)}
+
+/* video feed: stays dark, like every video app */
+#clips{background:#000}
 #clips .feed{position:absolute;inset:0;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none}
 #clips .feed::-webkit-scrollbar{display:none}
 .clip{height:100%;scroll-snap-align:start;scroll-snap-stop:always;position:relative;overflow:hidden;background:#000}
 .clip video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.clip .bgles{position:absolute;inset:0;background:linear-gradient(160deg,#241D33,#0B0912 55%),radial-gradient(60% 40% at 70% 20%, rgba(69,227,196,.25), transparent);display:grid;place-items:center}
-.clip .bgles span{font-size:84px;filter:drop-shadow(0 12px 30px rgba(0,0,0,.6))}
-.clip .bgnew{position:absolute;inset:0;background:linear-gradient(150deg,#4A2C8F,#1B0F35 60%);display:grid;place-items:center}
+.clip .bgles{position:absolute;inset:0;background:linear-gradient(160deg,#6A4DE0,#232946 70%);display:grid;place-items:center}
+.clip .bgles span{font-size:84px}
+.clip .bgnew{position:absolute;inset:0;background:linear-gradient(150deg,#FF8A5C,#C2437B 70%);display:grid;place-items:center}
 .clip .bgnew span{font-size:84px}
-.clip .scrim{position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,.32),transparent 30%,transparent 55%,rgba(0,0,0,.72))}
+.clip .scrim{position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,.35),transparent 30%,transparent 55%,rgba(0,0,0,.7))}
 .shield{position:absolute;top:58px;left:14px;z-index:5;display:inline-flex;align-items:center;gap:6px;
-  background:rgba(11,9,18,.72);border:1px solid rgba(69,227,196,.4);border-radius:99px;
-  padding:6px 11px;font-family:var(--sys);font-size:8.5px;font-weight:700;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--phos)}
-.lestag{position:absolute;top:58px;right:14px;z-index:5;background:var(--gold);color:var(--void);
-  border-radius:6px;padding:5px 9px;font-family:var(--sys);font-size:8.5px;font-weight:700;letter-spacing:.12em}
-.newtag{background:var(--rubric);color:#fff}
-.rail{position:absolute;right:10px;bottom:120px;z-index:6;display:grid;gap:16px;justify-items:center}
-.rail button{border:0;background:none;color:#fff;cursor:pointer;display:grid;gap:3px;justify-items:center;font-family:var(--body)}
-.rail .ic{width:46px;height:46px;border-radius:50%;background:rgba(11,9,18,.55);border:1px solid rgba(255,255,255,.18);
-  display:grid;place-items:center;font-size:20px;transition:.15s}
-.rail button.hit .ic{background:rgba(69,227,196,.25);border-color:var(--phos);transform:scale(1.12)}
-.rail span{font-size:10px;font-weight:700;text-shadow:0 1px 4px #000}
-.cmeta{position:absolute;left:14px;right:74px;bottom:34px;z-index:6}
-.cmeta .who{font-family:var(--sys);font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--gold-hi)}
-.cmeta .cap{font-size:14.5px;font-weight:500;margin-top:5px;line-height:1.4;text-shadow:0 1px 6px #000}
+  background:rgba(255,255,255,.92);border-radius:99px;padding:7px 12px;font-size:11px;font-weight:900;color:#1E7B45}
+.lestag{position:absolute;top:58px;right:14px;z-index:5;background:var(--amber);color:#5C3D00;
+  border-radius:8px;padding:6px 10px;font-size:10.5px;font-weight:900}
+.newtag{background:var(--coral);color:#fff}
+.rail{position:absolute;right:10px;bottom:120px;z-index:6;display:grid;gap:15px;justify-items:center}
+.rail button{border:0;background:none;color:#fff;cursor:pointer;display:grid;gap:3px;justify-items:center;font-family:var(--sans)}
+.rail .ic{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.18);backdrop-filter:blur(6px);
+  display:grid;place-items:center;font-size:21px;transition:.15s}
+.rail button.hit .ic{background:var(--coral);transform:scale(1.1)}
+.rail span{font-size:11px;font-weight:800;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+.cmeta{position:absolute;left:14px;right:76px;bottom:34px;z-index:6;color:#fff}
+.cmeta .who{font-size:12.5px;font-weight:900;letter-spacing:.02em}
+.cmeta .cap{font-size:14.5px;font-weight:700;margin-top:5px;line-height:1.4;text-shadow:0 1px 6px rgba(0,0,0,.5)}
+.lesprog{margin-top:8px;font-size:11px;color:#FFD479;font-weight:900}
 .cmeta .try{margin-top:10px}
-.lesprog{margin-top:8px;font-family:var(--sys);font-size:9px;color:var(--phos);letter-spacing:.1em}
 .seg{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;justify-content:center;gap:18px;
-  padding:46px 0 8px;background:linear-gradient(rgba(0,0,0,.5),transparent)}
+  padding:46px 0 8px;background:linear-gradient(rgba(0,0,0,.45),transparent)}
 @media(max-width:759px){.seg{padding-top:calc(42px + env(safe-area-inset-top))}}
-.seg button{border:0;background:none;color:rgba(255,255,255,.55);cursor:pointer;font-family:var(--body);
-  font-size:14px;font-weight:700;padding:6px 2px;border-bottom:2px solid transparent}
-.seg button.on{color:#fff;border-bottom-color:var(--gold)}
-#postBtn{position:absolute;right:14px;bottom:110px;z-index:25;width:52px;height:52px;border-radius:50%;
-  border:0;cursor:pointer;background:var(--gold);color:var(--void);font-size:26px;font-weight:700;
-  box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.seg button{border:0;background:none;color:rgba(255,255,255,.6);cursor:pointer;font-family:var(--sans);
+  font-size:15px;font-weight:800;padding:6px 2px;border-bottom:3px solid transparent}
+.seg button.on{color:#fff;border-bottom-color:#fff}
+#postBtn{position:absolute;right:14px;bottom:112px;z-index:25;width:54px;height:54px;border-radius:50%;
+  border:0;cursor:pointer;background:var(--coral);color:#fff;font-size:27px;font-weight:800;
+  box-shadow:0 10px 26px rgba(255,107,107,.5)}
+
 /* collections */
-.colcard{display:flex;gap:13px;align-items:center;background:var(--s1);border:1px solid var(--line);
-  border-radius:16px;padding:14px;margin-top:12px}
-.colcard .art{width:52px;height:52px;border-radius:12px;background:var(--s3);display:grid;place-items:center;font-size:24px;flex:none}
-.colcard b{display:block;font-size:14.5px}
-.colcard span{font-size:11.5px;color:var(--dim2);display:block;margin-top:2px}
-.colcard .pr{height:4px;border-radius:99px;background:var(--s3);margin-top:7px;overflow:hidden;width:120px}
-.colcard .pr i{display:block;height:100%;background:var(--gold)}
-/* post sheet */
-#sheet{position:absolute;inset:0;z-index:75;background:rgba(8,6,13,.7);display:none;align-items:flex-end}
-#sheet.show{display:flex}
-#sheet .body{width:100%;background:var(--s1);border-radius:22px 22px 0 0;border-top:1px solid var(--line);
-  padding:22px 20px calc(26px + env(safe-area-inset-bottom))}
-#sheet h3{font-family:var(--gothic);font-size:22px;color:var(--gold-hi)}
-#sheet .st{display:flex;gap:12px;margin-top:14px;font-size:13.5px}
-#sheet .st i{font-style:normal;font-family:var(--gothic);font-weight:800;color:var(--gold);font-size:18px;width:20px;flex:none}
-#sheet .st span{color:var(--dim);line-height:1.45}
-/* PIN modal */
-#pin{position:absolute;inset:0;z-index:70;background:rgba(8,6,13,.94);display:none;place-items:center;text-align:center}
-#pin.show{display:grid}
-.dots{display:flex;gap:12px;justify-content:center;margin:18px 0 22px}
-.dots i{width:13px;height:13px;border-radius:50%;border:1.5px solid var(--dim);transition:.1s}
-.dots i.f{background:var(--gold);border-color:var(--gold)}
-.numpad{display:grid;grid-template-columns:repeat(3,64px);gap:12px;justify-content:center}
-.numpad button{height:64px;border-radius:50%;border:1px solid var(--line);background:var(--s1);color:var(--parch);
-  font-size:22px;font-weight:700;cursor:pointer;font-family:var(--body)}
+.colcard{display:flex;gap:13px;align-items:center;background:var(--card);border:1px solid var(--line);
+  border-radius:20px;padding:14px;margin-top:12px;box-shadow:var(--sh)}
+.colcard b{display:block;font-size:15px;font-weight:900}
+.colcard span{font-size:12px;color:var(--mut);display:block;margin-top:2px;font-weight:700}
+.colcard .pr{height:7px;border-radius:99px;background:var(--soft);margin-top:8px;overflow:hidden;width:130px}
+.colcard .pr i{display:block;height:100%;background:var(--amber)}
 
-/* tab bar */
-#tabs{position:absolute;left:0;right:0;bottom:0;z-index:40;display:none;
-  background:rgba(11,9,18,.92);backdrop-filter:blur(16px);border-top:1px solid var(--line);
-  padding:8px 8px calc(14px + env(safe-area-inset-bottom))}
-#tabs.show{display:flex}
-#tabs button{flex:1;border:0;background:none;color:var(--dim2);cursor:pointer;font-family:var(--sys);
-  font-size:8.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:6px 2px;display:grid;gap:5px;justify-items:center}
-#tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-#tabs button.on{color:var(--gold-hi)}
+/* sheets */
+#sheet,#help{position:absolute;inset:0;z-index:75;background:rgba(35,41,70,.45);display:none;align-items:flex-end}
+#sheet.show,#help.show{display:flex}
+#sheet .body,#help .body{width:100%;max-height:84%;overflow-y:auto;background:#fff;border-radius:26px 26px 0 0;
+  padding:10px 20px calc(28px + env(safe-area-inset-bottom))}
+.grab{width:44px;height:5px;border-radius:99px;background:var(--line);margin:8px auto 14px}
+#sheet h3,#help h3{font-size:21px;font-weight:900}
+#sheet .st{display:flex;gap:12px;margin-top:13px;font-size:14.5px;align-items:flex-start}
+#sheet .st i{font-style:normal;font-weight:900;color:#fff;background:var(--coral);width:26px;height:26px;border-radius:50%;
+  display:grid;place-items:center;font-size:13px;flex:none}
+#sheet .st span{color:var(--mut);line-height:1.5;font-weight:600;padding-top:2px}
+#help .g{display:flex;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);font-size:14px;line-height:1.5}
+#help .g:last-of-type{border-bottom:0}
+#help .g b{color:var(--ink);flex:none;width:104px;font-weight:900}
+#help .g span{color:var(--mut);font-weight:600}
 
-/* header w/ back */
-.hd{position:absolute;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;gap:8px;
-  padding:44px 14px 10px;background:linear-gradient(var(--void) 55%,transparent)}
-@media(max-width:759px){.hd{padding-top:calc(40px + env(safe-area-inset-top))}}
-.hd button{border:0;background:none;color:var(--gold-hi);cursor:pointer;font-size:22px;padding:4px 8px}
-.hd b{font-family:var(--gothic);font-size:19px;color:var(--gold-hi);font-weight:800}
-.hd .sp{flex:1}
-.hd .av{width:32px;height:32px;border-radius:10px;background:var(--s2);border:1px solid var(--line);
-  display:grid;place-items:center;font-size:16px;cursor:pointer}
+/* intro tour */
+#intro{position:absolute;inset:0;z-index:90;background:var(--bg);display:flex;flex-direction:column;
+  justify-content:center;padding:34px 26px calc(34px + env(safe-area-inset-bottom));text-align:center}
+#intro.off{display:none}
+.tstep{display:none}
+.tstep.on{display:block}
+.tart{font-size:74px}
+#intro h2{font-weight:900;font-size:27px;line-height:1.15;margin-top:14px}
+#intro p{font-size:15.5px;color:var(--mut);line-height:1.6;margin-top:10px;font-weight:600}
+#intro p b{color:var(--ink)}
+.tdots{display:flex;gap:7px;justify-content:center;margin-top:22px}
+.tdots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.tdots i.on{background:var(--purple);width:22px;border-radius:99px}
+#intro .cta{margin-top:20px;width:100%;text-align:center}
+#introSkip{margin-top:12px;background:none;border:0;color:var(--mut);font-size:14px;font-weight:700;cursor:pointer;font-family:var(--sans)}
+
+/* one-time tip bubble */
+#tip{position:absolute;left:16px;right:16px;bottom:calc(96px + env(safe-area-inset-bottom));z-index:45;
+  background:var(--ink);color:#fff;border-radius:18px;padding:14px 16px;font-size:14px;font-weight:700;line-height:1.45;
+  box-shadow:0 14px 34px rgba(35,41,70,.4);display:none;gap:12px;align-items:flex-start}
+#tip.show{display:flex}
+#tip .em{font-size:22px;flex:none}
+#tip button{margin-left:auto;flex:none;border:0;background:rgba(255,255,255,.18);color:#fff;font-family:var(--sans);
+  font-weight:900;font-size:12.5px;border-radius:99px;padding:8px 13px;cursor:pointer}
+
+#swipehint{position:absolute;left:50%;bottom:130px;transform:translateX(-50%);z-index:30;pointer-events:none;
+  font-size:13px;font-weight:900;color:#fff;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);border-radius:99px;
+  padding:11px 18px;opacity:0;transition:.4s}
+#swipehint.show{opacity:1;animation:bob 1.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateX(-50%) translateY(-8px)}}
+@media(prefers-reduced-motion:reduce){#swipehint.show{animation:none}}
+
+#vmodal{position:absolute;inset:0;z-index:78;background:rgba(0,0,0,.94);display:none;flex-direction:column}
+#vmodal.show{display:flex}
+#vmodal video{flex:1;width:100%;object-fit:contain;min-height:0}
+#vmodal .bar{display:flex;align-items:center;justify-content:space-between;padding:48px 16px 10px;color:#fff}
+#vmodal .bar b{font-size:17px;font-weight:900}
+#vmodal .bar button{border:0;background:rgba(255,255,255,.15);color:#fff;width:36px;height:36px;border-radius:50%;font-size:20px;cursor:pointer}
+
+/* misc reused */
+.evhero{width:100%;border-radius:18px;display:block;margin-top:8px;box-shadow:var(--sh)}
+.verdict{background:linear-gradient(140deg,var(--purple),#5A3DF0);border-radius:22px;padding:20px;margin-top:14px;text-align:center;color:#fff;box-shadow:0 10px 26px rgba(124,92,252,.35)}
+.verdict .vt{font-weight:900;font-size:34px;line-height:1}
+.verdict p{font-size:13.5px;opacity:.92;margin-top:8px;line-height:1.5;font-weight:600}
+.award{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line)}
+.award:last-child{border-bottom:0}
+.award .who{font-weight:900;font-size:15.5px;width:86px;flex:none}
+.award b{font-size:13.5px;display:block;color:var(--purple);font-weight:800}
+.award span{font-size:12.5px;color:var(--mut);line-height:1.45;display:block;margin-top:2px;font-weight:600}
+.awkrow{display:flex;gap:10px;overflow-x:auto;margin:12px -17px 0;padding:2px 17px 6px;scrollbar-width:none}
+.awkrow::-webkit-scrollbar{display:none}
+.awk{flex:none;width:96px;background:var(--card);border:1px solid var(--line);border-radius:16px;
+  padding:12px 8px;text-align:center;cursor:pointer;color:var(--ink);font-family:var(--sans);box-shadow:var(--sh)}
+.awk .pl{width:42px;height:42px;border-radius:50%;margin:0 auto;background:var(--purple-s);
+  display:grid;place-items:center;font-size:15px;color:var(--purple)}
+.awk b{display:block;font-size:12.5px;margin-top:8px;font-weight:800}
+.ph{border:2px dashed var(--line);border-radius:18px;padding:14px;margin-top:12px;display:flex;gap:12px;align-items:center}
+.ph b{font-size:14px;display:block;font-weight:800}
+.ph span{font-size:12px;color:var(--mut);display:block;margin-top:2px;font-weight:600}
+.ph em{margin-left:auto;font-style:normal;font-size:10px;font-weight:900;color:var(--amber);
+  border:2px solid var(--amber-s);background:var(--amber-s);border-radius:99px;padding:6px 10px;white-space:nowrap}
+.timeline{margin-top:10px}
+.timeline > div{display:flex;gap:14px;padding:11px 0;border-bottom:1px solid var(--line)}
+.timeline > div:last-child{border-bottom:0}
+.timeline .t{font-size:12px;font-weight:900;color:var(--teal);flex:none;width:64px;padding-top:2px}
+.timeline b{display:block;font-size:14.5px;font-weight:800}
+.timeline span span{font-size:12.5px;color:var(--mut);line-height:1.45;font-weight:600;display:block}
 
 .toast{position:absolute;left:50%;bottom:118px;transform:translateX(-50%) translateY(60px);z-index:80;
-  background:#241D33;border:1px solid var(--gold);border-radius:99px;padding:11px 18px;font-size:13px;
+  background:var(--ink);color:#fff;border-radius:99px;padding:12px 19px;font-size:14px;font-weight:800;
   opacity:0;transition:.25s;white-space:nowrap;max-width:88%}
 .toast.show{transform:translateX(-50%);opacity:1}
-:where(button,a):focus-visible{outline:2px solid var(--phos);outline-offset:2px}
+:where(button,a):focus-visible{outline:3px solid var(--purple);outline-offset:2px}
 </style>
 </head>
 <body>
@@ -298,74 +324,74 @@ body{display:grid;place-items:center;overflow:hidden}
   <div id="notch"></div>
   <div id="status"><span>9:41</span><span>&#9679;&#9679;&#9679;&#9679; &nbsp;100%</span></div>
 
-  <!-- ═ PROFILE GATE ═ -->
+  <!-- GATE -->
   <div class="scr on" id="gate">
     <div class="scroll">
-      <div class="h1" style="font-size:38px">Code Quest</div>
+      <div class="logo">Code<span>Quest</span></div>
       <div class="fam">The Adeyemi family</div>
       <div class="profiles">
         <button class="prof" data-kid="zara"><span class="face">&#129412;</span><b>Zara</b><span>Level 1</span></button>
         <button class="prof" data-kid="leo"><span class="face">&#129409;</span><b>Leo</b><span>Level 2</span></button>
         <button class="prof g" id="gBtn"><span class="face">&#128274;</span><b>Parents</b><span>PIN needed</span></button>
       </div>
-      <p class="sub" style="margin-top:34px">One family account. Parents are in charge of it.<br>Kids do not need an email or a password.</p>
-      <button class="cta ghost" id="whatBtn" style="margin-top:18px" type="button">New here? What is Code Quest</button>
+      <p class="sub" style="margin-top:32px">Who is using the app?<br>Kids tap their picture. No passwords for kids.</p>
+      <button class="cta ghost" id="whatBtn" style="margin-top:16px" type="button">What is Code Quest?</button>
     </div>
   </div>
 
-  <!-- ═ HOME ═ -->
+  <!-- HOME -->
   <div class="scr" id="home">
     <div class="hd"><b>Home</b><span class="sp"></span>
-      <span class="hdicons"><button class="helpB" type="button" aria-label="Help">?</button><button class="parB" type="button" aria-label="Parent zone">&#128737;</button><span class="av" id="switchA">&#129412;</span></span></div>
+      <span class="hdicons"><button class="helpB" type="button" aria-label="Help">?</button><button class="parB" type="button" aria-label="Parents">&#128737;</button><span class="av" id="switchA">&#129412;</span></span></div>
     <div class="scroll">
       <div class="eyebrow">Hi Zara!</div>
-      <div class="h1">What will you<br>make today?</div>
-      <div style="margin-top:12px"><span class="beltchip"><i></i>Level 1 &middot; 3 of 5 stars to Level 2</span></div>
+      <div class="h1">What will you make today?</div>
+      <div style="margin-top:10px" class="stars">&#11088;&#11088;&#11088;<span style="opacity:.25">&#11088;&#11088;</span>
+        <span style="font-size:13px;font-weight:800;color:var(--mut);margin-left:6px;letter-spacing:0">3 of 5 stars to Level 2</span></div>
 
-      <div class="card">
-        <div class="eyebrow" style="color:var(--gold)">Keep going!</div>
-        <h3>&#127919; Sky Bounce II</h3>
-        <p>Add a score. 2 steps left. Then publish it and level up!</p>
-        <div class="progress"><i style="width:60%"></i></div>
-        <button class="cta" data-go="rig" type="button">Keep building</button>
+      <div class="card" style="display:flex;gap:13px;align-items:center">
+        <span class="bigicon" style="background:var(--teal-s)">&#127919;</span>
+        <span style="flex:1"><h3>Finish Sky Bounce II</h3>
+        <p>2 steps left. Then share it and get a star!</p>
+        <span class="progress"><i style="width:60%"></i></span></span>
+      </div>
+      <button class="cta teal" data-go="rig" style="width:100%;text-align:center;margin-top:10px" type="button">Keep making my game</button>
+
+      <div class="card" style="display:flex;gap:13px;align-items:center">
+        <span class="bigicon" style="background:var(--purple-s)">&#128081;</span>
+        <span style="flex:1"><h3>The big day</h3>
+        <p>6 cousins. 6 games. 1 day. Watch it all again.</p></span>
+        <button class="cta ghost" data-go="event" style="margin:0" type="button">Look</button>
       </div>
 
-      <div class="card" style="border-color:rgba(217,169,76,.4)">
-        <div class="eyebrow" style="color:var(--gold)">Remember this?</div>
-        <h3>&#128081; Code Quest 2026</h3>
-        <p>6 cousins. 6 games. 1 day. See it all again.</p>
-        <button class="cta gold" data-go="event" type="button">See the day</button>
-      </div>
-
-      <div class="card">
-        <div class="eyebrow" style="color:var(--rubric)">Coming up!</div>
-        <h3>&#127914; Code Quest Tour</h3>
-        <p>Manchester. Saturday 12 September. You present at 14:45. Mum and Dad will be watching!</p>
-        <button class="cta ghost" type="button">Add to calendar</button>
+      <div class="card" style="display:flex;gap:13px;align-items:center">
+        <span class="bigicon" style="background:var(--coral-s)">&#127914;</span>
+        <span style="flex:1"><h3>Next Code Quest day</h3>
+        <p>Manchester. Sat 12 Sept. You present at 14:45. Mum and Dad will be watching!</p></span>
       </div>
 
       <div class="eyebrow" style="margin-top:22px">New games to play</div>
       <div class="row">
-        <a class="mini" href="../elsie/game/" target="_blank" rel="noopener"><span class="art">&#129419;</span><b>Butterfly Dash</b><span>by Elsie</span></a>
-        <a class="mini" href="../emma/game/" target="_blank" rel="noopener"><span class="art">&#127752;</span><b>Sprinkle Dash</b><span>by Emma</span></a>
-        <a class="mini" href="../triad-labs/ninja-academy/" target="_blank" rel="noopener"><span class="art">&#129333;</span><b>Ninja Academy</b><span>by Ezekiel</span></a>
-        <a class="mini" href="../pixel-power/dragonball-flight/" target="_blank" rel="noopener"><span class="art">&#128009;</span><b>Dragonball</b><span>by Theodore</span></a>
+        <a class="mini" href="../elsie/game/" target="_blank" rel="noopener"><span class="art" style="background:var(--purple-s)">&#129419;</span><b>Butterfly Dash</b><span>by Elsie</span></a>
+        <a class="mini" href="../emma/game/" target="_blank" rel="noopener"><span class="art" style="background:var(--coral-s)">&#127752;</span><b>Sprinkle Dash</b><span>by Emma</span></a>
+        <a class="mini" href="../triad-labs/ninja-academy/" target="_blank" rel="noopener"><span class="art" style="background:var(--amber-s)">&#129333;</span><b>Ninja Academy</b><span>by Ezekiel</span></a>
+        <a class="mini" href="../pixel-power/dragonball-flight/" target="_blank" rel="noopener"><span class="art" style="background:var(--teal-s)">&#128009;</span><b>Dragonball</b><span>by Theodore</span></a>
       </div>
     </div>
   </div>
 
-  <!-- ═ RIG ═ -->
+  <!-- MAKE -->
   <div class="scr" id="rig">
-    <div class="hd"><button data-go="home" type="button">&#8249;</button><b>Make my game</b><span class="sp"></span>
-      <span style="font-family:var(--sys);font-size:9px;color:var(--dim);letter-spacing:.12em" id="rigState">NOT SHARED YET</span></div>
+    <div class="hd"><button class="bk" data-go="home" type="button">&#8249;</button><b>Sky Bounce II</b><span class="sp"></span>
+      <span style="font-size:11px;color:var(--mut);font-weight:900" id="rigState">NOT SHARED YET</span></div>
     <div class="scroll">
       <div class="rigbar">
-        <button class="on" data-rv="code" type="button">Code</button>
-        <button data-rv="pv" type="button">Preview</button>
-        <button data-rv="ai" type="button">Ask the AI</button>
+        <button class="on" data-rv="code" type="button">My code</button>
+        <button data-rv="pv" type="button">Play it</button>
+        <button data-rv="ai" type="button">Get help</button>
       </div>
 
-      <div class="code" id="rvcode"><span class="c">&lt;!-- your whole game is one file --&gt;</span>
+      <div class="code" id="rvcode"><span class="c">// your whole game lives in one file</span>
 <span class="k">const</span> sky = <span class="s">"#7EC8E3"</span>;
 <span class="k">const</span> SPEED = <span class="s">1</span>;
 <span class="k">let</span> score = <span class="s">0</span>;
@@ -376,169 +402,174 @@ ball.onclick = () =&gt; {
   scoreboard.show(score);
 };</div>
 
-      <iframe id="pv" title="Live preview"></iframe>
+      <iframe id="pv" title="Play your game"></iframe>
 
       <div class="ai" id="rvai">
-        <div class="m bot">Hi Zara! Want to change your game? Tap one, then look at Preview.</div>
+        <div class="m bot">Hi Zara! Want to change your game? Tap one, then tap Play it.</div>
         <div id="aims"></div>
         <div class="chips">
-          <button data-ai="purple" type="button">Make the sky purple</button>
-          <button data-ai="fast" type="button">Make it faster</button>
-          <button data-ai="star" type="button">Bounce a star</button>
+          <button data-ai="purple" type="button">&#127912; Purple sky</button>
+          <button data-ai="fast" type="button">&#9889; Make it faster</button>
+          <button data-ai="star" type="button">&#11088; Bounce a star</button>
         </div>
       </div>
 
-      <button class="cta gold" id="pubBtn" style="width:100%;text-align:center;margin-top:16px" type="button">&#128640; Publish my game</button>
-      <p class="sub" style="text-align:center;margin-top:10px;font-size:13px">When you publish, your parent checks it first. Then it goes live!</p>
+      <button class="cta" id="pubBtn" style="width:100%;text-align:center;margin-top:16px" type="button">&#128640; Share my game</button>
+      <p class="sub" style="text-align:center;margin-top:10px">Your parent checks it first. Then it goes up!</p>
     </div>
   </div>
 
-  <!-- ═ MARKETPLACE ═ -->
+  <!-- GAMES -->
   <div class="scr" id="market">
     <div class="hd"><b>Games</b><span class="sp"></span>
-      <span class="hdicons"><button class="helpB" type="button" aria-label="Help">?</button><button class="parB" type="button" aria-label="Parent zone">&#128737;</button></span></div>
+      <span class="hdicons"><button class="helpB" type="button" aria-label="Help">?</button><button class="parB" type="button" aria-label="Parents">&#128737;</button></span></div>
     <div class="scroll">
       <div class="eyebrow">Real games by real kids</div>
       <div class="mgrid">
-        <button class="stallc" id="myStall" type="button" style="text-align:left;border-color:rgba(69,227,196,.4)">
-          <span class="art">&#127919;</span><b>Sky Bounce <span class="badge" id="liveBadge" style="display:none">LIVE</span></b><span>by Zara. This one is yours!</span>
+        <button class="stallc" id="myStall" type="button" style="text-align:left;border:3px solid var(--teal)">
+          <span class="art" style="background:var(--teal-s)">&#127919;</span><b>Sky Bounce <span class="badge" id="liveBadge" style="display:none">UP!</span></b><span>by Zara. This one is yours!</span>
         </button>
-        <a class="stallc" href="../elsie/game/" target="_blank" rel="noopener"><span class="art">&#129419;</span><b>Butterfly Dash</b><span>by Elsie &middot; Butterflii Art Studio</span></a>
-        <a class="stallc" href="../emma/game/" target="_blank" rel="noopener"><span class="art">&#127752;</span><b>Rainbow Sprinkle Dash</b><span>by Emma</span></a>
-        <a class="stallc" href="../triad-labs/ninja-academy/" target="_blank" rel="noopener"><span class="art">&#129333;</span><b>Ninja Academy</b><span>by Ezekiel &middot; Triad Labs</span></a>
-        <a class="stallc" href="../pixel-power/dragonball-flight/" target="_blank" rel="noopener"><span class="art">&#128009;</span><b>Dragonball Flight</b><span>by Theodore &middot; Pixel Power</span></a>
-        <a class="stallc" href="../pixel-power/song-gallery/" target="_blank" rel="noopener"><span class="art">&#127925;</span><b>Song Gallery</b><span>by Hannah &middot; Pixel Power</span></a>
+        <a class="stallc" href="../elsie/game/" target="_blank" rel="noopener"><span class="art" style="background:var(--purple-s)">&#129419;</span><b>Butterfly Dash</b><span>by Elsie</span></a>
+        <a class="stallc" href="../emma/game/" target="_blank" rel="noopener"><span class="art" style="background:var(--coral-s)">&#127752;</span><b>Rainbow Sprinkle Dash</b><span>by Emma</span></a>
+        <a class="stallc" href="../triad-labs/ninja-academy/" target="_blank" rel="noopener"><span class="art" style="background:var(--amber-s)">&#129333;</span><b>Ninja Academy</b><span>by Ezekiel</span></a>
+        <a class="stallc" href="../pixel-power/dragonball-flight/" target="_blank" rel="noopener"><span class="art" style="background:var(--teal-s)">&#128009;</span><b>Dragonball Flight</b><span>by Theodore</span></a>
+        <a class="stallc" href="../pixel-power/song-gallery/" target="_blank" rel="noopener"><span class="art" style="background:var(--green-s)">&#127925;</span><b>Song Gallery</b><span>by Hannah</span></a>
       </div>
     </div>
   </div>
 
-  <!-- ═ MY STALL ═ -->
+  <!-- MY PAGE -->
   <div class="scr" id="stall">
-    <div class="hd"><button data-go="market" type="button">&#8249;</button><b>My game page</b></div>
+    <div class="hd"><button class="bk" data-go="market" type="button">&#8249;</button><b>My game page</b></div>
     <div class="scroll">
       <div class="card" style="text-align:center">
-        <div style="font-size:52px">&#129412;</div>
+        <div style="font-size:54px">&#129412;</div>
         <h3 style="font-size:24px;margin-top:6px">Sky Bounce</h3>
         <p>Made by Zara</p>
-        <div style="margin-top:12px;font-family:var(--sys);font-size:11px;color:var(--phos);background:var(--s2);border:1px solid var(--line);border-radius:10px;padding:11px" id="shareUrl">zara.builtby.kids?ref=zara</div>
+        <div style="margin-top:12px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--purple);background:var(--purple-s);border-radius:12px;padding:12px" id="shareUrl">zara.builtby.kids?ref=zara</div>
         <button class="cta" id="copyBtn" type="button">Copy my link</button>
-        <button class="cta ghost" data-go="rig" type="button">Keep building it</button>
-        <p class="sub" style="margin-top:12px;font-size:13px">Send this to a friend. They tap, they play. And everyone knows you made it.</p>
+        <button class="cta ghost" data-go="rig" type="button">Keep making it</button>
+        <p class="sub" style="margin-top:12px">Send this to a friend. They tap, they play. And everyone knows you made it.</p>
       </div>
       <div class="card">
         <div class="eyebrow">This week</div>
-        <h3>&#127942; 14 plays this week!</h3>
+        <h3>&#127942; 14 plays!</h3>
         <p>3 friends got your link. 2 played your game. Nice one.</p>
       </div>
     </div>
   </div>
 
-  <!-- ═ QUESTS / BELTS ═ -->
+  <!-- LEVELS -->
   <div class="scr" id="quests">
     <div class="hd"><b>My levels</b><span class="sp"></span>
-      <span class="hdicons"><button class="helpB" type="button" aria-label="Help">?</button><button class="parB" type="button" aria-label="Parent zone">&#128737;</button></span></div>
+      <span class="hdicons"><button class="helpB" type="button" aria-label="Help">?</button><button class="parB" type="button" aria-label="Parents">&#128737;</button></span></div>
     <div class="scroll">
       <div class="eyebrow">Make things, move up</div>
-      <div class="h1" style="font-size:26px">Your levels</div>
+      <div class="h1" style="font-size:24px">Your journey</div>
       <div class="ladder">
-        <div class="rung done"><span class="dot">&#10003;</span><span><b>Level 1 &middot; Quester</b><span>Share your first game. You did it! Sky Bounce, 1 Aug.</span></span></div>
-        <div class="rung now"><span class="dot">&#9679;</span><span><b>Level 2 &middot; Builder</b><span>Share 3 games from home. You are on 2 of 3!</span></span></div>
-        <div class="rung lock"><span class="dot">&#128274;</span><span><b>Level 3 &middot; Mentor</b><span>Help teach the newer kids.</span></span></div>
-        <div class="rung lock"><span class="dot">&#128274;</span><span><b>Level 4 &middot; Mogul</b><span>The very top. You earn it. You can never buy it.</span></span></div>
+        <div class="rung done"><span class="stem"><span class="dot">&#10003;</span></span><span class="tx"><b>Level 1 &middot; Quester</b><span>Share your first game. You did it! Sky Bounce, 1 Aug.</span></span></div>
+        <div class="rung now"><span class="stem"><span class="dot">&#11088;</span></span><span class="tx"><b>Level 2 &middot; Builder</b><span>Share 3 games from home. You are on 2 of 3!</span></span></div>
+        <div class="rung lock"><span class="stem"><span class="dot">&#128274;</span></span><span class="tx"><b>Level 3 &middot; Mentor</b><span>Help teach the newer kids.</span></span></div>
+        <div class="rung lock"><span class="stem"><span class="dot">&#128274;</span></span><span class="tx"><b>Level 4 &middot; Mogul</b><span>The very top. You earn it. You can never buy it.</span></span></div>
       </div>
-      <div class="card" style="border-color:rgba(217,169,76,.3)">
-        <div class="eyebrow" style="color:var(--gold)">A surprise, locked for now</div>
-        <h3>The Awakening</h3>
+      <div class="card" style="background:linear-gradient(140deg,#FFF6E3,#FFEFD1);border-color:#F5E3B8">
+        <div class="eyebrow" style="color:#B07A00">A surprise, locked for now</div>
+        <h3>&#10024; The Awakening</h3>
         <p>Keep making things. Keep helping. One day, something amazing happens to your character.</p>
       </div>
     </div>
   </div>
 
-  <!-- ═ GUARDIAN ═ -->
+  <!-- PARENT ZONE -->
   <div class="scr" id="guardian">
-    <div class="hd"><button id="guardBack" type="button">&#8249;</button><b>Parent zone</b></div>
+    <div class="hd"><button class="bk" id="guardBack" type="button">&#8249;</button><b>Parent zone</b></div>
     <div class="scroll">
+      <div class="safe">
+        <span class="bigicon">&#128737;</span>
+        <span><b>You approve everything.</b><span>Nothing your child makes goes online without your yes.</span></span>
+      </div>
+
       <div class="card">
-        <div class="eyebrow" style="color:var(--gold)">Waiting for you</div>
+        <div class="eyebrow">Waiting for you</div>
         <div class="appr" id="apprRow">
-          <span class="art">&#127919;</span>
+          <span class="bigicon">&#127919;</span>
           <span><b>Sky Bounce II</b><span>Zara wants to share it &middot; just now</span></span>
-          <button class="ok" id="apprBtn" type="button">Review &amp; approve</button>
+          <button class="ok" id="apprBtn" type="button">Look &amp; approve</button>
         </div>
         <div class="appr" id="clipRow">
-          <span class="art">&#127909;</span>
-          <span><b>Zara's clip</b><span>"My butterfly game!!" &middot; 22 seconds</span></span>
-          <button class="ok" id="clipBtn" type="button">Review &amp; approve</button>
+          <span class="bigicon">&#127909;</span>
+          <span><b>Zara's video</b><span>"My butterfly game!!" &middot; 22 seconds</span></span>
+          <button class="ok" id="clipBtn" type="button">Look &amp; approve</button>
         </div>
         <div class="sub" id="apprEmpty" style="display:none;padding:6px 0">Nothing waiting. When your child shares a game or a video, it comes to you first.</div>
       </div>
 
       <div class="card toggles">
-        <div class="eyebrow">Visibility &middot; per child, your choice</div>
-        <div class="tog"><span>Zara &middot; name on her stall</span><span class="sw on" role="switch" aria-checked="true" tabindex="0"></span></div>
-        <div class="tog"><span>Zara &middot; face in event photos</span><span class="sw" role="switch" aria-checked="false" tabindex="0"></span></div>
-        <div class="tog"><span>Leo &middot; name on his stall</span><span class="sw on" role="switch" aria-checked="true" tabindex="0"></span></div>
-        <div class="tog" style="border-bottom:0"><span>Leo &middot; may join team spaces</span><span class="sw on" role="switch" aria-checked="true" tabindex="0"></span></div>
+        <div class="eyebrow">What is visible &middot; your choice, per child</div>
+        <div class="tog"><span>Zara &middot; her name on her game page</span><button class="sw on" role="switch" aria-checked="true" type="button"></button></div>
+        <div class="tog"><span>Zara &middot; her face in event photos</span><button class="sw" role="switch" aria-checked="false" type="button"></button></div>
+        <div class="tog"><span>Leo &middot; his name on his game page</span><button class="sw on" role="switch" aria-checked="true" type="button"></button></div>
+        <div class="tog"><span>Leo &middot; can join team projects</span><button class="sw on" role="switch" aria-checked="true" type="button"></button></div>
       </div>
 
       <div class="card">
-        <div class="eyebrow">Family plan</div>
-        <h3>Active &middot; 2 builders</h3>
+        <div class="eyebrow">Your plan</div>
+        <h3>Family plan &middot; 2 kids</h3>
         <p>Your event ticket counts toward month one. Cancel any time. Your kids keep 100% of anything their games ever earn.</p>
-        <button class="cta ghost" type="button">Manage in Stripe</button>
+        <button class="cta ghost" type="button">Manage my plan</button>
       </div>
     </div>
   </div>
 
-  <!-- ═ EVENT ARCHIVE: 2026 ═ -->
+  <!-- THE BIG DAY -->
   <div class="scr" id="event">
-    <div class="hd"><button data-go="home" type="button">&#8249;</button><b>Code Quest 2026</b></div>
+    <div class="hd"><button class="bk" data-go="home" type="button">&#8249;</button><b>The big day</b></div>
     <div class="scroll">
-      <div class="eyebrow">Saturday 1 August 2026 &middot; Native, Manchester</div>
-      <img class="evhero" src="../2026/og.jpg" alt="The seven questers of Code Quest 2026" loading="lazy">
+      <div class="eyebrow">Saturday 1 August 2026 &middot; Manchester</div>
+      <img class="evhero" src="../2026/og.jpg" alt="The seven Code Quest kids" loading="lazy">
 
       <div class="verdict">
-        <div class="eyebrow" style="color:var(--gold)">The verdict</div>
-        <div class="vt">A tie.</div>
-        <p>Triad Labs built the stronger thing. Pixel Power explained theirs better. Neither could honestly be placed above the other, so both took first and both took &pound;20.</p>
+        <div style="font-size:12.5px;font-weight:900;opacity:.85">THE RESULT</div>
+        <div class="vt">A tie!</div>
+        <p>Both teams came first. Both teams won &pound;20. One team built the best game. The other explained theirs best.</p>
       </div>
 
       <div class="card">
-        <div class="eyebrow">As it happened</div>
-        <div class="timeline" style="margin-top:6px">
-          <div><span class="t">10:00</span><span><b>The Awakening plays</b><span>Before a word was said. Every cousin, drawn from a photograph taken the week before, taking up the crest.</span></span></div>
-          <div><span class="t">Morning</span><span><b>The build</b><span>Six projects that did not exist that morning. Two teams, one room.</span></span></div>
-          <div><span class="t">Aftern.</span><span><b>The Telling</b><span>Every child stood up in front of the family and explained their build. Four of the ten marks were for the explaining.</span></span></div>
-          <div><span class="t">Close</span><span><b>Grandma judged</b><span>The scorecard was public. The verdict was a tie, and she found something to name in every one of them.</span></span></div>
+        <div class="eyebrow">How the day went</div>
+        <div class="timeline">
+          <div><span class="t">10:00</span><span><b>The movie played</b><span>Everyone saw themselves as a hero on the big screen.</span></span></div>
+          <div><span class="t">Morning</span><span><b>Everyone made a game</b><span>Six games that did not exist at breakfast.</span></span></div>
+          <div><span class="t">Later</span><span><b>Everyone presented</b><span>Each kid stood up and explained their game to the family.</span></span></div>
+          <div><span class="t">The end</span><span><b>Grandma judged</b><span>She gave every single kid a prize.</span></span></div>
         </div>
       </div>
 
       <div class="card">
-        <div class="eyebrow">The games they made that day</div>
+        <div class="eyebrow">The games they made</div>
         <div class="mgrid" style="margin-top:8px">
-          <a class="stallc" href="../triad-labs/ninja-academy/" target="_blank" rel="noopener"><span class="art">&#129333;</span><b>Ninja Academy</b><span>Ezekiel &middot; Triad Labs</span></a>
-          <a class="stallc" href="../pixel-power/dragonball-flight/" target="_blank" rel="noopener"><span class="art">&#128009;</span><b>Dragonball Flight</b><span>Theodore &middot; Pixel Power</span></a>
-          <a class="stallc" href="../pixel-power/song-gallery/" target="_blank" rel="noopener"><span class="art">&#127925;</span><b>Song Gallery</b><span>Hannah &middot; Pixel Power</span></a>
-          <a class="stallc" href="../triad-labs/" target="_blank" rel="noopener"><span class="art">&#9917;</span><b>Non-League</b><span>Triad Labs</span></a>
-          <a class="stallc" href="../triad-labs/" target="_blank" rel="noopener"><span class="art">&#9876;</span><b>Math Kingdom</b><span>Triad Labs</span></a>
-          <a class="stallc" href="../pixel-power/" target="_blank" rel="noopener"><span class="art">&#127918;</span><b>Code Quest, the game</b><span>Pixel Power</span></a>
+          <a class="stallc" href="../triad-labs/ninja-academy/" target="_blank" rel="noopener"><span class="art" style="background:var(--amber-s)">&#129333;</span><b>Ninja Academy</b><span>Ezekiel</span></a>
+          <a class="stallc" href="../pixel-power/dragonball-flight/" target="_blank" rel="noopener"><span class="art" style="background:var(--teal-s)">&#128009;</span><b>Dragonball Flight</b><span>Theodore</span></a>
+          <a class="stallc" href="../pixel-power/song-gallery/" target="_blank" rel="noopener"><span class="art" style="background:var(--green-s)">&#127925;</span><b>Song Gallery</b><span>Hannah</span></a>
+          <a class="stallc" href="../triad-labs/" target="_blank" rel="noopener"><span class="art" style="background:var(--purple-s)">&#9917;</span><b>Non-League</b><span>Team game</span></a>
+          <a class="stallc" href="../triad-labs/" target="_blank" rel="noopener"><span class="art" style="background:var(--coral-s)">&#9876;</span><b>Math Kingdom</b><span>Team game</span></a>
+          <a class="stallc" href="../pixel-power/" target="_blank" rel="noopener"><span class="art" style="background:var(--purple-s)">&#127918;</span><b>Code Quest game</b><span>Team game</span></a>
         </div>
-        <p class="sub" style="margin-top:12px">And in the week after: Elsie shipped Butterfly Dash under her own studio name, and Emma, too young to compete, made a game anyway. The day did not end when the day ended.</p>
+        <p class="sub" style="margin-top:12px">And after the day: Elsie made Butterfly Dash at home, and Emma, only 6, made a game too.</p>
       </div>
 
       <div class="card">
         <div class="eyebrow">Grandma gave everyone a prize</div>
-        <div class="award"><span class="who">Sophia</span><span><b>Top presenter</b><span>The best presentation of the day. She brought the room with her.</span></span></div>
+        <div class="award"><span class="who">Sophia</span><span><b>Best presenter</b><span>The best talk of the whole day.</span></span></div>
         <div class="award"><span class="who">Ezekiel</span><span><b>Best team leader</b><span>He held his team together all day.</span></span></div>
-        <div class="award"><span class="who">Elsie</span><span><b>Most creative</b><span>Hers was the explanation that made Code Quest finally make sense.</span></span></div>
-        <div class="award"><span class="who">Hannah</span><span><b>For overcoming</b><span>Quiet beforehand, and then she performed.</span></span></div>
-        <div class="award"><span class="who">Theodore</span><span><b>Calm under pressure</b><span>His system would not work and he never lost his composure.</span></span></div>
-        <div class="award"><span class="who">Arthur</span><span><b>Perseverance</b><span>He did it anyway, and he spoke with confidence.</span></span></div>
-        <div class="award"><span class="who">Emma</span><span><b>Participation</b><span>Too young to compete. Lasted the whole day and let the others work.</span></span></div>
+        <div class="award"><span class="who">Elsie</span><span><b>Most creative</b><span>Her explanation made everything make sense.</span></span></div>
+        <div class="award"><span class="who">Hannah</span><span><b>For being brave</b><span>Quiet before, brilliant on stage.</span></span></div>
+        <div class="award"><span class="who">Theodore</span><span><b>Coolest head</b><span>His game broke and he never panicked.</span></span></div>
+        <div class="award"><span class="who">Arthur</span><span><b>Never gave up</b><span>He kept going and spoke with confidence.</span></span></div>
+        <div class="award"><span class="who">Emma</span><span><b>Youngest star</b><span>Only 6. Lasted the whole day.</span></span></div>
       </div>
 
       <div class="card">
-        <div class="eyebrow">Everyone’s movie moment &middot; tap to watch</div>
+        <div class="eyebrow">Everyone's movie moment &middot; tap to watch</div>
         <div class="awkrow">
           <button class="awk" data-vid="../codequest-elsie.mp4" type="button"><span class="pl">&#9654;</span><b>Elsie</b></button>
           <button class="awk" data-vid="../codequest-hannah.mp4" type="button"><span class="pl">&#9654;</span><b>Hannah</b></button>
@@ -553,81 +584,75 @@ ball.onclick = () =&gt; {
 
       <div class="card">
         <div class="eyebrow">More coming soon</div>
-        <div class="ph"><span class="art">&#128247;</span><span><b>The photo gallery</b><span>Every family's camera roll, gathered in one place.</span></span><em>ARRIVING</em></div>
-        <div class="ph"><span class="art">&#127916;</span><span><b>The highlights film</b><span>The whole day in three minutes.</span></span><em>IN THE EDIT</em></div>
-        <div class="ph"><span class="art">&#127911;</span><span><b>The theme song</b><span>The anthem the questers walked in to.</span></span><em>IN THE STUDIO</em></div>
+        <div class="ph"><span class="bigicon" style="background:var(--purple-s)">&#128247;</span><span><b>All the photos</b><span>From every family's phone.</span></span><em>SOON</em></div>
+        <div class="ph"><span class="bigicon" style="background:var(--coral-s)">&#127916;</span><span><b>The highlights film</b><span>The whole day in 3 minutes.</span></span><em>SOON</em></div>
+        <div class="ph"><span class="bigicon" style="background:var(--teal-s)">&#127911;</span><span><b>The theme song</b><span>The song everyone walked in to.</span></span><em>SOON</em></div>
       </div>
     </div>
   </div>
 
-  <!-- video modal -->
-  <div id="vmodal">
-    <div class="bar"><b id="vtitle">The Awakening</b><button id="vclose" type="button">&times;</button></div>
-    <video id="vplayer" controls playsinline preload="none"></video>
-  </div>
-
-  <!-- ═ CLIPS ═ -->
+  <!-- VIDEOS -->
   <div class="scr" id="clips">
     <div class="feed" id="feed">
 
       <div class="clip">
         <video src="../clips/elsie-reel-1.mp4" loop playsinline preload="metadata"></video>
         <div class="scrim"></div>
-        <span class="shield">&#10003; Guardian approved</span>
+        <span class="shield">&#10003; Parent approved</span>
         <div class="rail">
-          <button class="spark" type="button"><span class="ic">&#9889;</span><span class="n">57</span></button>
+          <button class="spark" type="button"><span class="ic">&#10084;&#65039;</span><span class="n">57</span></button>
           <button class="save" type="button"><span class="ic">&#128278;</span><span>Save</span></button>
           <button class="shr" type="button"><span class="ic">&#8599;</span><span>Share</span></button>
         </div>
         <div class="cmeta">
           <div class="who">ELSIE &middot; MADE BUTTERFLY DASH</div>
-          <div class="cap">From the founder of Butterflii by Elsie &#129419; Come play Butterfly Dash. Draw mode lets YOU make the character. Tap for sound.</div>
+          <div class="cap">From the maker of Butterfly Dash &#129419; Draw mode lets YOU make the character. Tap for sound.</div>
         </div>
       </div>
 
       <div class="clip">
         <video src="../clips/grandma-arrives.mp4" muted loop playsinline preload="metadata"></video>
         <div class="scrim"></div>
-        <span class="shield">&#10003; Guardian approved</span>
+        <span class="shield">&#10003; Parent approved</span>
         <div class="rail">
-          <button class="spark" type="button"><span class="ic">&#9889;</span><span class="n">176</span></button>
+          <button class="spark" type="button"><span class="ic">&#10084;&#65039;</span><span class="n">176</span></button>
           <button class="save" type="button"><span class="ic">&#128278;</span><span>Save</span></button>
           <button class="shr" type="button"><span class="ic">&#8599;</span><span>Share</span></button>
         </div>
         <div class="cmeta">
           <div class="who">GRANDMA &middot; THE JUDGE</div>
-          <div class="cap">The Judge has arrived &#128081; Midway through Code Quest 2026, in the purple, getting ready to judge every quester. Nobody was safe.</div>
+          <div class="cap">The Judge has arrived &#128081; Ready to judge every single kid. Nobody was safe.</div>
         </div>
       </div>
 
       <div class="clip">
         <video src="../codequest-elsie.mp4" muted loop playsinline preload="metadata"></video>
         <div class="scrim"></div>
-        <span class="shield">&#10003; Guardian approved</span>
+        <span class="shield">&#10003; Parent approved</span>
         <div class="rail">
-          <button class="spark" type="button"><span class="ic">&#9889;</span><span class="n">128</span></button>
+          <button class="spark" type="button"><span class="ic">&#10084;&#65039;</span><span class="n">128</span></button>
           <button class="save" type="button"><span class="ic">&#128278;</span><span>Save</span></button>
           <button class="shr" type="button"><span class="ic">&#8599;</span><span>Share</span></button>
         </div>
         <div class="cmeta">
           <div class="who">ELSIE</div>
-          <div class="cap">My awakening &#129419; Butterfly Dash is LIVE on my stall. Three modes. Go play it.</div>
+          <div class="cap">My movie moment &#129419; And my game is up on my page. Go play it!</div>
         </div>
       </div>
 
       <div class="clip">
         <div class="bgles"><span>&#128257;</span></div>
         <div class="scrim"></div>
-        <span class="shield">&#10003; Code Quest original</span>
+        <span class="shield">&#10003; From Code Quest</span>
         <span class="lestag">LESSON</span>
         <div class="rail">
-          <button class="spark" type="button"><span class="ic">&#9889;</span><span class="n">64</span></button>
+          <button class="spark" type="button"><span class="ic">&#10084;&#65039;</span><span class="n">64</span></button>
           <button class="save" type="button"><span class="ic">&#128278;</span><span>Save</span></button>
           <button class="shr" type="button"><span class="ic">&#8599;</span><span>Share</span></button>
         </div>
         <div class="cmeta">
           <div class="who">LOOPS IN 60 SECONDS &middot; PART 2 OF 4</div>
-          <div class="cap">One loop can draw a hundred sprinkles. Watch what repeat really means, then make yours.</div>
+          <div class="cap">One loop can draw a hundred sprinkles. Watch, then try it in your game.</div>
           <div class="lesprog">COUNTS TOWARD LEVEL 2</div>
           <button class="cta try" data-go="rig" type="button">Try it now</button>
         </div>
@@ -636,31 +661,31 @@ ball.onclick = () =&gt; {
       <div class="clip">
         <video src="../codequest-theodore.mp4" muted loop playsinline preload="metadata"></video>
         <div class="scrim"></div>
-        <span class="shield">&#10003; Guardian approved</span>
+        <span class="shield">&#10003; Parent approved</span>
         <div class="rail">
-          <button class="spark" type="button"><span class="ic">&#9889;</span><span class="n">92</span></button>
+          <button class="spark" type="button"><span class="ic">&#10084;&#65039;</span><span class="n">92</span></button>
           <button class="save" type="button"><span class="ic">&#128278;</span><span>Save</span></button>
           <button class="shr" type="button"><span class="ic">&#8599;</span><span>Share</span></button>
         </div>
         <div class="cmeta">
           <div class="who">THEODORE &middot; MADE DRAGONBALL</div>
-          <div class="cap">Flight test &#128009; Dragonball. Tap my stall to fly it yourself.</div>
+          <div class="cap">Flight test &#128009; Tap my page to fly it yourself.</div>
         </div>
       </div>
 
       <div class="clip">
         <div class="bgles"><span>&#127919;</span></div>
         <div class="scrim"></div>
-        <span class="shield">&#10003; Code Quest original</span>
+        <span class="shield">&#10003; From Code Quest</span>
         <span class="lestag">LESSON</span>
         <div class="rail">
-          <button class="spark" type="button"><span class="ic">&#9889;</span><span class="n">41</span></button>
+          <button class="spark" type="button"><span class="ic">&#10084;&#65039;</span><span class="n">41</span></button>
           <button class="save" type="button"><span class="ic">&#128278;</span><span>Save</span></button>
           <button class="shr" type="button"><span class="ic">&#8599;</span><span>Share</span></button>
         </div>
         <div class="cmeta">
-          <div class="who">GAME JUICE &middot; PART 1 OF 3</div>
-          <div class="cap">Why does tapping feel GOOD? Squash, stretch and a tiny delay. Sixty seconds on game feel.</div>
+          <div class="who">GAME FEEL &middot; PART 1 OF 3</div>
+          <div class="cap">Why does tapping feel GOOD? Squash, stretch, tiny delay. 60 seconds.</div>
           <div class="lesprog">COUNTS TOWARD LEVEL 2</div>
           <button class="cta try" data-go="rig" type="button">Try it now</button>
         </div>
@@ -669,9 +694,9 @@ ball.onclick = () =&gt; {
       <div class="clip">
         <video src="../codequest-emma.mp4" muted loop playsinline preload="metadata"></video>
         <div class="scrim"></div>
-        <span class="shield">&#10003; Guardian approved</span>
+        <span class="shield">&#10003; Parent approved</span>
         <div class="rail">
-          <button class="spark" type="button"><span class="ic">&#9889;</span><span class="n">203</span></button>
+          <button class="spark" type="button"><span class="ic">&#10084;&#65039;</span><span class="n">203</span></button>
           <button class="save" type="button"><span class="ic">&#128278;</span><span>Save</span></button>
           <button class="shr" type="button"><span class="ic">&#8599;</span><span>Share</span></button>
         </div>
@@ -685,68 +710,56 @@ ball.onclick = () =&gt; {
 
     <div class="seg">
       <button class="on" id="segFeed" type="button">For you</button>
-      <button id="segCol" type="button">Collections</button>
+      <button id="segCol" type="button">Saved</button>
     </div>
-    <button id="postBtn" type="button" aria-label="Make a clip">+</button>
+    <button id="postBtn" type="button" aria-label="Make a video">+</button>
   </div>
 
-  <!-- ═ COLLECTIONS ═ -->
+  <!-- SAVED / COLLECTIONS -->
   <div class="scr" id="collections">
-    <div class="hd"><button id="backFeed" type="button">&#8249;</button><b>Collections</b></div>
+    <div class="hd"><button class="bk" id="backFeed" type="button">&#8249;</button><b>Saved</b></div>
     <div class="scroll">
       <div class="eyebrow">Yours</div>
-      <div class="colcard"><span class="art">&#128278;</span>
-        <span style="flex:1"><b>My Collection</b><span><span id="savedN">0</span> saved clips</span></span></div>
+      <div class="colcard"><span class="bigicon" style="background:var(--coral-s)">&#128278;</span>
+        <span style="flex:1"><b>My saved videos</b><span><span id="savedN">0</span> saved</span></span></div>
 
-      <div class="eyebrow" style="margin-top:22px">Learning paths &middot; lessons in the feed</div>
-      <div class="colcard"><span class="art">&#129521;</span>
+      <div class="eyebrow" style="margin-top:22px">Lessons &middot; short videos in your feed</div>
+      <div class="colcard"><span class="bigicon" style="background:var(--amber-s)">&#129521;</span>
         <span style="flex:1"><b>Level 2 lessons</b><span>7 short videos that count toward Level 2</span>
         <span class="pr"><i style="width:43%"></i></span></span>
-        <span style="font-family:var(--sys);font-size:10px;color:var(--gold-hi)">3/7</span></div>
-      <div class="colcard"><span class="art">&#128257;</span>
+        <span style="font-size:13px;font-weight:900;color:var(--amber)">3/7</span></div>
+      <div class="colcard"><span class="bigicon" style="background:var(--purple-s)">&#128257;</span>
         <span style="flex:1"><b>Loops in 60 seconds</b><span>4 parts &middot; you are on part 2</span>
         <span class="pr"><i style="width:50%"></i></span></span>
-        <span style="font-family:var(--sys);font-size:10px;color:var(--gold-hi)">2/4</span></div>
-      <div class="colcard"><span class="art">&#127919;</span>
-        <span style="flex:1"><b>Game Juice</b><span>3 parts &middot; make taps feel good</span>
+        <span style="font-size:13px;font-weight:900;color:var(--amber)">2/4</span></div>
+      <div class="colcard"><span class="bigicon" style="background:var(--teal-s)">&#127919;</span>
+        <span style="flex:1"><b>Game feel</b><span>3 parts &middot; make taps feel good</span>
         <span class="pr"><i style="width:0%"></i></span></span>
-        <span style="font-family:var(--sys);font-size:10px;color:var(--gold-hi)">0/3</span></div>
+        <span style="font-size:13px;font-weight:900;color:var(--amber)">0/3</span></div>
 
-      <div class="eyebrow" style="margin-top:22px">From the realm</div>
-      <div class="colcard"><span class="art">&#127914;</span>
+      <div class="eyebrow" style="margin-top:22px">More</div>
+      <div class="colcard"><span class="bigicon" style="background:var(--green-s)">&#127914;</span>
         <span style="flex:1"><b>Big day videos</b><span>Videos from Code Quest days around the country</span></span></div>
-      <p class="sub" style="margin-top:18px">Lessons are short videos, right in with everything else. Watch them, try them, level up.</p>
+      <p class="sub" style="margin-top:16px">Lessons are short videos, right in with everything else. Watch them, try them, level up.</p>
     </div>
   </div>
 
   <!-- post sheet -->
   <div id="sheet">
     <div class="body">
-      <h3>Make a clip</h3>
-      <div class="st"><i>1</i><span>Record in the app. Your build, your face, your call.</span></div>
+      <div class="grab"></div>
+      <h3>Make a video</h3>
+      <div class="st"><i>1</i><span>Record it in the app. Your game, your face, your call.</span></div>
       <div class="st"><i>2</i><span>Your parent checks it. Nothing goes up without them.</span></div>
       <div class="st"><i>3</i><span>Then everyone on Code Quest can watch it. No messages. No strangers. Ever.</span></div>
-      <button class="cta gold" id="recBtn" style="width:100%;text-align:center;margin-top:18px" type="button">Start recording</button>
+      <button class="cta" id="recBtn" style="width:100%;text-align:center;margin-top:18px;background:var(--coral);box-shadow:0 6px 16px rgba(255,107,107,.35)" type="button">Start recording</button>
     </div>
-  </div>
-
-  <!-- intro -->
-  <div id="intro">
-    <div class="k">A working preview</div>
-    <h2>This is the Code Quest app, imagined.</h2>
-    <p><b>Code Quest</b> teaches kids to build real apps and games. This is a tappable concept of the app that comes after the event day. Everything here works; nothing here is final.</p>
-    <div class="ipts">
-      <div class="ipt"><i>&#128102;</i><span><b>Kids create and publish.</b> They build games in a simple studio and share them at a link.</span></div>
-      <div class="ipt"><i>&#128737;</i><span><b>Parents approve everything.</b> You hold the account. Nothing a child makes goes public without you.</span></div>
-      <div class="ipt"><i>&#128241;</i><span><b>Explore freely.</b> Tap the &#63; on any screen for a plain guide to the words we use.</span></div>
-    </div>
-    <button class="cta gold" id="introGo" style="text-align:center" type="button">Have a look around</button>
-    <button id="introSkip" type="button">I have seen this before, skip</button>
   </div>
 
   <!-- help sheet -->
   <div id="help">
     <div class="body">
+      <div class="grab"></div>
       <h3>What the words mean</h3>
       <div class="g"><b>Code Quest</b><span>Where kids learn to make real games and apps. It starts with one big day.</span></div>
       <div class="g"><b>Levels</b><span>Level 1 Quester, Level 2 Builder, Level 3 Mentor, Level 4 Mogul. You move up by making and sharing things.</span></div>
@@ -760,13 +773,38 @@ ball.onclick = () =&gt; {
     </div>
   </div>
 
+  <!-- intro tour -->
+  <div id="intro">
+    <div class="tstep on" data-step="0">
+      <div class="tart">&#128075;</div>
+      <h2>Welcome to Code Quest</h2>
+      <p>An app where <b>kids make real games</b> and share them with a link. This is a working preview. Everything is tappable.</p>
+    </div>
+    <div class="tstep" data-step="1">
+      <div class="tart">&#128737;</div>
+      <h2>Parents say yes first</h2>
+      <p><b>Nothing a child makes goes online without a parent's approval.</b> No messages, no strangers, no ads. Ever.</p>
+    </div>
+    <div class="tstep" data-step="2">
+      <div class="tart">&#129395;</div>
+      <h2>Have a look around</h2>
+      <p>Five tabs along the bottom: <b>Home, Make, Videos, Games, Levels.</b> Tap the &#63; on any screen if a word is new.</p>
+    </div>
+    <div class="tdots"><i class="on"></i><i></i><i></i></div>
+    <button class="cta" id="introGo" type="button">Next</button>
+    <button id="introSkip" type="button">Skip</button>
+  </div>
+
+  <!-- one-time tips -->
+  <div id="tip"><span class="em" id="tipEm">&#128161;</span><span id="tipTx"></span><button id="tipOk" type="button">Got it</button></div>
+
   <div id="swipehint">Swipe up for more &#8593;</div>
 
   <!-- PIN -->
   <div id="pin">
     <div>
-      <div class="eyebrow">Guardian</div>
-      <div class="h1" style="font-size:24px">Enter your PIN</div>
+      <div class="eyebrow">Parents only</div>
+      <div class="h1">Enter your PIN</div>
       <div class="dots" id="pdots"><i></i><i></i><i></i><i></i></div>
       <div class="numpad" id="numpad">
         <button type="button">1</button><button type="button">2</button><button type="button">3</button>
@@ -774,21 +812,23 @@ ball.onclick = () =&gt; {
         <button type="button">7</button><button type="button">8</button><button type="button">9</button>
         <span></span><button type="button">0</button><button type="button" id="pinX">&times;</button>
       </div>
+      <div class="pinhint">This is a preview. Any 4 digits work.</div>
     </div>
+  </div>
+
+  <!-- video modal -->
+  <div id="vmodal">
+    <div class="bar"><b id="vtitle">Movie moment</b><button id="vclose" type="button">&times;</button></div>
+    <video id="vplayer" controls playsinline preload="none"></video>
   </div>
 
   <!-- TABS -->
   <div id="tabs">
-    <button class="on" data-go="home" type="button">
-      <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Home</button>
-    <button data-go="rig" type="button">
-      <svg viewBox="0 0 24 24"><path d="M14 4l6 6-9 9H5v-6zM12 6l6 6"/></svg>Make</button>
-    <button data-go="clips" type="button">
-      <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5l5 2.5-5 2.5z"/></svg>Videos</button>
-    <button data-go="market" type="button">
-      <svg viewBox="0 0 24 24"><path d="M4 8h16l-1 12H5zM4 8l2-4h12l2 4M9 12v3M15 12v3"/></svg>Games</button>
-    <button data-go="quests" type="button">
-      <svg viewBox="0 0 24 24"><path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 15.6 7.1 18.2l.9-5.5-4-3.9L9.5 8z"/></svg>Levels</button>
+    <button class="on" data-go="home" type="button"><span class="ti">&#127968;</span>Home</button>
+    <button data-go="rig" type="button"><span class="ti">&#128296;</span>Make</button>
+    <button data-go="clips" type="button"><span class="ti">&#127909;</span>Videos</button>
+    <button data-go="market" type="button"><span class="ti">&#127918;</span>Games</button>
+    <button data-go="quests" type="button"><span class="ti">&#11088;</span>Levels</button>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -818,12 +858,25 @@ document.addEventListener("click", function(e){
   if (g){ go(g.getAttribute("data-go")); }
 });
 
-/* intro overlay */
+/* intro tour: 3 steps */
 var intro = document.getElementById("intro");
+var tstep = 0;
+function paintTour(){
+  var steps = intro.querySelectorAll(".tstep");
+  for (var i = 0; i < steps.length; i++) steps[i].classList.toggle("on", i === tstep);
+  var td = intro.querySelectorAll(".tdots i");
+  for (var k = 0; k < td.length; k++) td[k].classList.toggle("on", k === tstep);
+  document.getElementById("introGo").textContent = tstep === 2 ? "Let's go!" : "Next";
+}
 function introOff(){ intro.classList.add("off"); }
-document.getElementById("introGo").addEventListener("click", introOff);
+document.getElementById("introGo").addEventListener("click", function(){
+  if (tstep < 2){ tstep++; paintTour(); }
+  else introOff();
+});
 document.getElementById("introSkip").addEventListener("click", introOff);
-document.getElementById("whatBtn").addEventListener("click", function(){ intro.classList.remove("off"); });
+document.getElementById("whatBtn").addEventListener("click", function(){
+  tstep = 0; paintTour(); intro.classList.remove("off");
+});
 
 /* help sheet, reachable from every main screen */
 var help = document.getElementById("help");
@@ -984,6 +1037,25 @@ document.querySelectorAll(".cta.ghost").forEach(function(b){
 var hinted = false;
 var swipehint = document.getElementById("swipehint");
 
+/* one-time tips per screen */
+var tipEl = document.getElementById("tip");
+var tipShown = {};
+var TIPS = {
+  home:  ["\uD83D\uDC4B", "This is your home. The big teal button carries on your game."],
+  rig:   ["\uD83D\uDD28", "This is where you make your game. Tap Play it to try it any time."],
+  market:["\uD83C\uDFAE", "Tap any game to play it. The one with the border is yours."],
+  quests:["\u2B50", "Share games to earn stars and go up levels."],
+  guardian:["\uD83D\uDEE1\uFE0F", "Everything your child shares waits here for your yes."]
+};
+function showTip(id){
+  if (tipShown[id] || !TIPS[id]) return;
+  tipShown[id] = true;
+  document.getElementById("tipEm").textContent = TIPS[id][0];
+  document.getElementById("tipTx").textContent = TIPS[id][1];
+  tipEl.classList.add("show");
+}
+document.getElementById("tipOk").addEventListener("click", function(){ tipEl.classList.remove("show"); });
+
 /* event archive video modal */
 var vmodal = document.getElementById("vmodal");
 var vplayer = document.getElementById("vplayer");
@@ -1045,6 +1117,8 @@ document.getElementById("backFeed").addEventListener("click", function(){ go("cl
 var _go = go;
 go = function(id){
   _go(id);
+  tipEl.classList.remove("show");
+  showTip(id);
   if (id !== "clips") vids.forEach(function(v){ v.pause(); });
   if (id === "clips" && !hinted){
     hinted = true;
@@ -1089,6 +1163,7 @@ document.getElementById("clipBtn").addEventListener("click", function(){
 /* profile avatar returns to gate */
 document.getElementById("switchA").addEventListener("click", function(){ go("gate"); });
 })();
+
 </script>
 </body>
 </html>
