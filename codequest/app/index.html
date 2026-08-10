@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B0912">
+<title>Code Quest · App Concept</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#0B0912; --s1:#14101F; --s2:#1B1628; --s3:#241D33;
+  --parch:#E9DFC7; --dim:#9A8F7A; --dim2:#6E6478;
+  --gold:#D9A94C; --gold-hi:#F2CE7B; --phos:#45E3C4; --rubric:#E4574A;
+  --line:rgba(233,223,199,.09);
+  --gothic:'Grenze Gotisch',serif; --body:'DM Sans',sans-serif; --sys:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#08060d;font-family:var(--body);color:var(--parch);-webkit-font-smoothing:antialiased}
+body{display:grid;place-items:center;overflow:hidden}
+
+/* phone frame on desktop, full bleed on mobile */
+#phone{position:relative;width:100%;height:100%;background:var(--void);overflow:hidden}
+@media(min-width:760px){
+  body{background:radial-gradient(60% 60% at 50% 40%, #17121f, #08060d)}
+  #phone{width:392px;height:min(846px,94vh);border-radius:48px;border:1px solid rgba(255,255,255,.12);
+    box-shadow:0 40px 120px rgba(0,0,0,.7), inset 0 0 0 8px #000}
+  #notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:118px;height:28px;
+    background:#000;border-radius:99px;z-index:60}
+}
+#notch{display:none}
+@media(min-width:760px){#notch{display:block}}
+
+/* status bar */
+#status{position:absolute;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;
+  padding:14px 26px 6px;font-size:12.5px;font-weight:700;pointer-events:none}
+@media(max-width:759px){#status{padding-top:calc(8px + env(safe-area-inset-top))}}
+
+/* screens */
+.scr{position:absolute;inset:0;display:none;flex-direction:column;overflow:hidden}
+.scr.on{display:flex}
+.scroll{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:64px 18px 110px;scrollbar-width:none}
+.scroll::-webkit-scrollbar{display:none}
+
+.h1{font-family:var(--gothic);font-weight:800;font-size:30px;line-height:1;color:var(--gold-hi)}
+.eyebrow{font-family:var(--sys);font-size:9px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--phos);margin-bottom:6px}
+.sub{font-size:13px;color:var(--dim);margin-top:4px}
+
+/* cards */
+.card{background:var(--s1);border:1px solid var(--line);border-radius:18px;padding:16px;margin-top:14px}
+.card h3{font-family:var(--gothic);font-weight:800;font-size:19px;color:var(--gold-hi);line-height:1.1}
+.card p{font-size:13px;color:var(--dim);margin-top:4px;line-height:1.5}
+.cta{display:inline-block;margin-top:12px;background:var(--phos);color:var(--void);border:0;cursor:pointer;
+  font-family:var(--sys);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  padding:12px 18px;border-radius:99px;text-decoration:none}
+.cta.gold{background:var(--gold)}
+.cta.ghost{background:none;border:1px solid var(--line);color:var(--parch)}
+
+.progress{height:6px;border-radius:99px;background:var(--s3);margin-top:12px;overflow:hidden}
+.progress i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--gold),var(--gold-hi))}
+
+.beltchip{display:inline-flex;align-items:center;gap:7px;background:var(--s2);border:1px solid var(--line);
+  border-radius:99px;padding:8px 14px;font-family:var(--sys);font-size:9.5px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--gold-hi)}
+.beltchip i{width:8px;height:8px;border-radius:50%;background:var(--phos)}
+
+.row{display:flex;gap:10px;overflow-x:auto;margin:12px -18px 0;padding:2px 18px 6px;scrollbar-width:none}
+.row::-webkit-scrollbar{display:none}
+.mini{flex:none;width:140px;background:var(--s1);border:1px solid var(--line);border-radius:16px;
+  padding:13px;text-decoration:none;color:var(--parch)}
+.mini .art{font-size:30px}
+.mini b{display:block;font-size:13.5px;margin-top:8px;line-height:1.2}
+.mini span{font-size:10.5px;color:var(--dim2)}
+
+/* profile gate */
+#gate{background:radial-gradient(70% 45% at 50% 0%, rgba(217,169,76,.14), transparent 70%), var(--void)}
+#gate .scroll{display:flex;flex-direction:column;justify-content:center;text-align:center;padding-bottom:60px}
+.fam{font-family:var(--sys);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);margin-top:8px}
+.profiles{display:flex;gap:16px;justify-content:center;margin-top:30px;flex-wrap:wrap}
+.prof{width:96px;cursor:pointer;background:none;border:0;color:var(--parch);font-family:var(--body)}
+.prof .face{width:84px;height:84px;border-radius:26px;display:grid;place-items:center;font-size:40px;
+  background:var(--s2);border:2px solid var(--line);margin:0 auto;transition:.15s}
+.prof:hover .face{border-color:var(--gold)}
+.prof b{display:block;font-size:14px;margin-top:9px}
+.prof span{font-size:10.5px;color:var(--dim2);display:block}
+.prof.g .face{border-style:dashed}
+
+/* rig */
+.rigbar{display:flex;background:var(--s1);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:14px}
+.rigbar button{flex:1;border:0;background:none;color:var(--dim);cursor:pointer;font-family:var(--sys);
+  font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:12px 4px}
+.rigbar button.on{color:var(--phos);background:rgba(69,227,196,.08)}
+.code{background:#0D0A16;border:1px solid var(--line);border-radius:14px;margin-top:10px;padding:14px;
+  font-family:var(--sys);font-size:11px;line-height:1.65;color:#CFE3D8;overflow-x:auto;white-space:pre}
+.code .k{color:#C48FFF}.code .s{color:#F2CE7B}.code .c{color:#6E6478}
+#pv{width:100%;height:320px;border:1px solid var(--line);border-radius:14px;margin-top:10px;background:#fff;display:none}
+.ai{margin-top:10px;display:none}
+.ai .m{border-radius:12px;padding:10px 13px;font-size:13px;margin-top:8px;max-width:90%}
+.ai .bot{background:var(--s2);border:1px solid var(--line)}
+.ai .me{background:rgba(69,227,196,.1);border:1px solid rgba(69,227,196,.3);margin-left:auto}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chips button{border:1px solid var(--line);background:var(--s1);color:var(--gold-hi);cursor:pointer;
+  font-size:12px;border-radius:99px;padding:8px 13px;font-family:var(--body)}
+
+/* market grid */
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.stallc{background:var(--s1);border:1px solid var(--line);border-radius:18px;padding:14px;text-decoration:none;color:var(--parch);display:block}
+.stallc .art{width:100%;aspect-ratio:1.6;border-radius:12px;background:var(--s3);display:grid;place-items:center;font-size:34px}
+.stallc b{display:block;font-size:13.5px;margin-top:9px;line-height:1.2}
+.stallc span{font-size:10.5px;color:var(--dim2)}
+.badge{display:inline-block;font-family:var(--sys);font-size:8px;font-weight:700;letter-spacing:.12em;
+  color:var(--void);background:var(--phos);border-radius:4px;padding:3px 6px;margin-left:5px;vertical-align:middle}
+
+/* belts screen */
+.ladder{margin-top:16px}
+.rung{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line)}
+.rung .dot{width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;
+  background:var(--s2);border:2px solid var(--line);font-size:15px}
+.rung.done .dot{background:var(--gold);border-color:var(--gold);color:var(--void)}
+.rung.now .dot{border-color:var(--phos)}
+.rung b{display:block;font-family:var(--gothic);font-size:19px;color:var(--gold-hi)}
+.rung span{font-size:12.5px;color:var(--dim);line-height:1.45}
+.rung.lock{opacity:.45}
+
+/* guardian */
+.toggles .tog{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;
+  border-bottom:1px solid var(--line);font-size:13.5px}
+.sw{width:42px;height:24px;border-radius:99px;background:var(--s3);border:1px solid var(--line);position:relative;cursor:pointer;flex:none}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--dim2);transition:.15s}
+.sw.on{background:rgba(69,227,196,.2);border-color:var(--phos)}
+.sw.on::after{left:20px;background:var(--phos)}
+.appr{display:flex;align-items:center;gap:11px;margin-top:10px}
+.appr .art{width:44px;height:44px;border-radius:10px;background:var(--s3);display:grid;place-items:center;font-size:22px;flex:none}
+.appr b{font-size:14px;display:block}
+.appr span{font-size:11px;color:var(--dim2)}
+.ok{margin-left:auto;border:0;cursor:pointer;background:var(--phos);color:var(--void);font-family:var(--sys);
+  font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:10px 14px;border-radius:99px}
+
+/* PIN modal */
+#pin{position:absolute;inset:0;z-index:70;background:rgba(8,6,13,.94);display:none;place-items:center;text-align:center}
+#pin.show{display:grid}
+.dots{display:flex;gap:12px;justify-content:center;margin:18px 0 22px}
+.dots i{width:13px;height:13px;border-radius:50%;border:1.5px solid var(--dim);transition:.1s}
+.dots i.f{background:var(--gold);border-color:var(--gold)}
+.numpad{display:grid;grid-template-columns:repeat(3,64px);gap:12px;justify-content:center}
+.numpad button{height:64px;border-radius:50%;border:1px solid var(--line);background:var(--s1);color:var(--parch);
+  font-size:22px;font-weight:700;cursor:pointer;font-family:var(--body)}
+
+/* tab bar */
+#tabs{position:absolute;left:0;right:0;bottom:0;z-index:40;display:none;
+  background:rgba(11,9,18,.92);backdrop-filter:blur(16px);border-top:1px solid var(--line);
+  padding:8px 8px calc(14px + env(safe-area-inset-bottom))}
+#tabs.show{display:flex}
+#tabs button{flex:1;border:0;background:none;color:var(--dim2);cursor:pointer;font-family:var(--sys);
+  font-size:8.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:6px 2px;display:grid;gap:5px;justify-items:center}
+#tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#tabs button.on{color:var(--gold-hi)}
+
+/* header w/ back */
+.hd{position:absolute;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;gap:8px;
+  padding:44px 14px 10px;background:linear-gradient(var(--void) 55%,transparent)}
+@media(max-width:759px){.hd{padding-top:calc(40px + env(safe-area-inset-top))}}
+.hd button{border:0;background:none;color:var(--gold-hi);cursor:pointer;font-size:22px;padding:4px 8px}
+.hd b{font-family:var(--gothic);font-size:19px;color:var(--gold-hi);font-weight:800}
+.hd .sp{flex:1}
+.hd .av{width:32px;height:32px;border-radius:10px;background:var(--s2);border:1px solid var(--line);
+  display:grid;place-items:center;font-size:16px;cursor:pointer}
+
+.toast{position:absolute;left:50%;bottom:118px;transform:translateX(-50%) translateY(60px);z-index:80;
+  background:#241D33;border:1px solid var(--gold);border-radius:99px;padding:11px 18px;font-size:13px;
+  opacity:0;transition:.25s;white-space:nowrap;max-width:88%}
+.toast.show{transform:translateX(-50%);opacity:1}
+:where(button,a):focus-visible{outline:2px solid var(--phos);outline-offset:2px}
+</style>
+</head>
+<body>
+<div id="phone">
+  <div id="notch"></div>
+  <div id="status"><span>9:41</span><span>&#9679;&#9679;&#9679;&#9679; &nbsp;100%</span></div>
+
+  <!-- ═ PROFILE GATE ═ -->
+  <div class="scr on" id="gate">
+    <div class="scroll">
+      <div class="h1" style="font-size:38px">Code Quest</div>
+      <div class="fam">The Adeyemi family &middot; Guardian account</div>
+      <div class="profiles">
+        <button class="prof" data-kid="zara"><span class="face">&#129412;</span><b>Zara</b><span>Quester &middot; belt one</span></button>
+        <button class="prof" data-kid="leo"><span class="face">&#129409;</span><b>Leo</b><span>Builder &middot; belt two</span></button>
+        <button class="prof g" id="gBtn"><span class="face">&#128274;</span><b>Guardian</b><span>PIN required</span></button>
+      </div>
+      <p class="sub" style="margin-top:34px">One family account. Kids are profiles with a PIN.<br>No child emails, no child passwords.</p>
+    </div>
+  </div>
+
+  <!-- ═ HOME ═ -->
+  <div class="scr" id="home">
+    <div class="hd"><b>The Realm</b><span class="sp"></span><span class="av" id="switchA">&#129412;</span></div>
+    <div class="scroll">
+      <div class="eyebrow">Good morning, Zara</div>
+      <div class="h1">Your quest<br>continues.</div>
+      <div style="margin-top:12px"><span class="beltchip"><i></i>Quester &middot; 3 of 5 to Builder</span></div>
+
+      <div class="card">
+        <div class="eyebrow" style="color:var(--gold)">Continue &middot; The Second Build</div>
+        <h3>Sky Bounce II</h3>
+        <p>Add a score that saves. Two steps left, then publish for your Builder belt progress.</p>
+        <div class="progress"><i style="width:60%"></i></div>
+        <button class="cta" data-go="rig" type="button">Open the rig</button>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow" style="color:var(--rubric)">Quest alert</div>
+        <h3>Code Quest Tour &middot; Manchester</h3>
+        <p>Saturday 12 September. Your cohort presents at 14:45. Mum and Dad have showcase tickets.</p>
+        <button class="cta ghost" type="button">Add to calendar</button>
+      </div>
+
+      <div class="eyebrow" style="margin-top:22px">Fresh from the Marketplace</div>
+      <div class="row">
+        <a class="mini" href="../elsie/game/" target="_blank" rel="noopener"><span class="art">&#129419;</span><b>Butterfly Dash</b><span>by Elsie</span></a>
+        <a class="mini" href="../emma/game/" target="_blank" rel="noopener"><span class="art">&#127752;</span><b>Sprinkle Dash</b><span>by Emma</span></a>
+        <a class="mini" href="../triad-labs/ninja-academy/" target="_blank" rel="noopener"><span class="art">&#129333;</span><b>Ninja Academy</b><span>by Ezekiel</span></a>
+        <a class="mini" href="../pixel-power/dragonball-flight/" target="_blank" rel="noopener"><span class="art">&#128009;</span><b>Dragonball</b><span>by Theodore</span></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═ RIG ═ -->
+  <div class="scr" id="rig">
+    <div class="hd"><button data-go="home" type="button">&#8249;</button><b>Sky Bounce II</b><span class="sp"></span>
+      <span style="font-family:var(--sys);font-size:9px;color:var(--dim);letter-spacing:.12em" id="rigState">DRAFT</span></div>
+    <div class="scroll">
+      <div class="rigbar">
+        <button class="on" data-rv="code" type="button">Code</button>
+        <button data-rv="pv" type="button">Preview</button>
+        <button data-rv="ai" type="button">Ask the AI</button>
+      </div>
+
+      <div class="code" id="rvcode"><span class="c">&lt;!-- your whole game is one file --&gt;</span>
+<span class="k">const</span> sky = <span class="s">"#7EC8E3"</span>;
+<span class="k">const</span> SPEED = <span class="s">1</span>;
+<span class="k">let</span> score = <span class="s">0</span>;
+
+ball.onclick = () =&gt; {
+  score++;
+  bounce();          <span class="c">// up she goes</span>
+  scoreboard.show(score);
+};</div>
+
+      <iframe id="pv" title="Live preview"></iframe>
+
+      <div class="ai" id="rvai">
+        <div class="m bot">Hello, builder. Want me to change something? Tap a suggestion, then check Preview.</div>
+        <div id="aims"></div>
+        <div class="chips">
+          <button data-ai="purple" type="button">Make the sky purple</button>
+          <button data-ai="fast" type="button">Make it faster</button>
+          <button data-ai="star" type="button">Bounce a star</button>
+        </div>
+      </div>
+
+      <button class="cta gold" id="pubBtn" style="width:100%;text-align:center;margin-top:16px" type="button">Publish to the Marketplace</button>
+      <p class="sub" style="text-align:center;margin-top:10px">Publishing sends it to your Guardian first. Nothing goes live unreviewed.</p>
+    </div>
+  </div>
+
+  <!-- ═ MARKETPLACE ═ -->
+  <div class="scr" id="market">
+    <div class="hd"><b>Marketplace</b><span class="sp"></span><span class="av">&#128269;</span></div>
+    <div class="scroll">
+      <div class="eyebrow">Real builds by real kids</div>
+      <div class="mgrid">
+        <button class="stallc" id="myStall" type="button" style="text-align:left;border-color:rgba(69,227,196,.4)">
+          <span class="art">&#127919;</span><b>Sky Bounce <span class="badge" id="liveBadge" style="display:none">LIVE</span></b><span>by Zara &middot; your stall</span>
+        </button>
+        <a class="stallc" href="../elsie/game/" target="_blank" rel="noopener"><span class="art">&#129419;</span><b>Butterfly Dash</b><span>by Elsie &middot; Butterflii Art Studio</span></a>
+        <a class="stallc" href="../emma/game/" target="_blank" rel="noopener"><span class="art">&#127752;</span><b>Rainbow Sprinkle Dash</b><span>by Emma</span></a>
+        <a class="stallc" href="../triad-labs/ninja-academy/" target="_blank" rel="noopener"><span class="art">&#129333;</span><b>Ninja Academy</b><span>by Ezekiel &middot; Triad Labs</span></a>
+        <a class="stallc" href="../pixel-power/dragonball-flight/" target="_blank" rel="noopener"><span class="art">&#128009;</span><b>Dragonball Flight</b><span>by Theodore &middot; Pixel Power</span></a>
+        <a class="stallc" href="../pixel-power/song-gallery/" target="_blank" rel="noopener"><span class="art">&#127925;</span><b>Song Gallery</b><span>by Hannah &middot; Pixel Power</span></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═ MY STALL ═ -->
+  <div class="scr" id="stall">
+    <div class="hd"><button data-go="market" type="button">&#8249;</button><b>Your stall</b></div>
+    <div class="scroll">
+      <div class="card" style="text-align:center">
+        <div style="font-size:52px">&#129412;</div>
+        <h3 style="font-size:24px;margin-top:6px">Sky Bounce</h3>
+        <p>by Zara &middot; Quester</p>
+        <div style="margin-top:12px;font-family:var(--sys);font-size:11px;color:var(--phos);background:var(--s2);border:1px solid var(--line);border-radius:10px;padding:11px" id="shareUrl">zara.builtby.kids?ref=zara</div>
+        <button class="cta" id="copyBtn" type="button">Copy share link</button>
+        <button class="cta ghost" data-go="rig" type="button">Open in the rig</button>
+        <p class="sub" style="margin-top:12px">A friend who taps this link plays in the browser first. No install. Your mark travels with it.</p>
+      </div>
+      <div class="card">
+        <div class="eyebrow">This week</div>
+        <h3>14 plays &middot; 3 shares</h3>
+        <p>Two friends followed your link. One asked their parent about the next cohort.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═ QUESTS / BELTS ═ -->
+  <div class="scr" id="quests">
+    <div class="hd"><b>Your path</b></div>
+    <div class="scroll">
+      <div class="eyebrow">Belts are earned by shipping</div>
+      <div class="h1" style="font-size:26px">Quester &rarr; Mogul</div>
+      <div class="ladder">
+        <div class="rung done"><span class="dot">&#10003;</span><span><b>Quester</b><span>Ship your first build at a Code Quest day. Done: Sky Bounce, 1 Aug.</span></span></div>
+        <div class="rung now"><span class="dot">&#9679;</span><span><b>Builder</b><span>Ship three builds from home. Sky Bounce II is 2 of 3.</span></span></div>
+        <div class="rung lock"><span class="dot">&#128274;</span><span><b>Mentor</b><span>Help teach a cohort. Presenting, patience, leadership.</span></span></div>
+        <div class="rung lock"><span class="dot">&#128274;</span><span><b>Mogul</b><span>The summit. Earned, never bought. New powers unlock in the Realm.</span></span></div>
+      </div>
+      <div class="card" style="border-color:rgba(217,169,76,.3)">
+        <div class="eyebrow" style="color:var(--gold)">Sealed</div>
+        <h3>The Awakening</h3>
+        <p>A transformation earned through creating, shipping, presenting and helping. Questers who reach it are changed.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═ GUARDIAN ═ -->
+  <div class="scr" id="guardian">
+    <div class="hd"><button data-go="gate" type="button">&#8249;</button><b>Guardian console</b></div>
+    <div class="scroll">
+      <div class="card">
+        <div class="eyebrow" style="color:var(--gold)">Waiting for you</div>
+        <div class="appr" id="apprRow">
+          <span class="art">&#127919;</span>
+          <span><b>Sky Bounce II</b><span>Zara wants to publish &middot; just now</span></span>
+          <button class="ok" id="apprBtn" type="button">Review &amp; approve</button>
+        </div>
+        <div class="sub" id="apprEmpty" style="display:none;padding:6px 0">Nothing pending. When a kid hits publish, it lands here first.</div>
+      </div>
+
+      <div class="card toggles">
+        <div class="eyebrow">Visibility &middot; per child, your choice</div>
+        <div class="tog"><span>Zara &middot; name on her stall</span><span class="sw on" role="switch" aria-checked="true" tabindex="0"></span></div>
+        <div class="tog"><span>Zara &middot; face in event photos</span><span class="sw" role="switch" aria-checked="false" tabindex="0"></span></div>
+        <div class="tog"><span>Leo &middot; name on his stall</span><span class="sw on" role="switch" aria-checked="true" tabindex="0"></span></div>
+        <div class="tog" style="border-bottom:0"><span>Leo &middot; may join team spaces</span><span class="sw on" role="switch" aria-checked="true" tabindex="0"></span></div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">Family plan</div>
+        <h3>Active &middot; 2 builders</h3>
+        <p>Event ticket credited against month one. Cancel any time. Your kids keep 100% of anything their builds ever earn.</p>
+        <button class="cta ghost" type="button">Manage in Stripe</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PIN -->
+  <div id="pin">
+    <div>
+      <div class="eyebrow">Guardian</div>
+      <div class="h1" style="font-size:24px">Enter your PIN</div>
+      <div class="dots" id="pdots"><i></i><i></i><i></i><i></i></div>
+      <div class="numpad" id="numpad">
+        <button type="button">1</button><button type="button">2</button><button type="button">3</button>
+        <button type="button">4</button><button type="button">5</button><button type="button">6</button>
+        <button type="button">7</button><button type="button">8</button><button type="button">9</button>
+        <span></span><button type="button">0</button><button type="button" id="pinX">&times;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div id="tabs">
+    <button class="on" data-go="home" type="button">
+      <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Realm</button>
+    <button data-go="rig" type="button">
+      <svg viewBox="0 0 24 24"><path d="M14 4l6 6-9 9H5v-6zM12 6l6 6"/></svg>Build</button>
+    <button data-go="market" type="button">
+      <svg viewBox="0 0 24 24"><path d="M4 8h16l-1 12H5zM4 8l2-4h12l2 4M9 12v3M15 12v3"/></svg>Market</button>
+    <button data-go="quests" type="button">
+      <svg viewBox="0 0 24 24"><path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 15.6 7.1 18.2l.9-5.5-4-3.9L9.5 8z"/></svg>Path</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+var cur = "gate";
+function go(id){
+  var scrs = document.querySelectorAll(".scr");
+  for (var i = 0; i < scrs.length; i++) scrs[i].classList.remove("on");
+  document.getElementById(id).classList.add("on");
+  cur = id;
+  var tabs = document.getElementById("tabs");
+  var inApp = (id !== "gate" && id !== "guardian");
+  tabs.classList.toggle("show", inApp);
+  var tb = tabs.children;
+  var map = { home:0, rig:1, market:2, stall:2, quests:3 };
+  for (var k = 0; k < tb.length; k++) tb[k].classList.toggle("on", map[id] === k);
+}
+
+document.addEventListener("click", function(e){
+  var g = e.target.closest("[data-go]");
+  if (g){ go(g.getAttribute("data-go")); }
+});
+
+var toastEl = document.getElementById("toast"), tT = null;
+function toast(m){
+  toastEl.textContent = m;
+  toastEl.classList.add("show");
+  clearTimeout(tT);
+  tT = setTimeout(function(){ toastEl.classList.remove("show"); }, 2400);
+}
+
+/* profiles */
+document.querySelectorAll(".prof[data-kid]").forEach(function(p){
+  p.addEventListener("click", function(){ go("home"); });
+});
+
+/* PIN */
+var pin = document.getElementById("pin"), pdots = document.getElementById("pdots").children, entered = 0;
+document.getElementById("gBtn").addEventListener("click", function(){
+  entered = 0; paintPin();
+  pin.classList.add("show");
+});
+function paintPin(){
+  for (var i = 0; i < 4; i++) pdots[i].classList.toggle("f", i < entered);
+}
+document.getElementById("numpad").addEventListener("click", function(e){
+  var b = e.target.closest("button");
+  if (!b) return;
+  if (b.id === "pinX"){ entered = Math.max(0, entered - 1); paintPin(); return; }
+  entered++;
+  paintPin();
+  if (entered >= 4){
+    setTimeout(function(){
+      pin.classList.remove("show");
+      go("guardian");
+    }, 220);
+  }
+});
+pin.addEventListener("click", function(e){ if (e.target === pin) pin.classList.remove("show"); });
+
+/* rig views */
+var choices = { purple:false, fast:false, star:false };
+function buildHTML(){
+  var sky = choices.purple ? "linear-gradient(#4A2C8F,#C48FFF)" : "linear-gradient(#7EC8E3,#EAF6FF)";
+  var chr = choices.star ? "&#11088;" : "&#9917;";
+  var spd = choices.fast ? "2" : "1";
+  return ["<!DOCTYPE html><html><head>",
+    "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">",
+    "<style>body{margin:0;overflow:hidden;background:" + sky + ";font-family:sans-serif}",
+    "#b{position:absolute;font-size:50px;left:40%;top:20%;cursor:pointer;user-select:none;transition:transform .1s}",
+    "#s{position:absolute;top:10px;left:14px;font-size:22px;font-weight:bold;color:#234}</style></head><body>",
+    "<div id=\"s\">0</div><div id=\"b\">" + chr + "</div>",
+    "<scr" + "ipt>var b=document.getElementById(\"b\"),s=document.getElementById(\"s\");",
+    "var y=60,v=0,sc=0,SP=" + spd + ";",
+    "function L(){v+=0.5*SP;y+=v;if(y>innerHeight-80){y=innerHeight-80;v=-11*SP;}b.style.top=y+\"px\";requestAnimationFrame(L);}",
+    "b.onclick=function(){sc++;s.textContent=sc;v=-13*SP;};L();</scr" + "ipt></body></html>"].join("");
+}
+var rv = { code: document.getElementById("rvcode"), pv: document.getElementById("pv"), ai: document.getElementById("rvai") };
+document.querySelectorAll(".rigbar button").forEach(function(b){
+  b.addEventListener("click", function(){
+    document.querySelectorAll(".rigbar button").forEach(function(x){ x.classList.remove("on"); });
+    b.classList.add("on");
+    var v = b.getAttribute("data-rv");
+    rv.code.style.display = v === "code" ? "block" : "none";
+    rv.pv.style.display = v === "pv" ? "block" : "none";
+    rv.ai.style.display = v === "ai" ? "block" : "none";
+    if (v === "pv") rv.pv.srcdoc = buildHTML();
+  });
+});
+
+/* AI chips */
+var aims = document.getElementById("aims");
+var MOVES = {
+  purple: ["Make the sky purple", "Done. The sky gradient is purple now. Check Preview."],
+  fast:   ["Make it faster", "SPEED is 2. Gravity and bounce both scale with it."],
+  star:   ["Bounce a star", "Swapped the ball for a star. One character changed the whole game."]
+};
+document.querySelectorAll(".chips button").forEach(function(b){
+  b.addEventListener("click", function(){
+    var key = b.getAttribute("data-ai");
+    choices[key] = true;
+    var me = document.createElement("div"); me.className = "m me"; me.textContent = MOVES[key][0];
+    aims.appendChild(me);
+    setTimeout(function(){
+      var bot = document.createElement("div"); bot.className = "m bot"; bot.textContent = MOVES[key][1];
+      aims.appendChild(bot);
+    }, 320);
+  });
+});
+
+/* publish → guardian → live */
+var published = false, approved = false;
+document.getElementById("pubBtn").addEventListener("click", function(){
+  if (published) return;
+  published = true;
+  document.getElementById("rigState").textContent = "PENDING";
+  document.getElementById("rigState").style.color = "#F2CE7B";
+  this.style.opacity = ".45";
+  toast("Sent to your Guardian for approval");
+});
+document.getElementById("apprBtn").addEventListener("click", function(){
+  approved = true;
+  document.getElementById("apprRow").style.display = "none";
+  document.getElementById("apprEmpty").style.display = "block";
+  document.getElementById("rigState").textContent = "LIVE";
+  document.getElementById("rigState").style.color = "#45E3C4";
+  document.getElementById("liveBadge").style.display = "inline-block";
+  toast("Approved. Sky Bounce II is live.");
+});
+
+/* stall */
+document.getElementById("myStall").addEventListener("click", function(){ go("stall"); });
+document.getElementById("copyBtn").addEventListener("click", function(){
+  var txt = document.getElementById("shareUrl").textContent;
+  if (navigator.clipboard) navigator.clipboard.writeText("https://" + txt).catch(function(){});
+  toast("Link copied. Send it to a friend.");
+});
+
+/* switches */
+document.querySelectorAll(".sw").forEach(function(sw){
+  function flip(){
+    var on = sw.classList.toggle("on");
+    sw.setAttribute("aria-checked", on ? "true" : "false");
+  }
+  sw.addEventListener("click", flip);
+  sw.addEventListener("keydown", function(e){
+    if (e.key === " " || e.key === "Enter"){ e.preventDefault(); flip(); }
+  });
+});
+
+/* profile avatar returns to gate */
+document.getElementById("switchA").addEventListener("click", function(){ go("gate"); });
+})();
+</script>
+</body>
+</html>
