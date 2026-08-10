@@ -302,25 +302,25 @@ body{display:grid;place-items:center;overflow:hidden}
   <div class="scr on" id="gate">
     <div class="scroll">
       <div class="h1" style="font-size:38px">Code Quest</div>
-      <div class="fam">The Adeyemi family &middot; Guardian account</div>
+      <div class="fam">The Adeyemi family</div>
       <div class="profiles">
-        <button class="prof" data-kid="zara"><span class="face">&#129412;</span><b>Zara</b><span>Quester &middot; belt one</span></button>
-        <button class="prof" data-kid="leo"><span class="face">&#129409;</span><b>Leo</b><span>Builder &middot; belt two</span></button>
-        <button class="prof g" id="gBtn"><span class="face">&#128274;</span><b>Guardian</b><span>PIN required</span></button>
+        <button class="prof" data-kid="zara"><span class="face">&#129412;</span><b>Zara</b><span>Level 1</span></button>
+        <button class="prof" data-kid="leo"><span class="face">&#129409;</span><b>Leo</b><span>Level 2</span></button>
+        <button class="prof g" id="gBtn"><span class="face">&#128274;</span><b>Parents</b><span>PIN needed</span></button>
       </div>
-      <p class="sub" style="margin-top:34px">One family account, held by a parent. Kids are profiles with a PIN.<br>No child emails, no child passwords.</p>
+      <p class="sub" style="margin-top:34px">One family account. Parents are in charge of it.<br>Kids do not need an email or a password.</p>
       <button class="cta ghost" id="whatBtn" style="margin-top:18px" type="button">New here? What is Code Quest</button>
     </div>
   </div>
 
   <!-- ═ HOME ═ -->
   <div class="scr" id="home">
-    <div class="hd"><b>Home</b><span class="subt">The Realm</span><span class="sp"></span>
+    <div class="hd"><b>Home</b><span class="sp"></span>
       <span class="hdicons"><button class="helpB" type="button" aria-label="Help">?</button><button class="parB" type="button" aria-label="Parent zone">&#128737;</button><span class="av" id="switchA">&#129412;</span></span></div>
     <div class="scroll">
-      <div class="eyebrow">Good morning, Zara</div>
-      <div class="h1">Your quest<br>continues.</div>
-      <div style="margin-top:12px"><span class="beltchip"><i></i>Level: Quester &middot; 3 of 5 to Builder</span></div>
+      <div class="eyebrow">Hi Zara!</div>
+      <div class="h1">What will you<br>make today?</div>
+      <div style="margin-top:12px"><span class="beltchip"><i></i>Level 1 &middot; 3 of 5 stars to Level 2</span></div>
 
       <div class="card">
         <div class="eyebrow" style="color:var(--gold)">Keep going!</div>
@@ -356,8 +356,8 @@ body{display:grid;place-items:center;overflow:hidden}
 
   <!-- ═ RIG ═ -->
   <div class="scr" id="rig">
-    <div class="hd"><button data-go="home" type="button">&#8249;</button><b>Creator Studio</b><span class="subt">The Rig</span><span class="sp"></span>
-      <span style="font-family:var(--sys);font-size:9px;color:var(--dim);letter-spacing:.12em" id="rigState">DRAFT</span></div>
+    <div class="hd"><button data-go="home" type="button">&#8249;</button><b>Make my game</b><span class="sp"></span>
+      <span style="font-family:var(--sys);font-size:9px;color:var(--dim);letter-spacing:.12em" id="rigState">NOT SHARED YET</span></div>
     <div class="scroll">
       <div class="rigbar">
         <button class="on" data-rv="code" type="button">Code</button>
@@ -395,13 +395,13 @@ ball.onclick = () =&gt; {
 
   <!-- ═ MARKETPLACE ═ -->
   <div class="scr" id="market">
-    <div class="hd"><b>Games</b><span class="subt">The Marketplace</span><span class="sp"></span>
+    <div class="hd"><b>Games</b><span class="sp"></span>
       <span class="hdicons"><button class="helpB" type="button" aria-label="Help">?</button><button class="parB" type="button" aria-label="Parent zone">&#128737;</button></span></div>
     <div class="scroll">
       <div class="eyebrow">Real games by real kids</div>
       <div class="mgrid">
         <button class="stallc" id="myStall" type="button" style="text-align:left;border-color:rgba(69,227,196,.4)">
-          <span class="art">&#127919;</span><b>Sky Bounce <span class="badge" id="liveBadge" style="display:none">LIVE</span></b><span>by Zara &middot; your stall</span>
+          <span class="art">&#127919;</span><b>Sky Bounce <span class="badge" id="liveBadge" style="display:none">LIVE</span></b><span>by Zara. This one is yours!</span>
         </button>
         <a class="stallc" href="../elsie/game/" target="_blank" rel="noopener"><span class="art">&#129419;</span><b>Butterfly Dash</b><span>by Elsie &middot; Butterflii Art Studio</span></a>
         <a class="stallc" href="../emma/game/" target="_blank" rel="noopener"><span class="art">&#127752;</span><b>Rainbow Sprinkle Dash</b><span>by Emma</span></a>
@@ -414,12 +414,12 @@ ball.onclick = () =&gt; {
 
   <!-- ═ MY STALL ═ -->
   <div class="scr" id="stall">
-    <div class="hd"><button data-go="market" type="button">&#8249;</button><b>Your page</b><span class="subt">Your stall</span></div>
+    <div class="hd"><button data-go="market" type="button">&#8249;</button><b>My game page</b></div>
     <div class="scroll">
       <div class="card" style="text-align:center">
         <div style="font-size:52px">&#129412;</div>
         <h3 style="font-size:24px;margin-top:6px">Sky Bounce</h3>
-        <p>by Zara &middot; Quester</p>
+        <p>Made by Zara</p>
         <div style="margin-top:12px;font-family:var(--sys);font-size:11px;color:var(--phos);background:var(--s2);border:1px solid var(--line);border-radius:10px;padding:11px" id="shareUrl">zara.builtby.kids?ref=zara</div>
         <button class="cta" id="copyBtn" type="button">Copy my link</button>
         <button class="cta ghost" data-go="rig" type="button">Keep building it</button>
@@ -435,19 +435,19 @@ ball.onclick = () =&gt; {
 
   <!-- ═ QUESTS / BELTS ═ -->
   <div class="scr" id="quests">
-    <div class="hd"><b>Progress</b><span class="subt">The Path</span><span class="sp"></span>
+    <div class="hd"><b>My levels</b><span class="sp"></span>
       <span class="hdicons"><button class="helpB" type="button" aria-label="Help">?</button><button class="parB" type="button" aria-label="Parent zone">&#128737;</button></span></div>
     <div class="scroll">
-      <div class="eyebrow">You level up by making things</div>
-      <div class="h1" style="font-size:26px">Quester &rarr; Mogul</div>
+      <div class="eyebrow">Make things, move up</div>
+      <div class="h1" style="font-size:26px">Your levels</div>
       <div class="ladder">
-        <div class="rung done"><span class="dot">&#10003;</span><span><b>Quester</b><span>Publish your first game. You did it! Sky Bounce, 1 Aug.</span></span></div>
-        <div class="rung now"><span class="dot">&#9679;</span><span><b>Builder</b><span>Publish 3 games from home. You are on 2 of 3!</span></span></div>
-        <div class="rung lock"><span class="dot">&#128274;</span><span><b>Mentor</b><span>Help teach the next kids. Big kid energy.</span></span></div>
-        <div class="rung lock"><span class="dot">&#128274;</span><span><b>Mogul</b><span>The very top. You earn it. You can never buy it.</span></span></div>
+        <div class="rung done"><span class="dot">&#10003;</span><span><b>Level 1 &middot; Quester</b><span>Share your first game. You did it! Sky Bounce, 1 Aug.</span></span></div>
+        <div class="rung now"><span class="dot">&#9679;</span><span><b>Level 2 &middot; Builder</b><span>Share 3 games from home. You are on 2 of 3!</span></span></div>
+        <div class="rung lock"><span class="dot">&#128274;</span><span><b>Level 3 &middot; Mentor</b><span>Help teach the newer kids.</span></span></div>
+        <div class="rung lock"><span class="dot">&#128274;</span><span><b>Level 4 &middot; Mogul</b><span>The very top. You earn it. You can never buy it.</span></span></div>
       </div>
       <div class="card" style="border-color:rgba(217,169,76,.3)">
-        <div class="eyebrow" style="color:var(--gold)">Sealed</div>
+        <div class="eyebrow" style="color:var(--gold)">A surprise, locked for now</div>
         <h3>The Awakening</h3>
         <p>Keep making things. Keep helping. One day, something amazing happens to your character.</p>
       </div>
@@ -456,13 +456,13 @@ ball.onclick = () =&gt; {
 
   <!-- ═ GUARDIAN ═ -->
   <div class="scr" id="guardian">
-    <div class="hd"><button id="guardBack" type="button">&#8249;</button><b>Parent zone</b><span class="subt">Guardian console</span></div>
+    <div class="hd"><button id="guardBack" type="button">&#8249;</button><b>Parent zone</b></div>
     <div class="scroll">
       <div class="card">
         <div class="eyebrow" style="color:var(--gold)">Waiting for you</div>
         <div class="appr" id="apprRow">
           <span class="art">&#127919;</span>
-          <span><b>Sky Bounce II</b><span>Zara wants to publish &middot; just now</span></span>
+          <span><b>Sky Bounce II</b><span>Zara wants to share it &middot; just now</span></span>
           <button class="ok" id="apprBtn" type="button">Review &amp; approve</button>
         </div>
         <div class="appr" id="clipRow">
@@ -470,7 +470,7 @@ ball.onclick = () =&gt; {
           <span><b>Zara's clip</b><span>"My butterfly game!!" &middot; 22 seconds</span></span>
           <button class="ok" id="clipBtn" type="button">Review &amp; approve</button>
         </div>
-        <div class="sub" id="apprEmpty" style="display:none;padding:6px 0">Nothing pending. When a kid publishes a build or a clip, it lands here first.</div>
+        <div class="sub" id="apprEmpty" style="display:none;padding:6px 0">Nothing waiting. When your child shares a game or a video, it comes to you first.</div>
       </div>
 
       <div class="card toggles">
@@ -484,7 +484,7 @@ ball.onclick = () =&gt; {
       <div class="card">
         <div class="eyebrow">Family plan</div>
         <h3>Active &middot; 2 builders</h3>
-        <p>Event ticket credited against month one. Cancel any time. Your kids keep 100% of anything their builds ever earn.</p>
+        <p>Your event ticket counts toward month one. Cancel any time. Your kids keep 100% of anything their games ever earn.</p>
         <button class="cta ghost" type="button">Manage in Stripe</button>
       </div>
     </div>
@@ -492,7 +492,7 @@ ball.onclick = () =&gt; {
 
   <!-- ═ EVENT ARCHIVE: 2026 ═ -->
   <div class="scr" id="event">
-    <div class="hd"><button data-go="home" type="button">&#8249;</button><b>Code Quest 2026</b><span class="subt">The archive</span></div>
+    <div class="hd"><button data-go="home" type="button">&#8249;</button><b>Code Quest 2026</b></div>
     <div class="scroll">
       <div class="eyebrow">Saturday 1 August 2026 &middot; Native, Manchester</div>
       <img class="evhero" src="../2026/og.jpg" alt="The seven questers of Code Quest 2026" loading="lazy">
@@ -514,7 +514,7 @@ ball.onclick = () =&gt; {
       </div>
 
       <div class="card">
-        <div class="eyebrow">What shipped that day</div>
+        <div class="eyebrow">The games they made that day</div>
         <div class="mgrid" style="margin-top:8px">
           <a class="stallc" href="../triad-labs/ninja-academy/" target="_blank" rel="noopener"><span class="art">&#129333;</span><b>Ninja Academy</b><span>Ezekiel &middot; Triad Labs</span></a>
           <a class="stallc" href="../pixel-power/dragonball-flight/" target="_blank" rel="noopener"><span class="art">&#128009;</span><b>Dragonball Flight</b><span>Theodore &middot; Pixel Power</span></a>
@@ -527,7 +527,7 @@ ball.onclick = () =&gt; {
       </div>
 
       <div class="card">
-        <div class="eyebrow">Named by the judge</div>
+        <div class="eyebrow">Grandma gave everyone a prize</div>
         <div class="award"><span class="who">Sophia</span><span><b>Top presenter</b><span>The best presentation of the day. She brought the room with her.</span></span></div>
         <div class="award"><span class="who">Ezekiel</span><span><b>Best team leader</b><span>He held his team together all day.</span></span></div>
         <div class="award"><span class="who">Elsie</span><span><b>Most creative</b><span>Hers was the explanation that made Code Quest finally make sense.</span></span></div>
@@ -538,7 +538,7 @@ ball.onclick = () =&gt; {
       </div>
 
       <div class="card">
-        <div class="eyebrow">The Awakenings &middot; tap to watch</div>
+        <div class="eyebrow">Everyone’s movie moment &middot; tap to watch</div>
         <div class="awkrow">
           <button class="awk" data-vid="../codequest-elsie.mp4" type="button"><span class="pl">&#9654;</span><b>Elsie</b></button>
           <button class="awk" data-vid="../codequest-hannah.mp4" type="button"><span class="pl">&#9654;</span><b>Hannah</b></button>
@@ -552,7 +552,7 @@ ball.onclick = () =&gt; {
       </div>
 
       <div class="card">
-        <div class="eyebrow">Still arriving from the day</div>
+        <div class="eyebrow">More coming soon</div>
         <div class="ph"><span class="art">&#128247;</span><span><b>The photo gallery</b><span>Every family's camera roll, gathered in one place.</span></span><em>ARRIVING</em></div>
         <div class="ph"><span class="art">&#127916;</span><span><b>The highlights film</b><span>The whole day in three minutes.</span></span><em>IN THE EDIT</em></div>
         <div class="ph"><span class="art">&#127911;</span><span><b>The theme song</b><span>The anthem the questers walked in to.</span></span><em>IN THE STUDIO</em></div>
@@ -580,7 +580,7 @@ ball.onclick = () =&gt; {
           <button class="shr" type="button"><span class="ic">&#8599;</span><span>Share</span></button>
         </div>
         <div class="cmeta">
-          <div class="who">@ELSIE &middot; QUESTER &middot; BUTTERFLII STUDIO</div>
+          <div class="who">ELSIE &middot; MADE BUTTERFLY DASH</div>
           <div class="cap">From the founder of Butterflii by Elsie &#129419; Come play Butterfly Dash. Draw mode lets YOU make the character. Tap for sound.</div>
         </div>
       </div>
@@ -595,7 +595,7 @@ ball.onclick = () =&gt; {
           <button class="shr" type="button"><span class="ic">&#8599;</span><span>Share</span></button>
         </div>
         <div class="cmeta">
-          <div class="who">@GRANDMA &middot; THE JUDGE</div>
+          <div class="who">GRANDMA &middot; THE JUDGE</div>
           <div class="cap">The Judge has arrived &#128081; Midway through Code Quest 2026, in the purple, getting ready to judge every quester. Nobody was safe.</div>
         </div>
       </div>
@@ -610,7 +610,7 @@ ball.onclick = () =&gt; {
           <button class="shr" type="button"><span class="ic">&#8599;</span><span>Share</span></button>
         </div>
         <div class="cmeta">
-          <div class="who">@ELSIE &middot; QUESTER</div>
+          <div class="who">ELSIE</div>
           <div class="cap">My awakening &#129419; Butterfly Dash is LIVE on my stall. Three modes. Go play it.</div>
         </div>
       </div>
@@ -628,8 +628,8 @@ ball.onclick = () =&gt; {
         <div class="cmeta">
           <div class="who">LOOPS IN 60 SECONDS &middot; PART 2 OF 4</div>
           <div class="cap">One loop can draw a hundred sprinkles. Watch what repeat really means, then make yours.</div>
-          <div class="lesprog">BUILDER PATH &middot; COUNTS TOWARD YOUR BELT</div>
-          <button class="cta try" data-go="rig" type="button">Try it in the rig</button>
+          <div class="lesprog">COUNTS TOWARD LEVEL 2</div>
+          <button class="cta try" data-go="rig" type="button">Try it now</button>
         </div>
       </div>
 
@@ -643,7 +643,7 @@ ball.onclick = () =&gt; {
           <button class="shr" type="button"><span class="ic">&#8599;</span><span>Share</span></button>
         </div>
         <div class="cmeta">
-          <div class="who">@THEODORE &middot; QUESTER</div>
+          <div class="who">THEODORE &middot; MADE DRAGONBALL</div>
           <div class="cap">Flight test &#128009; Dragonball. Tap my stall to fly it yourself.</div>
         </div>
       </div>
@@ -661,8 +661,8 @@ ball.onclick = () =&gt; {
         <div class="cmeta">
           <div class="who">GAME JUICE &middot; PART 1 OF 3</div>
           <div class="cap">Why does tapping feel GOOD? Squash, stretch and a tiny delay. Sixty seconds on game feel.</div>
-          <div class="lesprog">BUILDER PATH &middot; COUNTS TOWARD YOUR BELT</div>
-          <button class="cta try" data-go="rig" type="button">Try it in the rig</button>
+          <div class="lesprog">COUNTS TOWARD LEVEL 2</div>
+          <button class="cta try" data-go="rig" type="button">Try it now</button>
         </div>
       </div>
 
@@ -676,7 +676,7 @@ ball.onclick = () =&gt; {
           <button class="shr" type="button"><span class="ic">&#8599;</span><span>Share</span></button>
         </div>
         <div class="cmeta">
-          <div class="who">@EMMA &middot; YOUNGEST QUESTER</div>
+          <div class="who">EMMA &middot; AGE 6</div>
           <div class="cap">I am SIX and I made a game &#127752; Nobody can lose in it. That is on purpose.</div>
         </div>
       </div>
@@ -700,7 +700,7 @@ ball.onclick = () =&gt; {
 
       <div class="eyebrow" style="margin-top:22px">Learning paths &middot; lessons in the feed</div>
       <div class="colcard"><span class="art">&#129521;</span>
-        <span style="flex:1"><b>Builder Path</b><span>7 lessons &middot; counts toward your Builder belt</span>
+        <span style="flex:1"><b>Level 2 lessons</b><span>7 short videos that count toward Level 2</span>
         <span class="pr"><i style="width:43%"></i></span></span>
         <span style="font-family:var(--sys);font-size:10px;color:var(--gold-hi)">3/7</span></div>
       <div class="colcard"><span class="art">&#128257;</span>
@@ -714,8 +714,8 @@ ball.onclick = () =&gt; {
 
       <div class="eyebrow" style="margin-top:22px">From the realm</div>
       <div class="colcard"><span class="art">&#127914;</span>
-        <span style="flex:1"><b>Tour hype</b><span>Clips from Code Quest days across the country</span></span></div>
-      <p class="sub" style="margin-top:18px">Lessons live in the same feed as everything else. Watching is learning; every path feeds a belt.</p>
+        <span style="flex:1"><b>Big day videos</b><span>Videos from Code Quest days around the country</span></span></div>
+      <p class="sub" style="margin-top:18px">Lessons are short videos, right in with everything else. Watch them, try them, level up.</p>
     </div>
   </div>
 
@@ -724,8 +724,8 @@ ball.onclick = () =&gt; {
     <div class="body">
       <h3>Make a clip</h3>
       <div class="st"><i>1</i><span>Record in the app. Your build, your face, your call.</span></div>
-      <div class="st"><i>2</i><span>Your Guardian reviews it. Nothing goes live without them.</span></div>
-      <div class="st"><i>3</i><span>It lands in the realm feed. Reactions only. No DMs, no strangers, ever.</span></div>
+      <div class="st"><i>2</i><span>Your parent checks it. Nothing goes up without them.</span></div>
+      <div class="st"><i>3</i><span>Then everyone on Code Quest can watch it. No messages. No strangers. Ever.</span></div>
       <button class="cta gold" id="recBtn" style="width:100%;text-align:center;margin-top:18px" type="button">Start recording</button>
     </div>
   </div>
@@ -747,15 +747,14 @@ ball.onclick = () =&gt; {
   <!-- help sheet -->
   <div id="help">
     <div class="body">
-      <h3>The words, in plain English</h3>
-      <div class="g"><b>Code Quest</b><span>A programme where kids build real apps and games, starting with a one day event.</span></div>
-      <div class="g"><b>Quester</b><span>A kid on Code Quest. Also level one.</span></div>
-      <div class="g"><b>Levels</b><span>Quester, then Builder, then Mentor, then Mogul. You level up by publishing things, not by watching videos.</span></div>
-      <div class="g"><b>Creator Studio</b><span>Where kids build. Code on one side, the live game on the other, an AI helper alongside. We call it the Rig.</span></div>
-      <div class="g"><b>Games</b><span>The marketplace. Every published game gets its own page with a share link. We call a kid's page their stall.</span></div>
-      <div class="g"><b>Clips</b><span>Short videos, like TikTok, but every clip is approved by a parent first. No messages, no strangers.</span></div>
-      <div class="g"><b>Parent zone</b><span>Your controls: approve what goes public, set what is visible, manage the plan. We call parents Guardians.</span></div>
-      <div class="g"><b>The Realm</b><span>The world all of this lives in. The game layer that makes progress feel like an adventure.</span></div>
+      <h3>What the words mean</h3>
+      <div class="g"><b>Code Quest</b><span>Where kids learn to make real games and apps. It starts with one big day.</span></div>
+      <div class="g"><b>Levels</b><span>Level 1 Quester, Level 2 Builder, Level 3 Mentor, Level 4 Mogul. You move up by making and sharing things.</span></div>
+      <div class="g"><b>Make</b><span>Where you build your game. Your code on one side, your game on the other, a helper to ask.</span></div>
+      <div class="g"><b>Games</b><span>Every shared game gets its own page and its own link. Send the link to anyone.</span></div>
+      <div class="g"><b>Videos</b><span>Short videos, like TikTok. A parent says yes before any video goes up. No messages, no strangers.</span></div>
+      <div class="g"><b>Parent zone</b><span>For grown ups: say yes or no to what goes up, choose what is visible, manage the plan.</span></div>
+      <div class="g"><b>The Awakening</b><span>A special movie moment your character earns. A surprise for kids who keep going.</span></div>
       <button class="cta" id="helpClose" style="width:100%;text-align:center;margin-top:16px" type="button">Got it</button>
       <a class="cta ghost" href="../story/" target="_blank" rel="noopener" style="width:100%;text-align:center;margin-top:8px;display:block">See the full pitch deck</a>
     </div>
@@ -783,13 +782,13 @@ ball.onclick = () =&gt; {
     <button class="on" data-go="home" type="button">
       <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Home</button>
     <button data-go="rig" type="button">
-      <svg viewBox="0 0 24 24"><path d="M14 4l6 6-9 9H5v-6zM12 6l6 6"/></svg>Create</button>
+      <svg viewBox="0 0 24 24"><path d="M14 4l6 6-9 9H5v-6zM12 6l6 6"/></svg>Make</button>
     <button data-go="clips" type="button">
-      <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5l5 2.5-5 2.5z"/></svg>Clips</button>
+      <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5l5 2.5-5 2.5z"/></svg>Videos</button>
     <button data-go="market" type="button">
       <svg viewBox="0 0 24 24"><path d="M4 8h16l-1 12H5zM4 8l2-4h12l2 4M9 12v3M15 12v3"/></svg>Games</button>
     <button data-go="quests" type="button">
-      <svg viewBox="0 0 24 24"><path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 15.6 7.1 18.2l.9-5.5-4-3.9L9.5 8z"/></svg>Progress</button>
+      <svg viewBox="0 0 24 24"><path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 15.6 7.1 18.2l.9-5.5-4-3.9L9.5 8z"/></svg>Levels</button>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -939,7 +938,7 @@ document.getElementById("pubBtn").addEventListener("click", function(){
   document.getElementById("rigState").textContent = "PENDING";
   document.getElementById("rigState").style.color = "#F2CE7B";
   this.style.opacity = ".45";
-  toast("Sent to your Guardian for approval");
+  toast("Sent to your parent to check");
 });
 document.getElementById("apprBtn").addEventListener("click", function(){
   approved = true;
@@ -948,7 +947,7 @@ document.getElementById("apprBtn").addEventListener("click", function(){
   document.getElementById("rigState").textContent = "LIVE";
   document.getElementById("rigState").style.color = "#45E3C4";
   document.getElementById("liveBadge").style.display = "inline-block";
-  toast("Approved. Sky Bounce II is live.");
+  toast("Approved. Sky Bounce II is up!");
 });
 
 /* stall */
@@ -956,7 +955,7 @@ document.getElementById("myStall").addEventListener("click", function(){ go("sta
 document.getElementById("copyBtn").addEventListener("click", function(){
   var txt = document.getElementById("shareUrl").textContent;
   if (navigator.clipboard) navigator.clipboard.writeText("https://" + txt).catch(function(){});
-  toast("Link copied. Send it to a friend.");
+  toast("Link copied! Send it to a friend.");
 });
 
 /* switches */
@@ -1030,12 +1029,12 @@ feed.addEventListener("click", function(e){
     if (!sv.classList.contains("hit")){
       sv.classList.add("hit"); savedN++;
       document.getElementById("savedN").textContent = String(savedN);
-      toast("Saved to My Collection");
+      toast("Saved!");
     }
     return;
   }
   var sh = e.target.closest(".shr");
-  if (sh){ toast("Link copied, with your mark: ?ref=zara"); return; }
+  if (sh){ toast("Link copied! It says you sent it."); return; }
 });
 
 document.getElementById("segCol").addEventListener("click", function(){ go("collections"); });
