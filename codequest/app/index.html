@@ -138,6 +138,36 @@ body{display:grid;place-items:center;overflow:hidden}
 .ok{margin-left:auto;border:0;cursor:pointer;background:var(--phos);color:var(--void);font-family:var(--sys);
   font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:10px 14px;border-radius:99px}
 
+/* event retrospective */
+.evhero{width:100%;border-radius:14px;border:1px solid var(--line);display:block;margin-top:6px}
+.verdict{background:linear-gradient(150deg,#241D33,#14101F);border:1px solid rgba(217,169,76,.35);
+  border-radius:18px;padding:18px;margin-top:14px;text-align:center}
+.verdict .vt{font-family:var(--gothic);font-weight:800;font-size:34px;color:var(--gold-hi);line-height:1}
+.verdict p{font-size:12.5px;color:var(--dim);margin-top:8px;line-height:1.5}
+.award{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line)}
+.award:last-child{border-bottom:0}
+.award .who{font-family:var(--gothic);font-weight:800;font-size:17px;color:var(--gold-hi);width:86px;flex:none}
+.award b{font-size:13px;display:block;color:var(--phos);font-weight:700}
+.award span{font-size:12px;color:var(--dim);line-height:1.45;display:block;margin-top:2px}
+.awkrow{display:flex;gap:10px;overflow-x:auto;margin:12px -18px 0;padding:2px 18px 6px;scrollbar-width:none}
+.awkrow::-webkit-scrollbar{display:none}
+.awk{flex:none;width:96px;background:var(--s1);border:1px solid var(--line);border-radius:14px;
+  padding:11px 8px;text-align:center;cursor:pointer;color:var(--parch);font-family:var(--body)}
+.awk .pl{width:40px;height:40px;border-radius:50%;margin:0 auto;background:var(--s3);border:1px solid var(--line);
+  display:grid;place-items:center;font-size:15px;color:var(--phos)}
+.awk b{display:block;font-size:12px;margin-top:8px}
+.ph{border:1px dashed rgba(233,223,199,.25);border-radius:16px;padding:15px;margin-top:12px;display:flex;gap:12px;align-items:center;opacity:.8}
+.ph .art{width:44px;height:44px;border-radius:12px;background:var(--s2);display:grid;place-items:center;font-size:20px;flex:none}
+.ph b{font-size:13.5px;display:block}
+.ph span{font-size:11.5px;color:var(--dim2);display:block;margin-top:2px}
+.ph em{margin-left:auto;font-style:normal;font-family:var(--sys);font-size:8px;font-weight:700;
+  letter-spacing:.12em;color:var(--gold-hi);border:1px solid rgba(217,169,76,.4);border-radius:99px;padding:5px 9px;white-space:nowrap}
+#vmodal{position:absolute;inset:0;z-index:78;background:rgba(0,0,0,.92);display:none;flex-direction:column}
+#vmodal.show{display:flex}
+#vmodal video{flex:1;width:100%;object-fit:contain;min-height:0}
+#vmodal .bar{display:flex;align-items:center;justify-content:space-between;padding:48px 16px 10px}
+#vmodal .bar b{font-family:var(--gothic);font-size:18px;color:var(--gold-hi)}
+#vmodal .bar button{border:0;background:none;color:#fff;font-size:26px;cursor:pointer}
 /* clips feed */
 #clips .feed{position:absolute;inset:0;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none}
 #clips .feed::-webkit-scrollbar{display:none}
@@ -262,6 +292,13 @@ body{display:grid;place-items:center;overflow:hidden}
         <p>Add a score that saves. Two steps left, then publish for your Builder belt progress.</p>
         <div class="progress"><i style="width:60%"></i></div>
         <button class="cta" data-go="rig" type="button">Open the rig</button>
+      </div>
+
+      <div class="card" style="border-color:rgba(217,169,76,.4)">
+        <div class="eyebrow" style="color:var(--gold)">The archive &middot; where it began</div>
+        <h3>Code Quest MMXXVI</h3>
+        <p>Saturday 1 August 2026. Six cousins, two teams, one day. Relive the whole thing.</p>
+        <button class="cta gold" data-go="event" type="button">Enter the archive</button>
       </div>
 
       <div class="card">
@@ -413,6 +450,82 @@ ball.onclick = () =&gt; {
         <button class="cta ghost" type="button">Manage in Stripe</button>
       </div>
     </div>
+  </div>
+
+  <!-- ═ EVENT ARCHIVE: 2026 ═ -->
+  <div class="scr" id="event">
+    <div class="hd"><button data-go="home" type="button">&#8249;</button><b>Code Quest 2026</b></div>
+    <div class="scroll">
+      <div class="eyebrow">Saturday 1 August 2026 &middot; Native, Manchester</div>
+      <img class="evhero" src="../2026/og.jpg" alt="The seven questers of Code Quest 2026" loading="lazy">
+
+      <div class="verdict">
+        <div class="eyebrow" style="color:var(--gold)">The verdict</div>
+        <div class="vt">A tie.</div>
+        <p>Triad Labs built the stronger thing. Pixel Power explained theirs better. Neither could honestly be placed above the other, so both took first and both took &pound;20.</p>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">As it happened</div>
+        <div class="timeline" style="margin-top:6px">
+          <div><span class="t">10:00</span><span><b>The Awakening plays</b><span>Before a word was said. Every cousin, drawn from a photograph taken the week before, taking up the crest.</span></span></div>
+          <div><span class="t">Morning</span><span><b>The build</b><span>Six projects that did not exist that morning. Two teams, one room.</span></span></div>
+          <div><span class="t">Aftern.</span><span><b>The Telling</b><span>Every child stood up in front of the family and explained their build. Four of the ten marks were for the explaining.</span></span></div>
+          <div><span class="t">Close</span><span><b>Grandma judged</b><span>The scorecard was public. The verdict was a tie, and she found something to name in every one of them.</span></span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">What shipped that day</div>
+        <div class="mgrid" style="margin-top:8px">
+          <a class="stallc" href="../triad-labs/ninja-academy/" target="_blank" rel="noopener"><span class="art">&#129333;</span><b>Ninja Academy</b><span>Ezekiel &middot; Triad Labs</span></a>
+          <a class="stallc" href="../pixel-power/dragonball-flight/" target="_blank" rel="noopener"><span class="art">&#128009;</span><b>Dragonball Flight</b><span>Theodore &middot; Pixel Power</span></a>
+          <a class="stallc" href="../pixel-power/song-gallery/" target="_blank" rel="noopener"><span class="art">&#127925;</span><b>Song Gallery</b><span>Hannah &middot; Pixel Power</span></a>
+          <a class="stallc" href="../triad-labs/" target="_blank" rel="noopener"><span class="art">&#9917;</span><b>Non-League</b><span>Triad Labs</span></a>
+          <a class="stallc" href="../triad-labs/" target="_blank" rel="noopener"><span class="art">&#9876;</span><b>Math Kingdom</b><span>Triad Labs</span></a>
+          <a class="stallc" href="../pixel-power/" target="_blank" rel="noopener"><span class="art">&#127918;</span><b>Code Quest, the game</b><span>Pixel Power</span></a>
+        </div>
+        <p class="sub" style="margin-top:12px">And in the week after: Elsie shipped Butterfly Dash under her own studio name, and Emma, too young to compete, made a game anyway. The day did not end when the day ended.</p>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">Named by the judge</div>
+        <div class="award"><span class="who">Sophia</span><span><b>Top presenter</b><span>The best presentation of the day. She brought the room with her.</span></span></div>
+        <div class="award"><span class="who">Ezekiel</span><span><b>Best team leader</b><span>He held his team together all day.</span></span></div>
+        <div class="award"><span class="who">Elsie</span><span><b>Most creative</b><span>Hers was the explanation that made Code Quest finally make sense.</span></span></div>
+        <div class="award"><span class="who">Hannah</span><span><b>For overcoming</b><span>Quiet beforehand, and then she performed.</span></span></div>
+        <div class="award"><span class="who">Theodore</span><span><b>Calm under pressure</b><span>His system would not work and he never lost his composure.</span></span></div>
+        <div class="award"><span class="who">Arthur</span><span><b>Perseverance</b><span>He did it anyway, and he spoke with confidence.</span></span></div>
+        <div class="award"><span class="who">Emma</span><span><b>Participation</b><span>Too young to compete. Lasted the whole day and let the others work.</span></span></div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">The Awakenings &middot; tap to watch</div>
+        <div class="awkrow">
+          <button class="awk" data-vid="../codequest-elsie.mp4" type="button"><span class="pl">&#9654;</span><b>Elsie</b></button>
+          <button class="awk" data-vid="../codequest-hannah.mp4" type="button"><span class="pl">&#9654;</span><b>Hannah</b></button>
+          <button class="awk" data-vid="../codequest-sophia.mp4" type="button"><span class="pl">&#9654;</span><b>Sophia</b></button>
+          <button class="awk" data-vid="../codequest-theodore.mp4" type="button"><span class="pl">&#9654;</span><b>Theodore</b></button>
+          <button class="awk" data-vid="../codequest-ezekiel.mp4" type="button"><span class="pl">&#9654;</span><b>Ezekiel</b></button>
+          <button class="awk" data-vid="../codequest-arthur.mp4" type="button"><span class="pl">&#9654;</span><b>Arthur</b></button>
+          <button class="awk" data-vid="../codequest-emma.mp4" type="button"><span class="pl">&#9654;</span><b>Emma</b></button>
+          <button class="awk" data-vid="../codequest-the-awakening.mp4" type="button"><span class="pl">&#9654;</span><b>All seven</b></button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">Still arriving from the day</div>
+        <div class="ph"><span class="art">&#128247;</span><span><b>The photo gallery</b><span>Every family's camera roll, gathered in one place.</span></span><em>ARRIVING</em></div>
+        <div class="ph"><span class="art">&#127916;</span><span><b>The highlights film</b><span>The whole day in three minutes.</span></span><em>IN THE EDIT</em></div>
+        <div class="ph"><span class="art">&#127911;</span><span><b>The theme song</b><span>The anthem the questers walked in to.</span></span><em>IN THE STUDIO</em></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- video modal -->
+  <div id="vmodal">
+    <div class="bar"><b id="vtitle">The Awakening</b><button id="vclose" type="button">&times;</button></div>
+    <video id="vplayer" controls playsinline preload="none"></video>
   </div>
 
   <!-- ═ CLIPS ═ -->
@@ -729,6 +842,22 @@ document.querySelectorAll(".sw").forEach(function(sw){
   sw.addEventListener("keydown", function(e){
     if (e.key === " " || e.key === "Enter"){ e.preventDefault(); flip(); }
   });
+});
+
+/* event archive video modal */
+var vmodal = document.getElementById("vmodal");
+var vplayer = document.getElementById("vplayer");
+document.getElementById("event").addEventListener("click", function(e){
+  var b = e.target.closest(".awk");
+  if (!b) return;
+  document.getElementById("vtitle").textContent = b.querySelector("b").textContent + " · The Awakening";
+  vplayer.src = b.getAttribute("data-vid");
+  vmodal.classList.add("show");
+  vplayer.play().catch(function(){});
+});
+document.getElementById("vclose").addEventListener("click", function(){
+  vplayer.pause(); vplayer.removeAttribute("src"); vplayer.load();
+  vmodal.classList.remove("show");
 });
 
 /* ── clips feed ── */
