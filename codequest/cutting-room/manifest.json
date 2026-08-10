@@ -1,4 +1,23 @@
 {
   "updated": "2026-08-10",
-  "clips": []
+  "clips": [
+    {
+      "id": "C01",
+      "file": "src/C01-elsie-butterflii-reel.mov",
+      "label": "Elsie \u00b7 Butterflii by Elsie studio reel \u00b7 straight to camera \u00b7 32s \u00b7 720x1280",
+      "status": "cut",
+      "instructions": [
+        {
+          "when": "10 Aug",
+          "text": "Place in the app Clips feed under Elsie, as-is. No trims requested."
+        }
+      ],
+      "cuts": [
+        {
+          "file": "../clips/elsie-reel-1.mp4",
+          "note": "Feed version \u00b7 compressed for web \u00b7 live in the app"
+        }
+      ]
+    }
+  ]
 }
