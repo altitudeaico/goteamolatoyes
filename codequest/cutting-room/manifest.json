@@ -18,6 +18,22 @@
           "note": "Feed version \u00b7 compressed for web \u00b7 live in the app"
         }
       ]
+    },
+    {
+      "id": "C02",
+      "file": "src/C02-build-session.mp4",
+      "label": "The build \u00b7 kids working at the tablet \u00b7 67s \u00b7 landscape 1080p",
+      "status": "new",
+      "instructions": [],
+      "cuts": []
+    },
+    {
+      "id": "C03",
+      "file": "src/C03-big-screen-countdown.mp4",
+      "label": "The big screen \u00b7 Code Quest countdown at 82:04, avatar on display \u00b7 16s \u00b7 landscape (4K source)",
+      "status": "new",
+      "instructions": [],
+      "cuts": []
     }
   ]
 }
