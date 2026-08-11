@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B0912">
+<title>CodeQuest handoff</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F7FB; --card:#fff; --ink:#232946; --mut:#6B7280; --soft:#EEF0F6; --line:#E7E9F0;
+  --purple:#7C5CFC; --teal:#12B5A5; --amber:#FFB020; --green:#3EC26B; --coral:#FF6B6B;
+  --purple-s:#F0EBFF; --teal-s:#E2F7F5; --amber-s:#FFF4DE; --green-s:#E6F8ED; --coral-s:#FFECEC;
+  --sh:0 6px 20px rgba(35,41,70,.08);
+  --sans:'Nunito',system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;
+  padding:34px 18px calc(60px + env(safe-area-inset-bottom));max-width:840px;margin:0 auto}
+
+/* gate */
+#gate{position:fixed;inset:0;z-index:90;background:var(--bg);display:grid;place-items:center;padding:24px;text-align:center}
+#gate.off{display:none}
+#gate .box{max-width:380px;width:100%}
+#gate .mark{font-size:44px}
+#gate h1{font-size:26px;font-weight:900;margin-top:12px}
+#gate p{font-size:14.5px;color:var(--mut);font-weight:600;margin-top:10px;line-height:1.55}
+#gate input{width:100%;margin-top:20px;padding:15px 18px;border-radius:99px;border:2px solid var(--line);
+  background:#fff;font-family:var(--sans);font-size:16px;font-weight:700;text-align:center;color:var(--ink)}
+#gate input:focus{outline:none;border-color:var(--purple)}
+#gate button{width:100%;margin-top:12px;padding:15px;border:0;border-radius:99px;background:var(--purple);
+  color:#fff;font-family:var(--sans);font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 6px 16px rgba(124,92,252,.35)}
+#gerr{color:var(--coral);font-size:13.5px;font-weight:800;margin-top:12px;min-height:18px}
+
+header .eyebrow{font-size:12.5px;font-weight:800;color:var(--mut);letter-spacing:.04em}
+header h1{font-size:34px;font-weight:900;line-height:1.08;margin-top:6px}
+header p{font-size:15.5px;color:var(--mut);font-weight:600;line-height:1.6;margin-top:12px;max-width:620px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;margin-top:16px;box-shadow:var(--sh)}
+.card h2{font-size:20px;font-weight:900}
+.card h3{font-size:16.5px;font-weight:900;margin-top:2px}
+.card p{font-size:14px;color:var(--mut);font-weight:600;line-height:1.55;margin-top:7px}
+.eyebrow{font-size:12px;font-weight:800;color:var(--mut);margin-bottom:5px}
+
+.hero{background:linear-gradient(140deg,var(--purple),#5A3DF0);color:#fff;border:0}
+.hero h2{font-size:23px}
+.hero p{color:rgba(255,255,255,.9)}
+.hero .dl{display:inline-flex;align-items:center;gap:9px;margin-top:16px;background:#fff;color:#4A2FC7;
+  text-decoration:none;font-size:15.5px;font-weight:900;padding:15px 24px;border-radius:99px;box-shadow:0 8px 22px rgba(0,0,0,.18)}
+.hero small{display:block;margin-top:11px;font-size:12.5px;color:rgba(255,255,255,.75);font-weight:700}
+
+.files{display:grid;gap:10px;margin-top:14px}
+.f{display:flex;gap:13px;align-items:center;background:var(--card);border:1px solid var(--line);
+  border-radius:16px;padding:13px 15px;text-decoration:none;color:var(--ink);transition:.15s}
+.f:hover{transform:translateY(-2px);box-shadow:var(--sh)}
+.f .ic{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;font-size:21px;flex:none}
+.f b{display:block;font-size:14.5px;font-weight:900;font-family:ui-monospace,Menlo,monospace}
+.f span{display:block;font-size:12.5px;color:var(--mut);font-weight:600;margin-top:3px;line-height:1.45}
+.f em{margin-left:auto;font-style:normal;font-size:11px;font-weight:900;color:var(--purple);flex:none}
+
+pre{background:#232946;color:#D9E1FF;border-radius:16px;padding:16px;margin-top:12px;overflow-x:auto;
+  font-family:ui-monospace,Menlo,monospace;font-size:12.5px;line-height:1.75}
+pre .c{color:#7C86B4}
+pre .k{color:#B8A6FF}
+code{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:var(--soft);padding:2px 6px;border-radius:6px}
+
+.grp{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.grp:last-child{border-bottom:0}
+.grp .ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:18px;flex:none}
+.grp b{display:block;font-size:14px;font-weight:900}
+.grp span{display:block;font-size:12.5px;color:var(--mut);font-weight:600;margin-top:2px;line-height:1.45}
+.grp .sz{margin-left:auto;font-size:12px;font-weight:800;color:var(--mut);flex:none}
+.tag{display:inline-block;font-size:10px;font-weight:900;border-radius:6px;padding:3px 7px;margin-left:6px;vertical-align:middle}
+.tag.now{background:var(--green-s);color:#2E7D4F}
+.tag.later{background:var(--amber-s);color:#8A5A00}
+
+.avr{display:flex;gap:10px;overflow-x:auto;margin-top:14px;padding-bottom:6px}
+.avr img{height:88px;width:auto;background:var(--soft);border-radius:14px;padding:6px;flex:none}
+
+.note{background:var(--amber-s);border:1px solid #F0DDB4;border-radius:16px;padding:15px 17px;margin-top:16px}
+.note b{font-size:14.5px;font-weight:900;display:block}
+.note p{font-size:13.5px;color:#7A5400;font-weight:600;margin-top:6px;line-height:1.55}
+
+footer{margin-top:32px;text-align:center;font-size:12.5px;color:var(--mut);font-weight:600;line-height:1.7}
+a{color:var(--purple)}
+:where(a,button,input):focus-visible{outline:3px solid var(--purple);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="box">
+    <div class="mark">&#128273;</div>
+    <h1>CodeQuest handoff</h1>
+    <p>Design system and media assets for the build. Ask Bolaji for the word if you do not have it.</p>
+    <form id="gform">
+      <input id="gin" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Enter the word" aria-label="Passphrase">
+      <button type="submit">Open</button>
+    </form>
+    <div id="gerr"></div>
+  </div>
+</div>
+
+<div id="page" hidden>
+<header>
+  <div class="eyebrow">For Gbenga &middot; from Bolaji &middot; 11 August 2026</div>
+  <h1>The design handoff</h1>
+  <p>Everything from the app simulation, packaged so it can go straight into the build. This is design and assets only. Take what saves you time and bin the rest, because you know the constraints of the real system and this package does not.</p>
+</header>
+
+<div class="card hero">
+  <h2>Everything, in one file</h2>
+  <p>Stylesheet, docs, agent instructions, media manifest, the sync script, and all seven avatars.</p>
+  <a class="dl" href="codequest-handoff.zip" download>&#11015; Download the package &middot; 3.1 MB</a>
+  <small>Unzip, then read README.md. Three minutes end to end.</small>
+</div>
+
+<div class="card">
+  <h2>Or take the pieces</h2>
+  <div class="files">
+    <a class="f" href="assets/codequest-design-system.css" download>
+      <span class="ic" style="background:var(--purple-s)">&#127912;</span>
+      <span><b>codequest-design-system.css</b><span>The whole visual system as plain global CSS. Tokens plus ready made components, written so runtime created elements style correctly</span></span><em>15 KB</em></a>
+    <a class="f" href="assets/CLAUDE.md" download>
+      <span class="ic" style="background:var(--teal-s)">&#129302;</span>
+      <span><b>CLAUDE.md</b><span>Drop in your repo root. Class vocabulary, hard rules, language rules and the computed style test idea</span></span><em>5 KB</em></a>
+    <a class="f" href="assets/README.md" download>
+      <span class="ic" style="background:var(--green-s)">&#128214;</span>
+      <span><b>README.md</b><span>Start here. What is in the box and the three minute version</span></span><em>4 KB</em></a>
+    <a class="f" href="assets/DESIGN_HANDOFF.md" download>
+      <span class="ic" style="background:var(--amber-s)">&#128221;</span>
+      <span><b>DESIGN_HANDOFF.md</b><span>The reasoning: colour, type, geometry, language, UX patterns, screen inventory</span></span><em>9 KB</em></a>
+    <a class="f" href="assets/media-manifest.json" download>
+      <span class="ic" style="background:var(--coral-s)">&#128193;</span>
+      <span><b>media-manifest.json</b><span>Every image and video we hold, grouped, with sizes and consent notes</span></span><em>6 KB</em></a>
+    <a class="f" href="assets/sync-media.sh" download>
+      <span class="ic" style="background:var(--purple-s)">&#9881;&#65039;</span>
+      <span><b>sync-media.sh</b><span>Pulls that media from this host and pushes it into an S3 bucket you control</span></span><em>5 KB</em></a>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Moving the media</h2>
+  <p>The script needs <code>curl</code>, <code>python3</code> and the <code>aws</code> cli. No jq. Run it from the package directory. Dry run needs no AWS credentials at all, so it is safe to run first.</p>
+  <pre><span class="c"># see what exists, transfer nothing</span>
+./sync-media.sh --bucket YOUR_BUCKET --dry-run
+
+<span class="c"># the two groups the MVP actually needs, about 3.5 MB</span>
+./sync-media.sh --bucket YOUR_BUCKET --groups brand,avatars
+
+<span class="c"># everything, about 128 MB</span>
+./sync-media.sh --bucket YOUR_BUCKET --groups all --profile codequest</pre>
+  <p>It downloads to a temp directory and checks each file is non-empty before uploading, so a half fetched video never lands in your bucket. Re-running is safe. Uploads set the right content type and a long immutable cache header.</p>
+</div>
+
+<div class="card">
+  <h2>What media exists</h2>
+  <div class="grp"><span class="ic" style="background:var(--purple-s)">&#127993;</span>
+    <span><b>brand <span class="tag now">TAKE NOW</span></b><span>Crest, social card, and the group shot of all seven kids in costume</span></span><span class="sz">0.8 MB</span></div>
+  <div class="grp"><span class="ic" style="background:var(--teal-s)">&#129333;</span>
+    <span><b>avatars <span class="tag now">TAKE NOW</span></b><span>Seven transparent character cutouts. Profile pictures, empty state art, gallery decoration</span></span><span class="sz">3.2 MB</span></div>
+  <div class="grp"><span class="ic" style="background:var(--amber-s)">&#10024;</span>
+    <span><b>transformations <span class="tag later">LATER</span></b><span>Per child films from the event, plus the combined cut</span></span><span class="sz">45 MB</span></div>
+  <div class="grp"><span class="ic" style="background:var(--coral-s)">&#127909;</span>
+    <span><b>clips <span class="tag later">LATER</span></b><span>Real kid content, graded. Includes Elsie fronting her own studio, made unprompted a week after the event</span></span><span class="sz">19 MB</span></div>
+  <div class="grp"><span class="ic" style="background:var(--soft)">&#127916;</span>
+    <span><b>event_footage <span class="tag later">LATER</span></b><span>Raw day footage as 360p review proxies. Presentations with the builds visible on the big screen</span></span><span class="sz">60 MB</span></div>
+
+  <div class="avr">
+    <img src="assets/avatars/elsie.png" alt="Elsie" loading="lazy">
+    <img src="assets/avatars/hannah.png" alt="Hannah" loading="lazy">
+    <img src="assets/avatars/sophia.png" alt="Sophia" loading="lazy">
+    <img src="assets/avatars/theodore.png" alt="Theodore" loading="lazy">
+    <img src="assets/avatars/ezekiel.png" alt="Ezekiel" loading="lazy">
+    <img src="assets/avatars/arthur.png" alt="Arthur" loading="lazy">
+    <img src="assets/avatars/emma.png" alt="Emma" loading="lazy">
+  </div>
+
+  <div class="note">
+    <b>Consent before convenience</b>
+    <p>These are real children's faces and image consent sits with each household, not centrally. Use them inside CodeQuest surfaces. Ask before anything external or public facing, and prefer keeping faces behind authentication until per child consent is something the product records.</p>
+  </div>
+</div>
+
+<div class="card">
+  <h2>The one thing to read first</h2>
+  <p>Ship the stylesheet globally, never inside a component scoped <code>&lt;style&gt;</code> block. Astro attaches its scoping attribute at build time to elements that exist in the template, so elements created at runtime with <code>createElement</code> never receive it and scoped rules silently do not apply. Every class in this system is a plain global class for exactly that reason.</p>
+  <pre><span class="c">// once, in a layout</span>
+<span class="k">import</span> '../styles/codequest-design-system.css';</pre>
+  <p>There is also a test idea in CLAUDE.md worth three lines of your time: assert on <code>getComputedStyle</code> rather than the DOM for critical controls, because from the DOM a rule that failed to apply and a rule that was never written look identical.</p>
+</div>
+
+<div class="card">
+  <h2>See it running</h2>
+  <p>The simulation this came from is at <a href="../app/">the app concept</a>. Open it on a phone. It is a mockup, not a build, and where it disagrees with your system yours is usually right. Four things in particular that yours does better and the mockup does not yet reflect: display names instead of real names, reject with a reason the child can read, upload validation, and QR sign in.</p>
+</div>
+
+<footer>
+  Unlisted and not indexed. Please do not share the link outside the family.<br>
+  Questions to Bolaji.
+</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var gate = document.getElementById("gate");
+  var page = document.getElementById("page");
+  var err  = document.getElementById("gerr");
+  var KEY  = "cq_handoff_ok";
+
+  /* Courtesy gate. This keeps the page out of casual reach and off search
+     engines. It is not security: anyone determined can read this source.
+     Nothing sensitive lives here, and nothing here is a credential. */
+  function norm(s){ return String(s || "").trim().toLowerCase().replace(/\s+/g, ""); }
+  function hash(s){
+    var h = 5381;
+    for (var i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0;
+    return h;
+  }
+  var EXPECT = 680225592; /* "mathkingdom" */
+
+  function open_(){
+    gate.classList.add("off");
+    page.hidden = false;
+    try { sessionStorage.setItem(KEY, "1"); } catch(e){}
+  }
+
+  try { if (sessionStorage.getItem(KEY) === "1") open_(); } catch(e){}
+
+  document.getElementById("gform").addEventListener("submit", function(e){
+    e.preventDefault();
+    var v = norm(document.getElementById("gin").value);
+    if (hash(v) === EXPECT){ err.textContent = ""; open_(); }
+    else { err.textContent = "Not quite. Ask Bolaji."; }
+  });
+})();
+</script>
+</body>
+</html>

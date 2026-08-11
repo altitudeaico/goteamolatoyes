@@ -1,0 +1,362 @@
+/* ============================================================
+   CodeQuest Design System v1
+   Extracted from the product simulation, August 2026.
+
+   IMPORTANT: ship this as a GLOBAL stylesheet, not as component
+   scoped styles. Astro scoped CSS attaches a data attribute at
+   build time to elements that exist in the template. Elements
+   built at runtime with createElement never receive it, so
+   scoped rules silently do not apply to them. Every class here
+   is written to work on both server rendered and dynamically
+   created elements.
+
+   In Astro: import once in a layout, inside <style is:global>
+   or as a plain link tag. Do not nest it in a component style
+   block.
+   ============================================================ */
+
+:root{
+  /* --- surfaces --- */
+  --cq-bg:#F6F7FB;          /* app canvas */
+  --cq-card:#FFFFFF;        /* raised surface */
+  --cq-soft:#EEF0F6;        /* inset, tab tracks, ghost buttons */
+  --cq-line:#E7E9F0;        /* hairlines and borders */
+
+  /* --- ink --- */
+  --cq-ink:#232946;         /* primary text */
+  --cq-mut:#6B7280;         /* secondary text */
+  --cq-dim:#9AA0B5;         /* inactive icons */
+
+  /* --- brand accents, one per section --- */
+  --cq-purple:#7C5CFC;      /* primary action, Home */
+  --cq-teal:#12B5A5;        /* Make, progress, "yours" */
+  --cq-coral:#FF6B6B;       /* Videos, record, likes */
+  --cq-amber:#FFB020;       /* Games, lessons, stars */
+  --cq-green:#3EC26B;       /* safety, approved, success */
+
+  /* --- accent tints, for icon chips and section backgrounds --- */
+  --cq-purple-s:#F0EBFF;
+  --cq-teal-s:#E2F7F5;
+  --cq-coral-s:#FFECEC;
+  --cq-amber-s:#FFF4DE;
+  --cq-green-s:#E6F8ED;
+
+  /* --- type --- */
+  --cq-font:'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --cq-fs-h1:28px;          /* screen title, weight 900 */
+  --cq-fs-h2:21px;          /* card title, weight 900 */
+  --cq-fs-h3:19px;          /* header bar title, weight 900 */
+  --cq-fs-body:14px;        /* card body, weight 600 */
+  --cq-fs-btn:15px;         /* buttons, weight 800 */
+  --cq-fs-label:12.5px;     /* eyebrows and meta, weight 800 */
+
+  /* --- shape --- */
+  --cq-r-card:22px;
+  --cq-r-tile:18px;
+  --cq-r-chip:14px;
+  --cq-r-pill:99px;
+  --cq-sh:0 6px 20px rgba(35,41,70,.08);
+  --cq-sh-lift:0 14px 34px rgba(35,41,70,.16);
+
+  /* --- rhythm --- */
+  --cq-gap:12px;
+  --cq-pad:18px;
+
+  /* --- chrome geometry, see notes at the foot of this file --- */
+  --cq-header-h:88px;
+  --cq-tabbar-h:76px;
+  --cq-scroll-top:102px;
+  --cq-scroll-bottom:120px;
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+.cq-app{
+  font-family:var(--cq-font);
+  color:var(--cq-ink);
+  background:var(--cq-bg);
+  -webkit-font-smoothing:antialiased;
+  -webkit-tap-highlight-color:transparent;
+}
+.cq-app *{box-sizing:border-box}
+
+/* The scrolling region of any screen. Top padding clears the fixed
+   header, bottom padding clears the tab bar. Do not reduce these
+   without moving the chrome. */
+.cq-scroll{
+  flex:1;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  padding:var(--cq-scroll-top) var(--cq-pad) var(--cq-scroll-bottom);
+  scrollbar-width:none;
+}
+.cq-scroll::-webkit-scrollbar{display:none}
+@supports(padding:max(0px)){
+  .cq-scroll{
+    padding-top:calc(var(--cq-scroll-top) - 4px + env(safe-area-inset-top));
+    padding-bottom:calc(var(--cq-scroll-bottom) + env(safe-area-inset-bottom));
+  }
+}
+
+/* ============================================================
+   TYPE
+   ============================================================ */
+.cq-h1{font-size:var(--cq-fs-h1);font-weight:900;line-height:1.12}
+.cq-h2{font-size:var(--cq-fs-h2);font-weight:900;line-height:1.15}
+.cq-eyebrow{font-size:var(--cq-fs-label);font-weight:800;color:var(--cq-mut);margin-bottom:4px}
+.cq-body{font-size:var(--cq-fs-body);font-weight:600;color:var(--cq-mut);line-height:1.5}
+.cq-sub{font-size:13.5px;font-weight:600;color:var(--cq-mut);line-height:1.55}
+
+/* ============================================================
+   CARD
+   ============================================================ */
+.cq-card{
+  background:var(--cq-card);
+  border:1px solid var(--cq-line);
+  border-radius:var(--cq-r-card);
+  padding:17px;
+  margin-top:14px;
+  box-shadow:var(--cq-sh);
+}
+.cq-card--row{display:flex;gap:13px;align-items:center}
+.cq-card h3{font-size:var(--cq-fs-h2);font-weight:900;line-height:1.15}
+.cq-card p{font-size:var(--cq-fs-body);font-weight:600;color:var(--cq-mut);margin-top:5px;line-height:1.5}
+
+/* Icon chip that leads a card. Pair with a tint class. */
+.cq-icon{
+  width:52px;height:52px;border-radius:16px;
+  display:grid;place-items:center;font-size:26px;flex:none;
+}
+.cq-icon--purple{background:var(--cq-purple-s)}
+.cq-icon--teal{background:var(--cq-teal-s)}
+.cq-icon--coral{background:var(--cq-coral-s)}
+.cq-icon--amber{background:var(--cq-amber-s)}
+.cq-icon--green{background:var(--cq-green-s)}
+
+/* ============================================================
+   BUTTONS
+   Minimum target 44px. Sentence case labels, never all caps.
+   ============================================================ */
+.cq-btn{
+  display:inline-block;
+  font-family:var(--cq-font);
+  font-size:var(--cq-fs-btn);
+  font-weight:800;
+  padding:14px 22px;
+  border:0;
+  border-radius:var(--cq-r-pill);
+  cursor:pointer;
+  text-decoration:none;
+  text-align:center;
+  background:var(--cq-purple);
+  color:#fff;
+  box-shadow:0 6px 16px rgba(124,92,252,.35);
+}
+.cq-btn--teal{background:var(--cq-teal);box-shadow:0 6px 16px rgba(18,181,165,.3)}
+.cq-btn--coral{background:var(--cq-coral);box-shadow:0 6px 16px rgba(255,107,107,.35)}
+.cq-btn--green{background:var(--cq-green);box-shadow:0 6px 16px rgba(62,194,107,.35)}
+.cq-btn--amber{background:var(--cq-amber);color:#5C3D00;box-shadow:0 6px 16px rgba(255,176,32,.3)}
+.cq-btn--ghost{background:var(--cq-soft);color:var(--cq-ink);box-shadow:none}
+.cq-btn--danger{background:#fff;color:#C2352B;border:2px solid #F3C9C5;box-shadow:none}
+.cq-btn--block{display:block;width:100%}
+.cq-btn:disabled{opacity:.45;cursor:default;box-shadow:none}
+
+/* CRITICAL: approve and reject must never render as two identical
+   buttons. Approve is solid green, reject is an outlined danger
+   button. Distinguishable by shape and weight, not colour alone. */
+
+/* ============================================================
+   HEADER BAR
+   ============================================================ */
+.cq-hd{
+  position:absolute;top:0;left:0;right:0;z-index:30;
+  display:flex;align-items:center;gap:8px;
+  padding:44px 16px 10px;
+  background:linear-gradient(var(--cq-bg) 62%, transparent);
+}
+@supports(padding:max(0px)){
+  .cq-hd{padding-top:calc(40px + env(safe-area-inset-top))}
+}
+.cq-hd b{font-size:var(--cq-fs-h3);font-weight:900}
+.cq-hd .cq-sp{flex:1}
+.cq-hd-btn{
+  width:34px;height:34px;border-radius:12px;
+  background:#fff;border:1px solid var(--cq-line);
+  color:var(--cq-ink);display:grid;place-items:center;
+  font-size:15px;font-weight:900;cursor:pointer;
+  font-family:var(--cq-font);box-shadow:var(--cq-sh);
+}
+
+/* ============================================================
+   TAB BAR
+   Five tabs. Active tab gets its section tint behind the icon.
+   ============================================================ */
+.cq-tabs{
+  position:absolute;left:0;right:0;bottom:0;z-index:40;
+  display:flex;
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(16px);
+  border-top:1px solid var(--cq-line);
+  padding:8px 6px 14px;
+}
+@supports(padding:max(0px)){
+  .cq-tabs{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
+}
+.cq-tabs button{
+  flex:1;border:0;background:none;cursor:pointer;
+  font-family:var(--cq-font);font-size:10.5px;font-weight:800;
+  color:var(--cq-dim);padding:6px 2px;
+  display:grid;gap:4px;justify-items:center;
+}
+.cq-tabs button .cq-ti{
+  width:40px;height:30px;border-radius:12px;
+  display:grid;place-items:center;font-size:17px;
+}
+.cq-tabs button.is-on{color:var(--cq-ink)}
+.cq-tabs button.is-on:nth-child(1) .cq-ti{background:var(--cq-purple-s)}
+.cq-tabs button.is-on:nth-child(2) .cq-ti{background:var(--cq-teal-s)}
+.cq-tabs button.is-on:nth-child(3) .cq-ti{background:var(--cq-coral-s)}
+.cq-tabs button.is-on:nth-child(4) .cq-ti{background:var(--cq-amber-s)}
+.cq-tabs button.is-on:nth-child(5) .cq-ti{background:var(--cq-green-s)}
+
+/* ============================================================
+   PROGRESS
+   ============================================================ */
+.cq-progress{height:10px;border-radius:var(--cq-r-pill);background:var(--cq-soft);margin-top:12px;overflow:hidden}
+.cq-progress i{display:block;height:100%;border-radius:var(--cq-r-pill);background:linear-gradient(90deg,var(--cq-purple),#A78BFF)}
+.cq-stars{display:inline-flex;gap:4px;font-size:17px;letter-spacing:1px}
+.cq-stars .off{opacity:.25}
+
+/* ============================================================
+   TILE GRID, for projects and games
+   ============================================================ */
+.cq-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--cq-gap);margin-top:14px}
+.cq-tile{
+  background:var(--cq-card);border:1px solid var(--cq-line);
+  border-radius:20px;padding:13px;display:block;
+  text-decoration:none;color:var(--cq-ink);box-shadow:var(--cq-sh);
+}
+.cq-tile--mine{border:3px solid var(--cq-teal)}
+.cq-tile .cq-art{width:100%;aspect-ratio:1.5;border-radius:14px;display:grid;place-items:center;font-size:36px}
+.cq-tile b{display:block;font-size:14px;font-weight:800;margin-top:9px;line-height:1.2}
+.cq-tile span{font-size:11.5px;font-weight:700;color:var(--cq-mut)}
+.cq-badge{
+  display:inline-block;font-size:9.5px;font-weight:900;color:#fff;
+  background:var(--cq-green);border-radius:6px;padding:3px 7px;
+  margin-left:4px;vertical-align:middle;
+}
+.cq-badge--pending{background:var(--cq-amber);color:#5C3D00}
+.cq-badge--changes{background:var(--cq-coral)}
+
+/* ============================================================
+   SAFETY BANNER, parent facing
+   Lead the parent area with this. It answers the only question
+   a new parent has, before they have to ask it.
+   ============================================================ */
+.cq-safe{
+  display:flex;gap:12px;align-items:center;
+  background:var(--cq-green-s);border:1px solid #CBEBD7;
+  border-radius:var(--cq-r-tile);padding:13px 15px;margin-top:14px;
+}
+.cq-safe b{font-size:14.5px;font-weight:900;display:block}
+.cq-safe span{font-size:12.5px;font-weight:700;color:#2E7D4F}
+
+/* ============================================================
+   APPROVAL ROW
+   ============================================================ */
+.cq-appr{display:flex;align-items:center;gap:12px;margin-top:12px}
+.cq-appr b{font-size:14.5px;font-weight:900;display:block}
+.cq-appr span{font-size:12px;font-weight:700;color:var(--cq-mut)}
+.cq-appr .cq-actions{margin-left:auto;display:flex;gap:8px;flex:none}
+
+/* ============================================================
+   TOGGLE SWITCH
+   ============================================================ */
+.cq-sw{
+  width:48px;height:28px;border-radius:var(--cq-r-pill);
+  background:#D8DBE6;position:relative;cursor:pointer;flex:none;border:0;
+}
+.cq-sw::after{
+  content:"";position:absolute;top:3px;left:3px;
+  width:22px;height:22px;border-radius:50%;background:#fff;
+  transition:.15s;box-shadow:0 2px 6px rgba(0,0,0,.2);
+}
+.cq-sw.is-on{background:var(--cq-green)}
+.cq-sw.is-on::after{left:23px}
+
+/* ============================================================
+   SHEET, for help and flows
+   ============================================================ */
+.cq-sheet{position:absolute;inset:0;z-index:75;background:rgba(35,41,70,.45);display:none;align-items:flex-end}
+.cq-sheet.is-open{display:flex}
+.cq-sheet__body{
+  width:100%;max-height:84%;overflow-y:auto;background:#fff;
+  border-radius:26px 26px 0 0;padding:10px 20px 28px;
+}
+@supports(padding:max(0px)){
+  .cq-sheet__body{padding-bottom:calc(28px + env(safe-area-inset-bottom))}
+}
+.cq-grab{width:44px;height:5px;border-radius:var(--cq-r-pill);background:var(--cq-line);margin:8px auto 14px}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+.cq-toast{
+  position:absolute;left:50%;bottom:118px;z-index:80;
+  transform:translateX(-50%) translateY(60px);opacity:0;transition:.25s;
+  background:var(--cq-ink);color:#fff;border-radius:var(--cq-r-pill);
+  padding:12px 19px;font-size:14px;font-weight:800;
+  white-space:nowrap;max-width:88%;
+}
+.cq-toast.is-on{transform:translateX(-50%);opacity:1}
+
+/* ============================================================
+   TIP BUBBLE, one time per screen on first visit
+   ============================================================ */
+.cq-tip{
+  position:absolute;left:16px;right:16px;bottom:102px;z-index:45;
+  background:var(--cq-ink);color:#fff;border-radius:var(--cq-r-tile);
+  padding:14px 16px;font-size:14px;font-weight:700;line-height:1.45;
+  box-shadow:var(--cq-sh-lift);display:none;gap:12px;align-items:flex-start;
+}
+.cq-tip.is-on{display:flex}
+
+/* ============================================================
+   EMPTY STATE
+   Never show a bare empty list. Always art, a sentence, an action.
+   ============================================================ */
+.cq-empty{text-align:center;padding:40px 20px}
+.cq-empty .cq-art{font-size:64px}
+.cq-empty b{display:block;font-size:19px;font-weight:900;margin-top:12px}
+.cq-empty p{font-size:14px;font-weight:600;color:var(--cq-mut);margin-top:8px;line-height:1.5}
+
+/* ============================================================
+   FOCUS, always visible
+   ============================================================ */
+.cq-app :where(button,a,input,[tabindex]):focus-visible{
+  outline:3px solid var(--cq-purple);
+  outline-offset:2px;
+}
+
+/* ============================================================
+   MOTION, respect the setting
+   ============================================================ */
+@media(prefers-reduced-motion:reduce){
+  .cq-app *{animation:none !important;transition:none !important}
+}
+
+/* ============================================================
+   GEOMETRY NOTES
+
+   Fixed chrome overlaps scrolling content unless the scroll
+   region pads for it. The header is 88px tall including its
+   fade, so content starts at 102px. The tab bar is 76px
+   including safe area, so content ends at 120px. If either
+   piece of chrome changes height, change the matching token,
+   not the individual screens.
+
+   On any screen with a dark background behind the status bar,
+   flip the status text to white. Dark text on dark video is
+   the single most common contrast failure in this layout.
+   ============================================================ */

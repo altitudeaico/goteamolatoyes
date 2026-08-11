@@ -1,0 +1,183 @@
+{
+  "manifest_version": 1,
+  "generated": "2026-08-11",
+  "source_base": "https://altitudeaico.github.io/goteamolatoyes/",
+  "notes": "Every path below is publicly fetchable by appending it to source_base. Sizes are approximate. Licence: family owned footage of the Olatoye cousins, cleared for use inside CodeQuest products only. Do not use for external marketing without asking Bolaji, because per child image consent is held per household.",
+  "groups": [
+    {
+      "id": "brand",
+      "label": "Brand marks",
+      "suggested_destination": "assets/brand/",
+      "priority": "high",
+      "files": [
+        {
+          "path": "codequest/codequest-emblem.png",
+          "mb": 0.3,
+          "what": "Code Quest crest, transparent PNG"
+        },
+        {
+          "path": "codequest/codequest-og.jpg",
+          "mb": 0.2,
+          "what": "Social card, 1200x630"
+        },
+        {
+          "path": "codequest/2026/og.jpg",
+          "mb": 0.3,
+          "what": "The seven kids in costume, group shot. Strongest single image we own",
+          "as": "code-quest-2026-group.jpg"
+        }
+      ]
+    },
+    {
+      "id": "avatars",
+      "label": "Character cutouts, transparent PNG",
+      "suggested_destination": "assets/avatars/",
+      "priority": "high",
+      "notes": "Background removed with alpha matting. Usable as profile pictures, empty state art, and gallery decoration. Faces of real children: only publish where a parent has consented, and prefer them inside authenticated surfaces until per child consent is recorded in the product.",
+      "files": [
+        {
+          "path": "codequest/handoff/assets/avatars/elsie.png",
+          "mb": 0.4,
+          "what": "Elsie"
+        },
+        {
+          "path": "codequest/handoff/assets/avatars/hannah.png",
+          "mb": 0.4,
+          "what": "Hannah"
+        },
+        {
+          "path": "codequest/handoff/assets/avatars/sophia.png",
+          "mb": 0.5,
+          "what": "Sophia"
+        },
+        {
+          "path": "codequest/handoff/assets/avatars/theodore.png",
+          "mb": 0.5,
+          "what": "Theodore"
+        },
+        {
+          "path": "codequest/handoff/assets/avatars/ezekiel.png",
+          "mb": 0.4,
+          "what": "Ezekiel"
+        },
+        {
+          "path": "codequest/handoff/assets/avatars/arthur.png",
+          "mb": 0.5,
+          "what": "Arthur"
+        },
+        {
+          "path": "codequest/handoff/assets/avatars/emma.png",
+          "mb": 0.5,
+          "what": "Emma"
+        }
+      ]
+    },
+    {
+      "id": "transformations",
+      "label": "Transformation films, one per child",
+      "suggested_destination": "media/transformations/",
+      "priority": "medium",
+      "notes": "Vertical, roughly 8 to 10 seconds each, plus a combined cut. Made for the 2026 event. Good candidates for a future gallery or profile flourish, not needed for the MVP loop.",
+      "files": [
+        {
+          "path": "codequest/codequest-elsie.mp4",
+          "mb": 3.3,
+          "what": "Elsie"
+        },
+        {
+          "path": "codequest/codequest-hannah.mp4",
+          "mb": 2.8,
+          "what": "Hannah"
+        },
+        {
+          "path": "codequest/codequest-sophia.mp4",
+          "mb": 3.1,
+          "what": "Sophia"
+        },
+        {
+          "path": "codequest/codequest-theodore.mp4",
+          "mb": 3.7,
+          "what": "Theodore"
+        },
+        {
+          "path": "codequest/codequest-ezekiel.mp4",
+          "mb": 3.3,
+          "what": "Ezekiel"
+        },
+        {
+          "path": "codequest/codequest-arthur.mp4",
+          "mb": 3.7,
+          "what": "Arthur"
+        },
+        {
+          "path": "codequest/codequest-emma.mp4",
+          "mb": 4.0,
+          "what": "Emma"
+        },
+        {
+          "path": "codequest/codequest-the-awakening.mp4",
+          "mb": 21.8,
+          "what": "All seven, combined cut"
+        }
+      ]
+    },
+    {
+      "id": "clips",
+      "label": "Real kid content, graded",
+      "suggested_destination": "media/clips/",
+      "priority": "medium",
+      "notes": "Genuine user generated content from cohort zero. Useful as seed data for any feed or gallery demo, and as proof that kids make content unprompted.",
+      "files": [
+        {
+          "path": "codequest/clips/elsie-reel-1.mp4",
+          "mb": 6.4,
+          "what": "Elsie fronting her own studio, straight to camera, 32s. Made unprompted a week after the event"
+        },
+        {
+          "path": "codequest/clips/grandma-arrives.mp4",
+          "mb": 12.6,
+          "what": "The judge arriving, 13s, graded with the house LUT"
+        }
+      ]
+    },
+    {
+      "id": "event_footage",
+      "label": "Raw event footage, review proxies",
+      "suggested_destination": "media/event-2026/",
+      "priority": "low",
+      "notes": "Only take these if you want the raw day. They are 360p review proxies for editing decisions, not delivery quality. Full quality masters are held separately and are not on this host. C10 to C13 contain the presentations with the builds visible on the big screen.",
+      "files": [
+        {
+          "path": "codequest/cutting-room/src/C02-build-session.mp4",
+          "mb": 20.5,
+          "what": "The build, kids at the tablet, 67s, 1080p"
+        },
+        {
+          "path": "codequest/cutting-room/src/C03-big-screen-countdown.mp4",
+          "mb": 4.6,
+          "what": "Venue big screen with countdown, 16s, 1080p. Best establishing shot we have"
+        },
+        {
+          "path": "codequest/cutting-room/src/C10-REVIEW.mp4",
+          "mb": 3.3,
+          "what": "Presentation with Non-League on screen"
+        },
+        {
+          "path": "codequest/cutting-room/src/C11-REVIEW.mp4",
+          "mb": 9.6,
+          "what": "Presentation with crest and scores on screen"
+        },
+        {
+          "path": "codequest/cutting-room/src/C12-REVIEW.mp4",
+          "mb": 8.2,
+          "what": "The Dragonball Flight presentation"
+        },
+        {
+          "path": "codequest/cutting-room/src/C13-REVIEW.mp4",
+          "mb": 13.4,
+          "what": "The QR wall on screen, presenter mid flow"
+        }
+      ]
+    }
+  ]
+}
