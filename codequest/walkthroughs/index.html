@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FBFAF7">
+<title>Walkthroughs</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FBFAF7; --card:#fff; --ink:#1A1A1A; --mut:#6E6A61; --line:#E4E0D6; --soft:#F0EEE8;
+  --a:#12805F; --a-s:#E4F2EA; --b:#E2543A; --b-s:#FBE9E4;
+  --sh:0 4px 16px rgba(26,26,26,.06);
+  --sans:'Nunito',system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;
+  padding:34px 18px calc(70px + env(safe-area-inset-bottom));max-width:860px;margin:0 auto}
+
+#gate{position:fixed;inset:0;z-index:90;background:var(--bg);display:grid;place-items:center;padding:24px;text-align:center}
+#gate.off{display:none}
+#gate .box{max-width:380px;width:100%}
+#gate .mark{font-size:42px}
+#gate h1{font-size:26px;font-weight:900;margin-top:12px}
+#gate p{font-size:14.5px;color:var(--mut);font-weight:600;margin-top:10px;line-height:1.55}
+#gate input{width:100%;margin-top:20px;padding:15px 18px;border-radius:99px;border:2px solid var(--line);
+  background:#fff;font-family:var(--sans);font-size:16px;font-weight:700;text-align:center;color:var(--ink)}
+#gate input:focus{outline:none;border-color:var(--a)}
+#gate button{width:100%;margin-top:12px;padding:15px;border:0;border-radius:99px;background:var(--a);
+  color:#fff;font-family:var(--sans);font-size:15px;font-weight:800;cursor:pointer}
+#gerr{color:var(--b);font-size:13.5px;font-weight:800;margin-top:12px;min-height:18px}
+
+.eyebrow{font-size:12px;font-weight:800;color:var(--mut);letter-spacing:.05em}
+h1{font-size:34px;font-weight:900;line-height:1.08;margin-top:6px}
+.lede{font-size:15.5px;color:var(--mut);font-weight:600;line-height:1.6;margin-top:12px;max-width:640px}
+
+.vid{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px;margin-top:20px;box-shadow:var(--sh)}
+.vid video{width:100%;border-radius:14px;display:block;background:#000}
+.vhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:13px}
+.vhead b{font-size:20px;font-weight:900}
+.chip{font-size:11px;font-weight:900;border-radius:99px;padding:6px 12px;background:var(--a-s);color:#0C6047}
+.chip.wait{background:var(--soft);color:var(--mut)}
+.vmeta{font-size:13.5px;color:var(--mut);font-weight:600;margin-top:12px;line-height:1.55}
+.dl{display:inline-block;margin-top:12px;font-size:13.5px;font-weight:900;text-decoration:none;
+  background:var(--soft);color:var(--ink);border-radius:99px;padding:11px 18px}
+
+.slot{border:2px dashed var(--line);border-radius:22px;padding:26px 20px;margin-top:20px;text-align:center}
+.slot b{display:block;font-size:18px;font-weight:900}
+.slot p{font-size:14px;color:var(--mut);font-weight:600;margin-top:8px;line-height:1.55}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px;margin-top:20px;box-shadow:var(--sh)}
+.card h2{font-size:21px;font-weight:900}
+.card p{font-size:14.5px;color:var(--mut);font-weight:600;line-height:1.6;margin-top:9px}
+.card p b{color:var(--ink)}
+ul{margin-top:12px;padding-left:0;list-style:none}
+li{font-size:14px;font-weight:600;color:var(--mut);line-height:1.55;padding:10px 0;border-bottom:1px solid var(--line);display:flex;gap:11px}
+li:last-child{border-bottom:0}
+li .t{flex:none;font-weight:900;color:var(--ink);width:52px;font-variant-numeric:tabular-nums}
+li b{color:var(--ink);font-weight:900}
+footer{margin-top:34px;text-align:center;font-size:12.5px;color:var(--mut);font-weight:600;line-height:1.7}
+a{color:var(--a)}
+:where(a,button,input):focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="box">
+    <div class="mark">&#127909;</div>
+    <h1>Walkthroughs</h1>
+    <p>Gbenga's recorded tours of the build. Ask Bolaji for the word if you do not have it.</p>
+    <form id="gform">
+      <input id="gin" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Enter the word" aria-label="Passphrase">
+      <button type="submit">Open</button>
+    </form>
+    <div id="gerr"></div>
+  </div>
+</div>
+
+<div id="page" hidden>
+
+<div class="eyebrow">Recorded by Gbenga &middot; August 2026</div>
+<h1>Walkthroughs</h1>
+<p class="lede">Tours of the real build, recorded off the dev environment. Watch these rather than reading a status report: the product does the explaining.</p>
+
+<div class="vid">
+  <div class="vhead"><b>The demo</b><span class="chip">2 min 44</span></div>
+  <video src="demo-2026-08-12.mp4" controls playsinline preload="metadata"></video>
+  <div class="vmeta">The whole loop end to end, with captions burned in. A child signs in, sends a project, a parent reviews it, and it goes live at its own address.</div>
+  <a class="dl" href="demo-2026-08-12.mp4" download>&#11015; Download</a>
+</div>
+
+<div class="slot">
+  <b>The architecture walkthrough</b>
+  <p>Recorded, not yet uploaded here. Send the file and it will sit alongside the demo.</p>
+</div>
+
+<div class="card">
+  <h2>What the demo shows</h2>
+  <ul>
+    <li><span class="t">0:00</span><span>The public site. <b>"Kids build real things. The world gets to play them."</b> A child builds a game, a grown-up checks it over, minutes later it is live at its own address, something they can hand to a grandparent, a cousin or a classroom.</span></li>
+    <li><span class="t">0:30</span><span>The kid app, empty. <b>"Nothing here yet, let's make something!"</b> Two ways in: give me a game to start with, or see what other kids made. Then the upload panel: choose a folder, or a zip.</span></li>
+    <li><span class="t">1:00</span><span>The parent view. The family, each child with a <b>public display name</b> rather than their real one, QR sign in, reset PIN.</span></li>
+    <li><span class="t">1:30</span><span>Status, in the child's own view: <b>pending</b>, <b>rejected</b> with the parent's note written in plain words, and <b>live</b> with a play link.</span></li>
+    <li><span class="t">2:00</span><span>The published thing, running at its own address.</span></li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Worth noticing, against the earlier review</h2>
+  <p>Three of the four gaps raised in the MVP review are already closed in this recording, which the written status report did not make obvious.</p>
+  <ul>
+    <li><span class="t">&#10003;</span><span><b>Empty states exist and are good.</b> "Nothing here yet, let's make something" with two next actions, rather than a bare empty list.</span></li>
+    <li><span class="t">&#10003;</span><span><b>Rejection reads like a person wrote it.</b> The parent's note appears in the child's own view with a send it again button. That is the most educational moment in the loop and it is built.</span></li>
+    <li><span class="t">&#10003;</span><span><b>Status is legible.</b> Pending, rejected and live are distinct and a child can tell them apart at a glance.</span></li>
+    <li><span class="t">&#8212;</span><span><b>Still open:</b> referral attribution, the child's own page as a single shareable surface, and play counts. Same three as before.</span></li>
+  </ul>
+  <p>The copy is also notably strong. <b>"It needs an index.html inside"</b> and <b>"you can also drag it here"</b> are the sort of lines that only come from watching someone actually get stuck.</p>
+</div>
+
+<footer>
+  Unlisted and not indexed. Please do not share outside the family.<br>
+  Recordings are Gbenga's. Hosted here so they are easy to send.
+</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var gate = document.getElementById("gate");
+  var page = document.getElementById("page");
+  var err  = document.getElementById("gerr");
+  var KEY  = "cq_walkthroughs_ok";
+
+  /* Courtesy gate, not security: the check runs in this page. Nothing
+     sensitive sits behind it beyond an unreleased product tour. */
+  function norm(s){ return String(s || "").trim().toLowerCase().replace(/\s+/g, ""); }
+  function hash(s){
+    var h = 5381;
+    for (var i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0;
+    return h;
+  }
+  var EXPECT = 680225592;
+
+  function open_(){
+    gate.classList.add("off");
+    page.hidden = false;
+    try { sessionStorage.setItem(KEY, "1"); } catch(e){}
+  }
+  try { if (sessionStorage.getItem(KEY) === "1") open_(); } catch(e){}
+
+  document.getElementById("gform").addEventListener("submit", function(e){
+    e.preventDefault();
+    if (hash(norm(document.getElementById("gin").value)) === EXPECT){ err.textContent = ""; open_(); }
+    else { err.textContent = "Not quite. Ask Bolaji."; }
+  });
+})();
+</script>
+</body>
+</html>
