@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FBFAF7">
+<title>Positioning A / B</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FBFAF7; --card:#fff; --ink:#1A1A1A; --mut:#6E6A61; --line:#E4E0D6; --soft:#F0EEE8;
+  --a:#7C5CFC; --a-s:#F0EBFF; --b:#E2543A; --b-s:#FBE9E4;
+  --sh:0 4px 16px rgba(26,26,26,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:'Nunito',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;padding:34px 18px calc(70px + env(safe-area-inset-bottom));max-width:1000px;margin:0 auto}
+.eyebrow{font-size:12px;font-weight:800;color:var(--mut);letter-spacing:.06em}
+h1{font-size:34px;font-weight:900;line-height:1.08;margin-top:6px}
+.lede{font-size:15.5px;color:var(--mut);font-weight:600;line-height:1.6;margin-top:12px;max-width:660px}
+
+.pair{display:grid;gap:14px;margin-top:24px}
+@media(min-width:780px){.pair{grid-template-columns:1fr 1fr}}
+.col{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:var(--sh)}
+.col.a{border-top:5px solid var(--a)}
+.col.b{border-top:5px solid var(--b)}
+.tag{display:inline-block;font-size:11px;font-weight:900;border-radius:99px;padding:6px 12px;letter-spacing:.04em}
+.a .tag{background:var(--a-s);color:#4A2FC7}
+.b .tag{background:var(--b-s);color:#A8321F}
+.col h2{font-size:22px;font-weight:900;margin-top:10px;line-height:1.15}
+.col .claim{font-size:15px;font-weight:700;color:var(--mut);margin-top:8px;line-height:1.5}
+.col .open{display:inline-block;margin-top:14px;text-decoration:none;font-size:14.5px;font-weight:900;
+  padding:13px 20px;border-radius:99px;color:#fff}
+.a .open{background:var(--a)}
+.b .open{background:var(--b)}
+.col ul{margin-top:14px;padding-left:0;list-style:none}
+.col li{font-size:13.5px;font-weight:600;color:var(--mut);line-height:1.5;padding:7px 0;border-bottom:1px solid var(--line);display:flex;gap:9px}
+.col li:last-child{border-bottom:0}
+.col li b{color:var(--ink);font-weight:900;flex:none;width:96px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px;margin-top:16px;box-shadow:var(--sh)}
+.card h2{font-size:21px;font-weight:900}
+.card p{font-size:14.5px;color:var(--mut);font-weight:600;line-height:1.6;margin-top:9px}
+.card p b{color:var(--ink)}
+
+table{width:100%;border-collapse:collapse;margin-top:14px;font-size:13.5px}
+th,td{text-align:left;padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:top;font-weight:600;color:var(--mut);line-height:1.45}
+th{font-weight:900;color:var(--ink);font-size:12.5px}
+td:first-child{font-weight:900;color:var(--ink);width:120px}
+.aCell{background:rgba(124,92,252,.05)}
+.bCell{background:rgba(226,84,58,.05)}
+
+.files{display:grid;gap:10px;margin-top:14px}
+.f{display:flex;gap:12px;align-items:center;background:var(--soft);border-radius:16px;padding:13px 15px;
+  text-decoration:none;color:var(--ink)}
+.f .ic{font-size:20px}
+.f b{display:block;font-size:14px;font-weight:900}
+.f span{display:block;font-size:12.5px;color:var(--mut);font-weight:600;margin-top:2px}
+.f em{margin-left:auto;font-style:normal;font-size:11px;font-weight:900;color:var(--mut)}
+
+.q{background:var(--soft);border-left:4px solid var(--b);border-radius:0 14px 14px 0;padding:15px 18px;margin-top:14px}
+.q p{font-size:14.5px;font-weight:700;color:var(--ink);line-height:1.55;margin:0}
+.q cite{display:block;font-size:12.5px;font-weight:700;color:var(--mut);margin-top:8px;font-style:normal}
+footer{margin-top:34px;text-align:center;font-size:12.5px;color:var(--mut);font-weight:600;line-height:1.7}
+a{color:var(--b)}
+:where(a,button):focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<div class="eyebrow">Nothing has been changed. These run in parallel.</div>
+<h1>Positioning A / B</h1>
+<p class="lede">The original simulation stays exactly as it was. Alongside it now sits a variant built to the creator positioning from Mayowa's debrief and the commercial identity work. Open both on a phone, one after the other, and see which one you would rather hand to a parent.</p>
+
+<div class="pair">
+  <div class="col a">
+    <span class="tag">A &middot; AS BUILT</span>
+    <h2>Kids build real apps</h2>
+    <p class="claim">Coding is the substance. The child learns to build, ships games, and climbs a belt ladder from Quester to Mogul.</p>
+    <a class="open" href="../app/">Open version A</a>
+    <ul>
+      <li><b>Promise</b><span>Your kid builds real apps and games</span></li>
+      <li><b>Hero moment</b><span>Sharing a game with a friend</span></li>
+      <li><b>Tabs</b><span>Home, Make, Videos, Games, Levels</span></li>
+      <li><b>Ladder</b><span>Quester, Builder, Mentor, Mogul</span></li>
+      <li><b>Palette</b><span>Purple and teal, five section colours</span></li>
+      <li><b>Strength</b><span>Concrete. A parent knows what they are buying</span></li>
+      <li><b>Risk</b><span>Competes in the crowded kids coding lane</span></li>
+    </ul>
+  </div>
+
+  <div class="col b">
+    <span class="tag">B &middot; CREATOR VARIANT</span>
+    <h2>Kids make things and put them on the internet</h2>
+    <p class="claim">Publishing is the substance. The child makes in any medium, gets a real address, and climbs from Maker to Owner. Coding is one pillar.</p>
+    <a class="open" href="../app-creator/">Open version B</a>
+    <ul>
+      <li><b>Promise</b><span>Your kid makes something real and publishes it</span></li>
+      <li><b>Hero moment</b><span>The address going live</span></li>
+      <li><b>Tabs</b><span>Home, Make, Videos, Published, Journey</span></li>
+      <li><b>Ladder</b><span>Maker, Publisher, Guide, Owner</span></li>
+      <li><b>Palette</b><span>Paper, ink and marker red. Studio, not classroom</span></li>
+      <li><b>Strength</b><span>Wider audience. Elsie fits without becoming a coder</span></li>
+      <li><b>Risk</b><span>Vaguer at the point of sale</span></li>
+    </ul>
+  </div>
+</div>
+
+<div class="card">
+  <h2>What actually changed in version B</h2>
+  <table>
+    <tr><th>Where</th><th class="aCell">A, as built</th><th class="bCell">B, creator variant</th></tr>
+    <tr><td>Sign in</td><td class="aCell">Zara &middot; Level 1</td><td class="bCell">Zara &middot; 2 things live</td></tr>
+    <tr><td>Home</td><td class="aCell">Stars toward the next level</td><td class="bCell">Things live, and how many people visited</td></tr>
+    <tr><td>Make</td><td class="aCell">My code, Play it, Get help</td><td class="bCell">Pick a medium first, then How it works, Try it, Get help</td></tr>
+    <tr><td>Publish button</td><td class="aCell">Share my game</td><td class="bCell">Put it on the internet</td></tr>
+    <tr><td>The page</td><td class="aCell">Copy my link &middot; 14 plays</td><td class="bCell">Copy my address &middot; 14 people visited</td></tr>
+    <tr><td>Progress</td><td class="aCell">Levels and stars</td><td class="bCell">Journey, each stage a thing you did</td></tr>
+    <tr><td>Parent banner</td><td class="aCell">You approve everything</td><td class="bCell">Your child creates. You decide what goes public</td></tr>
+    <tr><td>Elsie's clip</td><td class="aCell">Made Butterfly Dash</td><td class="bCell">Butterflii Studio</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2>The test that decides it</h2>
+  <div class="q">
+    <p>If you cannot imagine an eleven year old girl who wants to be a makeup creator wanting to come to this thing and build something, it has gone too coding niche.</p>
+    <cite>Mayowa, 12 August</cite>
+  </div>
+  <p>Version A asks her to become a coder. Version B asks her to make something and gives her somewhere to put it, and coding is one of the ways she might do it. That is the whole argument, and it is worth deciding on its merits rather than on which screen looks nicer.</p>
+  <p><b>The counter argument deserves equal weight.</b> A parent buys a specific thing. "Your kid builds real apps" is easier to pay for than "a creator platform for kids". One resolution worth testing: sell the specific and deliver the broad. Keep the concrete promise at the point of sale, and let the breadth be what they discover after the first gate.</p>
+</div>
+
+<div class="card">
+  <h2>Documents</h2>
+  <div class="files">
+    <a class="f" href="../app/"><span class="ic">&#128241;</span><span><b>Version A, the original app</b><span>Unchanged, exactly as it was</span></span><em>OPEN</em></a>
+    <a class="f" href="../app-creator/"><span class="ic">&#10024;</span><span><b>Version B, the creator variant</b><span>Same mechanics, repositioned</span></span><em>OPEN</em></a>
+  </div>
+  <p>The ladder exists in two versions too, as markdown alongside this: the original Quester to Mogul framework, and a Creator Ladder variant that renames the rungs to Maker, Publisher, Guide and Owner, opens the medium beyond code, and makes publishing the spine of every gate.</p>
+</div>
+
+<footer>
+  Unlisted. Both versions are live and neither replaces the other.<br>
+  Decide, then we delete the loser.
+</footer>
+
+</body>
+</html>
