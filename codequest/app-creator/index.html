@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#FBFAF7">
-<title>Code Quest · Creator positioning variant</title>
+<title>Creator variant · name TBD</title>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -331,7 +331,8 @@ body{display:grid;place-items:center;overflow:hidden}
   <!-- GATE -->
   <div class="scr on" id="gate">
     <div class="scroll">
-      <div class="logo">Code<span>Quest</span></div>
+      <div class="logo" id="brandLogo"></div>
+      <div id="brandLine" style="font-size:13.5px;font-weight:700;color:var(--mut);margin-top:8px"></div>
       <div style="font-size:10.5px;font-weight:800;color:var(--mut);letter-spacing:.16em;text-transform:uppercase;margin-top:8px">Creator positioning variant</div>
       <div class="fam" style="margin-top:6px">The Adeyemi family</div>
       <div class="profiles">
@@ -340,7 +341,12 @@ body{display:grid;place-items:center;overflow:hidden}
         <button class="prof g" id="gBtn"><span class="face">&#128274;</span><b>Parents</b><span>PIN needed</span></button>
       </div>
       <p class="sub" style="margin-top:32px">Who is making today?<br>Kids tap their picture. No passwords for kids.</p>
-      <button class="cta ghost" id="whatBtn" style="margin-top:16px" type="button">What is Code Quest?</button>
+      <button class="cta ghost" id="whatBtn" style="margin-top:16px" type="button">What is this?</button>
+      <div style="margin-top:26px;padding-top:18px;border-top:1px solid var(--line)">
+        <div style="font-size:10.5px;font-weight:800;color:var(--mut);letter-spacing:.16em;text-transform:uppercase">Trying on a name</div>
+        <div class="chips" id="brandPick" style="justify-content:center;margin-top:10px"></div>
+        <p class="sub" style="margin-top:10px;font-size:12.5px">Tap one and the whole app changes. Nothing is chosen yet.</p>
+      </div>
     </div>
   </div>
 
@@ -373,7 +379,7 @@ body{display:grid;place-items:center;overflow:hidden}
 
       <div class="card" style="display:flex;gap:13px;align-items:center">
         <span class="bigicon" style="background:var(--coral-s)">&#127914;</span>
-        <span style="flex:1"><h3>Next Code Quest day</h3>
+        <span style="flex:1"><h3>Next <span class="bname"></span> day</h3>
         <p>Manchester. Sat 12 Sept. You present at 14:45. Mum and Dad will be watching!</p></span>
       </div>
 
@@ -541,7 +547,7 @@ ball.onclick = () =&gt; {
     <div class="hd"><button class="bk" data-go="home" type="button">&#8249;</button><b>The big day</b></div>
     <div class="scroll">
       <div class="eyebrow">Saturday 1 August 2026 &middot; Manchester</div>
-      <img class="evhero" src="../2026/og.jpg" alt="The seven Code Quest kids" loading="lazy">
+      <img class="evhero" src="../2026/og.jpg" alt="The seven kids at the first event" loading="lazy">
 
       <div class="verdict">
         <div style="font-size:12.5px;font-weight:900;opacity:.85">THE RESULT</div>
@@ -567,7 +573,7 @@ ball.onclick = () =&gt; {
           <a class="stallc" href="../pixel-power/song-gallery/" target="_blank" rel="noopener"><span class="art" style="background:var(--green-s)">&#127925;</span><b>Song Gallery</b><span>Hannah</span></a>
           <a class="stallc" href="../triad-labs/" target="_blank" rel="noopener"><span class="art" style="background:var(--purple-s)">&#9917;</span><b>Non-League</b><span>Team game</span></a>
           <a class="stallc" href="../triad-labs/" target="_blank" rel="noopener"><span class="art" style="background:var(--coral-s)">&#9876;</span><b>Math Kingdom</b><span>Team game</span></a>
-          <a class="stallc" href="../pixel-power/" target="_blank" rel="noopener"><span class="art" style="background:var(--purple-s)">&#127918;</span><b>Code Quest game</b><span>Team game</span></a>
+          <a class="stallc" href="../pixel-power/" target="_blank" rel="noopener"><span class="art" style="background:var(--purple-s)">&#127918;</span><b>The event game</b><span>Team project, Aug 2026</span></a>
         </div>
         <p class="sub" style="margin-top:12px">And after the day: Elsie made Butterfly Dash at home, and Emma, only 6, made a game too.</p>
       </div>
@@ -658,7 +664,7 @@ ball.onclick = () =&gt; {
       <div class="clip">
         <div class="bgles"><span>&#128257;</span></div>
         <div class="scrim"></div>
-        <span class="shield">&#10003; From Code Quest</span>
+        <span class="shield">&#10003; Official lesson</span>
         <span class="lestag">LESSON</span>
         <div class="rail">
           <button class="spark" type="button"><span class="ic">&#10084;&#65039;</span><span class="n">64</span></button>
@@ -691,7 +697,7 @@ ball.onclick = () =&gt; {
       <div class="clip">
         <div class="bgles"><span>&#127919;</span></div>
         <div class="scrim"></div>
-        <span class="shield">&#10003; From Code Quest</span>
+        <span class="shield">&#10003; Official lesson</span>
         <span class="lestag">LESSON</span>
         <div class="rail">
           <button class="spark" type="button"><span class="ic">&#10084;&#65039;</span><span class="n">41</span></button>
@@ -754,7 +760,7 @@ ball.onclick = () =&gt; {
 
       <div class="eyebrow" style="margin-top:22px">More</div>
       <div class="colcard"><span class="bigicon" style="background:var(--green-s)">&#127914;</span>
-        <span style="flex:1"><b>Big day videos</b><span>Videos from Code Quest days around the country</span></span></div>
+        <span style="flex:1"><b>Big day videos</b><span>Videos from events around the country</span></span></div>
       <p class="sub" style="margin-top:16px">Lessons are short videos, right in with everything else. Watch them, try them, level up.</p>
     </div>
   </div>
@@ -766,7 +772,7 @@ ball.onclick = () =&gt; {
       <h3>Make a video</h3>
       <div class="st"><i>1</i><span>Record it in the app. Your game, your face, your call.</span></div>
       <div class="st"><i>2</i><span>Your parent checks it. Nothing goes up without them.</span></div>
-      <div class="st"><i>3</i><span>Then everyone on Code Quest can watch it. No messages. No strangers. Ever.</span></div>
+      <div class="st"><i>3</i><span>Then everyone here can watch it. No messages. No strangers. Ever.</span></div>
       <button class="cta" id="recBtn" style="width:100%;text-align:center;margin-top:18px;background:var(--coral);box-shadow:0 6px 16px rgba(255,107,107,.35)" type="button">Start recording</button>
     </div>
   </div>
@@ -776,7 +782,7 @@ ball.onclick = () =&gt; {
     <div class="body">
       <div class="grab"></div>
       <h3>What the words mean</h3>
-      <div class="g"><b>Code Quest</b><span>Where kids make things and put them on the internet at their own address. It starts with one big day.</span></div>
+      <div class="g"><b><span class="bname"></span></b><span>Where kids make things and put them on the internet at their own address. It starts with one big day.</span></div>
       <div class="g"><b>Journey</b><span>Maker, Publisher, Guide, Owner. Every stage is something you have actually done.</span></div>
       <div class="g"><b>Make</b><span>Where you build. A game, art, a story, a little app. A helper to ask when you get stuck.</span></div>
       <div class="g"><b>Published</b><span>Everything kids have put on the internet. Each has a real address. Send it to anyone.</span></div>
@@ -1175,6 +1181,40 @@ document.getElementById("clipBtn").addEventListener("click", function(){
   feed.insertBefore(c, feed.firstChild);
   toast("Approved. Zara's clip is live in the feed.");
 });
+
+/* ── name switcher: the creator variant carries no settled name ── */
+var BRANDS = [
+  { id:"tekton",  mark:'Tek<span>ton</span>',  name:"Tekton",   line:"The world is yours to build." },
+  { id:"plot",    mark:'<span>Plot</span>',     name:"Plot",     line:"Your piece of the internet." },
+  { id:"builtby", mark:'Built<span>By</span>',  name:"BuiltBy",  line:"I built that." },
+  { id:"tbd",     mark:'Name<span>TBD</span>',  name:"this app", line:"Name still open." }
+];
+var brandI = 0;
+function paintBrand(){
+  var b = BRANDS[brandI];
+  document.getElementById("brandLogo").innerHTML = b.mark;
+  var slots = document.querySelectorAll(".bname");
+  for (var i = 0; i < slots.length; i++) slots[i].textContent = b.name;
+  var tagEl = document.getElementById("brandLine");
+  if (tagEl) tagEl.textContent = b.line;
+  var btns = document.querySelectorAll("#brandPick button");
+  for (var k = 0; k < btns.length; k++) btns[k].style.borderColor = (k === brandI) ? "var(--ink)" : "";
+}
+(function initBrand(){
+  var wrap = document.getElementById("brandPick");
+  BRANDS.forEach(function(b, i){
+    var el = document.createElement("button");
+    el.type = "button";
+    el.textContent = b.name === "this app" ? "TBD" : b.name;
+    el.addEventListener("click", function(e){
+      e.stopPropagation();
+      brandI = i;
+      paintBrand();
+    });
+    wrap.appendChild(el);
+  });
+  paintBrand();
+})();
 
 /* profile avatar returns to gate */
 document.getElementById("switchA").addEventListener("click", function(){ go("gate"); });
