@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#FBFAF7">
 <title>Positioning A / B</title>
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="noindex, nofollow, noarchive">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
@@ -64,6 +64,18 @@ td:first-child{font-weight:900;color:var(--ink);width:120px}
 .q{background:var(--soft);border-left:4px solid var(--b);border-radius:0 14px 14px 0;padding:15px 18px;margin-top:14px}
 .q p{font-size:14.5px;font-weight:700;color:var(--ink);line-height:1.55;margin:0}
 .q cite{display:block;font-size:12.5px;font-weight:700;color:var(--mut);margin-top:8px;font-style:normal}
+#gate{position:fixed;inset:0;z-index:90;background:var(--bg);display:grid;place-items:center;padding:24px;text-align:center}
+#gate.off{display:none}
+#gate .box{max-width:380px;width:100%}
+#gate .mark{font-size:42px}
+#gate h1{font-size:26px;font-weight:900;margin-top:12px}
+#gate p{font-size:14.5px;color:var(--mut);font-weight:600;margin-top:10px;line-height:1.55}
+#gate input{width:100%;margin-top:20px;padding:15px 18px;border-radius:99px;border:2px solid var(--line);
+  background:#fff;font-family:'Nunito',system-ui,sans-serif;font-size:16px;font-weight:700;text-align:center;color:var(--ink)}
+#gate input:focus{outline:none;border-color:var(--b)}
+#gate button{width:100%;margin-top:12px;padding:15px;border:0;border-radius:99px;background:var(--b);
+  color:#fff;font-family:'Nunito',system-ui,sans-serif;font-size:15px;font-weight:800;cursor:pointer}
+#gerr{color:var(--b);font-size:13.5px;font-weight:800;margin-top:12px;min-height:18px}
 footer{margin-top:34px;text-align:center;font-size:12.5px;color:var(--mut);font-weight:600;line-height:1.7}
 a{color:var(--b)}
 :where(a,button):focus-visible{outline:3px solid var(--ink);outline-offset:2px}
@@ -71,6 +83,20 @@ a{color:var(--b)}
 </head>
 <body>
 
+<div id="gate">
+  <div class="box">
+    <div class="mark">&#9878;&#65039;</div>
+    <h1>Positioning A / B</h1>
+    <p>Two versions of the product, running in parallel. Ask Bolaji for the word if you do not have it.</p>
+    <form id="gform">
+      <input id="gin" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Enter the word" aria-label="Passphrase">
+      <button type="submit">Open</button>
+    </form>
+    <div id="gerr"></div>
+  </div>
+</div>
+
+<div id="page" hidden>
 <div class="eyebrow">Nothing has been changed. These run in parallel.</div>
 <h1>Positioning A / B</h1>
 <p class="lede">The original simulation stays exactly as it was. Alongside it now sits a variant built to the creator positioning from Mayowa's debrief and the commercial identity work. Open both on a phone, one after the other, and see which one you would rather hand to a parent.</p>
@@ -172,6 +198,40 @@ a{color:var(--b)}
   Unlisted. Both versions are live and neither replaces the other.<br>
   Decide, then we delete the loser.
 </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var gate = document.getElementById("gate");
+  var page = document.getElementById("page");
+  var err  = document.getElementById("gerr");
+  var KEY  = "cq_positioning_ok";
+
+  /* Courtesy gate. Keeps the page out of casual reach and off search
+     engines. Not security: nothing sensitive is behind it. */
+  function norm(s){ return String(s || "").trim().toLowerCase().replace(/\s+/g, ""); }
+  function hash(s){
+    var h = 5381;
+    for (var i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0;
+    return h;
+  }
+  var EXPECT = 680225592; /* same word as the handoff page */
+
+  function open_(){
+    gate.classList.add("off");
+    page.hidden = false;
+    try { sessionStorage.setItem(KEY, "1"); } catch(e){}
+  }
+  try { if (sessionStorage.getItem(KEY) === "1") open_(); } catch(e){}
+
+  document.getElementById("gform").addEventListener("submit", function(e){
+    e.preventDefault();
+    if (hash(norm(document.getElementById("gin").value)) === EXPECT){ err.textContent = ""; open_(); }
+    else { err.textContent = "Not quite. Ask Bolaji."; }
+  });
+})();
+</script>
 
 </body>
 </html>
