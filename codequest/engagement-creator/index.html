@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B0912">
+<title>Code Quest · Engagement · Creator variant</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#0B0912; --stone:#15121F; --parch:#E9DFC7; --dim:#9A8F7A;
+  --gold:#D9A94C; --gold-hi:#F2CE7B; --phos:#45E3C4; --rubric:#E4574A;
+  --line:rgba(217,169,76,.22); --soft:rgba(217,169,76,.1);
+  --gothic:'Grenze Gotisch',serif; --body:'DM Sans',sans-serif; --sys:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box}
+html,body{overflow-x:hidden}
+body{margin:0;background:var(--void);color:var(--parch);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(55% 34% at 50% -2%, rgba(217,169,76,.13), transparent 68%)}
+.wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;
+  padding:0 max(16px,env(safe-area-inset-left)) calc(64px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-right))}
+h1{font-family:var(--gothic);font-weight:800;font-size:clamp(34px,9vw,54px);line-height:1;margin:0;color:var(--gold-hi)}
+h2{font-family:var(--gothic);font-weight:800;font-size:clamp(24px,6vw,32px);line-height:1.05;margin:0}
+p{margin:0 0 14px}
+.eyebrow{font-family:var(--sys);font-size:10px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--phos);margin:0 0 10px}
+.dim{color:var(--dim)}
+b{color:#F5EEDC}
+header{padding:34px 0 4px;text-align:center}
+.strap{margin-top:10px;font-family:var(--sys);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim)}
+.lede{font-size:17px;color:#D8CFB8;margin-top:18px;text-align:left}
+.orn{display:flex;align-items:center;gap:12px;margin:32px 0 0}
+.orn::before,.orn::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,var(--line),transparent)}
+.orn i{width:8px;height:8px;background:var(--gold);opacity:.6;transform:rotate(45deg);flex:none}
+section{padding:24px 0 0}
+
+.tip{position:relative;display:inline;border:0;background:none;padding:0;margin:0;
+  font:inherit;color:var(--gold-hi);border-bottom:1px dashed var(--gold);cursor:help;text-align:left}
+.tip::after{
+  content:attr(data-t);position:absolute;left:50%;bottom:calc(100% + 9px);transform:translateX(-50%);
+  width:min(270px,74vw);background:#1D1830;border:1px solid var(--line);border-radius:8px;
+  padding:10px 12px;font-size:13px;line-height:1.5;color:var(--parch);font-family:var(--body);
+  opacity:0;pointer-events:none;transition:opacity .15s;z-index:30;font-weight:400
+}
+.tip::before{
+  content:"";position:absolute;left:50%;bottom:calc(100% + 3px);transform:translateX(-50%) rotate(45deg);
+  width:10px;height:10px;background:#1D1830;border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+  opacity:0;transition:opacity .15s;z-index:31
+}
+.tip:hover::after,.tip:focus::after,.tip:hover::before,.tip:focus::before{opacity:1}
+
+/* reframe card */
+.reframe{
+  margin-top:18px;border:1px solid var(--line);border-radius:4px;padding:22px 20px;text-align:center;
+  background:linear-gradient(160deg,rgba(217,169,76,.12),rgba(217,169,76,.02));position:relative
+}
+.reframe::before{content:"";position:absolute;inset:5px;border:1px solid var(--soft);pointer-events:none}
+.reframe .small{font-family:var(--sys);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim)}
+.reframe .big{font-family:var(--gothic);font-weight:800;font-size:clamp(22px,5.6vw,30px);line-height:1.2;color:var(--gold-hi);margin:8px 0}
+.reframe p{margin:0;font-size:14.5px;color:var(--dim)}
+
+/* journey */
+.journey{margin-top:18px;display:grid;gap:10px}
+.leg{border:1px solid var(--soft);border-radius:4px;background:var(--stone);padding:16px 17px;position:relative}
+.leg::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold)}
+.leg.pre::before{background:var(--dim)}
+.leg.post::before{background:var(--phos)}
+.leg .when{font-family:var(--sys);font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.leg h3{font-family:var(--gothic);font-weight:800;font-size:21px;margin:3px 0 8px;color:var(--gold-hi);line-height:1.1}
+.leg.post h3{color:var(--phos)}
+.leg ul{list-style:none;margin:0;padding:0}
+.leg li{padding:6px 0;border-top:1px solid var(--soft);font-size:14.5px;display:flex;gap:11px}
+.leg li .t{font-family:var(--sys);font-size:11px;font-weight:700;color:var(--gold);flex:none;width:44px;padding-top:2px}
+.leg li div{flex:1}
+.leg li span{color:var(--dim);font-size:13.5px;display:block}
+
+/* revenue moments */
+.money{display:grid;gap:12px;margin-top:16px}
+@media(min-width:600px){.money{grid-template-columns:1fr 1fr 1fr}}
+.m{border:1px solid var(--soft);border-radius:4px;background:var(--stone);padding:17px 16px}
+.m .n{font-family:var(--gothic);font-weight:800;font-size:30px;color:var(--gold);line-height:1}
+.m h3{font-family:var(--gothic);font-weight:800;font-size:20px;margin:6px 0 6px;color:var(--gold-hi);line-height:1.1}
+.m p{margin:0;font-size:13.5px;color:var(--dim)}
+
+/* flywheel */
+.loopwrap{margin-top:18px;border:1px solid var(--soft);border-radius:4px;background:var(--stone);padding:14px 8px 6px}
+.loopwrap svg{display:block;width:100%;height:auto}
+.loopnote{font-family:var(--sys);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);text-align:center;padding:6px 10px 10px}
+.flow{stroke-dasharray:6 7;animation:flow 1.6s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-13}}
+@media(prefers-reduced-motion:reduce){.flow{animation:none!important}}
+
+/* guardrail */
+.guard{margin-top:18px;border:1px solid rgba(228,87,74,.35);border-radius:4px;padding:17px 18px;
+  background:linear-gradient(160deg,rgba(228,87,74,.1),transparent 60%)}
+.guard .tag{font-family:var(--sys);font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--rubric)}
+.guard p{margin:6px 0 0;font-size:15px}
+
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--soft);
+  font-family:var(--sys);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);text-align:center}
+footer a{color:var(--dim);text-decoration:none}
+footer a:hover{color:var(--gold)}
+:where(a,button):focus-visible{outline:2px solid var(--phos);outline-offset:3px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>The Engagement<br>Model</h1>
+    <div class="strap">Creator positioning variant &middot; Aug 2026 &middot; version A unchanged</div>
+    <p class="lede">A maker party worth travelling for, with the onboarding hidden inside it. The day ignites; the fortnight after retains; the content the kids make themselves fills the next one.</p>
+  </header>
+
+  <div class="orn"><i></i></div>
+
+  <section>
+    <p class="eyebrow">The reframe</p>
+    <div class="reframe">
+      <div class="small">The
+        <button class="tip" data-t="A UK beauty brand built a destination in Stockport: shop, café, masterclasses, entertainer, photo ops, goodie bags. Families travel hours, pay for tickets AND spend hundreds at the pages. Its founder describes the whole machine as existing to 'create customers, not sales'. We watched it work on our own family.">P.Louise</button> lesson</div>
+      <div class="big">Not an onboarding event with fun sprinkled on.<br>A destination that onboards.</div>
+      <p>Families don't travel for enablement. They travel for an experience &mdash; and the customer-creation happens inside it.</p>
+    </div>
+  </section>
+
+  <div class="orn"><i></i></div>
+
+  <section>
+    <p class="eyebrow">The journey</p>
+    <h2>Before, the day, after</h2>
+    <div class="journey">
+
+      <div class="leg pre">
+        <div class="when">The week before &middot; 15 minutes at home</div>
+        <h3>Anticipation, not homework</h3>
+        <ul>
+          <li><div><b>Create your avatar</b><span>the one piece of prep &mdash; it seeds the walk-in moment and the merch page</span></div></li>
+          <li><div><b>The Parent account, created calmly</b><span>the parent signs up, adds the kid as a
+            <button class="tip" data-t="The parent is the account holder from minute one: they sign up, they pay, they provision each child as a sub-account, they hold the visibility controls. The kid never owns a login of their own.">sub-account</button>, and settles photo and visibility permissions at home &mdash; not in a registration queue</span></div></li>
+          <li><div><b>
+            <button class="tip" data-t="Any completed-homework gate before a paid fun event filters families out, and it filters hardest on the breadth we want. The day must work fine for the kid who did nothing.">No gate</button></b>
+            <span>a kid who did none of it still has a full day</span></div></li>
+        </ul>
+      </div>
+
+      <div class="leg">
+        <div class="when">The day &middot; kids 09:30, parents 14:30, done 17:00</div>
+        <h3>The maker party</h3>
+        <ul>
+          <li><div class="t">09:30</div><div><b>Walk-in</b><span>every kid's avatar already on the big screen as they arrive</span></div></li>
+          <li><div class="t">10:00</div><div><b>The briefing</b><span>the film, the teams, the oath &mdash; the 2026 running order, proven</span></div></li>
+          <li><div class="t">10:30</div><div><b>One build session</b><span>
+            <button class="tip" data-t="A starter template guarantees every kid ships SOMETHING even if they only change three things. The psychological product of the day is 'I built a thing and showed it', not the thing itself.">starter-template floor</button>, mentors on the floor at one per 5&ndash;6 kids</span></div></li>
+          <li><div class="t">12:30</div><div><b>Lunch as experience</b><span>part of the day, not a sandwich break &mdash; and the merch page is open</span></div></li>
+          <li><div class="t">13:30</div><div><b>Presentation prep</b><span>opening sentence written, said out loud once, standing up</span></div></li>
+          <li><div class="t">14:30</div><div><b>Parents arrive</b><span>on
+            <button class="tip" data-t="The P.Louise ticket structure: the kid buys the Experience ticket, the parent buys cheap General Admission for the showcase. The parent ticket IS the invitation to the moment that sells the subscription.">General Admission</button> &mdash; they watch their own child present</span></div></li>
+          <li><div class="t">14:45</div><div><b>The Telling &amp; prizes</b><span>every kid presents; every kid is named for something</span></div></li>
+          <li><div class="t">16:30</div><div><b>The convert</b><span>QR on the screen aimed at the Parent account they already hold &mdash; one tap from trial to subscription, today's fee off month one, decided in the room</span></div></li>
+        </ul>
+      </div>
+
+      <div class="leg post">
+        <div class="when">The fortnight after &middot; where retention is decided</div>
+        <h3>The second build</h3>
+        <ul>
+          <li><div><b>A guided quest, not just access</b><span>
+            <button class="tip" data-t="The gym-membership pattern: paid in the glow of the day, unused by week two, cancelled by week six. The first fortnight needs its own designed experience or the subscription churns.">why this exists</button> &mdash; the subscription opens with &ldquo;your second build&rdquo; already scoped</span></div></li>
+          <li><div><b>Their page is live</b><span>the thing they made on the day, published, shareable, at a URL</span></div></li>
+          <li><div><b>The clip lands</b><span>their transformation film and project card arrive by message, ready to post</span></div></li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="orn"><i></i></div>
+
+  <section>
+    <p class="eyebrow">The till rings three times</p>
+    <h2>Revenue moments</h2>
+    <div class="money">
+      <div class="m"><div class="n">I</div><h3>The ticket</h3><p>Priced as an experience, not a
+        <button class="tip" data-t="A nominal fee prices the event as a church activity, attracts commitment to match (expect no-shows), and parents infer quality from price in kids' enrichment. £30–40 filters for commitment and funds the day properly.">nominal fee</button>. Kid Experience + parent General Admission.</p></div>
+      <div class="m"><div class="n">II</div><h3>The page</h3><p>The kid's own armoured avatar, physical: poster, card, shirt, printed while they build. Nobody walks past merch with their own face on it.</p></div>
+      <div class="m"><div class="n">III</div><h3>The subscription</h3><p>Converted in the room, at the pride peak, fee offset against month one. The parent just watched the proof.</p></div>
+    </div>
+  </section>
+
+  <div class="orn"><i></i></div>
+
+  <section>
+    <p class="eyebrow">Designed, not accidental</p>
+    <h2>The content flywheel</h2>
+    <p class="dim" style="font-size:14.5px;margin-top:8px">Elsie made a reel about her build unprompted. The flywheel exists &mdash; the job is to feed it deliberately.</p>
+
+    <div class="loopwrap">
+      <svg viewBox="0 0 700 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The content flywheel: the event produces a filmable moment, the kid leaves with their clip and QR, posts it, friends play in the browser, and the next cohort fills.">
+        <defs>
+          <marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0L10 5L0 10z" fill="#45E3C4"/>
+          </marker>
+        </defs>
+
+        <path class="flow" d="M350 108 C 560 108 622 205 622 262 C 622 358 505 415 355 415" fill="none" stroke="#45E3C4" stroke-width="2" marker-end="url(#a2)" opacity=".85"/>
+        <path class="flow" d="M345 415 C 195 415 78 358 78 262 C 78 205 140 108 350 108" fill="none" stroke="#D9A94C" stroke-width="2" marker-end="url(#a2)" opacity=".85"/>
+
+        <g>
+          <rect x="235" y="52" width="230" height="82" rx="6" fill="#15121F" stroke="#D9A94C" stroke-width="1.4"/>
+          <text x="350" y="86" text-anchor="middle" font-family="Grenze Gotisch" font-weight="800" font-size="25" fill="#F2CE7B">The event</text>
+          <text x="350" y="112" text-anchor="middle" font-family="DM Sans" font-size="13.5" fill="#9A8F7A">manufactures a filmable moment</text>
+        </g>
+
+        <g>
+          <rect x="520" y="200" width="166" height="98" rx="6" fill="#15121F" stroke="rgba(217,169,76,.4)" stroke-width="1.2"/>
+          <text x="603" y="234" text-anchor="middle" font-family="DM Sans" font-weight="700" font-size="15.5" fill="#E9DFC7">The take-home</text>
+          <text x="603" y="256" text-anchor="middle" font-family="DM Sans" font-size="12.5" fill="#9A8F7A">their clip + their card</text>
+          <text x="603" y="275" text-anchor="middle" font-family="DM Sans" font-size="12.5" fill="#9A8F7A">with a QR to their page</text>
+        </g>
+
+        <g>
+          <rect x="228" y="372" width="244" height="86" rx="6" fill="#15121F" stroke="rgba(69,227,196,.45)" stroke-width="1.4"/>
+          <text x="350" y="406" text-anchor="middle" font-family="DM Sans" font-weight="700" font-size="16" fill="#45E3C4">The kid posts it</text>
+          <text x="350" y="429" text-anchor="middle" font-family="DM Sans" font-size="13" fill="#9A8F7A">because it's theirs and it's cool</text>
+        </g>
+
+        <g>
+          <rect x="18" y="200" width="172" height="98" rx="6" fill="#15121F" stroke="rgba(69,227,196,.45)" stroke-width="1.2"/>
+          <text x="104" y="232" text-anchor="middle" font-family="DM Sans" font-weight="700" font-size="15.5" fill="#E9DFC7">Friends follow it</text>
+          <text x="104" y="254" text-anchor="middle" font-family="DM Sans" font-size="12.5" fill="#9A8F7A">play in the browser,</text>
+          <text x="104" y="273" text-anchor="middle" font-family="DM Sans" font-size="12.5" fill="#9A8F7A">meet the platform</text>
+        </g>
+
+        <text x="140" y="146" text-anchor="middle" font-family="DM Sans" font-size="13.5" fill="#45E3C4" transform="rotate(-36 140 146)">the next cohort fills</text>
+
+        <g>
+          <circle cx="350" cy="262" r="66" fill="#0B0912" stroke="rgba(217,169,76,.35)" stroke-width="1.2"/>
+          <text x="350" y="255" text-anchor="middle" font-family="Grenze Gotisch" font-weight="800" font-size="19" fill="#F2CE7B">Physical</text>
+          <text x="350" y="279" text-anchor="middle" font-family="Grenze Gotisch" font-weight="800" font-size="19" fill="#F2CE7B">&harr; online</text>
+        </g>
+      </svg>
+      <div class="loopnote">The event is the content factory &middot; the platform is where the content lands</div>
+    </div>
+
+    <div class="guard">
+      <div class="tag">The guardrail &middot; non-negotiable</div>
+      <p>The reference brand took public backlash for wrapping its marketing around a child influencer. Our line: <b>the kid creates, the parent approves, the platform amplifies only what's opted in.</b> Kids' <b>work</b> can be famous; kids themselves stay exactly as visible as their parents choose. Done right, this is a differentiator we market to parents directly.</p>
+    </div>
+  </section>
+
+  <footer><a href="../product/">The Product</a> &nbsp;&middot;&nbsp; <a href="../architecture/">Architecture</a> &nbsp;&middot;&nbsp; <a href="../../portfolio/">The Portfolio</a> &nbsp;&middot;&nbsp; Working Draft</footer>
+</div>
+</body>
+</html>

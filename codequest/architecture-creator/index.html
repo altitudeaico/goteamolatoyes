@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B0912">
+<title>Code Quest · Architecture · Creator variant</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#0B0912; --stone:#15121F; --parch:#E9DFC7; --dim:#9A8F7A;
+  --gold:#D9A94C; --gold-hi:#F2CE7B; --phos:#45E3C4; --rubric:#E4574A;
+  --line:rgba(217,169,76,.22); --soft:rgba(217,169,76,.1);
+  --gothic:'Grenze Gotisch',serif; --body:'DM Sans',sans-serif; --sys:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box}
+html,body{overflow-x:hidden}
+body{margin:0;background:var(--void);color:var(--parch);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(55% 34% at 50% -2%, rgba(217,169,76,.13), transparent 68%)}
+.wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;
+  padding:0 max(16px,env(safe-area-inset-left)) calc(64px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-right))}
+h1{font-family:var(--gothic);font-weight:800;font-size:clamp(34px,9vw,54px);line-height:1;margin:0;color:var(--gold-hi)}
+h2{font-family:var(--gothic);font-weight:800;font-size:clamp(24px,6vw,32px);line-height:1.05;margin:0}
+p{margin:0 0 14px}
+.eyebrow{font-family:var(--sys);font-size:10px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--phos);margin:0 0 10px}
+.dim{color:var(--dim)}
+b{color:#F5EEDC}
+header{padding:34px 0 4px;text-align:center}
+.strap{margin-top:10px;font-family:var(--sys);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim)}
+.lede{font-size:17px;color:#D8CFB8;margin-top:18px;text-align:left}
+.orn{display:flex;align-items:center;gap:12px;margin:32px 0 0}
+.orn::before,.orn::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,var(--line),transparent)}
+.orn i{width:8px;height:8px;background:var(--gold);opacity:.6;transform:rotate(45deg);flex:none}
+section{padding:24px 0 0}
+
+.tip{position:relative;display:inline;border:0;background:none;padding:0;margin:0;
+  font:inherit;color:var(--gold-hi);border-bottom:1px dashed var(--gold);cursor:help;text-align:left}
+.tip::after{
+  content:attr(data-t);position:absolute;left:50%;bottom:calc(100% + 9px);transform:translateX(-50%);
+  width:min(270px,74vw);background:#1D1830;border:1px solid var(--line);border-radius:8px;
+  padding:10px 12px;font-size:13px;line-height:1.5;color:var(--parch);font-family:var(--body);
+  opacity:0;pointer-events:none;transition:opacity .15s;z-index:30;font-weight:400
+}
+.tip::before{
+  content:"";position:absolute;left:50%;bottom:calc(100% + 3px);transform:translateX(-50%) rotate(45deg);
+  width:10px;height:10px;background:#1D1830;border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+  opacity:0;transition:opacity .15s;z-index:31
+}
+.tip:hover::after,.tip:focus::after,.tip:hover::before,.tip:focus::before{opacity:1}
+
+.keystone{
+  margin-top:18px;border:1px solid var(--line);border-radius:4px;padding:22px 20px;text-align:center;
+  background:linear-gradient(160deg,rgba(217,169,76,.12),rgba(217,169,76,.02));position:relative
+}
+.keystone::before{content:"";position:absolute;inset:5px;border:1px solid var(--soft);pointer-events:none}
+.keystone .small{font-family:var(--sys);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim)}
+.keystone .big{font-family:var(--gothic);font-weight:800;font-size:clamp(22px,5.6vw,30px);line-height:1.2;color:var(--gold-hi);margin:8px 0}
+.keystone p{margin:0;font-size:14.5px;color:var(--dim)}
+
+.diag{margin-top:18px;border:1px solid var(--soft);border-radius:4px;background:var(--stone);padding:14px 8px 6px}
+.diag svg{display:block;width:100%;height:auto}
+.dnote{font-family:var(--sys);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);text-align:center;padding:6px 10px 10px}
+
+.layers{display:grid;gap:10px;margin-top:16px}
+.layer{border:1px solid var(--soft);border-radius:4px;background:var(--stone);padding:16px 17px;position:relative}
+.layer::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold)}
+.layer .tag{font-family:var(--sys);font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.layer h3{font-family:var(--gothic);font-weight:800;font-size:21px;margin:3px 0 6px;color:var(--gold-hi);line-height:1.1}
+.layer p{margin:0;font-size:14.5px;color:#CFC5AC}
+
+.steps{display:grid;gap:10px;margin-top:16px}
+.step{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--soft);border-radius:4px;background:var(--stone);padding:15px 16px}
+.step i{font-style:normal;font-family:var(--gothic);font-weight:800;font-size:24px;color:var(--gold);line-height:1;flex:none;width:26px}
+.step b{display:block;margin-bottom:2px}
+.step p{margin:0;font-size:14px;color:var(--dim)}
+
+.rule{margin-top:18px;border:1px solid rgba(69,227,196,.3);border-radius:4px;padding:17px 18px;
+  background:linear-gradient(160deg,rgba(69,227,196,.08),transparent 60%)}
+.rule .tag{font-family:var(--sys);font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--phos)}
+.rule p{margin:6px 0 0;font-size:15px}
+
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--soft);
+  font-family:var(--sys);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);text-align:center;line-height:2}
+footer a{color:var(--dim);text-decoration:none}
+footer a:hover{color:var(--gold)}
+:where(a,button):focus-visible{outline:2px solid var(--phos);outline-offset:3px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>The<br>Architecture</h1>
+    <div class="strap">Creator positioning variant &middot; Aug 2026 &middot; version A unchanged</div>
+    <p class="lede">Static files, serverless everything, one credentialed identity per family, and AI behind a proxy. Built to cost pennies until a cohort proves it should cost more.</p>
+  </header>
+
+  <div class="orn"><i></i></div>
+
+  <section>
+    <p class="eyebrow">The keystone</p>
+    <div class="keystone">
+      <div class="small">One format decision removes the hardest problem</div>
+      <div class="big">Kids make single HTML files.<br>So the browser is the sandbox.</div>
+      <p>No containers, no server compute per kid, no code ever executing on our infrastructure. A project is a static file on a CDN. The &ldquo;Cursor for kids&rdquo; rig collapses to an editor, a
+        <button class="tip" data-t="The live preview is an iframe rendering the kid's file as they type — the same isolation every browser already enforces on every website. Server-side code stays off the table until a Mogul tier earns it.">preview iframe</button>
+        and an AI pane. Every 2026 build already follows this format.</p>
+    </div>
+  </section>
+
+  <div class="orn"><i></i></div>
+
+  <section>
+    <p class="eyebrow">One picture</p>
+    <h2>The system</h2>
+    <div class="diag">
+      <svg viewBox="0 0 700 660" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Architecture diagram: Parent, Maker and Player roles at the top; the rig, gallery and admin surfaces in the middle; Cognito, the AI proxy, Bedrock and Stripe as services; S3, CloudFront and DynamoDB as the data layer.">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+            <path d="M0 0L10 5L0 10z" fill="#9A8F7A"/>
+          </marker>
+        </defs>
+
+        <!-- ROLES -->
+        <g>
+          <rect x="24" y="24" width="200" height="72" rx="6" fill="#15121F" stroke="#D9A94C" stroke-width="1.4"/>
+          <text x="124" y="55" text-anchor="middle" font-family="Grenze Gotisch" font-weight="800" font-size="22" fill="#F2CE7B">Parent</text>
+          <text x="124" y="78" text-anchor="middle" font-family="DM Sans" font-size="12.5" fill="#9A8F7A">signs up &middot; pays &middot; controls</text>
+        </g>
+        <g>
+          <rect x="250" y="24" width="200" height="72" rx="6" fill="#15121F" stroke="#D9A94C" stroke-width="1.4"/>
+          <text x="350" y="55" text-anchor="middle" font-family="Grenze Gotisch" font-weight="800" font-size="22" fill="#F2CE7B">Maker</text>
+          <text x="350" y="78" text-anchor="middle" font-family="DM Sans" font-size="12.5" fill="#9A8F7A">profile + PIN &middot; builds</text>
+        </g>
+        <g>
+          <rect x="476" y="24" width="200" height="72" rx="6" fill="#15121F" stroke="#45E3C4" stroke-width="1.4"/>
+          <text x="576" y="55" text-anchor="middle" font-family="Grenze Gotisch" font-weight="800" font-size="22" fill="#45E3C4">Player</text>
+          <text x="576" y="78" text-anchor="middle" font-family="DM Sans" font-size="12.5" fill="#9A8F7A">no account &middot; just plays</text>
+        </g>
+
+        <line x1="124" y1="96" x2="124" y2="140" stroke="#9A8F7A" stroke-width="1.5" marker-end="url(#ar)"/>
+        <line x1="350" y1="96" x2="350" y2="140" stroke="#9A8F7A" stroke-width="1.5" marker-end="url(#ar)"/>
+        <line x1="576" y1="96" x2="576" y2="140" stroke="#9A8F7A" stroke-width="1.5" marker-end="url(#ar)"/>
+
+        <!-- SURFACES -->
+        <g>
+          <rect x="24" y="146" width="200" height="88" rx="6" fill="#15121F" stroke="rgba(217,169,76,.4)"/>
+          <text x="124" y="180" text-anchor="middle" font-family="DM Sans" font-weight="700" font-size="15.5" fill="#E9DFC7">Family console</text>
+          <text x="124" y="202" text-anchor="middle" font-family="DM Sans" font-size="12" fill="#9A8F7A">kids &middot; billing &middot; visibility</text>
+          <text x="124" y="220" text-anchor="middle" font-family="DM Sans" font-size="12" fill="#9A8F7A">+ admin approvals</text>
+        </g>
+        <g>
+          <rect x="250" y="146" width="200" height="88" rx="6" fill="#15121F" stroke="rgba(217,169,76,.4)"/>
+          <text x="350" y="176" text-anchor="middle" font-family="DM Sans" font-weight="700" font-size="15.5" fill="#E9DFC7">The rig &middot; app domain</text>
+          <text x="350" y="197" text-anchor="middle" font-family="DM Sans" font-size="12" fill="#9A8F7A">editor &middot; preview &middot; AI pane</text>
+          <text x="350" y="215" text-anchor="middle" font-family="DM Sans" font-size="12" fill="#9A8F7A">upload &amp; publish live here</text>
+        </g>
+        <g>
+          <rect x="476" y="146" width="200" height="88" rx="6" fill="#15121F" stroke="rgba(69,227,196,.45)"/>
+          <text x="576" y="178" text-anchor="middle" font-family="DM Sans" font-weight="700" font-size="15.5" fill="#45E3C4">Gallery &middot; dist domain</text>
+          <text x="576" y="199" text-anchor="middle" font-family="DM Sans" font-size="12" fill="#9A8F7A">static, manifest-driven</text>
+          <text x="576" y="217" text-anchor="middle" font-family="JetBrains Mono" font-size="10.5" fill="#45E3C4">dino.builtby.kids?ref=</text>
+        </g>
+
+        <line x1="124" y1="234" x2="124" y2="286" stroke="#9A8F7A" stroke-width="1.5" marker-end="url(#ar)"/>
+        <line x1="350" y1="234" x2="350" y2="286" stroke="#9A8F7A" stroke-width="1.5" marker-end="url(#ar)"/>
+        <line x1="576" y1="234" x2="576" y2="410" stroke="#45E3C4" stroke-width="1.5" marker-end="url(#ar)" stroke-dasharray="5 6"/>
+
+        <!-- SERVICES -->
+        <g>
+          <rect x="24" y="292" width="128" height="76" rx="6" fill="#15121F" stroke="rgba(217,169,76,.35)"/>
+          <text x="88" y="322" text-anchor="middle" font-family="DM Sans" font-weight="700" font-size="14.5" fill="#E9DFC7">Cognito</text>
+          <text x="88" y="343" text-anchor="middle" font-family="DM Sans" font-size="11.5" fill="#9A8F7A">Parent-first</text>
+          <text x="88" y="359" text-anchor="middle" font-family="DM Sans" font-size="11.5" fill="#9A8F7A">kids = profiles</text>
+        </g>
+        <g>
+          <rect x="168" y="292" width="180" height="76" rx="6" fill="#15121F" stroke="rgba(217,169,76,.35)"/>
+          <text x="258" y="318" text-anchor="middle" font-family="DM Sans" font-weight="700" font-size="14.5" fill="#E9DFC7">AI proxy &middot; Lambda</text>
+          <text x="258" y="339" text-anchor="middle" font-family="DM Sans" font-size="11.5" fill="#9A8F7A">quotas &middot; kid prompt</text>
+          <text x="258" y="356" text-anchor="middle" font-family="DM Sans" font-size="11.5" fill="#9A8F7A">&rarr; Bedrock + guardrails</text>
+        </g>
+        <g>
+          <rect x="364" y="292" width="128" height="76" rx="6" fill="#15121F" stroke="rgba(217,169,76,.35)"/>
+          <text x="428" y="322" text-anchor="middle" font-family="DM Sans" font-weight="700" font-size="14.5" fill="#E9DFC7">Stripe</text>
+          <text x="428" y="343" text-anchor="middle" font-family="DM Sans" font-size="11.5" fill="#9A8F7A">subscription &middot; tickets</text>
+          <text x="428" y="359" text-anchor="middle" font-family="DM Sans" font-size="11.5" fill="#9A8F7A">fee-offset coupon</text>
+        </g>
+
+        <line x1="88" y1="368" x2="88" y2="420" stroke="#9A8F7A" stroke-width="1.5" marker-end="url(#ar)"/>
+        <line x1="258" y1="368" x2="258" y2="420" stroke="#9A8F7A" stroke-width="1.5" marker-end="url(#ar)"/>
+
+        <!-- DATA -->
+        <g>
+          <rect x="24" y="426" width="326" height="102" rx="6" fill="#15121F" stroke="#D9A94C" stroke-width="1.3"/>
+          <text x="187" y="456" text-anchor="middle" font-family="DM Sans" font-weight="700" font-size="15" fill="#F2CE7B">S3 &middot; the truth</text>
+          <text x="187" y="479" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#9A8F7A">projects/pending/ &rarr; approve &rarr; live/</text>
+          <text x="187" y="500" text-anchor="middle" font-family="DM Sans" font-size="12" fill="#9A8F7A">course pages &middot; media &middot; the manifest</text>
+          <text x="187" y="518" text-anchor="middle" font-family="DM Sans" font-size="12" fill="#9A8F7A">+ DynamoDB: profiles, refs, counts</text>
+        </g>
+        <g>
+          <rect x="426" y="426" width="250" height="102" rx="6" fill="#15121F" stroke="rgba(69,227,196,.45)"/>
+          <text x="551" y="462" text-anchor="middle" font-family="DM Sans" font-weight="700" font-size="15" fill="#45E3C4">CloudFront</text>
+          <text x="551" y="485" text-anchor="middle" font-family="DM Sans" font-size="12" fill="#9A8F7A">serves every game, everywhere,</text>
+          <text x="551" y="503" text-anchor="middle" font-family="DM Sans" font-size="12" fill="#9A8F7A">for pennies &middot; wildcard cert</text>
+        </g>
+        <line x1="350" y1="477" x2="426" y2="477" stroke="#9A8F7A" stroke-width="1.5" marker-end="url(#ar)"/>
+
+        <!-- annotation -->
+        <text x="350" y="580" text-anchor="middle" font-family="DM Sans" font-size="13" fill="#9A8F7A">The Player path never touches a service: static files only.</text>
+        <text x="350" y="602" text-anchor="middle" font-family="DM Sans" font-size="13" fill="#45E3C4">That is what makes the growth loop free to serve at any scale.</text>
+      </svg>
+      <div class="dnote">Serverless end to end &middot; roughly $44 a year until a cohort changes that</div>
+    </div>
+  </section>
+
+  <div class="orn"><i></i></div>
+
+  <section>
+    <p class="eyebrow">Layer by layer</p>
+    <h2>The choices</h2>
+    <div class="layers">
+      <div class="layer">
+        <div class="tag">Identity</div>
+        <h3>One credential per family</h3>
+        <p>The Parent holds the only real login. Makers are
+          <button class="tip" data-t="Netflix-kids pattern: the child picks their profile and enters a PIN. No child email, no child password, no child credential problem — and it matches the COPPA/AADC posture on the product page.">profiles with a PIN</button>,
+          not accounts. Players need nothing at all.</p>
+      </div>
+      <div class="layer">
+        <div class="tag">Domains</div>
+        <h3>Two domains, on purpose</h3>
+        <p>The <b>app domain</b> holds login, the rig and upload. The <b>distribution domain</b> serves the gallery and every kid's project, cookie-free and static. Kids' uploaded content
+          <button class="tip" data-t="User content on a separate domain can never touch the app's cookies or session — the same reason GitHub serves user files from githubusercontent.com rather than github.com. Security by DNS.">never shares a domain</button>
+          with the app it was uploaded through.</p>
+      </div>
+      <div class="layer">
+        <div class="tag">Spaces</div>
+        <h3>Spaces, distinct from accounts</h3>
+        <p>The unit of work is a <b>space</b>, not an account: a project container a maker can hold several of, and a team can
+          <button class="tip" data-t="Pixel Power was three kids on one project. Accounts can't model that; a shared space can. Membership of a space is granted by Parents; publishing promotes the space's build to the distribution domain.">share one</button>.
+          Accounts are who you are; spaces are what you're building. Publishing promotes a space to the distribution domain.</p>
+      </div>
+      <div class="layer">
+        <div class="tag">The rig</div>
+        <h3>Editor, iframe, AI pane</h3>
+        <p>CodeMirror in the browser, the file saves to S3, the preview renders live. The AI pane talks only to our proxy: per-kid daily
+          <button class="tip" data-t="Hard quotas per maker per day. One enthusiastic kid must not be able to spend the month's model budget in an afternoon — and hitting the quota is a natural 'come back tomorrow'.">quotas</button>,
+          a locked kid-tuned system prompt, Bedrock so the
+          <button class="tip" data-t="Bedrock is model-agnostic: Claude for the project assistant, something cheaper for high-volume chat, swapped server-side without touching the client. This was Gbenga's instinct from conversation one.">model can be swapped</button>
+          without touching the client, and guardrails on both directions.</p>
+      </div>
+      <div class="layer">
+        <div class="tag">Knowledge</div>
+        <h3>RAG over their world, not the internet</h3>
+        <p>Bedrock Knowledge Bases over the course content plus the kid's own project file. &ldquo;Why doesn't my jump work&rdquo; gets answered against <b>their</b> code and <b>our</b> curriculum.</p>
+      </div>
+      <div class="layer">
+        <div class="tag">Courses &amp; assessment</div>
+        <h3>The publish pipeline is the LMS</h3>
+        <p>Submitting coursework <b>is</b> publishing a project. Assessment is the approval queue plus feedback. Belts are a profile field. Course content is static pages. The calendar is an
+          <button class="tip" data-t="A shared Google Calendar embed until cohorts multiply. Every one of these can graduate into real software later; none of them should exist as software now.">embed</button>.
+          No LMS gets built.</p>
+      </div>
+      <div class="layer">
+        <div class="tag">Human chat</div>
+        <h3>Phased on purpose</h3>
+        <p>AI-to-kid on day one: it's 1:1 with a machine we control. Kid-to-kid comes later, cohort-scoped with adult visibility, never open DMs. Moderation load at pilot scale must stay near zero.</p>
+      </div>
+      <div class="layer">
+        <div class="tag">Money</div>
+        <h3>Stripe, known territory</h3>
+        <p>Parent subscription on Billing, event tickets on Checkout, the fee-offset from the engagement page is a coupon applied at the 16:30 convert.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="orn"><i></i></div>
+
+  <section>
+    <p class="eyebrow">The order of work</p>
+    <h2>Phasing</h2>
+    <div class="steps">
+      <div class="step"><i>1</i><div><b>Before any cohort</b><p>S3 + CloudFront, secret-link upload via presigned POST, pending&rarr;approve, manifest gallery seeded with the eight existing builds, refs in URLs, Stripe payment links. Proves the loop at ~$44/yr.</p></div></div>
+      <div class="step"><i>2</i><div><b>When a real cohort runs</b><p>Cognito Parent accounts, DynamoDB proper, the rig, the AI proxy with quotas and guardrails, engagement counts.</p></div></div>
+      <div class="step"><i>3</i><div><b>When retention is proven</b><p>The app as a wrapper over the same web code (push, cohort presence, App Store legitimacy), full RAG assistant, cohort tooling &mdash; and only then any talk of richer runtimes.</p></div></div>
+    </div>
+
+    <div class="rule">
+      <div class="tag">The standing rule</div>
+      <p>Build the feature when doing it manually starts to hurt, and not a week before. Coins are a spreadsheet. Remix is copying a folder. The cost of this business is coaches and venues, never servers.</p>
+    </div>
+  </section>
+
+  <footer>
+    <a href="../product/">The Product</a> &nbsp;&middot;&nbsp; <a href="../engagement/">Engagement</a> &nbsp;&middot;&nbsp; <a href="../../portfolio/">The Portfolio</a><br>
+    Working Draft &middot; Not a Commitment
+  </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B0912">
+<title>Code Quest · Product · Creator variant</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#0B0912; --stone:#15121F; --parch:#E9DFC7; --dim:#9A8F7A;
+  --gold:#D9A94C; --gold-hi:#F2CE7B; --phos:#45E3C4; --rubric:#E4574A;
+  --line:rgba(217,169,76,.22); --soft:rgba(217,169,76,.1);
+  --gothic:'Grenze Gotisch',serif; --body:'DM Sans',sans-serif; --sys:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box}
+html,body{overflow-x:hidden}
+body{margin:0;background:var(--void);color:var(--parch);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(55% 34% at 50% -2%, rgba(217,169,76,.13), transparent 68%)}
+.wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;
+  padding:0 max(16px,env(safe-area-inset-left)) calc(64px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-right))}
+h1{font-family:var(--gothic);font-weight:800;font-size:clamp(34px,9vw,54px);line-height:1;margin:0;color:var(--gold-hi)}
+h2{font-family:var(--gothic);font-weight:800;font-size:clamp(24px,6vw,32px);line-height:1.05;margin:0}
+p{margin:0 0 14px}
+.eyebrow{font-family:var(--sys);font-size:10px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--phos);margin:0 0 10px}
+.dim{color:var(--dim)}
+b{color:#F5EEDC}
+header{padding:34px 0 4px;text-align:center}
+.strap{margin-top:10px;font-family:var(--sys);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim)}
+.lede{font-size:17px;color:#D8CFB8;margin-top:18px;text-align:left}
+.orn{display:flex;align-items:center;gap:12px;margin:32px 0 0}
+.orn::before,.orn::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,var(--line),transparent)}
+.orn i{width:8px;height:8px;background:var(--gold);opacity:.6;transform:rotate(45deg);flex:none}
+section{padding:24px 0 0}
+
+/* tooltip terms */
+.tip{position:relative;display:inline;border:0;background:none;padding:0;margin:0;
+  font:inherit;color:var(--gold-hi);border-bottom:1px dashed var(--gold);cursor:help;text-align:left}
+.tip::after{
+  content:attr(data-t);position:absolute;left:50%;bottom:calc(100% + 9px);transform:translateX(-50%);
+  width:min(270px,74vw);background:#1D1830;border:1px solid var(--line);border-radius:8px;
+  padding:10px 12px;font-size:13px;line-height:1.5;color:var(--parch);font-family:var(--body);
+  opacity:0;pointer-events:none;transition:opacity .15s;z-index:30;font-weight:400
+}
+.tip::before{
+  content:"";position:absolute;left:50%;bottom:calc(100% + 3px);transform:translateX(-50%) rotate(45deg);
+  width:10px;height:10px;background:#1D1830;border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+  opacity:0;transition:opacity .15s;z-index:31
+}
+.tip:hover::after,.tip:focus::after,.tip:hover::before,.tip:focus::before{opacity:1}
+
+/* the loop */
+.loopwrap{margin-top:18px;border:1px solid var(--soft);border-radius:4px;background:var(--stone);padding:14px 8px 6px}
+.loopwrap svg{display:block;width:100%;height:auto}
+.loopnote{font-family:var(--sys);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);text-align:center;padding:6px 10px 10px}
+
+/* account cards */
+.doors{display:grid;gap:12px;margin-top:18px}
+@media(min-width:560px){.doors{grid-template-columns:1fr 1fr}}
+.door{border:1px solid var(--soft);border-radius:4px;background:var(--stone);padding:18px 17px;position:relative}
+.door::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
+.door.d::before{background:var(--gold)}
+.door.p::before{background:var(--phos)}
+.door .tag{font-family:var(--sys);font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.door h3{font-family:var(--gothic);font-weight:800;font-size:24px;margin:4px 0 2px;line-height:1}
+.door.d h3{color:var(--gold-hi)}
+.door.p h3{color:var(--phos)}
+.door .who{font-size:13.5px;color:var(--dim);margin-bottom:10px}
+.door ul{list-style:none;margin:0;padding:0}
+.door li{padding:7px 0;border-top:1px solid var(--soft);font-size:14.5px}
+.door li b{display:block;font-size:14.5px}
+.door li span{color:var(--dim);font-size:13.5px}
+
+/* page cards (gallery) */
+.page{border:1px solid var(--soft);border-radius:4px;background:var(--stone);padding:18px 17px;margin-top:16px}
+.page .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.page .chips span{border:1px solid var(--line);border-radius:99px;padding:7px 13px;font-size:13.5px;color:#D8CFB8}
+
+/* decisions */
+.dec{display:grid;gap:12px;margin-top:16px}
+.dcard{border:1px solid var(--soft);border-radius:4px;background:var(--stone);padding:16px 17px;position:relative}
+.dcard .state{
+  position:absolute;top:14px;right:14px;font-family:var(--sys);font-size:9px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;padding:5px 9px;border-radius:3px
+}
+.state.dead{background:rgba(228,87,74,.14);color:var(--rubric)}
+.state.live{background:rgba(69,227,196,.12);color:var(--phos)}
+.state.later{background:rgba(217,169,76,.13);color:var(--gold-hi)}
+.dcard h3{font-family:var(--gothic);font-weight:800;font-size:21px;margin:0 0 6px;color:var(--gold-hi);padding-right:86px;line-height:1.1}
+.dcard p{margin:0;font-size:14.5px;color:#CFC5AC}
+
+/* build order */
+.steps{display:grid;gap:10px;margin-top:16px}
+.step{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--soft);border-radius:4px;background:var(--stone);padding:15px 16px}
+.step i{font-style:normal;font-family:var(--gothic);font-weight:800;font-size:24px;color:var(--gold);line-height:1;flex:none;width:26px}
+.step b{display:block;margin-bottom:2px}
+.step p{margin:0;font-size:14px;color:var(--dim)}
+
+.spike{margin-top:18px;border:1px solid rgba(228,87,74,.35);border-radius:4px;padding:17px 18px;
+  background:linear-gradient(160deg,rgba(228,87,74,.1),transparent 60%)}
+.spike .tag{font-family:var(--sys);font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--rubric)}
+.spike p{margin:6px 0 0;font-size:15px}
+
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--soft);
+  font-family:var(--sys);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);text-align:center}
+:where(a,button):focus-visible{outline:2px solid var(--phos);outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.flow{animation:none!important}}
+.flow{stroke-dasharray:6 7;animation:flow 1.6s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-13}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>The Product<br>on a Page</h1>
+    <div class="strap">Creator positioning variant &middot; Aug 2026 &middot; version A unchanged</div>
+    <p class="lede"><a href="../simulation/" style="color:var(--phos)">Tap through the simulation &rarr;</a></p>
+    <p class="lede" style="margin-top:6px">One app. Two kinds of user. A gallery between them, and a loop that turns visitors into makers. Kids don't care about code &mdash; they care about the <b>output</b>. Everything below is built off that sentence.</p>
+  </header>
+
+  <div class="orn"><i></i></div>
+
+  <section>
+    <p class="eyebrow">The engine</p>
+    <h2>The growth loop</h2>
+    <p class="dim" style="font-size:14.5px;margin-top:8px">Tap the dotted terms anywhere on this page for the detail.</p>
+
+    <div class="loopwrap">
+      <svg viewBox="0 0 700 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The growth loop: a maker projects and publishes, a friend plays on the web, inpages the app as a player, is nurtured, and joins a cohort to become a maker.">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0L10 5L0 10z" fill="#D9A94C"/>
+          </marker>
+        </defs>
+
+        <!-- loop path -->
+        <path class="flow" d="M350 118 C 545 118 615 210 615 280 C 615 385 500 445 350 445" fill="none" stroke="#D9A94C" stroke-width="2" marker-end="url(#arr)" opacity=".85"/>
+        <path class="flow" d="M350 445 C 200 445 85 385 85 280 C 85 210 155 118 350 118" fill="none" stroke="#45E3C4" stroke-width="2" marker-end="url(#arr)" opacity=".85"/>
+
+        <!-- DELEGATE node (top) -->
+        <g>
+          <rect x="245" y="58" width="210" height="86" rx="6" fill="#15121F" stroke="#D9A94C" stroke-width="1.4"/>
+          <text x="350" y="93" text-anchor="middle" font-family="Grenze Gotisch" font-weight="800" font-size="27" fill="#F2CE7B">Maker</text>
+          <text x="350" y="121" text-anchor="middle" font-family="DM Sans" font-size="14.5" fill="#9A8F7A">projects &amp; publishes</text>
+        </g>
+
+        <!-- SHARE node (right) -->
+        <g>
+          <rect x="520" y="215" width="166" height="94" rx="6" fill="#15121F" stroke="rgba(217,169,76,.4)" stroke-width="1.2"/>
+          <text x="603" y="252" text-anchor="middle" font-family="DM Sans" font-weight="700" font-size="16.5" fill="#E9DFC7">Share link</text>
+          <text x="603" y="274" text-anchor="middle" font-family="DM Sans" font-size="13" fill="#9A8F7A">WhatsApp, social</text>
+          <text x="603" y="293" text-anchor="middle" font-family="JetBrains Mono" font-size="10.5" fill="#45E3C4">?ref=elsie</text>
+        </g>
+
+        <!-- PLAY ON WEB node (bottom) -->
+        <g>
+          <rect x="230" y="398" width="240" height="94" rx="6" fill="#15121F" stroke="#45E3C4" stroke-width="1.4"/>
+          <text x="350" y="434" text-anchor="middle" font-family="DM Sans" font-weight="700" font-size="16.5" fill="#45E3C4">Friend plays in browser</text>
+          <text x="350" y="456" text-anchor="middle" font-family="DM Sans" font-size="13" fill="#9A8F7A">no inpage, ten seconds to fun</text>
+          <text x="350" y="477" text-anchor="middle" font-family="DM Sans" font-size="13" fill="#9A8F7A">then: &ldquo;get the app&rdquo;</text>
+        </g>
+
+        <!-- PLAYER node (left) -->
+        <g>
+          <rect x="24" y="215" width="166" height="94" rx="6" fill="#15121F" stroke="rgba(69,227,196,.45)" stroke-width="1.2"/>
+          <text x="107" y="250" text-anchor="middle" font-family="Grenze Gotisch" font-weight="800" font-size="22" fill="#45E3C4">Player</text>
+          <text x="107" y="273" text-anchor="middle" font-family="DM Sans" font-size="13" fill="#9A8F7A">inpages the app,</text>
+          <text x="107" y="292" text-anchor="middle" font-family="DM Sans" font-size="13" fill="#9A8F7A">referral attributed</text>
+        </g>
+
+        <!-- nurture caption on the left curve -->
+        <text x="118" y="150" text-anchor="middle" font-family="DM Sans" font-size="13.5" fill="#9A8F7A" transform="rotate(-38 118 150)">&ldquo;built by a kid like you&rdquo;</text>
+        <text x="152" y="176" text-anchor="middle" font-family="DM Sans" font-size="13.5" fill="#45E3C4" transform="rotate(-38 152 176)">joins the next cohort</text>
+
+        <!-- gallery centre -->
+        <g>
+          <circle cx="350" cy="280" r="74" fill="#0B0912" stroke="rgba(217,169,76,.35)" stroke-width="1.2"/>
+          <text x="350" y="270" text-anchor="middle" font-family="Grenze Gotisch" font-weight="800" font-size="21" fill="#F2CE7B">The</text>
+          <text x="350" y="296" text-anchor="middle" font-family="Grenze Gotisch" font-weight="800" font-size="21" fill="#F2CE7B">Gallery</text>
+          <text x="350" y="318" text-anchor="middle" font-family="DM Sans" font-size="11.5" fill="#9A8F7A">where the output lives</text>
+        </g>
+      </svg>
+      <div class="loopnote">Every trip round the loop manufactures the next cohort</div>
+    </div>
+
+    <p style="margin-top:16px;font-size:15px">The load-bearing choice: the share link opens the game <b>in the browser first</b>. The friend is playing within ten seconds, and the
+      <button class="tip" data-t="App Store inpages strip referral context by default. Carrying 'who sent you' through an inpage needs deferred deep linking (Branch, AppsFlyer), which got harder after Apple's privacy changes. A referral code in a web URL costs nothing and never breaks.">referral code</button>
+      travels in the URL where it can't get lost. The app inpage comes after the fun, not before it. The web is where Code Quest <b>spreads</b>; the app is where it <b>retains</b>.</p>
+  </section>
+
+  <div class="orn"><i></i></div>
+
+  <section>
+    <p class="eyebrow">One app, two doors</p>
+    <h2>The account types</h2>
+
+    <div class="dcard" style="margin-top:16px">
+      <span class="state live">The account holder</span>
+      <h3>Parent</h3>
+      <p>The parent signs up, pays, and provisions
+        <button class="tip" data-t="Children can't enter contracts or pay, and under-13 accounts need verifiable parental consent under COPPA in the US and the ICO's Age Appropriate Design Code here. Parent-first isn't a preference, it's the only account structure that works.">maker sub-accounts</button>
+        for their kids &mdash; one family account, everything underneath it. The Parent also holds the visibility controls: what each child publishes, and how visible the child themselves is.</p>
+    </div>
+
+    <div class="doors" style="margin-top:12px">
+      <div class="door d">
+        <div class="tag">Sub-account &middot; Parent pays</div>
+        <h3>Maker</h3>
+        <div class="who">The kid going through Code Quest</div>
+        <ul>
+          <li><b>Builds real apps</b><span>output first &mdash; the learning is smuggled in around the making</span></li>
+          <li><b>
+            <button class="tip" data-t="Levels are shipping milestones, not knowledge milestones. 'Your first published game', 'your first game with a leaderboard' — never 'loops' or 'variables'. Belts mark what you can DO.">Levels as shipped things</button></b>
+            <span>Quester &rarr; Builder &rarr; Mentor &rarr; Mogul</span></li>
+          <li><b>Publishes to the gallery</b><span>avatar, 30-second trailer, the app itself</span></li>
+          <li><b>Attends the events</b><span>physical cohorts and virtual sessions; the
+            <button class="tip" data-t="The cohort is the cohort. Join late and you start at the beginning of the next one. Scarcity and sequence are what make graduation mean something.">cohort</button> is the cohort</span></li>
+        </ul>
+      </div>
+      <div class="door p">
+        <div class="tag">Free</div>
+        <h3>Player</h3>
+        <div class="who">Everyone else &mdash; friends, cousins, Grandma</div>
+        <ul>
+          <li><b>Plays everything</b><span>the Grandma test: tap a name, be playing in under a minute</span></li>
+          <li><b>Engages and refers</b><span>likes, shares, brings the next friend in</span></li>
+          <li><b>Gets nurtured</b><span>&ldquo;built by somebody just like you &mdash; the next cohort starts soon&rdquo;</span></li>
+          <li><b>
+            <button class="tip" data-t="The player experience must feel like a games arcade, not a course with games in it. If a friend arrives to play and hits a curriculum, the viral loop dies at the door.">Arcade, not classroom</button></b>
+            <span>the course is invisible until they want it</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="orn"><i></i></div>
+
+  <section>
+    <p class="eyebrow">The shop window</p>
+    <h2>A page in the gallery</h2>
+    <div class="page">
+      <p style="margin:0;font-size:15px">Every maker gets the
+        <button class="tip" data-t="The pattern already exists: the Pixel Power and Triad Labs portals from Code Quest 2026 are the prototype. Imagine hundreds of them.">team-portal pattern</button>
+        from 2026, made their own:</p>
+      <div class="chips">
+        <span>Their avatar</span>
+        <span>30-second trailer</span>
+        <span>The app, playable</span>
+        <span>Share link</span>
+        <span>Engagement</span>
+        <span>Remixable
+          <button class="tip" data-t="Stage one: remix is literally copying a folder. Build the feature only when doing it manually starts to hurt.">*</button>
+        </span>
+      </div>
+      <p class="dim" style="margin:14px 0 0;font-size:13.5px">Everything publishes as pending. A human approves it before it goes live. That is the moderation model and the safeguarding answer in one.</p>
+    </div>
+  </section>
+
+  <div class="orn"><i></i></div>
+
+  <section>
+    <p class="eyebrow">The money</p>
+    <h2>Three calls made, one parked</h2>
+    <div class="dec">
+      <div class="dcard">
+        <span class="state live">Live &middot; v1</span>
+        <h3>Subscription only</h3>
+        <p>A nominal fee that buys the thing kids actually want: the ability to build and ship real apps. The leap forward, not the lessons. This is the only revenue in v1.</p>
+      </div>
+      <div class="dcard">
+        <span class="state dead">Not in v1</span>
+        <h3>Ads to children</h3>
+        <p>COPPA in the US, the ICO's
+          <button class="tip" data-t="The Age Appropriate Design Code — UK rules on services likely to be accessed by children. Both app stores also prohibit behavioural advertising in kids' categories, and Apple scrutinises ad SDKs in kids' apps at review.">Age Appropriate Design Code</button>
+          here, and it spends the one thing that differentiates us: <b>safe and managed</b>. At our scale the revenue is pennies. &ldquo;No ads, ever&rdquo; is a weapon aimed straight at Roblox.</p>
+      </div>
+      <div class="dcard">
+        <span class="state later">Parked &middot; Mogul tier</span>
+        <h3>Monetisation as a privilege</h3>
+        <p>Earning from your app becomes something a <b>Mogul</b> unlocks at the top of the ladder &mdash; not a platform default. And the kid keeps 100%.
+          <button class="tip" data-t="'We take a cut of children's earnings' is the sentence that goes wrong in a parents' Facebook group. 'Your kid keeps everything they make' converts more subscribers than any cut would earn.">Why no cut?</button></p>
+      </div>
+    </div>
+  </section>
+
+  <div class="orn"><i></i></div>
+
+  <section>
+    <p class="eyebrow">The order of work</p>
+    <h2>Build sequence</h2>
+    <div class="steps">
+      <div class="step"><i>1</i><div><b>Web gallery</b><p>The gallery, seeded with the eight projects that already exist. Share links and referral codes work in URLs today.</p></div></div>
+      <div class="step"><i>2</i><div><b>Self-serve publishing</b><p>Drag a folder onto a secret link. Pending until approved. No accounts, no passwords, no children's-data problem yet.</p></div></div>
+      <div class="step"><i>3</i><div><b>The app as a wrapper</b><p>Once the web loop is proven. The app's real jobs: push, cohort presence, and App Store legitimacy in a parent's eyes.</p></div></div>
+      <div class="step"><i>4</i><div><b>Money features</b><p>Coins are a spreadsheet until that hurts. Ads and revenue share stay parked behind the Mogul tier decision.</p></div></div>
+    </div>
+
+    <div class="spike">
+      <div class="tag">Prove this first</div>
+      <p>The whole growth model rests on one thing: <b>does the referral loop close?</b> A kid shares, a friend plays, the attribution survives, the friend converts. Spike it on the web version before the app exists &mdash; if the loop doesn't close, nothing downstream matters.</p>
+    </div>
+  </section>
+
+  <footer><a href="../engagement/" style="color:var(--dim);text-decoration:none">Engagement</a> &nbsp;&middot;&nbsp; <a href="../architecture/" style="color:var(--dim);text-decoration:none">Architecture</a> &nbsp;&middot;&nbsp; <a href="../../portfolio/" style="color:var(--dim);text-decoration:none">The Portfolio</a> &nbsp;&middot;&nbsp; Working Draft</footer>
+</div>
+</body>
+</html>
