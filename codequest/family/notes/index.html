@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B0B0F">
+<title>Notes</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0B0B0F; --card:#16161C; --ink:#F2F2F5; --mut:#8B8B99; --line:#26262F;
+  --volt:#5EEAD4; --hot:#FF7A8C;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;overscroll-behavior:none}
+body{display:flex;flex-direction:column;
+  padding:calc(14px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom))}
+
+.top{display:flex;align-items:center;gap:10px;flex:none}
+.pill{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid var(--line);border-radius:99px;padding:7px 12px;color:var(--mut)}
+.pill.live{color:var(--volt);border-color:rgba(94,234,212,.4)}
+.count{margin-left:auto;font-size:13px;font-weight:600;color:var(--mut);font-variant-numeric:tabular-nums}
+
+.now{flex:1;display:flex;flex-direction:column;justify-content:center;padding:18px 0;min-height:0}
+.slideno{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--volt)}
+.title{font-size:clamp(21px,5vw,30px);font-weight:600;letter-spacing:-.03em;line-height:1.12;margin-top:10px}
+.note{font-size:clamp(17px,4.2vw,22px);line-height:1.5;color:#D4D4DE;margin-top:20px;font-weight:400}
+.note.big{color:var(--hot);font-weight:600}
+
+.next{flex:none;border-top:1px solid var(--line);padding-top:14px}
+.next .lbl{font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.next .t{font-size:15px;color:var(--mut);margin-top:6px;font-weight:400;line-height:1.35}
+
+.bar{flex:none;display:flex;gap:10px;margin-top:14px}
+.bar button{flex:1;border:1px solid var(--line);background:var(--card);color:var(--ink);
+  font-family:var(--sans);font-size:15px;font-weight:600;border-radius:14px;padding:16px;cursor:pointer}
+.bar button:active{background:#1F1F27}
+
+.hint{font-size:12px;color:var(--mut);text-align:center;margin-top:12px;line-height:1.5;flex:none}
+.hint b{color:var(--volt);font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <span class="pill" id="mode">Standalone</span>
+  <span class="count" id="count"></span>
+</div>
+
+<div class="now">
+  <div class="slideno" id="sno"></div>
+  <div class="title" id="title"></div>
+  <div class="note" id="note"></div>
+</div>
+
+<div class="next">
+  <div class="lbl">Next</div>
+  <div class="t" id="nextT"></div>
+</div>
+
+<div class="bar">
+  <button id="prev" type="button">&larr; Back</button>
+  <button id="next" type="button">Next &rarr;</button>
+</div>
+
+<p class="hint" id="hint">Open the deck in another window on this device and it follows automatically. Otherwise use the buttons.</p>
+
+<script>
+(function(){
+"use strict";
+
+var SLIDES = [
+  { t: "Code Quest", n: "Say nothing for a beat. Let them read it." },
+  { t: "Thank you for making the time", n: "Warm. Unhurried. This is the tone for the whole thing." },
+  { t: "I'm really excited about where Code Quest is", n: "No history, no who did what. Just where it has got to." },
+  { t: "The photos", n: "It runs itself. Let them watch. Say nothing, or one thing about one photo." },
+  { t: "It's been good for the kids. And good for us", n: "Say it simply. Watching them work together has been the best part." },
+  { t: "Just look at what our kids created", n: "Tap any of them and it opens. Let someone else pick which one." },
+  { t: "It's actually not about AI", n: "STOP. Let it sit. Say nothing. This is the turn in the whole thing." },
+  { t: "So what is Code Quest?", n: "The loop is the whole thing. Then let the film answer it properly." },
+  { t: "The film", n: "Tap to play. Say nothing before, nothing during, nothing after. Let it end and wait." },
+  { t: "There's momentum here", n: "The pivot. A moment where, if we're willing, we could come together on it." },
+  { t: "Two things I'd love to explore", n: "Name both, then take them one at a time." },
+  { t: "Code Quest 3", n: "How soon could we do it, and what does it look like. Then stop." },
+  { t: "Beyond our family", n: "I've got ideas, but I've had a lot of time to think. I'd rather we thought about it together." },
+  { t: "Some of the things in my head", n: "SKIM. Do not explain each one. They show there is somewhere to go, not something to agree today." },
+  { t: "What they'd actually come away with", n: "The answer to what are they learning if it isn't code. Read two or three out, not all seven." },
+  { t: "A working sketch of the app", n: "Tap through it only if someone asks. Otherwise let it sit there being real." },
+  { t: "These are just my ideas. Nothing is final", n: "Mean this one. It gives everything before it back to the room." },
+  { t: "Could this be something we do together?", n: "THE ASK. Slow right down. Then be quiet, however long it takes." },
+  { t: "The part that matters most is that we do it as a family", n: "The truest thing you'll say today. Say it plainly and do not add to it." },
+  { t: "Psalm 16:6", n: "If someone raises structure or decision making: real conversation, not today's." },
+  { t: "Over to you. What do you think?", n: "STOP TALKING. Count to ten. If nobody speaks, go round in order because you want to hear from everyone." },
+  { t: "What would you enjoy doing?", n: "You go first, on your GAPS not your strengths. Ask what they'd ENJOY, not what they're good at. Type what people say." },
+  { t: "What do you think we haven't got?", n: "Pointing at a gap is easier than volunteering yourself. Often ends with someone saying actually, I could do that." },
+  { t: "One thing each", n: "One small thing, chosen by them. Yours: what we'd need to have other people's children in a room." },
+  { t: "When are we talking next?", n: "Get the date in the diary before anyone leaves the call." }
+];
+
+var idx = 0;
+var sno = document.getElementById("sno"),
+    title = document.getElementById("title"),
+    note = document.getElementById("note"),
+    nextT = document.getElementById("nextT"),
+    count = document.getElementById("count"),
+    mode = document.getElementById("mode");
+
+function paint(){
+  var s = SLIDES[idx] || { t: "", n: "" };
+  sno.textContent = "Slide " + (idx + 1);
+  title.textContent = s.t;
+  note.textContent = s.n;
+  note.classList.toggle("big", /STOP|THE ASK|SKIM/.test(s.n));
+  var nx = SLIDES[idx + 1];
+  nextT.textContent = nx ? nx.t : "End";
+  count.textContent = (idx + 1) + " / " + SLIDES.length;
+}
+
+function set(n, fromDeck){
+  idx = Math.max(0, Math.min(SLIDES.length - 1, n));
+  paint();
+  if (!fromDeck) send(idx);
+}
+
+/* sync, same browser, any number of windows */
+var ch = null;
+try { ch = new BroadcastChannel("cq-deck"); } catch(e){}
+function send(n){
+  if (ch) { try { ch.postMessage({ slide: n }); } catch(e){} }
+  try { localStorage.setItem("cq-deck-slide", String(n) + ":" + Date.now()); } catch(e){}
+}
+function heard(n){
+  mode.textContent = "Following the deck";
+  mode.classList.add("live");
+  if (n !== idx) set(n, true);
+}
+if (ch) ch.onmessage = function(e){
+  if (e.data && typeof e.data.slide === "number") heard(e.data.slide);
+};
+addEventListener("storage", function(e){
+  if (e.key === "cq-deck-slide" && e.newValue){
+    var n = parseInt(e.newValue.split(":")[0], 10);
+    if (!isNaN(n)) heard(n);
+  }
+});
+
+document.getElementById("prev").addEventListener("click", function(){ set(idx - 1); });
+document.getElementById("next").addEventListener("click", function(){ set(idx + 1); });
+addEventListener("keydown", function(e){
+  if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); set(idx + 1); }
+  if (e.key === "ArrowLeft") set(idx - 1);
+});
+var tx = null;
+addEventListener("touchstart", function(e){ tx = e.touches[0].clientX; }, { passive: true });
+addEventListener("touchend", function(e){
+  if (tx === null) return;
+  var dx = e.changedTouches[0].clientX - tx;
+  if (Math.abs(dx) > 50) set(idx + (dx < 0 ? 1 : -1));
+  tx = null;
+}, { passive: true });
+
+paint();
+})();
+</script>
+</body>
+</html>

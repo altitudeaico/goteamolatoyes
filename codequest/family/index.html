@@ -125,6 +125,9 @@ b{color:var(--pale);font-weight:600}
   padding:9px 15px;font-variant-numeric:tabular-nums;color:var(--mut);cursor:pointer;font-weight:500;box-shadow:var(--sh)}
 #timer.run{color:var(--volt);border-color:rgba(214,255,61,.4)}
 #timer.over{color:var(--hot);border-color:rgba(255,61,87,.5)}
+#notesLink{background:rgba(255,255,255,.82);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:99px;
+  padding:9px 14px;color:var(--mut);cursor:pointer;font-family:var(--sans);font-weight:500;font-size:12px;
+  box-shadow:var(--sh);text-decoration:none}
 #notesBtn{background:rgba(255,255,255,.82);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:99px;
   padding:9px 14px;color:var(--mut);cursor:pointer;font-family:var(--sans);font-weight:500;font-size:12px;box-shadow:var(--sh)}
 #notes{position:fixed;left:0;right:0;bottom:0;z-index:44;background:rgba(251,251,253,.97);backdrop-filter:blur(12px);border-top:1px solid var(--line);
@@ -406,6 +409,7 @@ b{color:var(--pale);font-weight:600}
 
 <div id="dots"></div>
 <div id="hud">
+  <a id="notesLink" href="notes/" target="_blank" rel="noopener">Notes window</a>
   <button id="notesBtn" type="button">Notes</button>
   <div id="timer" title="Click to start and stop">00:00</div>
 </div>
@@ -453,6 +457,7 @@ function go(n, v){
   var target = -idx * vw;
   paintDots();
   paintNote();
+  broadcast();
   pauseVideos();
   if (slides[idx].classList.contains("show")){ if (window.showStart) window.showStart(); }
   else if (window.showStop) window.showStop();
@@ -542,6 +547,23 @@ addEventListener("resize", function(){ vw = innerWidth; apply(-idx * vw); });
 /* notes */
 var notes = document.getElementById("notes"), noteTx = document.getElementById("noteTx");
 function paintNote(){ noteTx.textContent = slides[idx].getAttribute("data-note") || ""; }
+
+/* tell the notes window where we are */
+var cqCh = null;
+try { cqCh = new BroadcastChannel("cq-deck"); } catch(e){}
+function broadcast(){
+  if (cqCh) { try { cqCh.postMessage({ slide: idx }); } catch(e){} }
+  try { localStorage.setItem("cq-deck-slide", String(idx) + ":" + Date.now()); } catch(e){}
+}
+if (cqCh) cqCh.onmessage = function(e){
+  if (e.data && typeof e.data.slide === "number" && e.data.slide !== idx) go(e.data.slide);
+};
+addEventListener("storage", function(e){
+  if (e.key === "cq-deck-slide" && e.newValue){
+    var n = parseInt(e.newValue.split(":")[0], 10);
+    if (!isNaN(n) && n !== idx) go(n);
+  }
+});
 function toggleNotes(){ notes.classList.toggle("on"); }
 document.getElementById("notesBtn").addEventListener("click", toggleNotes);
 
