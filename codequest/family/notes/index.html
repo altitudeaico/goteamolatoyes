@@ -30,8 +30,12 @@ body{display:flex;flex-direction:column;
 .now{flex:1;display:flex;flex-direction:column;justify-content:center;padding:18px 0;min-height:0}
 .slideno{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--volt)}
 .title{font-size:clamp(21px,5vw,30px);font-weight:600;letter-spacing:-.03em;line-height:1.12;margin-top:10px}
-.note{font-size:clamp(17px,4.2vw,22px);line-height:1.5;color:#D4D4DE;margin-top:20px;font-weight:400}
-.note.big{color:var(--hot);font-weight:600}
+.script{font-size:clamp(19px,4.8vw,26px);line-height:1.5;color:var(--ink);margin-top:18px;font-weight:400;white-space:pre-wrap;letter-spacing:-.01em}
+.script:empty{display:none}
+.note{font-size:clamp(14px,3.4vw,17px);line-height:1.5;color:var(--mut);margin-top:20px;font-weight:400;
+  border-left:2px solid var(--line);padding-left:14px}
+.note:empty{display:none}
+.note.big{color:var(--hot);font-weight:600;border-left-color:var(--hot)}
 
 .next{flex:none;border-top:1px solid var(--line);padding-top:14px}
 .next .lbl{font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
@@ -56,6 +60,7 @@ body{display:flex;flex-direction:column;
 <div class="now">
   <div class="slideno" id="sno"></div>
   <div class="title" id="title"></div>
+  <div class="script" id="script"></div>
   <div class="note" id="note"></div>
 </div>
 
@@ -76,7 +81,9 @@ body{display:flex;flex-direction:column;
 "use strict";
 
 var SLIDES = [
-  { t: "Code Quest", n: "Say nothing for a beat. Let them read it." },
+  { t: "Code Quest",
+    s: "Thanks Gbenga.\n\nAnd thank you all for making the time. I know how much everyone's got on.\n\nI'll keep this fairly short, because I'd rather hear from you than talk at you.\n\nBut I wanted to share where Code Quest has got to, a couple of thoughts about where it could go, and then ask you all something.",
+    n: "Don't rush the first two lines. Let the room settle." },
   { t: "Thank you for making the time", n: "Warm. Unhurried. This is the tone for the whole thing." },
   { t: "I'm really excited about where Code Quest is", n: "No history, no who did what. Just where it has got to." },
   { t: "The photos", n: "It runs itself. Let them watch. Say nothing, or one thing about one photo." },
@@ -106,6 +113,7 @@ var SLIDES = [
 var idx = 0;
 var sno = document.getElementById("sno"),
     title = document.getElementById("title"),
+    script = document.getElementById("script"),
     note = document.getElementById("note"),
     nextT = document.getElementById("nextT"),
     count = document.getElementById("count"),
@@ -115,7 +123,8 @@ function paint(){
   var s = SLIDES[idx] || { t: "", n: "" };
   sno.textContent = "Slide " + (idx + 1);
   title.textContent = s.t;
-  note.textContent = s.n;
+  script.textContent = s.s || "";
+  note.textContent = s.n || "";
   note.classList.toggle("big", /STOP|THE ASK|SKIM/.test(s.n));
   var nx = SLIDES[idx + 1];
   nextT.textContent = nx ? nx.t : "End";
