@@ -19,7 +19,7 @@ Everything expanded except the point.
 
 ## Three layers of growth, all evidenced
 
-**The kids.** Hannah asked what a database was in March and had one running behind a live multiplayer quiz two weeks later. Ezekiel solved the GitHub token problem himself in April and was named best team leader in August. Emma had an honorary badge at four and built her own game at six. Elsie said in April that you need confidence and to present clearly, and in August won most creative for the explanation that made the whole thing make sense.
+**The kids.** Hannah asked what a database was in March and had one running behind a live multiplayer quiz two weeks later. Ezekiel solved the GitHub token problem himself in April and was named best team leader in August. Emma had an honorary badge at four in April and had built her own game by August, still four. Elsie said in April that you need confidence and to present clearly, and in August won most creative for the explanation that made the whole thing make sense.
 
 **The families.** Watching, then attending, then delivering. That is the arc, and it makes the Code Quest 3 ask the next step rather than a jump.
 

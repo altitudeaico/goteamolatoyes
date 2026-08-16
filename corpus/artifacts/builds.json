@@ -17,6 +17,6 @@
     { "id": "cq2-codequest-game", "title": "Code Quest, the game",     "maker": "team",    "team": "Pixel Power", "event": "cq2", "date": "2026-08-01", "kind": "game", "verified": false },
 
     { "id": "post-butterfly-dash","title": "Butterfly Dash",           "maker": "Elsie",   "team": null, "event": "after-cq2", "date": "2026-08", "kind": "game", "url": "codequest/elsie/game/", "note": "Built at home, unprompted, under her own studio name Butterflii. Three modes including a character designer.", "verified": true },
-    { "id": "post-sprinkle-dash", "title": "Rainbow Sprinkle Dash",    "maker": "Emma",    "team": null, "event": "after-cq2", "date": "2026-08", "kind": "game", "url": "codequest/emma/game/", "note": "Built at home aged six, having been too young to compete.", "verified": true }
+    { "id": "post-sprinkle-dash", "title": "Rainbow Sprinkle Dash",    "maker": "Emma",    "team": null, "event": "after-cq2", "date": "2026-08", "kind": "game", "url": "codequest/emma/game/", "note": "Built at home aged four, having been too young to compete.", "verified": true }
   ]
 }
