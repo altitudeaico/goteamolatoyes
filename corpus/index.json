@@ -22,7 +22,8 @@
     "decisions/0001-name-and-positioning.md": "Open. Coding product or publishing platform, and what it is called",
     "decisions/0002-what-goes-where.md": "Decided. Corpus in git, live data in Supabase",
     "artifacts/builds.json": "Every build by every child, with makers, events and links",
-    "events/games-night-2026-03-14.md": "The family games night of 14 March 2026. Where Code Quest came from"
+    "events/games-night-2026-03-14.md": "The family games night of 14 March 2026. Where Code Quest came from",
+    "themes/": "Running themes for how Code Quest is talked about, and the run sheet for the family conversation of 17 August"
   },
   "events": [
     {
