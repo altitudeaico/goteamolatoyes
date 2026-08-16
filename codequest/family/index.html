@@ -175,9 +175,9 @@ b{color:var(--pale);font-weight:600}
   background:#ECECF0;box-shadow:0 24px 70px rgba(0,0,0,.18)}
 @media(min-width:820px){.sstage{aspect-ratio:16/10}}
 .sstage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;
-  transform:scale(1.06);transition:opacity 1.1s ease}
-.sstage img.on{opacity:1;animation:kb 7.5s linear forwards}
-@keyframes kb{from{transform:scale(1.02)}to{transform:scale(1.12)}}
+  transform:scale(1.06);transition:opacity .5s ease}
+.sstage img.on{opacity:1;animation:kb 3.4s linear forwards}
+@keyframes kb{from{transform:scale(1.03)}to{transform:scale(1.09)}}
 .sbar{height:3px;border-radius:99px;background:rgba(0,0,0,.08);margin-top:14px;overflow:hidden;max-width:1000px}
 .sbar i{display:block;height:100%;width:0;background:var(--volt);border-radius:99px}
 @media(prefers-reduced-motion:reduce){.sstage img.on{animation:none}}
@@ -630,7 +630,7 @@ document.addEventListener("click", function(e){
   var files = ["group.jpg","IMG_0096.jpg","IMG_0100.jpg","IMG_0219.jpg","IMG_0104.jpg",
                "IMG_0107.jpg","IMG_0113.jpg","IMG_0120.jpg","IMG_0166.jpg","IMG_0175.jpg",
                "IMG_0210.jpg","IMG_0263.jpg","IMG_0281.jpg","IMG_0301.jpg","IMG_0307.jpg"];
-  var HOLD = 3400;
+  var HOLD = 1600;
   var imgs = files.map(function(f, i){
     var im = document.createElement("img");
     im.src = "photos/" + f;
