@@ -155,6 +155,18 @@ b{color:var(--pale);font-weight:600}
 .lp b{display:block;font-size:clamp(17px,1.9vw,22px);font-weight:600;letter-spacing:-.02em;line-height:1.2;color:var(--pale)}
 .larc{display:none}
 @media(min-width:860px){.larc{display:block;position:absolute;left:0;right:0;bottom:0;width:100%;height:60px;color:var(--line)}}
+.ideas{display:grid;grid-template-columns:1fr;gap:11px;max-width:880px;margin:32px auto 0;text-align:left}
+@media(min-width:760px){.ideas{grid-template-columns:1fr 1fr}}
+.idea{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 20px;box-shadow:var(--sh);display:flex;gap:14px;align-items:flex-start}
+.idea .ic{font-size:22px;flex:none;line-height:1.2}
+.idea b{display:block;font-size:17px;font-weight:600;letter-spacing:-.02em;color:var(--pale)}
+.idea span{display:block;font-size:14px;color:var(--mut);margin-top:4px;line-height:1.45;font-weight:400}
+.skills{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:840px;margin:34px auto 0}
+.sk{background:#fff;border:1px solid var(--line);border-radius:99px;padding:14px 22px;
+  font-size:clamp(15px,1.8vw,19px);font-weight:500;letter-spacing:-.015em;color:var(--pale);box-shadow:var(--sh)}
+.simwrap{width:min(392px,86vw);height:min(720px,68vh);margin:26px auto 0;border-radius:26px;overflow:hidden;
+  border:1px solid var(--line);background:#fff;box-shadow:0 30px 80px rgba(0,0,0,.22)}
+.simwrap iframe{width:100%;height:100%;border:0;display:block}
 .stagewrap{width:100%;max-width:1000px;margin:0 auto}
 .sstage{position:relative;width:100%;aspect-ratio:4/3;max-height:70vh;border-radius:22px;overflow:hidden;
   background:#ECECF0;box-shadow:0 24px 70px rgba(0,0,0,.18)}
@@ -278,6 +290,39 @@ b{color:var(--pale);font-weight:600}
     <p class="eyebrow">Two</p>
     <h2>Beyond<br>our family.</h2>
     <p class="big">I've got ideas. But I've had a lot of time to think about it, and I'd rather we thought about it together.</p>
+  </div></section>
+
+  <!-- 9b: ideas -->
+  <section class="s" data-note="Skim these. Do not explain each one. They are here to show there is somewhere to go, not to be agreed today."><div class="glow"></div><div class="in">
+    <p class="eyebrow">Some of the things in my head</p>
+    <div class="ideas">
+      <div class="idea"><span class="ic">&#9998;</span><b>A rebrand</b><span>Is Code Quest even the right name for what this has become?</span></div>
+      <div class="idea"><span class="ic">&#129309;</span><b>Co-delivery, in person</b><span>More of us in the room on the day</span></div>
+      <div class="idea"><span class="ic">&#128241;</span><b>Co-delivery, on the app</b><span>Recorded once, and it lives there. No Saturday required</span></div>
+      <div class="idea"><span class="ic">&#127914;</span><b>Physical events</b><span>Beyond a front room. Somewhere families travel to</span></div>
+      <div class="idea"><span class="ic">&#127775;</span><b>The app</b><span>So it doesn't stop between events</span></div>
+    </div>
+  </div></section>
+
+  <!-- 9c: the path -->
+  <section class="s" data-note="This is the answer to what are they actually learning. Read two or three of them out, not all seven."><div class="glow"></div><div class="in">
+    <p class="eyebrow">And a real path for them to climb</p>
+    <h2>What they'd actually<br><span class="volt">come away with</span>.</h2>
+    <div class="skills">
+      <span class="sk">Presentation</span>
+      <span class="sk">Public speaking</span>
+      <span class="sk">Product thinking</span>
+      <span class="sk">Team work</span>
+      <span class="sk">Emotional intelligence</span>
+      <span class="sk">Ideating &amp; creativity</span>
+      <span class="sk">Tech</span>
+    </div>
+  </div></section>
+
+  <!-- 9d: the simulation -->
+  <section class="s" data-note="Tap through it if someone asks. Otherwise let it sit there being real."><div class="glow ice"></div><div class="in">
+    <p class="eyebrow">And a working sketch of what the app could be</p>
+    <div class="simwrap"><iframe src="../app-creator/" title="The app, sketched" loading="lazy"></iframe></div>
   </div></section>
 
   <!-- 10 -->
