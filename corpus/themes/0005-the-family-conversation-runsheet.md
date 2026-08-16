@@ -85,9 +85,9 @@ Then hand over, **here, not at the end**:
 
 > "That's what I saw, but I was in the middle of it. What did you see that I would have missed?"
 
-**Then stop.** Ask Middleton first, by name, before anyone else. Being asked first signals something nothing else does.
+**Then stop.** If nobody speaks, go round rather than picking someone: "I want to hear from everyone on this, so I'll just go round." A fixed order means nobody is singled out, everybody knows their turn is coming, and nobody has to fight for a gap on a video call.
 
-Do not fill the silence. Count to ten if you have to.
+Do not fill the silence. Count to ten first.
 
 ---
 
