@@ -27,7 +27,11 @@ body{display:flex;flex-direction:column;
 .pill.live{color:var(--volt);border-color:rgba(94,234,212,.4)}
 .count{margin-left:auto;font-size:13px;font-weight:600;color:var(--mut);font-variant-numeric:tabular-nums}
 
-.now{flex:1;display:flex;flex-direction:column;justify-content:center;padding:18px 0;min-height:0}
+.now{flex:1;display:flex;flex-direction:column;justify-content:flex-start;padding:18px 0;min-height:0;
+  overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.now::-webkit-scrollbar{width:4px}
+.now::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
+.now.short{justify-content:center}
 .slideno{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--volt)}
 .title{font-size:clamp(21px,5vw,30px);font-weight:600;letter-spacing:-.03em;line-height:1.12;margin-top:10px}
 .script{font-size:clamp(19px,4.8vw,26px);line-height:1.5;color:var(--ink);margin-top:18px;font-weight:400;white-space:pre-wrap;letter-spacing:-.01em}
@@ -135,6 +139,12 @@ function paint(){
   var nx = SLIDES[idx + 1];
   nextT.textContent = nx ? nx.t : "End";
   count.textContent = (idx + 1) + " / " + SLIDES.length;
+  var now = document.querySelector(".now");
+  now.scrollTop = 0;
+  now.classList.remove("short");
+  requestAnimationFrame(function(){
+    if (now.scrollHeight <= now.clientHeight + 1) now.classList.add("short");
+  });
 }
 
 function set(n, fromDeck){
@@ -199,13 +209,16 @@ addEventListener("keydown", function(e){
   if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); set(idx + 1); }
   if (e.key === "ArrowLeft") set(idx - 1);
 });
-var tx = null;
-addEventListener("touchstart", function(e){ tx = e.touches[0].clientX; }, { passive: true });
+var tx = null, ty = null;
+addEventListener("touchstart", function(e){
+  tx = e.touches[0].clientX; ty = e.touches[0].clientY;
+}, { passive: true });
 addEventListener("touchend", function(e){
   if (tx === null) return;
   var dx = e.changedTouches[0].clientX - tx;
-  if (Math.abs(dx) > 50) set(idx + (dx < 0 ? 1 : -1));
-  tx = null;
+  var dy = e.changedTouches[0].clientY - ty;
+  if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.6) set(idx + (dx < 0 ? 1 : -1));
+  tx = ty = null;
 }, { passive: true });
 
 paint();
