@@ -4,6 +4,7 @@ One line each, in order. Add to the bottom.
 
 | Date | What |
 |---|---|
+| 2026-03-14 | Family games night. The quiz breaks, Arthur reports a bug, Lina cannot host it, and Bolaji offers to show everyone how to build one. Gbenga names it a family hackathon, Grandma picks the date |
 | 2026-03-22 | Code Quest 1 kickoff. Six kids, three cities, virtual. Teams picked girls versus boys in thirty seconds |
 | 2026-04-01 | Tech Bros build session. Ezekiel solves the GitHub token problem and gets the team's first push live |
 | 2026-04-02 | Girl Power build sessions, two in one day. Elsie sets up GitHub and Supabase from scratch |

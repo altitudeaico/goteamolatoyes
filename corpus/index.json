@@ -5,7 +5,14 @@
   "purpose": "A running record of what actually happened, kept as it happens. If you are an AI, start here: everything in events/ is verified fact unless a line marks itself unverified. Do not infer beyond what is written.",
   "repo": "altitudeaico/goteamolatoyes",
   "public_base": "https://altitudeaico.github.io/goteamolatoyes/",
-  "read_order": ["README.md", "timeline.md", "events/", "decisions/", "artifacts/builds.json", "quotes.md"],
+  "read_order": [
+    "README.md",
+    "timeline.md",
+    "events/",
+    "decisions/",
+    "artifacts/builds.json",
+    "quotes.md"
+  ],
   "files": {
     "README.md": "Why this exists and the rules for adding to it",
     "timeline.md": "Everything in date order, one line each",
@@ -14,22 +21,68 @@
     "events/cq2-2026-08-01.md": "Code Quest 2. In person, Manchester, one day, six builds, a tie, 1 August 2026",
     "decisions/0001-name-and-positioning.md": "Open. Coding product or publishing platform, and what it is called",
     "decisions/0002-what-goes-where.md": "Decided. Corpus in git, live data in Supabase",
-    "artifacts/builds.json": "Every build by every child, with makers, events and links"
+    "artifacts/builds.json": "Every build by every child, with makers, events and links",
+    "events/games-night-2026-03-14.md": "The family games night of 14 March 2026. Where Code Quest came from"
   },
   "events": [
-    { "id": "cq1", "name": "Code Quest 1", "date": "2026-04-04", "format": "virtual", "kids": 6, "builds": 4, "file": "events/cq1-2026-04-04.md" },
-    { "id": "cq2", "name": "Code Quest 2", "date": "2026-08-01", "format": "in person", "kids": 6, "builds": 6, "file": "events/cq2-2026-08-01.md" },
-    { "id": "cq3", "name": "Code Quest 3", "date": null, "format": null, "status": "proposed, to be co-delivered by the family", "file": null }
+    {
+      "id": "games-night",
+      "name": "Family games night",
+      "date": "2026-03-14",
+      "format": "virtual",
+      "note": "The origin. A quiz that broke, and the invitation that followed",
+      "file": "events/games-night-2026-03-14.md"
+    },
+    {
+      "id": "cq1",
+      "name": "Code Quest 1",
+      "date": "2026-04-04",
+      "format": "virtual",
+      "kids": 6,
+      "builds": 4,
+      "file": "events/cq1-2026-04-04.md"
+    },
+    {
+      "id": "cq2",
+      "name": "Code Quest 2",
+      "date": "2026-08-01",
+      "format": "in person",
+      "kids": 6,
+      "builds": 6,
+      "file": "events/cq2-2026-08-01.md"
+    },
+    {
+      "id": "cq3",
+      "name": "Code Quest 3",
+      "date": null,
+      "format": null,
+      "status": "proposed, to be co-delivered by the family",
+      "file": null
+    }
   ],
   "people": {
     "note": "Kids only, first names, as already public on the site. No further detail belongs here.",
-    "kids": ["Elsie", "Hannah", "Sophia", "Theodore", "Ezekiel", "Arthur", "Emma"],
-    "households": ["Gravesend", "Middleton", "New York", "Radlett"]
+    "kids": [
+      "Elsie",
+      "Hannah",
+      "Sophia",
+      "Theodore",
+      "Ezekiel",
+      "Arthur",
+      "Emma"
+    ],
+    "households": [
+      "Gravesend",
+      "Middleton",
+      "New York",
+      "Radlett"
+    ]
   },
   "open_questions": [
     "Who won Code Quest 1? The recap records a verdict but never names the team",
     "The Code Quest 2 prize amount: twenty pounds per team or seventy five in total",
     "The name and positioning, see decisions/0001",
-    "Whether anything happened between April and August 2026"
+    "Whether anything happened between April and August 2026",
+    "How far back does the family quiz series run? A Christmas quiz won by Middleton in 2025 is referenced"
   ]
 }
