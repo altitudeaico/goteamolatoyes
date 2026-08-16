@@ -69,7 +69,7 @@ body{display:flex;flex-direction:column;
   <button id="next" type="button">Next &rarr;</button>
 </div>
 
-<p class="hint" id="hint">Open the deck in another window on this device and it follows automatically. Otherwise use the buttons.</p>
+<p class="hint" id="hint">Follows the deck on <b>any device</b>. Move either one and the other catches up.</p>
 
 <script>
 (function(){
@@ -128,15 +128,43 @@ function set(n, fromDeck){
   if (!fromDeck) send(idx);
 }
 
+
+/* cross device sync: one row, written by the deck, polled by the notes */
+var SB_URL = "https://kxrhzijqyotyrzhpiflv.supabase.co";
+var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4cmh6aWpxeW90eXJ6aHBpZmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NjQ1NTUsImV4cCI6MjA5NzU0MDU1NX0.VIZ0Bxxu84AjgN9PuLJusUbmPu1CWGg4VJSvkVhFZ94";
+var SB_ROW = SB_URL + "/rest/v1/deck_sync?room=eq.family";
+var SB_H = { "apikey": SB_KEY, "Authorization": "Bearer " + SB_KEY, "Content-Type": "application/json" };
+var lastSeen = -1;
+function pollRemote(){
+  fetch(SB_ROW + "&select=slide", { headers: SB_H, cache: "no-store" })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (d && d[0] && typeof d[0].slide === "number"){
+        if (d[0].slide !== lastSeen){
+          lastSeen = d[0].slide;
+          heard(d[0].slide);
+        }
+      }
+    })
+    .catch(function(){});
+}
+setInterval(pollRemote, 1500);
+setTimeout(pollRemote, 300);
+
 /* sync, same browser, any number of windows */
 var ch = null;
 try { ch = new BroadcastChannel("cq-deck"); } catch(e){}
 function send(n){
   if (ch) { try { ch.postMessage({ slide: n }); } catch(e){} }
   try { localStorage.setItem("cq-deck-slide", String(n) + ":" + Date.now()); } catch(e){}
+  lastSeen = n;
+  try {
+    fetch(SB_ROW, { method: "PATCH", headers: SB_H,
+      body: JSON.stringify({ slide: n, updated_at: new Date().toISOString() }) }).catch(function(){});
+  } catch(e){}
 }
 function heard(n){
-  mode.textContent = "Following the deck";
+  mode.textContent = "Live";
   mode.classList.add("live");
   if (n !== idx) set(n, true);
 }
