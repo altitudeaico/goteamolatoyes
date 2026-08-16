@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "updated": "2026-08-16",
+  "note": "Every thing anyone has built through Code Quest. url is relative to https://altitudeaico.github.io/goteamolatoyes/ unless absolute. Verified means the link was checked and resolves.",
+  "builds": [
+    { "id": "cq1-f1-quiz",        "title": "Ezekiel's F1 Quiz",        "maker": "Ezekiel", "team": "Tech Bros",   "event": "cq1", "date": "2026-04-04", "kind": "quiz",     "note": "20 questions, animated race track, qualifying grid scoring. Built solo.", "verified": false },
+    { "id": "cq1-techbros-quiz",  "title": "Tech Bros Quiz",           "maker": "Tech Bros", "team": "Tech Bros", "event": "cq1", "date": "2026-04-04", "kind": "quiz",     "note": "Multiplayer. Tech, F1 and Ninjago. Game code BROS.", "url": "https://techbros3.github.io/Tech-Bros-Quiz/", "verified": false },
+    { "id": "cq1-girlpower-quiz", "title": "Elsie's Girl Power Quiz",  "maker": "Elsie",   "team": "Girl Power",  "event": "cq1", "date": "2026-04-04", "kind": "quiz",     "note": "Fashion, art, makeup, cheerleading. Game code GIRL.", "verified": false },
+    { "id": "cq1-cousin-quiz",    "title": "Cousin Quiz",              "maker": "Hannah and Sophia", "team": "Girl Power", "event": "cq1", "date": "2026-04-04", "kind": "quiz", "note": "Built independently by the two of them. Game code QUIZ. Froze live on demo night.", "verified": false },
+    { "id": "cq1-race-engineer",  "title": "Race Engineer Simulator",  "maker": "Ezekiel", "team": "Tech Bros",   "event": "cq1", "date": "2026-04-01", "kind": "sim",      "note": "Built solo before the hackathon. Deployment still pending.", "verified": false },
+
+    { "id": "cq2-ninja-academy",  "title": "Ninja Academy",            "maker": "Ezekiel", "team": "Triad Labs",  "event": "cq2", "date": "2026-08-01", "kind": "game", "url": "codequest/triad-labs/ninja-academy/", "verified": true },
+    { "id": "cq2-dragonball",     "title": "Dragonball Flight",        "maker": "Theodore","team": "Pixel Power", "event": "cq2", "date": "2026-08-01", "kind": "game", "url": "codequest/pixel-power/dragonball-flight/", "verified": true },
+    { "id": "cq2-song-gallery",   "title": "Song Gallery",             "maker": "Hannah",  "team": "Pixel Power", "event": "cq2", "date": "2026-08-01", "kind": "app",  "url": "codequest/pixel-power/song-gallery/", "verified": true },
+    { "id": "cq2-non-league",     "title": "Non-League",               "maker": "team",    "team": "Triad Labs",  "event": "cq2", "date": "2026-08-01", "kind": "app",  "verified": false },
+    { "id": "cq2-math-kingdom",   "title": "Math Kingdom",             "maker": "team",    "team": "Triad Labs",  "event": "cq2", "date": "2026-08-01", "kind": "game", "note": "Also the first project published through Gbenga's platform, at its own subdomain.", "verified": false },
+    { "id": "cq2-codequest-game", "title": "Code Quest, the game",     "maker": "team",    "team": "Pixel Power", "event": "cq2", "date": "2026-08-01", "kind": "game", "verified": false },
+
+    { "id": "post-butterfly-dash","title": "Butterfly Dash",           "maker": "Elsie",   "team": null, "event": "after-cq2", "date": "2026-08", "kind": "game", "url": "codequest/elsie/game/", "note": "Built at home, unprompted, under her own studio name Butterflii. Three modes including a character designer.", "verified": true },
+    { "id": "post-sprinkle-dash", "title": "Rainbow Sprinkle Dash",    "maker": "Emma",    "team": null, "event": "after-cq2", "date": "2026-08", "kind": "game", "url": "codequest/emma/game/", "note": "Built at home aged six, having been too young to compete.", "verified": true }
+  ]
+}
