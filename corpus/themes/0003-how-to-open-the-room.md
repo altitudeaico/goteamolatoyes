@@ -12,23 +12,23 @@ So showing less is not a presentation tactic. It is the whole thing.
 
 ## The move
 
-Explain, do not apologise. There is nothing to apologise for: everything done so far has been good and has benefited the family. But naming how it might *feel* is not the same as conceding a charge, and it is simply good hosting.
+Do not explain yourself and do not apologise. Make it collective from the first sentence, and move the subject immediately from what has been built to what could be built together.
+
+The temptation is to address the imbalance directly, to name that a lot has been built by one person. Resist it. Naming it makes it the subject. Speaking collectively makes it a non-issue.
 
 ## The words
 
-> "One thing before I start. I've built a lot of this out. Partly that's had to happen, and honestly, partly it's just me. When I'm excited about something I run at it. That's how I am, and I don't think that's a bad thing.
+> "Before I start, we've got this to a place I don't think any of us expected. Two events, six kids building real things, and something actually live on the internet.
 >
-> But I know I don't know everything, and I'm not right about everything, even when I've got strong views. And when someone shows you a lot of finished-looking stuff, I know it can land as 'here's the thing' rather than 'what do you reckon'.
+> What I want to talk about today is less about what's been done, and more about what we could do together. Because I think there's more here than any one of us can see on our own.
 >
-> What actually matters to me is what we could build together. So I'd rather show you less today and hear more."
+> So I'd rather show you less today and hear more."
 
 ## Why it works
 
-The pace has a reason, and the reason is passion, which is true and likeable. Nobody argues with someone for caring too much.
+It is collective from the first word. "We've got this to a place" credits everyone without listing anyone, which avoids both the flattery problem and the risk of missing someone out.
 
-The load-bearing sentence is *I'm not right about everything, even when I've got strong views*, because it is the one that actively invites disagreement. Anyone holding a view they have not said yet needs that permission.
-
-And *partly that's had to happen* stops the passion explanation from being the only reason. Someone did have to build it.
+It also removes the self-justification entirely. An earlier draft explained the pace, that when excited about something you run at it, which was true but made the opening about one person and gave the room something to react to. The version above gives them nothing to absolve and nothing to resent. It simply moves the subject from what has been done to what could be done.
 
 ## The commitment it creates
 

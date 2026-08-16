@@ -38,15 +38,13 @@ If the room opens early at minute 18 and runs, let it. Cut the visioning to two 
 
 ## 3–6 · Thanks, and the honest bit
 
-> "Before anything else, thank you for making the time. I know how much is going on for all of you, in every direction, and carving out three quarters of an hour on a normal week is not nothing.
+> "Before anything else, thank you for making the time. I know how much is going on for everyone.
 >
-> One thing before I start. I've built a lot of this out. Partly that's had to happen, and honestly, partly it's just me. When I'm excited about something I run at it. That's how I am, and I don't think that's a bad thing.
+> We've got this to a place I don't think any of us expected. Two events, six kids building real things, and something actually live on the internet.
 >
-> But I know I don't know everything, and I'm not right about everything, even when I've got strong views. And when someone shows you a lot of finished-looking stuff, I know it can land as 'here's the thing' rather than 'what do you reckon'. That's genuinely not where I'm at with it.
+> What I want to talk about today is less about what's been done, and more about what we could do together. Because I think there's more here than any one of us can see on our own.
 >
-> What actually matters to me is what we could build together. So I'd rather show you less today and hear more.
->
-> Quick recap of Code Quest, a few things I noticed that I didn't expect, a bit about where this could go, and then something I want to ask all of you. Jump in whenever."
+> So I'd rather show you less today and hear more. Quick recap, a few things I noticed, where it could go, and then a question for all of us. Jump in whenever."
 
 **That last line is a promise. Keep it.**
 
