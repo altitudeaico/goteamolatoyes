@@ -137,6 +137,10 @@ b{color:var(--pale);font-weight:600}
   z-index:30;font-size:12px;font-weight:400;color:var(--mut);pointer-events:none;opacity:0;transition:.6s}
 .hint.on{opacity:1}
 :where(button,input,a):focus-visible{outline:2px solid var(--volt);outline-offset:3px}
+.s.film{background:#000}
+.s.film .in{max-width:1100px}
+.filmwrap{width:100%;border-radius:20px;overflow:hidden;background:#000;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.filmwrap video{width:100%;max-height:76vh;display:block;background:#000}
 @media(max-width:640px){.wall{max-width:none;gap:10px}.w{width:132px;padding:15px 10px}.w .wa{font-size:26px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -189,6 +193,11 @@ b{color:var(--pale);font-weight:600}
   <!-- 4b -->
   <section class="s" data-note="Let it sit. Say nothing. This is the turn in the whole thing."><div class="glow"></div><div class="in">
     <h1>It's actually<br>not about <span class="volt">AI</span>.</h1>
+  </div></section>
+
+  <!-- 4c -->
+  <section class="s film" data-note="Tap to play. Say nothing before, nothing during, nothing after. Let it end and wait."><div class="in">
+    <div class="filmwrap"><video id="film" src="i-built-it.mp4" controls playsinline preload="metadata"></video></div>
   </div></section>
 
   <!-- 5 -->
@@ -362,8 +371,7 @@ function go(n, v){
 function pauseVideos(){
   var vids = deck.querySelectorAll("video");
   for (var i = 0; i < vids.length; i++){
-    var inThis = slides[idx].contains(vids[i]);
-    if (!inThis) vids[i].pause();
+    if (!slides[idx].contains(vids[i])) vids[i].pause();
   }
 }
 
