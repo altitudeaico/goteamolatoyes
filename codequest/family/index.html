@@ -137,6 +137,12 @@ b{color:var(--pale);font-weight:600}
   z-index:30;font-size:12px;font-weight:400;color:var(--mut);pointer-events:none;opacity:0;transition:.6s}
 .hint.on{opacity:1}
 :where(button,input,a):focus-visible{outline:2px solid var(--volt);outline-offset:3px}
+.two{display:grid;grid-template-columns:1fr;gap:34px;margin-top:38px;text-align:left;max-width:940px;margin-left:auto;margin-right:auto}
+@media(min-width:820px){.two{grid-template-columns:1fr 1fr;gap:56px}}
+.two .t{position:relative}
+.two .n{display:block;font-size:13px;font-weight:600;letter-spacing:.14em;color:var(--volt);margin-bottom:14px}
+.two h2{font-size:clamp(27px,3.6vw,44px);line-height:1.06;letter-spacing:-.035em}
+@media(min-width:820px){.two .t:first-child{border-right:1px solid var(--line);padding-right:56px}}
 .s.film{background:#000}
 .s.film .in{max-width:1100px}
 .filmwrap{width:100%;border-radius:20px;overflow:hidden;background:#000;box-shadow:0 30px 80px rgba(0,0,0,.5)}
@@ -210,9 +216,9 @@ b{color:var(--pale);font-weight:600}
   <!-- 7 -->
   <section class="s" data-note="Name both, then take them one at a time."><div class="glow"></div><div class="in">
     <p class="eyebrow">Two things I'd love to explore</p>
-    <div class="rows">
-      <div class="row"><span class="k">One</span><span class="v">Another Code Quest, with our kids</span></div>
-      <div class="row"><span class="k">Two</span><span class="v">Whether this could go beyond our family</span></div>
+    <div class="two">
+      <div class="t"><span class="n">01</span><h2>Another<br>Code Quest,<br>with our kids.</h2></div>
+      <div class="t"><span class="n">02</span><h2>Whether this<br>could go beyond<br>our family.</h2></div>
     </div>
   </div></section>
 
