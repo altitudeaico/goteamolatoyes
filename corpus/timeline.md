@@ -14,3 +14,4 @@ One line each, in order. Add to the bottom.
 | 2026-08-12 | Positioning debrief with Mayowa. Coding is the medium, publishing is the identity. The Elsie test |
 | 2026-08-15 | Gbenga's platform reaches a working automated pipeline and a first production deploy. Bolaji added as a collaborator |
 | 2026-08-16 | This corpus started |
+| 2026-08-16 | The family says yes. Code Quest 3 agreed, own kids before outside families, a syllabus rather than another heavy day, sessions of 45 to 60 minutes, all recorded. Tentatively 29 August |

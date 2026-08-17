@@ -23,7 +23,8 @@
     "decisions/0002-what-goes-where.md": "Decided. Corpus in git, live data in Supabase",
     "artifacts/builds.json": "Every build by every child, with makers, events and links",
     "events/games-night-2026-03-14.md": "The family games night of 14 March 2026. Where Code Quest came from",
-    "themes/": "Running themes for how Code Quest is talked about, and the run sheet for the family conversation of 17 August"
+    "themes/": "Running themes for how Code Quest is talked about, and the run sheet for the family conversation of 17 August",
+    "events/parents-catchup-2026-08-16.md": "The family conversation of 16 August. Code Quest 3 agreed, syllabus adopted"
   },
   "events": [
     {
@@ -57,8 +58,16 @@
       "name": "Code Quest 3",
       "date": null,
       "format": null,
-      "status": "proposed, to be co-delivered by the family",
+      "status": "agreed. Tentatively 29 August 2026, syllabus based, sessions of 45 to 60 minutes",
       "file": null
+    },
+    {
+      "id": "catchup",
+      "name": "Parents' catch up",
+      "date": "2026-08-16",
+      "format": "virtual",
+      "note": "Code Quest 3 agreed. Own kids first, outside families later",
+      "file": "events/parents-catchup-2026-08-16.md"
     }
   ],
   "people": {
