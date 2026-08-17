@@ -112,6 +112,7 @@ audio{width:100%;margin-top:12px}
 .idea .who{font-size:14.5px;font-weight:600}
 .idea .tag{margin-left:auto;font-size:11px;font-weight:600;border-radius:99px;padding:5px 10px;background:var(--soft);color:var(--mut)}
 .idea .tag.meeting{background:#EEF2FF;color:var(--indigo)}
+.idea .tag.brief{background:#FFF4E5;color:var(--amber)}
 .idea p{font-size:15px;line-height:1.55;color:#494949;margin-top:10px}
 .empty{text-align:center;padding:40px 20px;color:var(--mut)}
 .empty .a{font-size:44px}
@@ -196,7 +197,10 @@ footer{text-align:center;font-size:12.5px;color:var(--mut);margin-top:34px;line-
       <div class="prog"><span class="bar"><i id="pfill" style="width:0%"></i></span><b id="pnum">0 of 7</b></div>
       <div class="chips" id="whoIn"></div>
 
-      <div class="eyebrow" style="margin-top:24px">Raised in this meeting</div>
+      <div class="eyebrow" style="margin-top:24px" id="mBriefHead">What was brought in</div>
+      <div id="mBrief"></div>
+
+      <div class="eyebrow" style="margin-top:24px">What came out of the room</div>
       <div id="mIdeas"></div>
     </div>
   </div>
@@ -549,11 +553,18 @@ function openMeeting(m){
   fillList("mDecisions", m.decisions);
   fillList("mNext", m.next_steps);
   paintProgress();
+  var mine = ideas.filter(function(i){ return i.meeting_id === m.id; });
+  var brief = mine.filter(function(i){ return i.source === "brief"; });
+  var room  = mine.filter(function(i){ return i.source !== "brief"; });
+
+  var bw = document.getElementById("mBrief");
+  bw.innerHTML = "";
+  document.getElementById("mBriefHead").style.display = brief.length ? "block" : "none";
+  brief.forEach(function(i){ bw.appendChild(ideaEl(i)); });
+
   var wrap = document.getElementById("mIdeas");
   wrap.innerHTML = "";
-  ideas.filter(function(i){ return i.meeting_id === m.id; }).forEach(function(i){
-    wrap.appendChild(ideaEl(i));
-  });
+  room.forEach(function(i){ wrap.appendChild(ideaEl(i)); });
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 document.getElementById("mBack").addEventListener("click", function(){
@@ -569,7 +580,7 @@ function ideaEl(i){
   el.className = "idea";
   el.innerHTML = '<div class="top"><span class="av">' + (m ? m.emoji : "\uD83D\uDCAC") + '</span>' +
     '<span class="who">' + i.author + '</span>' +
-    '<span class="tag' + (i.source === "meeting" ? " meeting" : "") + '">' + topicLabel(i.topic) + '</span></div>' +
+    '<span class="tag ' + (i.source || "") + '">' + topicLabel(i.topic) + '</span></div>' +
     (i.body ? '<p></p>' : "");
   if (i.body) el.querySelector("p").textContent = i.body;
   if (i.audio_url){
