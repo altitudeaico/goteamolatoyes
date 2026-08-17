@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FBFBFD">
+<title>Code Quest · Team</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FBFBFD; --card:#FFFFFF; --ink:#1D1D1F; --mut:#86868B; --soft:#F1F1F4; --line:#E8E8ED;
+  --teal:#0D9488; --indigo:#4F46E5; --amber:#B45309; --rose:#C2410C;
+  --sh:0 4px 20px rgba(0,0,0,.05); --shl:0 12px 36px rgba(0,0,0,.1);
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+body{max-width:720px;margin:0 auto;padding:0 18px calc(90px + env(safe-area-inset-bottom))}
+
+/* gate */
+#gate{position:fixed;inset:0;z-index:90;background:var(--bg);display:grid;place-items:center;padding:26px;text-align:center}
+#gate.off{display:none}
+#gate .box{max-width:380px;width:100%}
+#gate .mk{font-size:44px}
+#gate h1{font-size:28px;font-weight:700;letter-spacing:-.03em;margin-top:14px}
+#gate p{font-size:15px;color:var(--mut);margin-top:10px;line-height:1.55}
+input,textarea,select{width:100%;font-family:var(--sans);font-size:16px;color:var(--ink);
+  background:#fff;border:1px solid var(--line);border-radius:16px;padding:15px 18px}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--teal)}
+#gate input{margin-top:20px;text-align:center;border-radius:99px}
+.btn{display:block;width:100%;margin-top:12px;padding:16px;border:0;border-radius:99px;background:var(--ink);
+  color:#fff;font-family:var(--sans);font-size:16px;font-weight:600;cursor:pointer}
+.btn.teal{background:var(--teal)}
+.btn.ghost{background:var(--soft);color:var(--ink)}
+.btn:disabled{opacity:.4}
+#gerr{color:var(--rose);font-size:14px;font-weight:600;margin-top:12px;min-height:20px}
+
+/* who */
+#who{position:fixed;inset:0;z-index:85;background:var(--bg);display:none;place-items:center;padding:26px;text-align:center;overflow-y:auto}
+#who.on{display:grid}
+#who h1{font-size:26px;font-weight:700;letter-spacing:-.03em}
+#who p{font-size:15px;color:var(--mut);margin-top:8px}
+.people{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:24px}
+.person{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px 12px;cursor:pointer;
+  box-shadow:var(--sh);font-family:var(--sans);color:var(--ink);transition:.15s}
+.person:hover{transform:translateY(-2px);box-shadow:var(--shl)}
+.person .e{font-size:30px}
+.person b{display:block;font-size:16px;font-weight:600;margin-top:8px}
+.person span{display:block;font-size:12.5px;color:var(--mut);margin-top:2px}
+
+/* app */
+header{padding:26px 0 6px;display:flex;align-items:center;gap:12px}
+header .id{margin-left:auto;display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);
+  border-radius:99px;padding:6px 8px 6px 12px;box-shadow:var(--sh);cursor:pointer}
+header .id span{font-size:13px;font-weight:600}
+header .id i{font-style:normal;font-size:17px}
+.brand{font-size:17px;font-weight:700;letter-spacing:-.02em}
+.brand em{font-style:normal;color:var(--teal)}
+
+h2{font-size:clamp(26px,6vw,34px);font-weight:700;letter-spacing:-.035em;line-height:1.1;margin-top:14px}
+.lede{font-size:16px;color:#494949;line-height:1.55;margin-top:12px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);margin-bottom:8px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;margin-top:14px;box-shadow:var(--sh)}
+.card h3{font-size:17px;font-weight:600;letter-spacing:-.02em}
+.card p{font-size:14.5px;color:var(--mut);line-height:1.55;margin-top:6px}
+.card ul{margin-top:10px;padding-left:0;list-style:none}
+.card li{font-size:14.5px;color:#494949;line-height:1.5;padding:8px 0 8px 24px;position:relative;border-bottom:1px solid var(--line)}
+.card li:last-child{border-bottom:0}
+.card li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--teal)}
+
+.prog{display:flex;align-items:center;gap:12px;margin-top:14px}
+.prog .bar{flex:1;height:8px;border-radius:99px;background:var(--soft);overflow:hidden}
+.prog .bar i{display:block;height:100%;background:var(--teal);border-radius:99px;transition:width .5s}
+.prog b{font-size:14px;font-weight:600;color:var(--mut);flex:none}
+
+.tabs{display:flex;gap:6px;background:var(--soft);border-radius:16px;padding:5px;margin-top:20px;position:sticky;top:10px;z-index:20}
+.tabs button{flex:1;border:0;background:none;color:var(--mut);font-family:var(--sans);font-size:14px;
+  font-weight:600;padding:11px 4px;border-radius:12px;cursor:pointer}
+.tabs button.on{background:#fff;color:var(--ink);box-shadow:var(--sh)}
+
+.view{display:none}
+.view.on{display:block}
+
+/* compose */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:10px 16px;cursor:pointer;
+  font-family:var(--sans);font-size:14px;font-weight:500;color:var(--ink)}
+.chip.on{border-color:var(--ink);background:var(--ink);color:#fff}
+textarea{min-height:150px;resize:vertical;line-height:1.55;margin-top:12px}
+.rec{display:flex;gap:10px;align-items:center;margin-top:12px}
+.rec button{flex:none;border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:13px 20px;
+  cursor:pointer;font-family:var(--sans);font-size:14.5px;font-weight:600;color:var(--ink)}
+.rec button.live{border-color:var(--rose);color:var(--rose)}
+.rec .t{font-size:14px;color:var(--mut);font-variant-numeric:tabular-nums}
+audio{width:100%;margin-top:12px}
+
+/* ideas */
+.idea{background:#fff;border:1px solid var(--line);border-radius:20px;padding:17px;margin-top:12px;box-shadow:var(--sh)}
+.idea .top{display:flex;align-items:center;gap:9px}
+.idea .av{width:32px;height:32px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-size:16px;flex:none}
+.idea .who{font-size:14.5px;font-weight:600}
+.idea .tag{margin-left:auto;font-size:11px;font-weight:600;border-radius:99px;padding:5px 10px;background:var(--soft);color:var(--mut)}
+.idea .tag.meeting{background:#EEF2FF;color:var(--indigo)}
+.idea p{font-size:15px;line-height:1.55;color:#494949;margin-top:10px}
+.empty{text-align:center;padding:40px 20px;color:var(--mut)}
+.empty .a{font-size:44px}
+.empty b{display:block;font-size:17px;font-weight:600;color:var(--ink);margin-top:12px}
+.empty p{font-size:14.5px;margin-top:6px;line-height:1.5}
+
+/* how it works */
+.hiw{background:#F5F7FF;border:1px solid #E2E6FA;border-radius:16px;padding:14px 16px;margin-top:14px}
+.hiw b{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--indigo)}
+.hiw p{font-size:13.5px;color:#4A4A63;line-height:1.55;margin-top:6px}
+
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(70px);
+  background:var(--ink);color:#fff;border-radius:99px;padding:13px 22px;font-size:14.5px;font-weight:600;
+  z-index:80;opacity:0;transition:.25s;white-space:nowrap;max-width:90vw;box-shadow:var(--shl)}
+.toast.on{transform:translateX(-50%);opacity:1}
+footer{text-align:center;font-size:12.5px;color:var(--mut);margin-top:34px;line-height:1.7}
+:where(button,a,input,textarea,select):focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="box">
+    <div class="mk">&#128273;</div>
+    <h1>Code Quest</h1>
+    <p>A place to put our ideas so they don't get lost in WhatsApp. Ask Bolaji for the word.</p>
+    <form id="gform"><input id="gin" type="password" placeholder="Enter the word" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Passphrase"><button class="btn teal" type="submit">Open</button></form>
+    <div id="gerr"></div>
+  </div>
+</div>
+
+<div id="who">
+  <div class="box" style="max-width:420px;width:100%">
+    <h1>Who's this?</h1>
+    <p>Tap your name. No password, no account.</p>
+    <div class="people" id="people"></div>
+  </div>
+</div>
+
+<div id="app" hidden>
+  <header>
+    <span class="brand">Code<em>Quest</em></span>
+    <span class="id" id="meBtn"><i id="meE"></i><span id="meN"></span></span>
+  </header>
+
+  <div class="tabs">
+    <button class="on" data-v="home" type="button">The brief</button>
+    <button data-v="add" type="button">Add yours</button>
+    <button data-v="all" type="button">Everyone's</button>
+  </div>
+
+  <!-- HOME -->
+  <div class="view on" id="v-home">
+    <h2>What we agreed<br>yesterday.</h2>
+    <p class="lede">And what we said we'd each go away and do.</p>
+
+    <div class="card">
+      <div class="eyebrow">Decided</div>
+      <ul>
+        <li>We're doing another Code Quest with our kids</li>
+        <li>Our own kids first. Outside families later, once there's something to show</li>
+        <li>A syllabus rather than one big day, so it's not all on one person</li>
+        <li>Sessions of 45 to 60 minutes. Not everyone has to be at every one</li>
+        <li>Everything recorded, so it can be used again later</li>
+        <li>A summit at the end that we all judge</li>
+        <li>Tentatively Saturday 29 August, to confirm</li>
+      </ul>
+    </div>
+
+    <div class="card" style="border-color:#CBEBD7;background:#F3FBF6">
+      <div class="eyebrow" style="color:#1E7B45">Your bit</div>
+      <h3>Put your thinking somewhere it won't get lost.</h3>
+      <p>Anything at all. What the next session should be. What the kids need. What you'd want to do. What you think we're missing. Half an idea is fine.</p>
+    </div>
+
+    <div class="eyebrow" style="margin-top:22px">Who's put something in</div>
+    <div class="prog"><span class="bar"><i id="pfill" style="width:0%"></i></span><b id="pnum">0 of 7</b></div>
+    <div class="chips" id="whoIn"></div>
+
+    <div class="hiw">
+      <b>How this works</b>
+      <p>This is a small web app. It isn't in an app store and you don't install it. Everything you type goes into a database, which is just a very organised list that lives on the internet. That's why it shows up on everyone else's phone straight away, and why it's still here next week.</p>
+    </div>
+  </div>
+
+  <!-- ADD -->
+  <div class="view" id="v-add">
+    <h2>Add an idea.</h2>
+    <p class="lede">One thought per idea is best. Add as many as you like.</p>
+
+    <div class="eyebrow" style="margin-top:22px">What's it about?</div>
+    <div class="chips" id="topics"></div>
+
+    <textarea id="body" placeholder="Type it here. Rough is fine, nobody's marking it."></textarea>
+
+    <div class="eyebrow" style="margin-top:18px">Or say it out loud</div>
+    <div class="rec">
+      <button id="recBtn" type="button">&#127908; Record</button>
+      <span class="t" id="recT"></span>
+    </div>
+    <audio id="playback" controls style="display:none"></audio>
+
+    <button class="btn teal" id="saveBtn" type="button">Save it</button>
+    <p style="font-size:13px;color:var(--mut);text-align:center;margin-top:10px">Everyone can see what you add.</p>
+  </div>
+
+  <!-- ALL -->
+  <div class="view" id="v-all">
+    <h2>Everyone's ideas.</h2>
+    <p class="lede" id="allCount"></p>
+    <div class="chips" id="filters" style="margin-top:16px"></div>
+    <div id="list"></div>
+  </div>
+
+  <footer>Private to the family. Nothing here is public.<br>Made for Code Quest, August 2026.</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+
+var SB = "https://kxrhzijqyotyrzhpiflv.supabase.co";
+var KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4cmh6aWpxeW90eXJ6aHBpZmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NjQ1NTUsImV4cCI6MjA5NzU0MDU1NX0.VIZ0Bxxu84AjgN9PuLJusUbmPu1CWGg4VJSvkVhFZ94";
+var H = { "apikey": KEY, "Authorization": "Bearer " + KEY, "Content-Type": "application/json" };
+
+var TOPICS = [
+  { id: "next",     label: "The next Code Quest" },
+  { id: "learning", label: "What they learn" },
+  { id: "app",      label: "The app" },
+  { id: "beyond",   label: "Beyond our family" },
+  { id: "process",  label: "How we work" },
+  { id: "other",    label: "Something else" }
+];
+function topicLabel(id){
+  for (var i = 0; i < TOPICS.length; i++) if (TOPICS[i].id === id) return TOPICS[i].label;
+  return id;
+}
+
+var members = [], me = null, ideas = [], topic = "next", filter = "all", blob = null;
+
+/* toast */
+var toastEl = document.getElementById("toast"), tT = null;
+function toast(m){
+  toastEl.textContent = m; toastEl.classList.add("on");
+  clearTimeout(tT); tT = setTimeout(function(){ toastEl.classList.remove("on"); }, 2600);
+}
+
+/* gate */
+function norm(s){ return String(s||"").trim().toLowerCase().replace(/\s+/g,""); }
+function hash(s){ var h = 5381; for (var i = 0; i < s.length; i++) h = ((h<<5)+h+s.charCodeAt(i))>>>0; return h; }
+var EXPECT = 680225592; /* mathkingdom */
+
+document.getElementById("gform").addEventListener("submit", function(e){
+  e.preventDefault();
+  if (hash(norm(document.getElementById("gin").value)) === EXPECT){
+    try { localStorage.setItem("cq_team_in","1"); } catch(err){}
+    openGate();
+  } else document.getElementById("gerr").textContent = "Not quite. Ask Bolaji.";
+});
+function openGate(){
+  document.getElementById("gate").classList.add("off");
+  var saved = null;
+  try { saved = localStorage.getItem("cq_team_me"); } catch(err){}
+  if (saved){ pickMe(saved, true); } else { document.getElementById("who").classList.add("on"); }
+}
+try { if (localStorage.getItem("cq_team_in") === "1") openGate(); } catch(err){}
+
+/* members */
+function loadMembers(){
+  return fetch(SB + "/rest/v1/cq_members?select=*&order=sort", { headers: H })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      members = d || [];
+      var wrap = document.getElementById("people");
+      wrap.innerHTML = "";
+      members.forEach(function(m){
+        var b = document.createElement("button");
+        b.className = "person"; b.type = "button";
+        b.innerHTML = '<span class="e">' + m.emoji + '</span><b>' + m.name + '</b><span>' + (m.house||"") + '</span>';
+        b.addEventListener("click", function(){ pickMe(m.id); });
+        wrap.appendChild(b);
+      });
+    });
+}
+function memberBy(nameOrId){
+  for (var i = 0; i < members.length; i++)
+    if (members[i].id === nameOrId || members[i].name === nameOrId) return members[i];
+  return null;
+}
+function pickMe(id, silent){
+  var go = function(){
+    var m = memberBy(id);
+    if (!m){ document.getElementById("who").classList.add("on"); return; }
+    me = m;
+    try { localStorage.setItem("cq_team_me", m.id); } catch(err){}
+    document.getElementById("who").classList.remove("on");
+    document.getElementById("app").hidden = false;
+    document.getElementById("meE").textContent = m.emoji;
+    document.getElementById("meN").textContent = m.name;
+    if (!silent) toast("Hello " + m.name);
+    loadIdeas();
+  };
+  if (!members.length) loadMembers().then(go); else go();
+}
+loadMembers();
+
+document.getElementById("meBtn").addEventListener("click", function(){
+  try { localStorage.removeItem("cq_team_me"); } catch(err){}
+  document.getElementById("app").hidden = true;
+  document.getElementById("who").classList.add("on");
+});
+
+/* tabs */
+document.querySelectorAll(".tabs button").forEach(function(b){
+  b.addEventListener("click", function(){
+    document.querySelectorAll(".tabs button").forEach(function(x){ x.classList.remove("on"); });
+    b.classList.add("on");
+    var v = b.getAttribute("data-v");
+    document.querySelectorAll(".view").forEach(function(x){ x.classList.remove("on"); });
+    document.getElementById("v-" + v).classList.add("on");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+});
+
+/* topics */
+(function(){
+  var wrap = document.getElementById("topics");
+  TOPICS.forEach(function(t, i){
+    var b = document.createElement("button");
+    b.className = "chip" + (i === 0 ? " on" : ""); b.type = "button"; b.textContent = t.label;
+    b.addEventListener("click", function(){
+      topic = t.id;
+      wrap.querySelectorAll(".chip").forEach(function(x){ x.classList.remove("on"); });
+      b.classList.add("on");
+    });
+    wrap.appendChild(b);
+  });
+})();
+
+/* recording */
+var rec = null, chunks = [], recT = null, secs = 0;
+document.getElementById("recBtn").addEventListener("click", function(){
+  var btn = this;
+  if (rec && rec.state === "recording"){
+    rec.stop();
+    return;
+  }
+  navigator.mediaDevices.getUserMedia({ audio: true }).then(function(stream){
+    chunks = []; secs = 0;
+    rec = new MediaRecorder(stream);
+    rec.ondataavailable = function(e){ if (e.data.size) chunks.push(e.data); };
+    rec.onstop = function(){
+      clearInterval(recT);
+      stream.getTracks().forEach(function(t){ t.stop(); });
+      blob = new Blob(chunks, { type: chunks[0] ? chunks[0].type : "audio/webm" });
+      var pb = document.getElementById("playback");
+      pb.src = URL.createObjectURL(blob);
+      pb.style.display = "block";
+      btn.textContent = "\uD83C\uDFA4 Record again";
+      btn.classList.remove("live");
+      document.getElementById("recT").textContent = "Recorded";
+    };
+    rec.start();
+    btn.textContent = "\u25A0 Stop";
+    btn.classList.add("live");
+    recT = setInterval(function(){
+      secs++;
+      var m = Math.floor(secs/60), s = secs % 60;
+      document.getElementById("recT").textContent = m + ":" + (s<10?"0":"") + s;
+    }, 1000);
+  }).catch(function(){
+    toast("Can't reach the microphone. Type it instead.");
+  });
+});
+
+/* save */
+document.getElementById("saveBtn").addEventListener("click", function(){
+  var body = document.getElementById("body").value.trim();
+  if (!body && !blob){ toast("Type something or record something first"); return; }
+  var btn = this;
+  btn.disabled = true; btn.textContent = "Saving...";
+
+  var go = function(audioUrl){
+    fetch(SB + "/rest/v1/cq_ideas", {
+      method: "POST",
+      headers: H,
+      body: JSON.stringify({ author: me.name, topic: topic, body: body || null, audio_url: audioUrl || null })
+    }).then(function(r){
+      if (!r.ok) throw new Error("save failed");
+      document.getElementById("body").value = "";
+      blob = null;
+      var pb = document.getElementById("playback");
+      pb.style.display = "none"; pb.removeAttribute("src");
+      document.getElementById("recT").textContent = "";
+      document.getElementById("recBtn").textContent = "\uD83C\uDFA4 Record";
+      btn.disabled = false; btn.textContent = "Save it";
+      toast("Saved. Thank you.");
+      loadIdeas();
+      document.querySelector('.tabs button[data-v="all"]').click();
+    }).catch(function(){
+      btn.disabled = false; btn.textContent = "Save it";
+      toast("That didn't save. Try again?");
+    });
+  };
+
+  if (blob){
+    var name = "voice/" + Date.now() + "-" + me.id + ".webm";
+    fetch(SB + "/storage/v1/object/cqvoice/" + name, {
+      method: "POST",
+      headers: { "apikey": KEY, "Authorization": "Bearer " + KEY, "Content-Type": blob.type || "audio/webm" },
+      body: blob
+    }).then(function(r){
+      if (r.ok) go(SB + "/storage/v1/object/public/cqvoice/" + name);
+      else { toast("Voice note didn't upload, saving the text"); go(null); }
+    }).catch(function(){ go(null); });
+  } else go(null);
+});
+
+/* ideas */
+function loadIdeas(){
+  fetch(SB + "/rest/v1/cq_ideas?select=*&order=created_at.desc", { headers: H, cache: "no-store" })
+    .then(function(r){ return r.json(); })
+    .then(function(d){ ideas = d || []; paintIdeas(); paintProgress(); });
+}
+function paintProgress(){
+  var seen = {};
+  ideas.forEach(function(i){ seen[i.author] = true; });
+  var n = 0;
+  members.forEach(function(m){ if (seen[m.name]) n++; });
+  document.getElementById("pfill").style.width = (members.length ? (n/members.length*100) : 0) + "%";
+  document.getElementById("pnum").textContent = n + " of " + members.length;
+  var wrap = document.getElementById("whoIn");
+  wrap.innerHTML = "";
+  members.forEach(function(m){
+    var s = document.createElement("span");
+    s.className = "chip" + (seen[m.name] ? " on" : "");
+    s.textContent = m.emoji + " " + m.name;
+    wrap.appendChild(s);
+  });
+}
+function paintIdeas(){
+  var list = document.getElementById("list");
+  var shown = ideas.filter(function(i){ return filter === "all" || i.topic === filter; });
+  document.getElementById("allCount").textContent = ideas.length + " ideas so far, including everything from the call.";
+
+  var f = document.getElementById("filters");
+  if (!f.dataset.built){
+    var all = [{ id: "all", label: "Everything" }].concat(TOPICS);
+    all.forEach(function(t){
+      var b = document.createElement("button");
+      b.className = "chip" + (t.id === "all" ? " on" : ""); b.type = "button"; b.textContent = t.label;
+      b.addEventListener("click", function(){
+        filter = t.id;
+        f.querySelectorAll(".chip").forEach(function(x){ x.classList.remove("on"); });
+        b.classList.add("on");
+        paintIdeas();
+      });
+      f.appendChild(b);
+    });
+    f.dataset.built = "1";
+  }
+
+  list.innerHTML = "";
+  if (!shown.length){
+    list.innerHTML = '<div class="empty"><div class="a">\uD83C\uDF31</div><b>Nothing here yet</b><p>Be the first to add something on this.</p></div>';
+    return;
+  }
+  shown.forEach(function(i){
+    var m = memberBy(i.author);
+    var el = document.createElement("div");
+    el.className = "idea";
+    var head = '<div class="top"><span class="av">' + (m ? m.emoji : "\uD83D\uDCAC") + '</span>' +
+      '<span class="who">' + i.author + '</span>' +
+      '<span class="tag' + (i.source === "meeting" ? " meeting" : "") + '">' +
+      (i.source === "meeting" ? "From the call" : topicLabel(i.topic)) + '</span></div>';
+    el.innerHTML = head + (i.body ? '<p></p>' : "");
+    if (i.body) el.querySelector("p").textContent = i.body;
+    if (i.audio_url){
+      var a = document.createElement("audio");
+      a.controls = true; a.src = i.audio_url; a.preload = "none";
+      el.appendChild(a);
+    }
+    list.appendChild(el);
+  });
+}
+})();
+</script>
+</body>
+</html>
