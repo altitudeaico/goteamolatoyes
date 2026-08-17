@@ -121,6 +121,9 @@ audio{width:100%;margin-top:12px}
 
 /* how it works */
 .hiw{background:#F5F7FF;border:1px solid #E2E6FA;border-radius:16px;padding:14px 16px;margin-top:14px}
+.vid{width:100%;aspect-ratio:16/9;border-radius:18px;overflow:hidden;background:#000;border:1px solid var(--line);box-shadow:var(--sh);margin-top:10px}
+.vid iframe{width:100%;height:100%;border:0;display:block}
+.hint{font-size:12.5px;color:var(--mut);margin-top:8px;line-height:1.5}
 .hiw b{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--indigo)}
 .hiw p{font-size:13.5px;color:#4A4A63;line-height:1.55;margin-top:6px}
 
@@ -182,6 +185,13 @@ footer{text-align:center;font-size:12.5px;color:var(--mut);margin-top:34px;line-
       <h2 id="mTitle" style="margin-top:14px"></h2>
       <p class="lede" id="mSummary"></p>
       <div class="chips" id="mPresent" style="margin-top:14px"></div>
+
+      <div id="mRec" style="display:none">
+        <div class="eyebrow" style="margin-top:22px">Watch it back</div>
+        <div class="vid"><iframe id="mRecFrame" allow="autoplay" allowfullscreen title="Meeting recording"></iframe></div>
+        <p class="hint" id="mRecNote">If it says you need access, ask Bolaji to share the recording with your Google account.</p>
+      </div>
+      <a id="mNotes" class="btn ghost" href="#" target="_blank" rel="noopener" style="display:none;text-decoration:none;text-align:center">Read the notes and transcript</a>
 
       <div class="card">
         <div class="eyebrow">What we agreed</div>
@@ -550,6 +560,18 @@ function openMeeting(m){
     s.textContent = (mem ? mem.emoji + " " : "") + n;
     pres.appendChild(s);
   });
+  var rec = document.getElementById("mRec");
+  if (m.recording_url){
+    rec.style.display = "block";
+    document.getElementById("mRecFrame").src = m.recording_url;
+  } else {
+    rec.style.display = "none";
+    document.getElementById("mRecFrame").removeAttribute("src");
+  }
+  var nt = document.getElementById("mNotes");
+  if (m.notes_url){ nt.style.display = "block"; nt.href = m.notes_url; }
+  else nt.style.display = "none";
+
   fillList("mDecisions", m.decisions);
   fillList("mNext", m.next_steps);
   paintProgress();
@@ -568,6 +590,7 @@ function openMeeting(m){
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 document.getElementById("mBack").addEventListener("click", function(){
+  document.getElementById("mRecFrame").removeAttribute("src");
   document.getElementById("mDetail").style.display = "none";
   document.getElementById("mList").style.display = "block";
   window.scrollTo({ top: 0, behavior: "smooth" });
