@@ -144,6 +144,23 @@ audio{width:100%;margin-top:12px}
 
 /* how it works */
 .hiw{background:#F5F7FF;border:1px solid #E2E6FA;border-radius:16px;padding:14px 16px;margin-top:14px}
+#reader{position:fixed;inset:0;z-index:88;background:var(--bg);display:none;flex-direction:column}
+#reader.on{display:flex}
+.rbar{display:flex;gap:10px;align-items:center;padding:calc(12px + env(safe-area-inset-top)) 16px 12px;
+  border-bottom:1px solid var(--line);background:rgba(251,251,253,.94);backdrop-filter:blur(12px);flex:none}
+.rbar button{border:1px solid var(--line);background:#fff;width:40px;height:40px;border-radius:50%;
+  font-size:19px;color:var(--ink);cursor:pointer;flex:none;font-family:var(--sans)}
+.rsearch{flex:1}
+.rsearch input{border-radius:99px;padding:11px 18px;font-size:16px}
+.rbody{flex:1;overflow-y:auto;padding:18px 18px calc(40px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto;width:100%}
+.rnote{font-size:13.5px;color:var(--mut);line-height:1.5;background:var(--soft);border-radius:14px;padding:13px 15px}
+.chap{margin-top:26px}
+.chap .ts{font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--teal);font-variant-numeric:tabular-nums}
+.turn{margin-top:14px}
+.turn .sp{font-size:14.5px;font-weight:600;letter-spacing:-.01em}
+.turn .wd{font-size:16.5px;line-height:1.6;color:#494949;margin-top:5px}
+.turn mark{background:#FFF2B8;color:var(--ink);border-radius:3px;padding:0 2px}
+.rempty{text-align:center;color:var(--mut);padding:40px 0;font-size:15px}
 .vid{width:100%;aspect-ratio:16/9;border-radius:18px;overflow:hidden;background:#000;border:1px solid var(--line);box-shadow:var(--sh);margin-top:10px}
 .vid iframe{width:100%;height:100%;border:0;display:block}
 .hint{font-size:12.5px;color:var(--mut);margin-top:8px;line-height:1.5}
@@ -222,7 +239,8 @@ footer{text-align:center;font-size:12.5px;color:var(--mut);margin-top:34px;line-
         <div class="vid"><iframe id="mRecFrame" allow="autoplay" allowfullscreen title="Meeting recording"></iframe></div>
         <p class="hint" id="mRecNote">If it says you need access, ask Bolaji to share the recording with your Google account.</p>
       </div>
-      <a id="mNotes" class="btn ghost" href="#" target="_blank" rel="noopener" style="display:none;text-decoration:none;text-align:center">Read the notes and transcript</a>
+      <button id="mRead" class="btn ghost" type="button" style="display:none">Read what everyone said</button>
+      <a id="mNotes" class="tiny" href="#" target="_blank" rel="noopener" style="display:none;text-align:center;color:var(--mut)">Open the original notes in Google Docs</a>
 
       <div class="card">
         <div class="eyebrow">What we agreed</div>
@@ -273,6 +291,15 @@ footer{text-align:center;font-size:12.5px;color:var(--mut);margin-top:34px;line-
 
     <button class="btn teal" id="saveBtn" type="button">Save my idea</button>
     <p class="tiny" style="text-align:center">Everyone in the family can see it. Nobody outside can.</p>
+  </div>
+
+  <!-- READER -->
+  <div id="reader">
+    <div class="rbar">
+      <button id="rClose" type="button" aria-label="Close">&larr;</button>
+      <div class="rsearch"><input id="rFind" type="search" placeholder="Search what was said" autocomplete="off"></div>
+    </div>
+    <div class="rbody" id="rBody"></div>
   </div>
 
   <!-- TODO -->
@@ -625,6 +652,9 @@ function openMeeting(m){
   var nt = document.getElementById("mNotes");
   if (m.notes_url){ nt.style.display = "block"; nt.href = m.notes_url; }
   else nt.style.display = "none";
+  var rd = document.getElementById("mRead");
+  rd.style.display = "block";
+  rd.onclick = function(){ TR = null; openReader(m); };
 
   var aw = document.getElementById("mActions");
   aw.innerHTML = "";
@@ -654,6 +684,61 @@ document.getElementById("mBack").addEventListener("click", function(){
   document.getElementById("mList").style.display = "block";
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
+
+/* transcript reader */
+var TR = null, TRmeeting = null;
+function openReader(m){
+  TRmeeting = m;
+  document.getElementById("reader").classList.add("on");
+  var body = document.getElementById("rBody");
+  if (TR){ paintReader(""); return; }
+  body.innerHTML = '<div class="rempty">Loading...</div>';
+  fetch("transcripts/" + m.id + ".json", { cache: "no-store" })
+    .then(function(r){ return r.json(); })
+    .then(function(d){ TR = d; paintReader(""); })
+    .catch(function(){ body.innerHTML = '<div class="rempty">Could not load this one.</div>'; });
+}
+function esc(s){ return String(s).replace(/[&<>]/g, function(c){ return ({"&":"&amp;","<":"&lt;",">":"&gt;"})[c]; }); }
+function paintReader(q){
+  var body = document.getElementById("rBody");
+  body.innerHTML = "";
+  if (!TR) return;
+  if (TR.note){
+    var n = document.createElement("div");
+    n.className = "rnote";
+    n.textContent = TR.note;
+    body.appendChild(n);
+  }
+  var ql = (q || "").trim().toLowerCase();
+  var hits = 0;
+  TR.chapters.forEach(function(c){
+    var turns = c.turns.filter(function(t){
+      return !ql || t.w.toLowerCase().indexOf(ql) > -1 || t.s.toLowerCase().indexOf(ql) > -1;
+    });
+    if (!turns.length) return;
+    hits += turns.length;
+    var ch = document.createElement("div");
+    ch.className = "chap";
+    ch.innerHTML = '<div class="ts">' + c.t + '</div>';
+    turns.forEach(function(t){
+      var w = esc(t.w);
+      if (ql){
+        var re = new RegExp("(" + ql.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "ig");
+        w = w.replace(re, "<mark>$1</mark>");
+      }
+      var el = document.createElement("div");
+      el.className = "turn";
+      el.innerHTML = '<div class="sp">' + esc(t.s) + '</div><div class="wd">' + w + '</div>';
+      ch.appendChild(el);
+    });
+    body.appendChild(ch);
+  });
+  if (!hits) body.innerHTML = '<div class="rempty">Nothing matches that.</div>';
+}
+document.getElementById("rClose").addEventListener("click", function(){
+  document.getElementById("reader").classList.remove("on");
+});
+document.getElementById("rFind").addEventListener("input", function(){ paintReader(this.value); });
 
 /* actions */
 var actions = [];
