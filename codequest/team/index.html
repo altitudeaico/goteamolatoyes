@@ -158,43 +158,46 @@ footer{text-align:center;font-size:12.5px;color:var(--mut);margin-top:34px;line-
   </header>
 
   <div class="tabs">
-    <button class="on" data-v="home" type="button">The brief</button>
+    <button class="on" data-v="home" type="button">Meetings</button>
     <button data-v="add" type="button">Add yours</button>
     <button data-v="all" type="button">Everyone's</button>
   </div>
 
-  <!-- HOME -->
+  <!-- MEETINGS -->
   <div class="view on" id="v-home">
-    <h2>What we agreed<br>yesterday.</h2>
-    <p class="lede">And what we said we'd each go away and do.</p>
-
-    <div class="card">
-      <div class="eyebrow">Decided</div>
-      <ul>
-        <li>We're doing another Code Quest with our kids</li>
-        <li>Our own kids first. Outside families later, once there's something to show</li>
-        <li>A syllabus rather than one big day, so it's not all on one person</li>
-        <li>Sessions of 45 to 60 minutes. Not everyone has to be at every one</li>
-        <li>Everything recorded, so it can be used again later</li>
-        <li>A summit at the end that we all judge</li>
-        <li>Tentatively Saturday 29 August, to confirm</li>
-      </ul>
+    <div id="mList">
+      <h2>Meetings.</h2>
+      <p class="lede">What we talked about, what we agreed, and what came out of it.</p>
+      <div id="meetings"></div>
+      <div class="hiw">
+        <b>How this works</b>
+        <p>This is a small web app. It isn't in an app store and you don't install it. Everything goes into a database, which is just a very organised list that lives on the internet. That's why it shows up on everyone else's phone straight away, and why it's still here next week.</p>
+        <p style="margin-top:8px">If you record a voice note, your phone writes down what you say as you say it. It gets things wrong sometimes, so you can correct it before you save. We keep both, the recording and the words.</p>
+      </div>
     </div>
 
-    <div class="card" style="border-color:#CBEBD7;background:#F3FBF6">
-      <div class="eyebrow" style="color:#1E7B45">Your bit</div>
-      <h3>Put your thinking somewhere it won't get lost.</h3>
-      <p>Anything at all. What the next session should be. What the kids need. What you'd want to do. What you think we're missing. Half an idea is fine.</p>
-    </div>
+    <div id="mDetail" style="display:none">
+      <button class="chip" id="mBack" type="button" style="margin-top:20px">&larr; All meetings</button>
+      <h2 id="mTitle" style="margin-top:14px"></h2>
+      <p class="lede" id="mSummary"></p>
+      <div class="chips" id="mPresent" style="margin-top:14px"></div>
 
-    <div class="eyebrow" style="margin-top:22px">Who's put something in</div>
-    <div class="prog"><span class="bar"><i id="pfill" style="width:0%"></i></span><b id="pnum">0 of 7</b></div>
-    <div class="chips" id="whoIn"></div>
+      <div class="card">
+        <div class="eyebrow">What we agreed</div>
+        <ul id="mDecisions"></ul>
+      </div>
 
-    <div class="hiw">
-      <b>How this works</b>
-      <p>This is a small web app. It isn't in an app store and you don't install it. Everything you type goes into a database, which is just a very organised list that lives on the internet. That's why it shows up on everyone else's phone straight away, and why it's still here next week.</p>
-      <p style="margin-top:8px">If you record a voice note, your phone writes down what you say as you say it. It gets things wrong sometimes, so you can correct it before you save. We keep both, the recording and the words.</p>
+      <div class="card" style="border-color:#CBEBD7;background:#F3FBF6">
+        <div class="eyebrow" style="color:#1E7B45">What we each said we'd do</div>
+        <ul id="mNext"></ul>
+      </div>
+
+      <div class="eyebrow" style="margin-top:22px">Who's put something in since</div>
+      <div class="prog"><span class="bar"><i id="pfill" style="width:0%"></i></span><b id="pnum">0 of 7</b></div>
+      <div class="chips" id="whoIn"></div>
+
+      <div class="eyebrow" style="margin-top:24px">Raised in this meeting</div>
+      <div id="mIdeas"></div>
     </div>
   </div>
 
@@ -321,6 +324,7 @@ function pickMe(id, silent){
     document.getElementById("meN").textContent = m.name;
     if (!silent) toast("Hello " + m.name);
     loadIdeas();
+    loadMeetings();
   };
   if (!members.length) loadMembers().then(go); else go();
 }
@@ -484,11 +488,108 @@ document.getElementById("saveBtn").addEventListener("click", function(){
   } else go(null);
 });
 
+/* meetings */
+var meetings = [];
+function loadMeetings(){
+  fetch(SB + "/rest/v1/cq_meetings?select=*&order=held_on.desc", { headers: H })
+    .then(function(r){ return r.json(); })
+    .then(function(d){ meetings = d || []; paintMeetings(); });
+}
+function fmtDate(s){
+  var d = new Date(s + "T12:00:00");
+  return d.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
+}
+function paintMeetings(){
+  var wrap = document.getElementById("meetings");
+  wrap.innerHTML = "";
+  if (!meetings.length){
+    wrap.innerHTML = '<div class="empty"><div class="a">\uD83D\uDDD3\uFE0F</div><b>No meetings yet</b></div>';
+    return;
+  }
+  meetings.forEach(function(m){
+    var n = ideas.filter(function(i){ return i.meeting_id === m.id; }).length;
+    var el = document.createElement("button");
+    el.className = "card"; el.type = "button";
+    el.style.cssText = "display:block;width:100%;text-align:left;cursor:pointer;font-family:var(--sans)";
+    el.innerHTML = '<div class="eyebrow" style="margin-bottom:6px">' + fmtDate(m.held_on) + '</div>' +
+      '<h3>' + m.title + '</h3>' +
+      '<p></p>' +
+      '<div class="chips" style="margin-top:12px">' +
+        '<span class="chip">' + (m.decisions ? m.decisions.length : 0) + ' decisions</span>' +
+        '<span class="chip">' + n + ' ideas</span>' +
+      '</div>';
+    el.querySelector("p").textContent = m.summary || "";
+    el.addEventListener("click", function(){ openMeeting(m); });
+    wrap.appendChild(el);
+  });
+}
+function fillList(id, arr){
+  var ul = document.getElementById(id);
+  ul.innerHTML = "";
+  (arr || []).forEach(function(t){
+    var li = document.createElement("li");
+    li.textContent = t;
+    ul.appendChild(li);
+  });
+}
+function openMeeting(m){
+  document.getElementById("mList").style.display = "none";
+  document.getElementById("mDetail").style.display = "block";
+  document.getElementById("mTitle").textContent = m.title;
+  document.getElementById("mSummary").textContent = m.summary || "";
+  var pres = document.getElementById("mPresent");
+  pres.innerHTML = "";
+  (m.present || []).forEach(function(n){
+    var mem = memberBy(n);
+    var s = document.createElement("span");
+    s.className = "chip";
+    s.textContent = (mem ? mem.emoji + " " : "") + n;
+    pres.appendChild(s);
+  });
+  fillList("mDecisions", m.decisions);
+  fillList("mNext", m.next_steps);
+  paintProgress();
+  var wrap = document.getElementById("mIdeas");
+  wrap.innerHTML = "";
+  ideas.filter(function(i){ return i.meeting_id === m.id; }).forEach(function(i){
+    wrap.appendChild(ideaEl(i));
+  });
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+document.getElementById("mBack").addEventListener("click", function(){
+  document.getElementById("mDetail").style.display = "none";
+  document.getElementById("mList").style.display = "block";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
 /* ideas */
+function ideaEl(i){
+  var m = memberBy(i.author);
+  var el = document.createElement("div");
+  el.className = "idea";
+  el.innerHTML = '<div class="top"><span class="av">' + (m ? m.emoji : "\uD83D\uDCAC") + '</span>' +
+    '<span class="who">' + i.author + '</span>' +
+    '<span class="tag' + (i.source === "meeting" ? " meeting" : "") + '">' + topicLabel(i.topic) + '</span></div>' +
+    (i.body ? '<p></p>' : "");
+  if (i.body) el.querySelector("p").textContent = i.body;
+  if (i.audio_url){
+    var a = document.createElement("audio");
+    a.controls = true; a.src = i.audio_url; a.preload = "none";
+    el.appendChild(a);
+  }
+  if (i.transcript){
+    var tr = document.createElement("div");
+    tr.className = "tr";
+    tr.textContent = i.transcript;
+    el.appendChild(tr);
+  }
+  return el;
+}
+
 function loadIdeas(){
   fetch(SB + "/rest/v1/cq_ideas?select=*&order=created_at.desc", { headers: H, cache: "no-store" })
     .then(function(r){ return r.json(); })
-    .then(function(d){ ideas = d || []; paintIdeas(); paintProgress(); });
+    .then(function(d){ ideas = d || []; paintIdeas(); paintProgress(); paintMeetings(); });
 }
 function paintProgress(){
   var seen = {};
@@ -533,29 +634,7 @@ function paintIdeas(){
     list.innerHTML = '<div class="empty"><div class="a">\uD83C\uDF31</div><b>Nothing here yet</b><p>Be the first to add something on this.</p></div>';
     return;
   }
-  shown.forEach(function(i){
-    var m = memberBy(i.author);
-    var el = document.createElement("div");
-    el.className = "idea";
-    var head = '<div class="top"><span class="av">' + (m ? m.emoji : "\uD83D\uDCAC") + '</span>' +
-      '<span class="who">' + i.author + '</span>' +
-      '<span class="tag' + (i.source === "meeting" ? " meeting" : "") + '">' +
-      (i.source === "meeting" ? "From the call" : topicLabel(i.topic)) + '</span></div>';
-    el.innerHTML = head + (i.body ? '<p></p>' : "");
-    if (i.body) el.querySelector("p").textContent = i.body;
-    if (i.audio_url){
-      var a = document.createElement("audio");
-      a.controls = true; a.src = i.audio_url; a.preload = "none";
-      el.appendChild(a);
-    }
-    if (i.transcript){
-      var tr = document.createElement("div");
-      tr.className = "tr";
-      tr.textContent = i.transcript;
-      el.appendChild(tr);
-    }
-    list.appendChild(el);
-  });
+  shown.forEach(function(i){ list.appendChild(ideaEl(i)); });
 }
 })();
 </script>
