@@ -97,6 +97,13 @@ textarea{min-height:150px;resize:vertical;line-height:1.55;margin-top:12px}
 .rec button.live{border-color:var(--rose);color:var(--rose)}
 .rec .t{font-size:14px;color:var(--mut);font-variant-numeric:tabular-nums}
 audio{width:100%;margin-top:12px}
+.live{display:none;align-items:flex-start;gap:10px;background:#FFF6ED;border:1px solid #F5DFC5;
+  border-radius:16px;padding:14px 16px;margin-top:12px;font-size:15px;line-height:1.5;color:#7A4A12}
+.live.on{display:flex}
+.live .dot{width:10px;height:10px;border-radius:50%;background:var(--rose);flex:none;margin-top:5px;animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.25}}
+@media(prefers-reduced-motion:reduce){.live .dot{animation:none}}
+.idea .tr{font-size:13.5px;color:var(--mut);line-height:1.5;margin-top:8px;padding-left:12px;border-left:2px solid var(--line)}
 
 /* ideas */
 .idea{background:#fff;border:1px solid var(--line);border-radius:20px;padding:17px;margin-top:12px;box-shadow:var(--sh)}
@@ -187,6 +194,7 @@ footer{text-align:center;font-size:12.5px;color:var(--mut);margin-top:34px;line-
     <div class="hiw">
       <b>How this works</b>
       <p>This is a small web app. It isn't in an app store and you don't install it. Everything you type goes into a database, which is just a very organised list that lives on the internet. That's why it shows up on everyone else's phone straight away, and why it's still here next week.</p>
+      <p style="margin-top:8px">If you record a voice note, your phone writes down what you say as you say it. It gets things wrong sometimes, so you can correct it before you save. We keep both, the recording and the words.</p>
     </div>
   </div>
 
@@ -205,7 +213,12 @@ footer{text-align:center;font-size:12.5px;color:var(--mut);margin-top:34px;line-
       <button id="recBtn" type="button">&#127908; Record</button>
       <span class="t" id="recT"></span>
     </div>
+    <div id="live" class="live"><span class="dot"></span><span id="liveTx">Listening...</span></div>
     <audio id="playback" controls style="display:none"></audio>
+    <div id="trWrap" style="display:none">
+      <div class="eyebrow" style="margin-top:16px">What we heard <span style="text-transform:none;letter-spacing:0;font-weight:400">&middot; tidy it up if it got anything wrong</span></div>
+      <textarea id="transcript" style="min-height:110px" placeholder="Transcript will appear here"></textarea>
+    </div>
 
     <button class="btn teal" id="saveBtn" type="button">Save it</button>
     <p style="font-size:13px;color:var(--mut);text-align:center;margin-top:10px">Everyone can see what you add.</p>
@@ -346,8 +359,39 @@ document.querySelectorAll(".tabs button").forEach(function(b){
   });
 })();
 
-/* recording */
+/* recording, with live transcription where the browser supports it */
 var rec = null, chunks = [], recT = null, secs = 0;
+var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+var sr = null, srFinal = "";
+
+function startSR(){
+  if (!SR) return;
+  try {
+    sr = new SR();
+    sr.continuous = true;
+    sr.interimResults = true;
+    sr.lang = "en-GB";
+    srFinal = "";
+    sr.onresult = function(e){
+      var interim = "";
+      for (var i = e.resultIndex; i < e.results.length; i++){
+        var t = e.results[i][0].transcript;
+        if (e.results[i].isFinal) srFinal += t + " "; else interim += t;
+      }
+      document.getElementById("liveTx").textContent = (srFinal + interim).trim() || "Listening...";
+    };
+    sr.onerror = function(){};
+    sr.onend = function(){ if (rec && rec.state === "recording"){ try { sr.start(); } catch(err){} } };
+    sr.start();
+  } catch(err){ sr = null; }
+}
+function stopSR(){
+  if (!sr) return;
+  try { sr.onend = null; sr.stop(); } catch(err){}
+  var t = srFinal.trim();
+  sr = null;
+  return t;
+}
 document.getElementById("recBtn").addEventListener("click", function(){
   var btn = this;
   if (rec && rec.state === "recording"){
@@ -368,8 +412,20 @@ document.getElementById("recBtn").addEventListener("click", function(){
       btn.textContent = "\uD83C\uDFA4 Record again";
       btn.classList.remove("live");
       document.getElementById("recT").textContent = "Recorded";
+      var words = stopSR();
+      document.getElementById("live").classList.remove("on");
+      if (words){
+        document.getElementById("trWrap").style.display = "block";
+        var ta = document.getElementById("transcript");
+        ta.value = ta.value ? (ta.value + " " + words) : words;
+      } else if (!SR){
+        toast("Saved the audio. This browser can't transcribe.");
+      }
     };
     rec.start();
+    startSR();
+    document.getElementById("live").classList.add("on");
+    document.getElementById("liveTx").textContent = SR ? "Listening..." : "Recording. This browser can't transcribe, but the audio is saving.";
     btn.textContent = "\u25A0 Stop";
     btn.classList.add("live");
     recT = setInterval(function(){
@@ -385,7 +441,8 @@ document.getElementById("recBtn").addEventListener("click", function(){
 /* save */
 document.getElementById("saveBtn").addEventListener("click", function(){
   var body = document.getElementById("body").value.trim();
-  if (!body && !blob){ toast("Type something or record something first"); return; }
+  var tr = document.getElementById("transcript").value.trim();
+  if (!body && !blob && !tr){ toast("Type something or record something first"); return; }
   var btn = this;
   btn.disabled = true; btn.textContent = "Saving...";
 
@@ -393,10 +450,12 @@ document.getElementById("saveBtn").addEventListener("click", function(){
     fetch(SB + "/rest/v1/cq_ideas", {
       method: "POST",
       headers: H,
-      body: JSON.stringify({ author: me.name, topic: topic, body: body || null, audio_url: audioUrl || null })
+      body: JSON.stringify({ author: me.name, topic: topic, body: body || null, audio_url: audioUrl || null, transcript: tr || null })
     }).then(function(r){
       if (!r.ok) throw new Error("save failed");
       document.getElementById("body").value = "";
+      document.getElementById("transcript").value = "";
+      document.getElementById("trWrap").style.display = "none";
       blob = null;
       var pb = document.getElementById("playback");
       pb.style.display = "none"; pb.removeAttribute("src");
@@ -488,6 +547,12 @@ function paintIdeas(){
       var a = document.createElement("audio");
       a.controls = true; a.src = i.audio_url; a.preload = "none";
       el.appendChild(a);
+    }
+    if (i.transcript){
+      var tr = document.createElement("div");
+      tr.className = "tr";
+      tr.textContent = i.transcript;
+      el.appendChild(tr);
     }
     list.appendChild(el);
   });
