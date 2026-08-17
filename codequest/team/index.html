@@ -117,6 +117,18 @@ audio{width:100%;margin-top:12px}
 .idea .tr{font-size:13.5px;color:var(--mut);line-height:1.5;margin-top:8px;padding-left:12px;border-left:2px solid var(--line)}
 
 /* ideas */
+.act{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px;margin-top:10px;
+  box-shadow:var(--sh);display:flex;gap:14px;align-items:flex-start;cursor:pointer;transition:.15s}
+.act:active{transform:scale(.99)}
+.act .tick{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);flex:none;margin-top:2px;
+  display:grid;place-items:center;font-size:15px;color:transparent;transition:.15s}
+.act.done .tick{background:var(--teal);border-color:var(--teal);color:#fff}
+.act.done .ttl{text-decoration:line-through;color:var(--mut)}
+.act .ttl{font-size:16.5px;font-weight:600;letter-spacing:-.02em;line-height:1.3}
+.act .dt{font-size:14px;color:var(--mut);line-height:1.5;margin-top:5px}
+.act .own{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.act .own span{font-size:12.5px;font-weight:500;background:var(--soft);color:var(--ink);border-radius:99px;padding:5px 11px}
+.act .kd{font-size:11px;font-weight:600;border-radius:99px;padding:4px 10px;background:#FFF4E5;color:var(--amber);margin-left:auto;flex:none}
 .idea{background:#fff;border:1px solid var(--line);border-radius:20px;padding:17px;margin-top:12px;box-shadow:var(--sh)}
 .idea .top{display:flex;align-items:center;gap:9px}
 .idea .av{width:32px;height:32px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-size:16px;flex:none}
@@ -182,6 +194,7 @@ footer{text-align:center;font-size:12.5px;color:var(--mut);margin-top:34px;line-
   <div class="tabs">
     <button class="on" data-v="home" type="button">Our meetings</button>
     <button data-v="add" type="button">Add an idea</button>
+    <button data-v="todo" type="button">What's next</button>
     <button data-v="all" type="button">All ideas</button>
   </div>
 
@@ -216,14 +229,12 @@ footer{text-align:center;font-size:12.5px;color:var(--mut);margin-top:34px;line-
         <ul id="mDecisions"></ul>
       </div>
 
-      <div class="card" style="border-color:#CBEBD7;background:#F3FBF6">
-        <div class="eyebrow" style="color:#1E7B45">What we each said we'd do</div>
-        <ul id="mNext"></ul>
-      </div>
-
       <div class="eyebrow" style="margin-top:22px">Who's put something in since</div>
       <div class="prog"><span class="bar"><i id="pfill" style="width:0%"></i></span><b id="pnum">0 of 7</b></div>
       <div class="chips" id="whoIn"></div>
+
+      <div class="eyebrow" style="margin-top:24px" id="mActHead">What we said we'd do</div>
+      <div id="mActions"></div>
 
       <div class="eyebrow" style="margin-top:24px" id="mBriefHead">What was brought in</div>
       <div id="mBrief"></div>
@@ -262,6 +273,14 @@ footer{text-align:center;font-size:12.5px;color:var(--mut);margin-top:34px;line-
 
     <button class="btn teal" id="saveBtn" type="button">Save my idea</button>
     <p class="tiny" style="text-align:center">Everyone in the family can see it. Nobody outside can.</p>
+  </div>
+
+  <!-- TODO -->
+  <div class="view" id="v-todo">
+    <h2>What's next.</h2>
+    <p class="lede">Things we said we'd do, and things we still need to decide. Tap one when it's done.</p>
+    <div class="prog" style="margin-top:18px"><span class="bar"><i id="tfill" style="width:0%"></i></span><b id="tnum"></b></div>
+    <div id="todoList"></div>
   </div>
 
   <!-- ALL -->
@@ -373,6 +392,7 @@ function pickMe(id, silent){
     if (!silent) toast("Hello " + m.name);
     loadIdeas();
     loadMeetings();
+    loadActions();
   };
   if (!members.length) loadMembers().then(go); else go();
 }
@@ -606,8 +626,13 @@ function openMeeting(m){
   if (m.notes_url){ nt.style.display = "block"; nt.href = m.notes_url; }
   else nt.style.display = "none";
 
+  var aw = document.getElementById("mActions");
+  aw.innerHTML = "";
+  var mine2 = actions.filter(function(a){ return a.meeting_id === m.id; });
+  document.getElementById("mActHead").style.display = mine2.length ? "block" : "none";
+  mine2.forEach(function(a){ aw.appendChild(actEl(a)); });
+
   fillList("mDecisions", m.decisions);
-  fillList("mNext", m.next_steps);
   paintProgress();
   var mine = ideas.filter(function(i){ return i.meeting_id === m.id; });
   var brief = mine.filter(function(i){ return i.source === "brief"; });
@@ -629,6 +654,66 @@ document.getElementById("mBack").addEventListener("click", function(){
   document.getElementById("mList").style.display = "block";
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
+
+/* actions */
+var actions = [];
+function loadActions(){
+  fetch(SB + "/rest/v1/cq_actions?select=*&order=sort", { headers: H, cache: "no-store" })
+    .then(function(r){ return r.json(); })
+    .then(function(d){ actions = d || []; paintActions(); });
+}
+function actEl(a){
+  var el = document.createElement("div");
+  el.className = "act" + (a.status === "done" ? " done" : "");
+  var own = (a.owners || []).map(function(n){
+    var m = memberBy(n);
+    return '<span>' + (m ? m.emoji + " " : "") + n + '</span>';
+  }).join("");
+  el.innerHTML = '<span class="tick">\u2713</span><span style="flex:1">' +
+    '<span class="ttl"></span>' +
+    (a.detail ? '<span class="dt"></span>' : "") +
+    '<span class="own">' + own + '</span></span>' +
+    (a.kind === "decision" ? '<span class="kd">To decide</span>' : "");
+  el.querySelector(".ttl").textContent = a.title;
+  if (a.detail) el.querySelector(".dt").textContent = a.detail;
+  el.addEventListener("click", function(){ toggleAct(a, el); });
+  return el;
+}
+function toggleAct(a, el){
+  var next = a.status === "done" ? "open" : "done";
+  a.status = next;
+  el.classList.toggle("done", next === "done");
+  paintActions();
+  fetch(SB + "/rest/v1/cq_actions?id=eq." + a.id, {
+    method: "PATCH", headers: H,
+    body: JSON.stringify({ status: next, done_at: next === "done" ? new Date().toISOString() : null })
+  }).then(function(r){
+    if (r.ok) toast(next === "done" ? "Ticked off" : "Back on the list");
+    else toast("Couldn't save that");
+  }).catch(function(){ toast("Couldn't save that"); });
+}
+function paintActions(){
+  var open = actions.filter(function(a){ return a.status !== "done"; });
+  var done = actions.filter(function(a){ return a.status === "done"; });
+  var wrap = document.getElementById("todoList");
+  wrap.innerHTML = "";
+  if (!actions.length){
+    wrap.innerHTML = '<div class="empty"><div class="a">\u2705</div><b>Nothing outstanding</b></div>';
+  } else {
+    open.forEach(function(a){ wrap.appendChild(actEl(a)); });
+    if (done.length){
+      var hd = document.createElement("div");
+      hd.className = "eyebrow";
+      hd.style.marginTop = "28px";
+      hd.textContent = "Done";
+      wrap.appendChild(hd);
+      done.forEach(function(a){ wrap.appendChild(actEl(a)); });
+    }
+  }
+  var pct = actions.length ? (done.length / actions.length * 100) : 0;
+  document.getElementById("tfill").style.width = pct + "%";
+  document.getElementById("tnum").textContent = done.length + " of " + actions.length + " done";
+}
 
 /* ideas */
 function ideaEl(i){
