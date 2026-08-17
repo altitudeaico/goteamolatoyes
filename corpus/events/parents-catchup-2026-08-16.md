@@ -63,4 +63,4 @@ Recorded because the whole point of asking was to get these.
 
 ## Note on attribution
 
-Bolaji credited Aunty May May in the meeting for the product thinking and positioning direction that reframed Code Quest away from coding. The positioning work recorded elsewhere in this corpus as Mayowa's is hers.
+Bolaji credited Aunty Mai in the meeting for the product thinking and positioning direction that reframed Code Quest away from coding. The positioning work recorded elsewhere in this corpus as Mayowa's is hers.
