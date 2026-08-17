@@ -13,7 +13,7 @@
 :root{
   --bg:#FBFBFD; --card:#FFFFFF; --ink:#1D1D1F; --mut:#86868B; --soft:#F1F1F4; --line:#E8E8ED;
   --teal:#0D9488; --indigo:#4F46E5; --amber:#B45309; --rose:#C2410C;
-  --sh:0 4px 20px rgba(0,0,0,.05); --shl:0 12px 36px rgba(0,0,0,.1);
+  --sh:0 2px 14px rgba(0,0,0,.04); --shl:0 10px 32px rgba(0,0,0,.09);
   --sans:'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -27,12 +27,17 @@ body{max-width:720px;margin:0 auto;padding:0 18px calc(90px + env(safe-area-inse
 #gate .mk{font-size:44px}
 #gate h1{font-size:28px;font-weight:700;letter-spacing:-.03em;margin-top:14px}
 #gate p{font-size:15px;color:var(--mut);margin-top:10px;line-height:1.55}
-input,textarea,select{width:100%;font-family:var(--sans);font-size:16px;color:var(--ink);
-  background:#fff;border:1px solid var(--line);border-radius:16px;padding:15px 18px}
+input,textarea,select{width:100%;font-family:var(--sans);font-size:17px;color:var(--ink);
+  background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px;line-height:1.5}
+input::placeholder,textarea::placeholder{color:#B0B0B8}
 input:focus,textarea:focus,select:focus{outline:none;border-color:var(--teal)}
-#gate input{margin-top:20px;text-align:center;border-radius:99px}
-.btn{display:block;width:100%;margin-top:12px;padding:16px;border:0;border-radius:99px;background:var(--ink);
-  color:#fff;font-family:var(--sans);font-size:16px;font-weight:600;cursor:pointer}
+.field{position:relative;margin-top:22px}
+.field input{text-align:center;border-radius:99px;padding-right:74px}
+.field button{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:var(--soft);
+  color:var(--mut);font-family:var(--sans);font-size:13.5px;font-weight:600;border-radius:99px;padding:9px 14px;cursor:pointer}
+.tiny{font-size:13px;color:var(--mut);margin-top:16px}
+.btn{display:block;width:100%;margin-top:14px;padding:17px;border:0;border-radius:99px;background:var(--ink);
+  color:#fff;font-family:var(--sans);font-size:17px;font-weight:600;cursor:pointer;letter-spacing:-.01em}
 .btn.teal{background:var(--teal)}
 .btn.ghost{background:var(--soft);color:var(--ink)}
 .btn:disabled{opacity:.4}
@@ -44,10 +49,10 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--teal)}
 #who h1{font-size:26px;font-weight:700;letter-spacing:-.03em}
 #who p{font-size:15px;color:var(--mut);margin-top:8px}
 .people{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:24px}
-.person{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px 12px;cursor:pointer;
+.person{background:#fff;border:1px solid var(--line);border-radius:22px;padding:22px 12px;cursor:pointer;
   box-shadow:var(--sh);font-family:var(--sans);color:var(--ink);transition:.15s}
 .person:hover{transform:translateY(-2px);box-shadow:var(--shl)}
-.person .e{font-size:30px}
+.person .e{font-size:34px}
 .person b{display:block;font-size:16px;font-weight:600;margin-top:8px}
 .person span{display:block;font-size:12.5px;color:var(--mut);margin-top:2px}
 
@@ -60,15 +65,15 @@ header .id i{font-style:normal;font-size:17px}
 .brand{font-size:17px;font-weight:700;letter-spacing:-.02em}
 .brand em{font-style:normal;color:var(--teal)}
 
-h2{font-size:clamp(26px,6vw,34px);font-weight:700;letter-spacing:-.035em;line-height:1.1;margin-top:14px}
-.lede{font-size:16px;color:#494949;line-height:1.55;margin-top:12px}
+h2{font-size:clamp(28px,6.5vw,38px);font-weight:700;letter-spacing:-.04em;line-height:1.08;margin-top:16px}
+.lede{font-size:16.5px;color:#6B6B70;line-height:1.5;margin-top:12px;letter-spacing:-.01em}
 .eyebrow{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);margin-bottom:8px}
 
 .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;margin-top:14px;box-shadow:var(--sh)}
 .card h3{font-size:17px;font-weight:600;letter-spacing:-.02em}
-.card p{font-size:14.5px;color:var(--mut);line-height:1.55;margin-top:6px}
+.card p{font-size:15px;color:var(--mut);line-height:1.55;margin-top:6px}
 .card ul{margin-top:10px;padding-left:0;list-style:none}
-.card li{font-size:14.5px;color:#494949;line-height:1.5;padding:8px 0 8px 24px;position:relative;border-bottom:1px solid var(--line)}
+.card li{font-size:15.5px;color:#494949;line-height:1.5;padding:11px 0 11px 26px;position:relative;border-bottom:1px solid var(--line)}
 .card li:last-child{border-bottom:0}
 .card li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--teal)}
 
@@ -78,17 +83,23 @@ h2{font-size:clamp(26px,6vw,34px);font-weight:700;letter-spacing:-.035em;line-he
 .prog b{font-size:14px;font-weight:600;color:var(--mut);flex:none}
 
 .tabs{display:flex;gap:6px;background:var(--soft);border-radius:16px;padding:5px;margin-top:20px;position:sticky;top:10px;z-index:20}
-.tabs button{flex:1;border:0;background:none;color:var(--mut);font-family:var(--sans);font-size:14px;
-  font-weight:600;padding:11px 4px;border-radius:12px;cursor:pointer}
+.tabs button{flex:1;border:0;background:none;color:var(--mut);font-family:var(--sans);font-size:14.5px;
+  font-weight:500;padding:12px 4px;border-radius:12px;cursor:pointer;letter-spacing:-.01em}
+.tabs button.on{font-weight:600}
 .tabs button.on{background:#fff;color:var(--ink);box-shadow:var(--sh)}
 
 .view{display:none}
 .view.on{display:block}
 
 /* compose */
+.step{display:flex;align-items:center;gap:10px;margin-top:26px}
+.step .n{width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;
+  font-size:13.5px;font-weight:600;flex:none}
+.step b{font-size:17px;font-weight:600;letter-spacing:-.02em}
+.or{text-align:center;font-size:13.5px;color:var(--mut);margin-top:18px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.chip{border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:10px 16px;cursor:pointer;
-  font-family:var(--sans);font-size:14px;font-weight:500;color:var(--ink)}
+.chip{border:1px solid var(--line);background:#fff;border-radius:99px;padding:12px 18px;cursor:pointer;
+  font-family:var(--sans);font-size:15px;font-weight:500;color:var(--ink);letter-spacing:-.01em}
 .chip.on{border-color:var(--ink);background:var(--ink);color:#fff}
 textarea{min-height:150px;resize:vertical;line-height:1.55;margin-top:12px}
 .rec{display:flex;gap:10px;align-items:center;margin-top:12px}
@@ -139,18 +150,25 @@ footer{text-align:center;font-size:12.5px;color:var(--mut);margin-top:34px;line-
 
 <div id="gate">
   <div class="box">
-    <div class="mk">&#128273;</div>
+    <div class="mk">&#128075;</div>
     <h1>Code Quest</h1>
-    <p>A place to put our ideas so they don't get lost in WhatsApp. Ask Bolaji for the word.</p>
-    <form id="gform"><input id="gin" type="password" placeholder="Enter the word" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Passphrase"><button class="btn teal" type="submit">Open</button></form>
+    <p>Somewhere for all of us to keep our ideas, so nothing gets lost.</p>
+    <form id="gform">
+      <div class="field">
+        <input id="gin" type="password" placeholder="Type the word Bolaji gave you" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Password">
+        <button type="button" id="peek" aria-label="Show the word">Show</button>
+      </div>
+      <button class="btn teal" type="submit">Let me in</button>
+    </form>
     <div id="gerr"></div>
+    <p class="tiny">Nothing to download. Nothing to sign up for.</p>
   </div>
 </div>
 
 <div id="who">
   <div class="box" style="max-width:420px;width:100%">
-    <h1>Who's this?</h1>
-    <p>Tap your name. No password, no account.</p>
+    <h1>Which one are you?</h1>
+    <p>Tap yourself. That's all the signing in there is.</p>
     <div class="people" id="people"></div>
   </div>
 </div>
@@ -162,16 +180,16 @@ footer{text-align:center;font-size:12.5px;color:var(--mut);margin-top:34px;line-
   </header>
 
   <div class="tabs">
-    <button class="on" data-v="home" type="button">Meetings</button>
-    <button data-v="add" type="button">Add yours</button>
-    <button data-v="all" type="button">Everyone's</button>
+    <button class="on" data-v="home" type="button">Our meetings</button>
+    <button data-v="add" type="button">Add an idea</button>
+    <button data-v="all" type="button">All ideas</button>
   </div>
 
   <!-- MEETINGS -->
   <div class="view on" id="v-home">
     <div id="mList">
-      <h2>Meetings.</h2>
-      <p class="lede">What we talked about, what we agreed, and what came out of it.</p>
+      <h2>Our meetings.</h2>
+      <p class="lede">Tap one to see what we agreed, watch it back, and read every idea that came out of it.</p>
       <div id="meetings"></div>
       <div class="hiw">
         <b>How this works</b>
@@ -218,32 +236,37 @@ footer{text-align:center;font-size:12.5px;color:var(--mut);margin-top:34px;line-
   <!-- ADD -->
   <div class="view" id="v-add">
     <h2>Add an idea.</h2>
-    <p class="lede">One thought per idea is best. Add as many as you like.</p>
+    <p class="lede">Anything at all. Half an idea is fine. Add as many as you like.</p>
 
-    <div class="eyebrow" style="margin-top:22px">What's it about?</div>
+    <div class="step"><span class="n">1</span><b>What's it about?</b></div>
     <div class="chips" id="topics"></div>
 
-    <textarea id="body" placeholder="Type it here. Rough is fine, nobody's marking it."></textarea>
-
-    <div class="eyebrow" style="margin-top:18px">Or say it out loud</div>
+    <div class="step"><span class="n">2</span><b>Say it, or type it</b></div>
+    <p class="hint" style="margin-top:0">Easiest is to press record and just talk. It writes down what you say.</p>
     <div class="rec">
-      <button id="recBtn" type="button">&#127908; Record</button>
+      <button id="recBtn" type="button">&#127908; Press to talk</button>
       <span class="t" id="recT"></span>
     </div>
     <div id="live" class="live"><span class="dot"></span><span id="liveTx">Listening...</span></div>
     <audio id="playback" controls style="display:none"></audio>
     <div id="trWrap" style="display:none">
-      <div class="eyebrow" style="margin-top:16px">What we heard <span style="text-transform:none;letter-spacing:0;font-weight:400">&middot; tidy it up if it got anything wrong</span></div>
-      <textarea id="transcript" style="min-height:110px" placeholder="Transcript will appear here"></textarea>
+      <div class="eyebrow" style="margin-top:18px">What it heard you say</div>
+      <p class="hint" style="margin-top:0">Change anything it got wrong. It's not always right.</p>
+      <textarea id="transcript" style="min-height:110px" placeholder=""></textarea>
     </div>
 
-    <button class="btn teal" id="saveBtn" type="button">Save it</button>
-    <p style="font-size:13px;color:var(--mut);text-align:center;margin-top:10px">Everyone can see what you add.</p>
+    <p class="or">or type it instead</p>
+    <textarea id="body" placeholder="Type your idea here. Rough is fine, nobody's marking it."></textarea>
+
+    <div class="step"><span class="n">3</span><b>Save it</b></div>
+
+    <button class="btn teal" id="saveBtn" type="button">Save my idea</button>
+    <p class="tiny" style="text-align:center">Everyone in the family can see it. Nobody outside can.</p>
   </div>
 
   <!-- ALL -->
   <div class="view" id="v-all">
-    <h2>Everyone's ideas.</h2>
+    <h2>All our ideas.</h2>
     <p class="lede" id="allCount"></p>
     <div class="chips" id="filters" style="margin-top:16px"></div>
     <div id="list"></div>
@@ -289,12 +312,23 @@ function norm(s){ return String(s||"").trim().toLowerCase().replace(/\s+/g,""); 
 function hash(s){ var h = 5381; for (var i = 0; i < s.length; i++) h = ((h<<5)+h+s.charCodeAt(i))>>>0; return h; }
 var EXPECT = 680225592; /* mathkingdom */
 
+(function(){
+  var inp = document.getElementById("gin"), btn = document.getElementById("peek");
+  btn.addEventListener("click", function(){
+    var showing = inp.type === "text";
+    inp.type = showing ? "password" : "text";
+    btn.textContent = showing ? "Show" : "Hide";
+    btn.setAttribute("aria-label", showing ? "Show the word" : "Hide the word");
+    inp.focus();
+  });
+})();
+
 document.getElementById("gform").addEventListener("submit", function(e){
   e.preventDefault();
   if (hash(norm(document.getElementById("gin").value)) === EXPECT){
     try { localStorage.setItem("cq_team_in","1"); } catch(err){}
     openGate();
-  } else document.getElementById("gerr").textContent = "Not quite. Ask Bolaji.";
+  } else document.getElementById("gerr").textContent = "That's not it. Check with Bolaji.";
 });
 function openGate(){
   document.getElementById("gate").classList.add("off");
@@ -460,7 +494,7 @@ document.getElementById("recBtn").addEventListener("click", function(){
 document.getElementById("saveBtn").addEventListener("click", function(){
   var body = document.getElementById("body").value.trim();
   var tr = document.getElementById("transcript").value.trim();
-  if (!body && !blob && !tr){ toast("Type something or record something first"); return; }
+  if (!body && !blob && !tr){ toast("Say something or type something first"); return; }
   var btn = this;
   btn.disabled = true; btn.textContent = "Saving...";
 
