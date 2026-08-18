@@ -226,10 +226,9 @@ footer{text-align:center;font-size:12.5px;color:var(--mut);margin-top:34px;line-
 
   <div class="tabs">
     <button class="on" data-v="home" type="button">Our meetings</button>
-    <button data-v="add" type="button">Add an idea</button>
-    <button data-v="try" type="button">Try the app</button>
+    <button data-v="look" type="button">Have a look</button>
     <button data-v="todo" type="button">What's next</button>
-    <button data-v="all" type="button">All ideas</button>
+    <button data-v="all" type="button">Ideas</button>
   </div>
 
   <!-- MEETINGS -->
@@ -279,10 +278,11 @@ footer{text-align:center;font-size:12.5px;color:var(--mut);margin-top:34px;line-
     </div>
   </div>
 
-  <!-- ADD -->
-  <div class="view" id="v-add">
-    <h2>Add an idea.</h2>
-    <p class="lede">Anything at all. Half an idea is fine. Add as many as you like.</p>
+  <!-- ALL -->
+  <div class="view" id="v-all">
+    <h2>All our ideas.</h2>
+    <button class="btn ghost" id="showAdd" type="button" style="margin-top:14px">+ Add an idea</button>
+    <div id="addWrap" style="display:none">
 
     <div class="step"><span class="n">1</span><b>What's it about?</b></div>
     <div class="chips" id="topics"></div>
@@ -319,42 +319,33 @@ footer{text-align:center;font-size:12.5px;color:var(--mut);margin-top:34px;line-
     <div class="rbody" id="rBody"></div>
   </div>
 
-  <!-- TRY -->
-  <div class="view" id="v-try">
-    <h2>Try the app.</h2>
-    <p class="lede">Gbenga has built it and it works. Before anyone else sees it, he'd like us to try it and say what's confusing.</p>
-
-    <div class="card" style="background:#F5F7FF;border-color:#E2E6FA">
-      <h3>What he's after</h3>
-      <p>Not bugs. He can find those himself. He wants the moments where a normal person stops and frowns. <b>"The blue button confused me" is exactly the kind of thing that helps.</b></p>
+  <!-- LOOK -->
+  <div class="view" id="v-look">
+    <div id="lkList">
+      <h2>Have a look.</h2>
+      <p class="lede">Things we've made that we'd like your eyes on. Tap one.</p>
+      <div id="reviews"></div>
     </div>
 
-    <div class="eyebrow" style="margin-top:26px">What's built so far</div>
-    <div class="card">
-      <ul>
-        <li>A website with a gallery of things kids have made</li>
-        <li>A parents' area, where you approve what goes public</li>
-        <li>A workshop where kids sign in and upload what they made</li>
-        <li>Every project gets its own web address and a QR code</li>
-        <li>Safety checks that run before a parent even sees it</li>
-      </ul>
+    <div id="lkDetail" style="display:none">
+      <button class="chip" id="lkBack" type="button" style="margin-top:20px">&larr; Back</button>
+      <h2 id="lkTitle" style="margin-top:14px"></h2>
+      <p class="lede" id="lkBlurb"></p>
+      <div class="card" id="lkAskCard" style="background:#F5F7FF;border-color:#E2E6FA">
+        <h3>What we're after</h3>
+        <p id="lkAsk"></p>
+      </div>
+      <div id="lkBuilt"></div>
+      <div id="lkSteps"></div>
+      <div id="lkRules"></div>
+      <div class="eyebrow" style="margin-top:26px">What people have said</div>
+      <div id="lkNotes"></div>
+      <div class="card">
+        <div class="eyebrow">Add a thought</div>
+        <textarea id="lkNote" style="min-height:90px" placeholder="Anything at all. What confused you, what you liked, what's missing."></textarea>
+        <button class="btn teal" id="lkSend" type="button">Send it</button>
+      </div>
     </div>
-
-    <div class="eyebrow" style="margin-top:26px">Six things to try &middot; about half an hour</div>
-    <p class="hint" style="margin-top:0">Best done with your child driving. Tap a step when you've done it. Tap <b>I got stuck</b> any time and it goes straight to Gbenga.</p>
-    <div id="steps"></div>
-
-    <div class="card" style="background:#FFF9EC;border-color:#F0E3C4">
-      <h3>Three house rules</h3>
-      <ul>
-        <li>Use nicknames, not real names. For accounts and inside anything you make</li>
-        <li>No photos of yourselves or the kids</li>
-        <li>Don't make anything you want to keep. It all gets cleared afterwards</li>
-      </ul>
-    </div>
-
-    <div class="eyebrow" style="margin-top:26px">What people have said so far</div>
-    <div id="testFeed"></div>
   </div>
 
   <!-- TODO -->
@@ -364,10 +355,6 @@ footer{text-align:center;font-size:12.5px;color:var(--mut);margin-top:34px;line-
     <div class="prog" style="margin-top:18px"><span class="bar"><i id="tfill" style="width:0%"></i></span><b id="tnum"></b></div>
     <div id="todoList"></div>
   </div>
-
-  <!-- ALL -->
-  <div class="view" id="v-all">
-    <h2>All our ideas.</h2>
     <p class="lede" id="allCount"></p>
     <div class="chips" id="filters" style="margin-top:16px"></div>
     <div id="list"></div>
@@ -475,7 +462,7 @@ function pickMe(id, silent){
     loadIdeas();
     loadMeetings();
     loadActions();
-    loadTest();
+    loadReviews();
   };
   if (!members.length) loadMembers().then(go); else go();
 }
@@ -619,7 +606,8 @@ document.getElementById("saveBtn").addEventListener("click", function(){
       btn.disabled = false; btn.textContent = "Save it";
       toast("Saved. Thank you.");
       loadIdeas();
-      document.querySelector('.tabs button[data-v="all"]').click();
+      document.getElementById("addWrap").style.display = "none";
+      document.getElementById("showAdd").textContent = "+ Add an idea";
     }).catch(function(){
       btn.disabled = false; btn.textContent = "Save it";
       toast("That didn't save. Try again?");
@@ -741,108 +729,157 @@ document.getElementById("mBack").addEventListener("click", function(){
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
-/* try the app */
-var STEPS = [
-  { t: "Have a look around",
-    d: "Open the website on your phone. Read the front page, then look at the gallery of things other kids have made. Try playing one, and try the fullscreen button.",
-    url: "https://codequest.dev.olatoye.net", cta: "Open the website" },
-  { t: "Make your family account",
-    d: "Go to the parents' area and choose Create a parent account. You'll be one of the very first real people to do this, so if anything is unclear here, that alone is gold.",
-    url: "https://guardian.codequest.dev.olatoye.net", cta: "Open the parents' area" },
-  { t: "Add your child",
-    d: "Give them a nickname, never their real name. Then set up how they sign in: a PIN if they can read, or a QR code you show them if they're little.",
-    url: "https://guardian.codequest.dev.olatoye.net", cta: "Open the parents' area" },
-  { t: "Let them sign in and upload something",
-    d: "Let your child do this bit on their own if they can, and watch where you have to reach over. They'll need a small project as a zip file. If you haven't got one, ask Gbenga and he'll send you a couple.",
-    url: "https://workshop.codequest.dev.olatoye.net", cta: "Open the kids' workshop" },
-  { t: "Approve it",
-    d: "Back in the parents' area it'll be waiting for you. Have a look at exactly what the world would see, pick the little picture, then approve it. Did that give you real confidence about what was going public?",
-    url: "https://guardian.codequest.dev.olatoye.net", cta: "Open the parents' area" },
-  { t: "Find it and share it",
-    d: "Look for it in the gallery and play it. Then try the link or the QR code on somebody else's phone. A grandparent is the perfect person to test this on.",
-    url: "https://codequest.dev.olatoye.net", cta: "Open the website" }
-];
-var testLog = [], myProgress = {};
+/* have a look: anything we want the group to review */
+var reviews = [], rnotes = [], curReview = null;
 
-function loadTest(){
-  fetch(SB + "/rest/v1/cq_test_log?select=*&order=created_at.desc", { headers: H, cache: "no-store" })
-    .then(function(r){ return r.json(); })
-    .then(function(d){ testLog = d || []; paintSteps(); paintTestFeed(); });
-}
-function paintSteps(){
-  var wrap = document.getElementById("steps");
-  wrap.innerHTML = "";
-  var mineDone = {};
-  testLog.forEach(function(l){
-    if (me && l.author === me.name && l.status === "done") mineDone[l.step] = true;
+function loadReviews(){
+  Promise.all([
+    fetch(SB + "/rest/v1/cq_reviews?select=*&order=sort", { headers: H, cache: "no-store" }).then(function(r){ return r.json(); }),
+    fetch(SB + "/rest/v1/cq_review_notes?select=*&order=created_at.desc", { headers: H, cache: "no-store" }).then(function(r){ return r.json(); })
+  ]).then(function(res){
+    reviews = res[0] || []; rnotes = res[1] || [];
+    paintReviews();
+    if (curReview) openReview(curReview);
   });
-  STEPS.forEach(function(s, i){
-    var n = i + 1;
-    var el = document.createElement("div");
-    el.className = "stepc" + (mineDone[n] ? " done" : "");
-    el.innerHTML =
-      '<div class="hd"><span class="no">' + (mineDone[n] ? "\u2713" : n) + '</span>' +
-      '<span style="flex:1"><span class="ti"></span><span class="ds"></span></span></div>' +
-      '<a class="go" href="' + s.url + '" target="_blank" rel="noopener">' + s.cta + ' &rarr;</a>' +
-      '<div class="row2">' +
-        '<button class="tick" type="button" data-done="' + n + '">' + (mineDone[n] ? "Done" : "I did this") + '</button>' +
-        '<button type="button" data-stuck="' + n + '">I got stuck</button>' +
-      '</div>' +
-      '<div class="stuckbox" id="sb' + n + '">' +
-        '<textarea id="st' + n + '" style="min-height:90px" placeholder="What happened? What did you expect? Rough is fine."></textarea>' +
-        '<button class="btn" type="button" data-send="' + n + '" style="margin-top:8px">Send to Gbenga</button>' +
-      '</div>';
-    el.querySelector(".ti").textContent = s.t;
-    el.querySelector(".ds").textContent = s.d;
+}
+function paintReviews(){
+  var wrap = document.getElementById("reviews");
+  wrap.innerHTML = "";
+  if (!reviews.length){
+    wrap.innerHTML = '<div class="empty"><div class="a">\uD83D\uDC40</div><b>Nothing to look at yet</b></div>';
+    return;
+  }
+  reviews.forEach(function(r){
+    var n = rnotes.filter(function(x){ return x.review_id === r.id && x.note; }).length;
+    var el = document.createElement("button");
+    el.className = "card"; el.type = "button";
+    el.style.cssText = "display:block;width:100%;text-align:left;cursor:pointer;font-family:var(--sans)";
+    el.innerHTML = '<h3></h3><p></p><div class="chips" style="margin-top:12px">' +
+      '<span class="chip">' + (r.kind === "walkthrough" ? "Try it" : "Read it") + '</span>' +
+      '<span class="chip">' + n + ' comments</span></div>';
+    el.querySelector("h3").textContent = r.title;
+    el.querySelector("p").textContent = r.blurb || "";
+    el.addEventListener("click", function(){ openReview(r); });
     wrap.appendChild(el);
   });
 }
+function listCard(title, items){
+  if (!items || !items.length) return "";
+  var lis = items.map(function(t){ return "<li>" + t.replace(/[&<>]/g, "") + "</li>"; }).join("");
+  return '<div class="eyebrow" style="margin-top:26px">' + title + '</div><div class="card"><ul>' + lis + '</ul></div>';
+}
+function openReview(r){
+  curReview = r;
+  document.getElementById("lkList").style.display = "none";
+  document.getElementById("lkDetail").style.display = "block";
+  document.getElementById("lkTitle").textContent = r.title;
+  document.getElementById("lkBlurb").textContent = r.blurb || "";
+  document.getElementById("lkAskCard").style.display = r.ask ? "block" : "none";
+  document.getElementById("lkAsk").textContent = r.ask || "";
+
+  var c = r.content || {};
+  document.getElementById("lkBuilt").innerHTML = listCard("What's built so far", c.built);
+  document.getElementById("lkRules").innerHTML = listCard("House rules", c.rules);
+
+  var sw = document.getElementById("lkSteps");
+  sw.innerHTML = "";
+  if (c.steps && c.steps.length){
+    var mineDone = {};
+    rnotes.forEach(function(l){
+      if (me && l.review_id === r.id && l.author === me.name && l.status === "done") mineDone[l.step] = true;
+    });
+    var head = document.createElement("div");
+    head.innerHTML = '<div class="eyebrow" style="margin-top:26px">Things to try</div>' +
+      '<p class="hint" style="margin-top:0">Tap a step when you have done it. Tap <b>I got stuck</b> any time.</p>';
+    sw.appendChild(head);
+    c.steps.forEach(function(s, i){
+      var n = i + 1;
+      var el = document.createElement("div");
+      el.className = "stepc" + (mineDone[n] ? " done" : "");
+      el.innerHTML =
+        '<div class="hd"><span class="no">' + (mineDone[n] ? "\u2713" : n) + '</span>' +
+        '<span style="flex:1"><span class="ti"></span><span class="ds"></span></span></div>' +
+        (s.url ? '<a class="go" href="' + s.url + '" target="_blank" rel="noopener">' + (s.cta || "Open") + ' &rarr;</a>' : "") +
+        '<div class="row2">' +
+          '<button class="tick" type="button" data-done="' + n + '">' + (mineDone[n] ? "Done" : "I did this") + '</button>' +
+          '<button type="button" data-stuck="' + n + '">I got stuck</button>' +
+        '</div>' +
+        '<div class="stuckbox" id="sb' + n + '">' +
+          '<textarea id="st' + n + '" style="min-height:90px" placeholder="What happened? What did you expect? Rough is fine."></textarea>' +
+          '<button class="btn" type="button" data-send="' + n + '" style="margin-top:8px">Send it</button>' +
+        '</div>';
+      el.querySelector(".ti").textContent = s.t;
+      el.querySelector(".ds").textContent = s.d;
+      sw.appendChild(el);
+    });
+  }
+
+  var nw = document.getElementById("lkNotes");
+  nw.innerHTML = "";
+  var mine = rnotes.filter(function(x){ return x.review_id === r.id && x.note; });
+  if (!mine.length){
+    nw.innerHTML = '<div class="empty"><div class="a">\uD83D\uDCAC</div><b>Nothing yet</b><p>Be the first to say something.</p></div>';
+  } else {
+    mine.forEach(function(l){
+      var m = memberBy(l.author);
+      var el = document.createElement("div");
+      el.className = "idea";
+      el.innerHTML = '<div class="top"><span class="av">' + (m ? m.emoji : "\uD83D\uDCAC") + '</span>' +
+        '<span class="who">' + l.author + '</span>' +
+        (l.step ? '<span class="tag">Step ' + l.step + '</span>' : "") + '</div><p></p>';
+      el.querySelector("p").textContent = l.note;
+      nw.appendChild(el);
+    });
+  }
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+document.getElementById("lkBack").addEventListener("click", function(){
+  curReview = null;
+  document.getElementById("lkDetail").style.display = "none";
+  document.getElementById("lkList").style.display = "block";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+function sendNote(step, text, status){
+  if (!me || !curReview) return;
+  fetch(SB + "/rest/v1/cq_review_notes", { method: "POST", headers: H,
+    body: JSON.stringify({ review_id: curReview.id, author: me.name, step: step || null,
+      status: status || "comment", note: text || null,
+      device: navigator.userAgent.slice(0,120) }) })
+    .then(function(r){
+      if (!r.ok) throw new Error();
+      toast(status === "done" ? "Nice one" : "Sent. Thank you.");
+      loadReviews();
+    }).catch(function(){ toast("Couldn't send that"); });
+}
+document.getElementById("showAdd").addEventListener("click", function(){
+  var w = document.getElementById("addWrap");
+  var open = w.style.display === "block";
+  w.style.display = open ? "none" : "block";
+  this.textContent = open ? "+ Add an idea" : "Close";
+});
+document.getElementById("lkSend").addEventListener("click", function(){
+  var ta = document.getElementById("lkNote");
+  var v = ta.value.trim();
+  if (!v){ toast("Type something first"); return; }
+  ta.value = "";
+  sendNote(null, v, "comment");
+});
 document.addEventListener("click", function(e){
   var d = e.target.closest("[data-done]");
-  if (d && me){
-    var n = parseInt(d.getAttribute("data-done"), 10);
-    fetch(SB + "/rest/v1/cq_test_log", { method: "POST", headers: H,
-      body: JSON.stringify({ author: me.name, step: n, status: "done" }) })
-      .then(function(){ toast("Nice one"); loadTest(); })
-      .catch(function(){ toast("Couldn't save that"); });
-    return;
-  }
+  if (d){ sendNote(parseInt(d.getAttribute("data-done"),10), null, "done"); return; }
   var s = e.target.closest("[data-stuck]");
-  if (s){
-    document.getElementById("sb" + s.getAttribute("data-stuck")).classList.toggle("on");
-    return;
-  }
+  if (s){ document.getElementById("sb" + s.getAttribute("data-stuck")).classList.toggle("on"); return; }
   var sd = e.target.closest("[data-send]");
-  if (sd && me){
+  if (sd){
     var n2 = sd.getAttribute("data-send");
     var ta = document.getElementById("st" + n2);
     var v = ta.value.trim();
     if (!v){ toast("Tell us what happened first"); return; }
-    fetch(SB + "/rest/v1/cq_test_log", { method: "POST", headers: H,
-      body: JSON.stringify({ author: me.name, step: parseInt(n2,10), status: "stuck", note: v,
-        device: navigator.userAgent.slice(0,120) }) })
-      .then(function(){ ta.value = ""; document.getElementById("sb"+n2).classList.remove("on"); toast("Sent. Thank you."); loadTest(); })
-      .catch(function(){ toast("Couldn't send that"); });
+    ta.value = "";
+    document.getElementById("sb"+n2).classList.remove("on");
+    sendNote(parseInt(n2,10), v, "stuck");
   }
 });
-function paintTestFeed(){
-  var wrap = document.getElementById("testFeed");
-  var stuck = testLog.filter(function(l){ return l.status === "stuck" && l.note; });
-  wrap.innerHTML = "";
-  if (!stuck.length){
-    wrap.innerHTML = '<div class="empty"><div class="a">\uD83D\uDC40</div><b>Nothing yet</b><p>Be the first to say what confused you.</p></div>';
-    return;
-  }
-  stuck.forEach(function(l){
-    var m = memberBy(l.author);
-    var el = document.createElement("div");
-    el.className = "idea";
-    el.innerHTML = '<div class="top"><span class="av">' + (m ? m.emoji : "\uD83D\uDCAC") + '</span>' +
-      '<span class="who">' + l.author + '</span><span class="tag">Step ' + l.step + '</span></div><p></p>';
-    el.querySelector("p").textContent = l.note;
-    wrap.appendChild(el);
-  });
-}
 
 /* transcript reader */
 var TR = null, TRmeeting = null;
