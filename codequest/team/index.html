@@ -467,6 +467,7 @@ function pickMe(id, silent){
   if (!members.length) loadMembers().then(go); else go();
 }
 loadMembers();
+loadReviews();
 
 document.getElementById("meBtn").addEventListener("click", function(){
   try { localStorage.removeItem("cq_team_me"); } catch(err){}
@@ -737,9 +738,13 @@ function loadReviews(){
     fetch(SB + "/rest/v1/cq_reviews?select=*&order=sort", { headers: H, cache: "no-store" }).then(function(r){ return r.json(); }),
     fetch(SB + "/rest/v1/cq_review_notes?select=*&order=created_at.desc", { headers: H, cache: "no-store" }).then(function(r){ return r.json(); })
   ]).then(function(res){
-    reviews = res[0] || []; rnotes = res[1] || [];
+    reviews = Array.isArray(res[0]) ? res[0] : [];
+    rnotes  = Array.isArray(res[1]) ? res[1] : [];
     paintReviews();
     if (curReview) openReview(curReview);
+  }).catch(function(err){
+    var wrap = document.getElementById("reviews");
+    if (wrap) wrap.innerHTML = '<div class="empty"><div class="a">\u26A0\uFE0F</div><b>Could not load this</b><p>Check you are online, then pull down to refresh.</p></div>';
   });
 }
 function paintReviews(){
