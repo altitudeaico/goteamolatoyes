@@ -1071,17 +1071,25 @@ function paintActions(){
 function decisionEl(d){
   var el = document.createElement("div");
   el.className = "act" + (d.status === "set" ? " done" : "");
+  
+  var btnHtml = d.status === "set" ? 
+    '<div style="font-size:13px;color:var(--mut)">Set by ' + d.set_by + '</div>' :
+    '<button class="btn ghost" type="button" style="flex:none;margin:0;padding:8px 14px;font-size:13px">Set</button>';
+  
   el.innerHTML = '<span class="tick">✓</span><span style="flex:1">' +
     '<span class="ttl"></span>' +
-    (d.set_by ? '<span class="dt">Set by ' + d.set_by + '</span>' : '') +
-    '</span>' +
-    '<button class="btn ghost" type="button" style="flex:none;margin:0;padding:8px 14px;font-size:13px">Set</button>';
+    (d.set_comment ? '<span class="dt">' + d.set_comment + '</span>' : '') +
+    '</span>' + btnHtml;
+  
   el.querySelector(".ttl").textContent = d.title;
-  el.querySelector("button").addEventListener("click", function(e){
-    e.stopPropagation();
-    if (d.status === "set") return;
-    showSetDecisionModal(d);
-  });
+  
+  if (d.status !== "set") {
+    el.querySelector("button").addEventListener("click", function(e){
+      e.stopPropagation();
+      showSetDecisionModal(d);
+    });
+  }
+  
   return el;
 }
 
@@ -1142,9 +1150,6 @@ function markDecisionSet(d, comment){
   var user = who || "anonymous";
   var now = new Date().toISOString();
   
-  d.status = "set";
-  paintDecisions();
-  
   fetch(SB + "/rest/v1/cq_decisions?id=eq." + d.id, {
     method: "PATCH", headers: H,
     body: JSON.stringify({ 
@@ -1154,8 +1159,16 @@ function markDecisionSet(d, comment){
       set_comment: comment
     })
   }).then(function(r){
-    if (r.ok) toast("Decision set");
-    else toast("Couldn't save that");
+    if (r.ok) {
+      d.status = "set";
+      d.set_at = now;
+      d.set_by = user;
+      d.set_comment = comment;
+      paintDecisions();
+      toast("Decision set");
+    } else {
+      toast("Couldn't save that");
+    }
   }).catch(function(){ toast("Couldn't save that"); });
 }
 
