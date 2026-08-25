@@ -1070,22 +1070,21 @@ function paintActions(){
 
 function decisionEl(d){
   var el = document.createElement("div");
-  el.className = "act" + (d.status === "set" ? " done" : "");
+  el.className = "card";
+  el.style.cssText = d.status === "set" ? "opacity:0.7;background:#F5FAF7" : "";
   
-  var btnHtml = d.status === "set" ? 
-    '<div style="font-size:13px;color:var(--mut)">Set by ' + d.set_by + '</div>' :
-    '<button class="btn ghost" type="button" style="flex:none;margin:0;padding:8px 14px;font-size:13px">Set</button>';
+  var setInfo = d.status === "set" ? 
+    '<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line);font-size:13px;color:var(--mut)">' +
+      'Set by ' + d.set_by +
+    '</div>' : '';
   
-  el.innerHTML = '<span class="tick">✓</span><span style="flex:1">' +
-    '<span class="ttl"></span>' +
-    (d.set_comment ? '<span class="dt">' + d.set_comment + '</span>' : '') +
-    '</span>' + btnHtml;
-  
-  el.querySelector(".ttl").textContent = d.title;
+  el.innerHTML = '<h3 style="font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.3">' + d.title + '</h3>' +
+    (d.set_comment ? '<p style="font-size:15px;color:var(--mut);line-height:1.55;margin-top:8px">' + d.set_comment + '</p>' : '') +
+    setInfo +
+    (d.status !== "set" ? '<button class="btn teal" type="button" style="margin-top:14px;width:100%">Set this decision</button>' : '');
   
   if (d.status !== "set") {
-    el.querySelector("button").addEventListener("click", function(e){
-      e.stopPropagation();
+    el.querySelector("button").addEventListener("click", function(){
       showSetDecisionModal(d);
     });
   }
@@ -1098,23 +1097,13 @@ function paintDecisions(){
   if (!wrap) return;
   
   var mDecs = window.meetingDecisions || decisions;
-  var open = mDecs.filter(function(d){ return d.status !== "set"; });
-  var set = mDecs.filter(function(d){ return d.status === "set"; });
   
   wrap.innerHTML = "";
   if (!mDecs.length){
     wrap.innerHTML = '<p style="font-size:14px;color:var(--mut)">None yet</p>';
     return;
   }
-  open.forEach(function(d){ wrap.appendChild(decisionEl(d)); });
-  if (set.length){
-    var hd = document.createElement("div");
-    hd.className = "eyebrow";
-    hd.style.marginTop = "16px";
-    hd.textContent = "Set";
-    wrap.appendChild(hd);
-    set.forEach(function(d){ wrap.appendChild(decisionEl(d)); });
-  }
+  mDecs.forEach(function(d){ wrap.appendChild(decisionEl(d)); });
 }
 
 function showSetDecisionModal(d){
