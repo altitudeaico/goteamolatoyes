@@ -77,6 +77,31 @@ h2{font-size:clamp(28px,6.5vw,38px);font-weight:700;letter-spacing:-.04em;line-h
 .card li:last-child{border-bottom:0}
 .card li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--teal)}
 
+.card.isdone{background:#F7FAF8;border-color:#DCEBE2}
+.card.isdone h3{color:var(--mut)}
+.card .own{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.card .own span{font-size:12.5px;font-weight:500;background:var(--soft);color:var(--ink);border-radius:99px;padding:5px 11px}
+.donenote{margin-top:12px;padding-top:12px;border-top:1px solid #DCEBE2}
+.donenote b{display:block;font-size:13.5px;font-weight:600;color:var(--teal)}
+.donenote p{font-size:14.5px;color:#5A5A60;line-height:1.5;margin-top:6px}
+.linkbtn{display:block;margin-top:12px;padding:0;border:0;background:none;color:var(--mut);
+  font-family:var(--sans);font-size:13.5px;font-weight:500;text-decoration:underline;cursor:pointer}
+.sheet{background:var(--card);border-radius:24px;padding:24px;max-width:420px;width:100%;box-shadow:var(--shl)}
+.sheet h3{font-size:20px;font-weight:700;letter-spacing:-.02em}
+.sheet p{font-size:14.5px;color:var(--mut);line-height:1.5;margin-top:8px}
+.sheet textarea{margin-top:14px;min-height:96px}
+.sheet .row{display:flex;gap:10px;margin-top:16px}
+.sheet .row .btn{flex:1;margin:0}
+
+.up{background:linear-gradient(180deg,#0D9488,#0B7F76);color:#fff;border:0;border-radius:24px;
+  padding:22px;margin-top:14px;box-shadow:var(--shl);display:block;width:100%;text-align:left;
+  font-family:var(--sans);cursor:pointer}
+.up .when{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.85}
+.up h3{font-size:21px;font-weight:700;letter-spacing:-.02em;line-height:1.2;margin-top:8px}
+.up p{font-size:15px;line-height:1.5;margin-top:8px;opacity:.92}
+.up .bring{display:inline-block;margin-top:14px;background:rgba(255,255,255,.18);
+  border-radius:99px;padding:7px 14px;font-size:13.5px;font-weight:600}
+
 .prog{display:flex;align-items:center;gap:12px;margin-top:14px}
 .prog .bar{flex:1;height:8px;border-radius:99px;background:var(--soft);overflow:hidden}
 .prog .bar i{display:block;height:100%;background:var(--teal);border-radius:99px;transition:width .5s}
@@ -181,6 +206,11 @@ audio{width:100%;margin-top:12px}
 .vid iframe{width:100%;height:100%;border:0;display:block}
 .hint{font-size:12.5px;color:var(--mut);margin-top:8px;line-height:1.5}
 .hiw b{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--indigo)}
+.hiw summary{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--indigo);cursor:pointer;list-style:none}
+.hiw summary::-webkit-details-marker{display:none}
+.hiw summary::after{content:" +";font-weight:700}
+.hiw[open] summary::after{content:" \2212"}
 .hiw p{font-size:13.5px;color:#4A4A63;line-height:1.55;margin-top:6px}
 
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(70px);
@@ -237,11 +267,11 @@ footer{text-align:center;font-size:12.5px;color:var(--mut);margin-top:34px;line-
       <h2>Our meetings.</h2>
       <p class="lede">Tap one to see what we agreed, watch it back, and read every idea that came out of it.</p>
       <div id="meetings"></div>
-      <div class="hiw">
-        <b>How this works</b>
+      <details class="hiw">
+        <summary>How this works</summary>
         <p>This is a small web app. It isn't in an app store and you don't install it. Everything goes into a database, which is just a very organised list that lives on the internet. That's why it shows up on everyone else's phone straight away, and why it's still here next week.</p>
         <p style="margin-top:8px">If you record a voice note, your phone writes down what you say as you say it. It gets things wrong sometimes, so you can correct it before you save. We keep both, the recording and the words.</p>
-      </div>
+      </details>
     </div>
 
     <div id="mDetail" style="display:none">
@@ -270,10 +300,10 @@ footer{text-align:center;font-size:12.5px;color:var(--mut);margin-top:34px;line-
       <div class="eyebrow" style="margin-top:24px" id="mActHead">What we said we'd do</div>
       <div id="mActions"></div>
 
-      <div class="eyebrow" style="margin-top:24px" id="mBriefHead">What was brought in</div>
+      <div class="eyebrow" style="margin-top:24px" id="mBriefHead">Sent in before the call</div>
       <div id="mBrief"></div>
 
-      <div class="eyebrow" style="margin-top:24px">What came out of the room</div>
+      <div class="eyebrow" style="margin-top:24px">Said on the call</div>
       <div id="mIdeas"></div>
     </div>
   </div>
@@ -642,6 +672,48 @@ function fmtDate(s){
   var d = new Date(s + "T12:00:00");
   return d.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
 }
+function daysAway(s){
+  var t = new Date(); t.setHours(0,0,0,0);
+  var d = new Date(s + "T00:00:00");
+  return Math.round((d - t) / 86400000);
+}
+function whenLabel(n){
+  if (n === 0) return "Today";
+  if (n === 1) return "Tomorrow";
+  if (n < 7) return "In " + n + " days";
+  if (n < 14) return "Next week";
+  return "In " + Math.round(n / 7) + " weeks";
+}
+function upcomingEl(m){
+  var n = daysAway(m.held_on);
+  var el = document.createElement("button");
+  el.className = "up"; el.type = "button";
+
+  var when = document.createElement("div");
+  when.className = "when";
+  when.textContent = whenLabel(n) + " \u00B7 " + fmtDate(m.held_on);
+  el.appendChild(when);
+
+  var h = document.createElement("h3");
+  h.textContent = m.title;
+  el.appendChild(h);
+
+  if (m.summary){
+    var p = document.createElement("p");
+    p.textContent = m.summary;
+    el.appendChild(p);
+  }
+
+  if (/laptop/i.test(m.summary || "")){
+    var b = document.createElement("span");
+    b.className = "bring";
+    b.textContent = "\uD83D\uDCBB Bring a laptop";
+    el.appendChild(b);
+  }
+
+  el.addEventListener("click", function(){ openMeeting(m); });
+  return el;
+}
 function paintMeetings(){
   var wrap = document.getElementById("meetings");
   wrap.innerHTML = "";
@@ -649,7 +721,28 @@ function paintMeetings(){
     wrap.innerHTML = '<div class="empty"><div class="a">\uD83D\uDDD3\uFE0F</div><b>No meetings yet</b></div>';
     return;
   }
-  meetings.forEach(function(m){
+
+  var soon = meetings.filter(function(m){ return daysAway(m.held_on) >= 0; })
+                     .sort(function(a,b){ return daysAway(a.held_on) - daysAway(b.held_on); });
+  var past = meetings.filter(function(m){ return daysAway(m.held_on) < 0; });
+
+  if (soon.length){
+    var uh = document.createElement("div");
+    uh.className = "eyebrow";
+    uh.textContent = "Coming up";
+    wrap.appendChild(uh);
+    soon.forEach(function(m){ wrap.appendChild(upcomingEl(m)); });
+  }
+
+  if (past.length){
+    var ph = document.createElement("div");
+    ph.className = "eyebrow";
+    ph.style.marginTop = soon.length ? "30px" : "0";
+    ph.textContent = soon.length ? "Already happened" : "Our meetings";
+    wrap.appendChild(ph);
+  }
+
+  past.forEach(function(m){
     var n = ideas.filter(function(i){ return i.meeting_id === m.id; }).length;
     var el = document.createElement("button");
     el.className = "card"; el.type = "button";
@@ -963,48 +1056,79 @@ function loadDecisions(){
 }
 
 function actEl(a){
+  var done = a.status === "done";
   var el = document.createElement("div");
-  el.className = "act" + (a.status === "done" ? " done" : "");
-  var own = (a.owners || []).map(function(n){
-    var m = memberBy(n);
-    return '<span>' + (m ? m.emoji + " " : "") + n + '</span>';
-  }).join("");
-  el.innerHTML = '<span class="tick">\u2713</span><span style="flex:1">' +
-    '<span class="ttl"></span>' +
-    (a.detail ? '<span class="dt"></span>' : "") +
-    '<span class="own">' + own + '</span></span>' +
-    (a.kind === "decision" ? '<span class="kd">To decide</span>' : "");
-  el.querySelector(".ttl").textContent = a.title;
-  if (a.detail) el.querySelector(".dt").textContent = a.detail;
-  el.addEventListener("click", function(){ toggleAct(a, el); });
+  el.className = "card" + (done ? " isdone" : "");
+
+  var h = document.createElement("h3");
+  h.textContent = a.title;
+  el.appendChild(h);
+
+  if (a.detail){
+    var p = document.createElement("p");
+    p.textContent = a.detail;
+    el.appendChild(p);
+  }
+
+  if ((a.owners || []).length){
+    var own = document.createElement("div");
+    own.className = "own";
+    a.owners.forEach(function(n){
+      var m = memberBy(n);
+      var s = document.createElement("span");
+      s.textContent = (m ? m.emoji + " " : "") + n;
+      own.appendChild(s);
+    });
+    el.appendChild(own);
+  }
+
+  if (done){
+    var note = document.createElement("div");
+    note.className = "donenote";
+    var by = document.createElement("b");
+    by.textContent = "\u2713 Done by " + (a.done_by || "someone");
+    note.appendChild(by);
+    if (a.done_comment){
+      var c = document.createElement("p");
+      c.textContent = a.done_comment;
+      note.appendChild(c);
+    }
+    el.appendChild(note);
+
+    var undo = document.createElement("button");
+    undo.type = "button";
+    undo.className = "linkbtn";
+    undo.textContent = "Put it back on the list";
+    undo.addEventListener("click", function(){ reopenAct(a); });
+    el.appendChild(undo);
+  } else {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "btn teal";
+    b.textContent = "I've done this";
+    b.addEventListener("click", function(){ showCompleteModal(a); });
+    el.appendChild(b);
+  }
+
   return el;
 }
-function toggleAct(a, el){
-  var next = a.status === "done" ? "open" : "done";
-  
-  if (next === "done"){
-    // Show modal for comment before marking done
-    showCompleteModal(a);
-  } else {
-    // Just reopen without comment needed
-    a.status = next;
-    el.classList.toggle("done", next === "done");
-    paintActions();
-    fetch(SB + "/rest/v1/cq_actions?id=eq." + a.id, {
-      method: "PATCH", headers: H,
-      body: JSON.stringify({ status: next, done_at: null })
-    }).then(function(r){
-      if (r.ok) toast("Back on the list");
-      else toast("Couldn't save that");
-    }).catch(function(){ toast("Couldn't save that"); });
-  }
+function reopenAct(a){
+  fetch(SB + "/rest/v1/cq_actions?id=eq." + a.id, {
+    method: "PATCH", headers: H,
+    body: JSON.stringify({ status: "open", done_at: null, done_by: null, done_comment: null })
+  }).then(function(r){
+    if (r.ok){
+      a.status = "open"; a.done_at = null; a.done_by = null; a.done_comment = null;
+      paintActions();
+      toast("Back on the list");
+    } else toast("Couldn't save that");
+  }).catch(function(){ toast("Couldn't save that"); });
 }
-
 function showCompleteModal(a){
   var modal = document.createElement("div");
   modal.id = "completeModal";
   modal.style.cssText = "position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.3);display:grid;place-items:center;padding:26px";
-  modal.innerHTML = '<div style="background:var(--card);border-radius:20px;padding:24px;max-width:420px;width:100%;box-shadow:var(--shl)"><h3 style="font-size:18px;font-weight:600">Mark as done?</h3><p style="font-size:14px;color:var(--mut);margin-top:8px">Add a comment about how you did this.</p><textarea id="completeComment" style="margin-top:14px;min-height:80px" placeholder="What did you do? Any notes?"></textarea><div style="display:flex;gap:10px;margin-top:16px"><button id="cancelComplete" type="button" class="btn ghost" style="flex:1;margin:0">Cancel</button><button id="submitComplete" type="button" class="btn teal" style="flex:1;margin:0">Done</button></div></div>';
+  modal.innerHTML = '<div class="sheet"><h3>Nice one. What did you do?</h3><p>A line is plenty. It saves everyone asking on the next call.</p><textarea id="completeComment" placeholder="I sent it over on Tuesday and..."></textarea><div class="row"><button id="cancelComplete" type="button" class="btn ghost">Not yet</button><button id="submitComplete" type="button" class="btn teal">Save it</button></div></div>';
   document.body.appendChild(modal);
   
   var comment = document.getElementById("completeComment");
@@ -1030,23 +1154,28 @@ function showCompleteModal(a){
 }
 
 function markActionDone(a, comment){
-  var user = who || "anonymous";
+  var user = me ? me.name : "Someone";
   var now = new Date().toISOString();
-  
-  a.status = "done";
-  paintActions();
-  
+
   fetch(SB + "/rest/v1/cq_actions?id=eq." + a.id, {
     method: "PATCH", headers: H,
-    body: JSON.stringify({ 
-      status: "done", 
+    body: JSON.stringify({
+      status: "done",
       done_at: now,
       done_by: user,
       done_comment: comment
     })
   }).then(function(r){
-    if (r.ok) toast("Ticked off");
-    else toast("Couldn't save that");
+    if (r.ok){
+      a.status = "done";
+      a.done_at = now;
+      a.done_by = user;
+      a.done_comment = comment;
+      paintActions();
+      toast("Ticked off");
+    } else {
+      toast("Couldn't save that");
+    }
   }).catch(function(){ toast("Couldn't save that"); });
 }
 function paintActions(){
@@ -1055,7 +1184,8 @@ function paintActions(){
   var wrap = document.getElementById("todoList");
   wrap.innerHTML = "";
   if (!actions.length){
-    wrap.innerHTML = '<div class="empty"><div class="a">\u2705</div><b>Nothing outstanding</b></div>';
+    wrap.innerHTML = '<div class="empty"><div class="a">\u2705</div><b>Nothing outstanding</b>' +
+      '<p>Everything we agreed is done. New things land here after each meeting.</p></div>';
   } else {
     open.forEach(function(a){ wrap.appendChild(actEl(a)); });
     if (done.length){
@@ -1073,26 +1203,35 @@ function paintActions(){
 }
 
 function decisionEl(d){
+  var set = d.status === "set";
   var el = document.createElement("div");
-  el.className = "card";
-  el.style.cssText = d.status === "set" ? "opacity:0.7;background:#F5FAF7" : "";
-  
-  var setInfo = d.status === "set" ? 
-    '<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line);font-size:13px;color:var(--mut)">' +
-      'Set by ' + d.set_by +
-    '</div>' : '';
-  
-  el.innerHTML = '<h3 style="font-size:17px;font-weight:600;letter-spacing:-.02em;line-height:1.3">' + d.title + '</h3>' +
-    (d.set_comment ? '<p style="font-size:15px;color:var(--mut);line-height:1.55;margin-top:8px">' + d.set_comment + '</p>' : '') +
-    setInfo +
-    (d.status !== "set" ? '<button class="btn teal" type="button" style="margin-top:14px;width:100%">Set this decision</button>' : '');
-  
-  if (d.status !== "set") {
-    el.querySelector("button").addEventListener("click", function(){
-      showSetDecisionModal(d);
-    });
+  el.className = "card" + (set ? " isdone" : "");
+
+  var h = document.createElement("h3");
+  h.textContent = d.title;
+  el.appendChild(h);
+
+  if (set){
+    var note = document.createElement("div");
+    note.className = "donenote";
+    var by = document.createElement("b");
+    by.textContent = "\u2713 Agreed by " + (d.set_by || "someone");
+    note.appendChild(by);
+    if (d.set_comment){
+      var c = document.createElement("p");
+      c.textContent = d.set_comment;
+      note.appendChild(c);
+    }
+    el.appendChild(note);
+  } else {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "btn teal";
+    b.textContent = "We've agreed this";
+    b.addEventListener("click", function(){ showSetDecisionModal(d); });
+    el.appendChild(b);
   }
-  
+
   return el;
 }
 
@@ -1104,7 +1243,8 @@ function paintDecisions(){
   
   wrap.innerHTML = "";
   if (!mDecs.length){
-    wrap.innerHTML = '<p style="font-size:14px;color:var(--mut)">None yet</p>';
+    wrap.innerHTML = '<p style="font-size:14.5px;color:var(--mut);line-height:1.5">' +
+      'Nothing agreed yet. Anything the family settles on gets written down here.</p>';
     return;
   }
   mDecs.forEach(function(d){ wrap.appendChild(decisionEl(d)); });
@@ -1114,7 +1254,7 @@ function showSetDecisionModal(d){
   var modal = document.createElement("div");
   modal.id = "setDecisionModal";
   modal.style.cssText = "position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.3);display:grid;place-items:center;padding:26px";
-  modal.innerHTML = '<div style="background:var(--card);border-radius:20px;padding:24px;max-width:420px;width:100%;box-shadow:var(--shl)"><h3 style="font-size:18px;font-weight:600">Set this decision?</h3><p style="font-size:14px;color:var(--mut);margin-top:8px">Add a note about how you made this decision.</p><textarea id="setComment" style="margin-top:14px;min-height:80px" placeholder="How did we decide? Any context?"></textarea><div style="display:flex;gap:10px;margin-top:16px"><button id="cancelSet" type="button" class="btn ghost" style="flex:1;margin:0">Cancel</button><button id="submitSet" type="button" class="btn teal" style="flex:1;margin:0">Set it</button></div></div>';
+  modal.innerHTML = '<div class="sheet"><h3>What did we agree?</h3><p>Write it down so everyone knows, including whoever missed the call.</p><textarea id="setComment" placeholder="We decided to..."></textarea><div class="row"><button id="cancelSet" type="button" class="btn ghost">Not yet</button><button id="submitSet" type="button" class="btn teal">Save it</button></div></div>';
   document.body.appendChild(modal);
   
   var comment = document.getElementById("setComment");
@@ -1140,9 +1280,9 @@ function showSetDecisionModal(d){
 }
 
 function markDecisionSet(d, comment){
-  var user = who || "anonymous";
+  var user = me ? me.name : "Someone";
   var now = new Date().toISOString();
-  
+
   fetch(SB + "/rest/v1/cq_decisions?id=eq." + d.id, {
     method: "PATCH", headers: H,
     body: JSON.stringify({ 
