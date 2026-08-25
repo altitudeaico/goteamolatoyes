@@ -460,9 +460,9 @@ function pickMe(id, silent){
     document.getElementById("meE").textContent = m.emoji;
     document.getElementById("meN").textContent = m.name;
     if (!silent) toast("Hello " + m.name);
-    loadIdeas();
     loadMeetings();
     loadActions();
+    loadIdeas();
     loadDecisions();
     loadReviews();
   };
@@ -635,7 +635,8 @@ var meetings = [];
 function loadMeetings(){
   fetch(SB + "/rest/v1/cq_meetings?select=*&order=held_on.desc", { headers: H })
     .then(function(r){ return r.json(); })
-    .then(function(d){ meetings = d || []; paintMeetings(); });
+    .then(function(d){ meetings = d || []; paintMeetings(); })
+    .catch(function(err){ console.error("loadMeetings failed:", err); toast("Could not load meetings"); });
 }
 function fmtDate(s){
   var d = new Date(s + "T12:00:00");
@@ -951,13 +952,16 @@ var decisions = [];
 function loadActions(){
   fetch(SB + "/rest/v1/cq_actions?select=*&order=sort", { headers: H, cache: "no-store" })
     .then(function(r){ return r.json(); })
-    .then(function(d){ actions = d || []; paintActions(); });
+    .then(function(d){ actions = d || []; paintActions(); })
+    .catch(function(err){ console.error("loadActions failed:", err); });
 }
 function loadDecisions(){
   fetch(SB + "/rest/v1/cq_decisions?select=*&order=sort", { headers: H, cache: "no-store" })
     .then(function(r){ return r.json(); })
-    .then(function(d){ decisions = d || []; paintDecisions(); });
+    .then(function(d){ decisions = d || []; paintDecisions(); })
+    .catch(function(err){ console.error("loadDecisions failed:", err); });
 }
+
 function actEl(a){
   var el = document.createElement("div");
   el.className = "act" + (a.status === "done" ? " done" : "");
@@ -1188,7 +1192,8 @@ function ideaEl(i){
 function loadIdeas(){
   fetch(SB + "/rest/v1/cq_ideas?select=*&order=created_at.desc", { headers: H, cache: "no-store" })
     .then(function(r){ return r.json(); })
-    .then(function(d){ ideas = d || []; paintIdeas(); paintProgress(); paintMeetings(); });
+    .then(function(d){ ideas = d || []; paintIdeas(); paintProgress(); paintMeetings(); })
+    .catch(function(err){ console.error("loadIdeas failed:", err); });
 }
 function paintProgress(){
   var seen = {};
