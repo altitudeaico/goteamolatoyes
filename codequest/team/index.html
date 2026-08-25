@@ -964,14 +964,71 @@ function actEl(a){
 }
 function toggleAct(a, el){
   var next = a.status === "done" ? "open" : "done";
-  a.status = next;
-  el.classList.toggle("done", next === "done");
+  
+  if (next === "done"){
+    // Show modal for comment before marking done
+    showCompleteModal(a);
+  } else {
+    // Just reopen without comment needed
+    a.status = next;
+    el.classList.toggle("done", next === "done");
+    paintActions();
+    fetch(SB + "/rest/v1/cq_actions?id=eq." + a.id, {
+      method: "PATCH", headers: H,
+      body: JSON.stringify({ status: next, done_at: null })
+    }).then(function(r){
+      if (r.ok) toast("Back on the list");
+      else toast("Couldn't save that");
+    }).catch(function(){ toast("Couldn't save that"); });
+  }
+}
+
+function showCompleteModal(a){
+  var modal = document.createElement("div");
+  modal.id = "completeModal";
+  modal.style.cssText = "position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.3);display:grid;place-items:center;padding:26px";
+  modal.innerHTML = '<div style="background:var(--card);border-radius:20px;padding:24px;max-width:420px;width:100%;box-shadow:var(--shl)"><h3 style="font-size:18px;font-weight:600">Mark as done?</h3><p style="font-size:14px;color:var(--mut);margin-top:8px">Add a comment about how you did this.</p><textarea id="completeComment" style="margin-top:14px;min-height:80px" placeholder="What did you do? Any notes?"></textarea><div style="display:flex;gap:10px;margin-top:16px"><button id="cancelComplete" type="button" class="btn ghost" style="flex:1;margin:0">Cancel</button><button id="submitComplete" type="button" class="btn teal" style="flex:1;margin:0">Done</button></div></div>';
+  document.body.appendChild(modal);
+  
+  var comment = document.getElementById("completeComment");
+  comment.focus();
+  
+  document.getElementById("cancelComplete").addEventListener("click", function(){
+    modal.remove();
+  });
+  
+  document.getElementById("submitComplete").addEventListener("click", function(){
+    var text = comment.value.trim();
+    if (!text){
+      toast("Please add a comment");
+      return;
+    }
+    modal.remove();
+    markActionDone(a, text);
+  });
+  
+  modal.addEventListener("click", function(e){
+    if (e.target === modal) modal.remove();
+  });
+}
+
+function markActionDone(a, comment){
+  var user = who || "anonymous";
+  var now = new Date().toISOString();
+  
+  a.status = "done";
   paintActions();
+  
   fetch(SB + "/rest/v1/cq_actions?id=eq." + a.id, {
     method: "PATCH", headers: H,
-    body: JSON.stringify({ status: next, done_at: next === "done" ? new Date().toISOString() : null })
+    body: JSON.stringify({ 
+      status: "done", 
+      done_at: now,
+      done_by: user,
+      done_comment: comment
+    })
   }).then(function(r){
-    if (r.ok) toast(next === "done" ? "Ticked off" : "Back on the list");
+    if (r.ok) toast("Ticked off");
     else toast("Couldn't save that");
   }).catch(function(){ toast("Couldn't save that"); });
 }
