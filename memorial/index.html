@@ -27,13 +27,11 @@ footer{text-align:center;padding:30px;color:#796e67;font-size:.72rem;letter-spac
 <nav class="stickynav">
   <span class="stickynav-brand">Pastor Emmanuel Olatoye</span>
   <span class="stickynav-date">Thu 10 Sept 2026 &middot; 7:00pm UK &middot; Online via Zoom</span>
-  <a href="#rsvp" class="stickynav-cta">RSVP / Join</a>
+  <a href="#rsvp" class="stickynav-cta">RSVP</a>
 </nav>
-<header class="hero" id="top"><div class="glow"></div><div class="hero-copy"><div class="kicker">In Loving Memory &amp; Thanksgiving</div><div class="rule"></div><h1 class="serif">Pastor Emmanuel <br>Olatoye<span>It Pays to Serve Jesus</span></h1><div class="roles">Daddy · Shepherd · Man of God</div><div class="dates">10 September 2020 — 10 September 2026</div></div><a class="scroll" href="#rsvp">RSVP / Join</a></header>
+<header class="hero" id="top"><div class="glow"></div><div class="hero-copy"><div class="kicker">In Loving Memory &amp; Thanksgiving</div><div class="rule"></div><h1 class="serif">Pastor Emmanuel <br>Olatoye<span>It Pays to Serve Jesus</span></h1><div class="roles">Daddy · Shepherd · Man of God</div><div class="dates">10 September 2020 — 10 September 2026</div></div><a class="scroll" href="#rsvp">RSVP</a></header>
 <main>
-<section class="invite" id="rsvp"><div class="invite-inner"><div class="eyebrow">Come and give thanks with us</div><h2>Memorial &amp;<br>Thanksgiving Service</h2><div class="date-big">Thursday, 10 September 2026</div><p>Joining online via Zoom &middot; 7:00pm UK time</p>
-<a href="https://us02web.zoom.us/j/87880056557" target="_blank" rel="noopener" style="display:inline-block;margin-top:22px;padding:14px 30px;background:var(--gold);color:#1b1010;text-decoration:none;text-transform:uppercase;letter-spacing:.12em;font-size:.78rem;border-radius:6px;font-weight:bold;">Join on Zoom</a>
-<p style="margin-top:10px;font-size:.82rem;color:var(--muted);">Meeting ID: 878 8005 6557 &middot; also sent by email if you RSVP below</p>
+<section class="invite" id="rsvp"><div class="invite-inner"><div class="eyebrow">Come and give thanks with us</div><h2>Memorial &amp;<br>Thanksgiving Service</h2><div class="date-big">Thursday, 10 September 2026</div><p>Joining online via Zoom &middot; 7:00pm UK time<br>The joining link is sent when you RSVP.</p>
 
 <div class="timings">
   <div><div class="tz">United Kingdom</div><div class="time">7:00 PM</div><div class="place">BST &middot; London</div></div>
@@ -41,7 +39,6 @@ footer{text-align:center;padding:30px;color:#796e67;font-size:.72rem;letter-spac
   <div><div class="tz">US Eastern</div><div class="time">2:00 PM</div><div class="place">EDT &middot; New York</div></div>
   <div><div class="tz">US Pacific</div><div class="time">11:00 AM</div><div class="place">PDT &middot; Los Angeles</div></div>
 </div>
-<button class="ics-btn" id="addToCal" type="button">Add to Calendar</button>
 
 <div class="rsvp">
   <h3>Will you be joining us?</h3>
@@ -75,7 +72,6 @@ footer{text-align:center;padding:30px;color:#796e67;font-size:.72rem;letter-spac
   <div class="count" id="rsvpCount"></div>
 </div>
 
-<div class="buttons"><a class="btn" href="#top">Back to top</a></div>
 </div></section>
 </main><footer>#GoTeamOlatoyes · Hosted with love by the Olatoye Family</footer>
 <script>
@@ -129,10 +125,7 @@ footer{text-align:center;padding:30px;color:#796e67;font-size:.72rem;letter-spac
         body: JSON.stringify([{ id: genId(), name: name, email: email, guests: guests, location: location, message: message }])
       }).then(function(res){
         if(res.ok){
-          status.textContent = "Thank you, " + name.split(' ')[0] + " \u2014 we'll see you there.";
-          form.reset();
-          document.getElementById('rsvpGuests').value = 1;
-          refreshCount();
+          window.location.href = 'confirmed.html?name=' + encodeURIComponent(name.split(' ')[0]);
         } else {
           status.textContent = 'Something went wrong \u2014 please try again.';
           submitBtn.disabled = false;
@@ -143,36 +136,6 @@ footer{text-align:center;padding:30px;color:#796e67;font-size:.72rem;letter-spac
       });
     });
     refreshCount();
-  }
-
-  var icsBtn = document.getElementById('addToCal');
-  if(icsBtn){
-    icsBtn.addEventListener('click', function(){
-      var ics = [
-        'BEGIN:VCALENDAR',
-        'VERSION:2.0',
-        'PRODID:-//GoTeamOlatoyes//Memorial//EN',
-        'BEGIN:VEVENT',
-        'UID:olatoye-memorial-2026@goteamolatoyes',
-        'DTSTAMP:20260902T000000Z',
-        'DTSTART:20260910T180000Z',
-        'DTEND:20260910T193000Z',
-        'SUMMARY:Memorial & Thanksgiving Service for Pastor Emmanuel Olatoye',
-        'DESCRIPTION:Join online to celebrate and give thanks for Daddy\'s life. It Pays to Serve Jesus. Zoom: https://us02web.zoom.us/j/87880056557',
-        'LOCATION:https://us02web.zoom.us/j/87880056557',
-        'END:VEVENT',
-        'END:VCALENDAR'
-      ].join('\r\n');
-      var blob = new Blob([ics], { type: 'text/calendar' });
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      a.href = url;
-      a.download = 'Pastor-Emmanuel-Olatoye-Memorial.ics';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    });
   }
 })();
 </script>
