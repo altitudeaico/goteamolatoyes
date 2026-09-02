@@ -54,6 +54,10 @@ main{background:linear-gradient(#100913,#160b17 48%,#0d080d)}section{padding:cla
       <label for="rsvpName">Your name</label>
       <input type="text" id="rsvpName" required placeholder="Full name">
     </div>
+    <div>
+      <label for="rsvpEmail">Your email</label>
+      <input type="email" id="rsvpEmail" required placeholder="So we can send you the joining link">
+    </div>
     <div class="row">
       <div>
         <label for="rsvpGuests">Joining as (number of people)</label>
@@ -108,10 +112,12 @@ main{background:linear-gradient(#100913,#160b17 48%,#0d080d)}section{padding:cla
     form.addEventListener('submit', function(e){
       e.preventDefault();
       var name = document.getElementById('rsvpName').value.trim();
+      var email = document.getElementById('rsvpEmail').value.trim();
       var guests = parseInt(document.getElementById('rsvpGuests').value, 10) || 1;
       var location = document.getElementById('rsvpLocation').value.trim();
       var message = document.getElementById('rsvpMessage').value.trim();
       if(!name){ status.textContent = 'Please add your name.'; return; }
+      if(!email){ status.textContent = 'Please add your email.'; return; }
 
       submitBtn.disabled = true;
       status.textContent = 'Sending...';
@@ -124,7 +130,7 @@ main{background:linear-gradient(#100913,#160b17 48%,#0d080d)}section{padding:cla
           Authorization: 'Bearer ' + SUPABASE_KEY,
           Prefer: 'return=minimal'
         },
-        body: JSON.stringify([{ id: genId(), name: name, guests: guests, location: location, message: message }])
+        body: JSON.stringify([{ id: genId(), name: name, email: email, guests: guests, location: location, message: message }])
       }).then(function(res){
         if(res.ok){
           status.textContent = "Thank you, " + name.split(' ')[0] + " \u2014 we'll see you there.";
