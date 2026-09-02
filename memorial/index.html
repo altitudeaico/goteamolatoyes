@@ -15,6 +15,10 @@ main{background:linear-gradient(#100913,#160b17 48%,#0d080d)}section{padding:cla
 .memory{position:relative;text-align:center;background:radial-gradient(circle at 50% 0,rgba(154,91,36,.17),transparent 37%),#130b13}.memory-wrap{max-width:1000px;margin:auto}.memory-lines{margin:50px auto;display:grid;gap:14px;font:400 clamp(1.55rem,3vw,2.7rem)/1.35 Georgia,serif;color:#d9cdbf}.memory-lines b{color:var(--cream);font-weight:400}.memory .final{font:italic 400 clamp(2.3rem,5vw,5rem)/1 Georgia,serif;color:var(--gold);margin-top:50px}
 .voice{max-width:1050px;margin:auto;display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center}.voice-art{position:relative;aspect-ratio:4/5;overflow:hidden}.voice-art img{width:100%;height:100%;object-fit:cover;object-position:top}.voice-art:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(13,8,13,.7),transparent 45%)}.voice h2{font:400 clamp(2.7rem,5vw,5rem)/1 Georgia,serif;margin:12px 0 22px}.voice p{color:#d2c5b8;line-height:1.8}.audio-placeholder{margin-top:30px;border:1px solid var(--line);padding:20px 22px;display:flex;gap:16px;align-items:center;background:rgba(255,255,255,.025)}.play{width:48px;height:48px;border-radius:50%;border:1px solid var(--gold);display:grid;place-items:center;color:var(--gold)}.audio-copy small{display:block;color:#a99c90;margin-top:4px}
 .invite{text-align:center;background:linear-gradient(180deg,#190d18,#32131d 70%,#130b13)}.invite-inner{max-width:850px;margin:auto;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:65px 20px}.invite .date-big{font:400 clamp(2rem,4vw,3.8rem)/1 Georgia,serif;color:var(--gold);margin:30px 0 12px}.invite p{color:#d7cabc;line-height:1.7}.buttons{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:32px}.btn{padding:13px 19px;border:1px solid var(--gold);text-decoration:none;text-transform:uppercase;letter-spacing:.12em;font-size:.72rem}.btn.primary{background:var(--gold);color:#1b1010}.btn.disabled{opacity:.5;cursor:default}
+.timings{max-width:640px;margin:36px auto 0;display:grid;grid-template-columns:repeat(2,1fr);gap:14px 20px;text-align:left}.timings div{border:1px solid var(--line);padding:14px 18px;border-radius:10px;background:rgba(255,255,255,.03)}.timings .tz{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}.timings .time{font:400 1.35rem Georgia,serif;color:var(--cream);margin-top:5px}.timings .place{font-size:.78rem;color:var(--muted);margin-top:2px}
+.ics-btn{display:inline-block;margin-top:26px;padding:12px 22px;border:1px solid var(--gold);background:transparent;color:var(--gold);text-transform:uppercase;letter-spacing:.12em;font-size:.72rem;cursor:pointer;border-radius:4px;font-family:inherit}
+.rsvp{max-width:520px;margin:56px auto 0;border-top:1px solid var(--line);padding-top:46px;text-align:left}.rsvp h3{font:400 1.7rem Georgia,serif;color:var(--gold);margin:0 0 8px;text-align:center}.rsvp p.sub{color:var(--muted);font-size:.9rem;margin:0 0 26px;text-align:center}.rsvp form{display:grid;gap:15px}.rsvp label{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--pale);display:block;margin-bottom:6px}.rsvp input,.rsvp textarea{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--cream);padding:11px 13px;font-family:Georgia,serif;font-size:1rem;border-radius:6px}.rsvp textarea{resize:vertical;min-height:66px}.rsvp .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}.rsvp button[type=submit]{margin-top:4px;padding:14px;background:var(--gold);color:#1b1010;border:none;text-transform:uppercase;letter-spacing:.12em;font-size:.76rem;cursor:pointer;border-radius:6px;font-weight:bold;font-family:inherit}.rsvp button:disabled{opacity:.6;cursor:default}.rsvp .status{margin-top:6px;font-size:.88rem;color:var(--gold);min-height:18px;text-align:center}.rsvp .count{margin-top:26px;font-size:.84rem;color:var(--muted);text-align:center}
+@media(max-width:600px){.timings{grid-template-columns:1fr}.rsvp .row{grid-template-columns:1fr}}
 .closing{min-height:75svh;display:grid;place-items:center;text-align:center;position:relative;background:linear-gradient(rgba(10,6,10,.68),rgba(10,6,10,.94)),url('assets/daddy-4.webp') center 20%/cover no-repeat}.closing blockquote{font:italic 400 clamp(2.4rem,5vw,5rem)/1.1 Georgia,serif;max-width:900px;margin:0 auto;color:var(--pale)}.closing cite{display:block;margin-top:20px;color:var(--gold);font-style:normal;letter-spacing:.16em;text-transform:uppercase;font-size:.75rem}.closing .name{margin-top:60px;font:400 1.35rem Georgia,serif}.closing .forever{color:#c7b9ac;margin-top:7px}footer{text-align:center;padding:30px;color:#796e67;font-size:.72rem;letter-spacing:.08em;background:#090609}
 @media(max-width:760px){.hero{align-items:flex-end}.hero:before{background-position:58% center}.hero:after{background:linear-gradient(0deg,rgba(11,5,13,.99) 0%,rgba(15,7,18,.8) 42%,rgba(10,5,12,.14) 74%)}.hero-copy{padding:0 24px 110px}.hero h1{font-size:clamp(3.1rem,15vw,5rem)}.scroll{left:24px}.chapter,.chapter:nth-child(even){display:flex;flex-direction:column;min-height:auto}.chapter:nth-child(even) .chapter-image{order:0}.chapter-image{height:62svh;min-height:420px;width:100%}.chapter-copy{padding:55px 24px 90px;width:100%}.voice{grid-template-columns:1fr;gap:35px}.voice-art{aspect-ratio:1/1}.voice{padding:0}.voice>div:last-child{padding:0 0}.roles{line-height:1.8}.closing{padding-left:24px;padding-right:24px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.hero:before{animation:none}}
@@ -32,7 +36,141 @@ main{background:linear-gradient(#100913,#160b17 48%,#0d080d)}section{padding:cla
 </section>
 <section class="memory"><div class="memory-wrap"><div class="eyebrow">Six years on</div><h2>We still remember.</h2><div class="memory-lines"><div>We still miss <b>the sound of his voice.</b></div><div>We still tell <b>his stories.</b></div><div>We still carry <b>what he taught us.</b></div><div>We still see <b>the fingerprints of his life.</b></div></div><div class="final">And the message hasn't changed.<br>It pays to serve Jesus.</div></div></section>
 <section><div class="voice"><div class="voice-art"><img src="assets/daddy-3.webp" alt="Pastor Emmanuel Olatoye speaking"></div><div><div class="eyebrow">His voice</div><h2>Hear Daddy<br>Again.</h2><p>A place for the sermons, songs and recordings that let us hear his voice again. When the family recordings are ready, they can live here for everyone to return to.</p><div class="audio-placeholder"><div class="play">▶</div><div class="audio-copy">Daddy's recordings<small>Audio and video coming soon</small></div></div></div></div></section>
-<section class="invite"><div class="invite-inner"><div class="eyebrow">Come and give thanks with us</div><h2>Memorial &amp;<br>Thanksgiving Service</h2><div class="date-big">Thursday, 10 September 2026</div><p>7:00pm UK time<br>Venue and livestream details to be confirmed.</p><div class="buttons"><span class="btn primary disabled">Service details coming soon</span><a class="btn" href="#top">Back to top</a></div></div></section>
+<section class="invite"><div class="invite-inner"><div class="eyebrow">Come and give thanks with us</div><h2>Memorial &amp;<br>Thanksgiving Service</h2><div class="date-big">Thursday, 10 September 2026</div><p>Joining online &middot; 7:00pm UK time<br>Livestream link to follow &mdash; RSVP below and we'll make sure you get it.</p>
+
+<div class="timings">
+  <div><div class="tz">United Kingdom</div><div class="time">7:00 PM</div><div class="place">BST &middot; London</div></div>
+  <div><div class="tz">Nigeria</div><div class="time">7:00 PM</div><div class="place">WAT &middot; Lagos</div></div>
+  <div><div class="tz">US Eastern</div><div class="time">2:00 PM</div><div class="place">EDT &middot; New York</div></div>
+  <div><div class="tz">US Pacific</div><div class="time">11:00 AM</div><div class="place">PDT &middot; Los Angeles</div></div>
+</div>
+<button class="ics-btn" id="addToCal" type="button">Add to Calendar</button>
+
+<div class="rsvp">
+  <h3>Will you be joining us?</h3>
+  <p class="sub">Let the family know you're planning to be there &mdash; it helps us prepare.</p>
+  <form id="rsvpForm">
+    <div>
+      <label for="rsvpName">Your name</label>
+      <input type="text" id="rsvpName" required placeholder="Full name">
+    </div>
+    <div class="row">
+      <div>
+        <label for="rsvpGuests">Joining as (number of people)</label>
+        <input type="number" id="rsvpGuests" min="1" max="20" value="1">
+      </div>
+      <div>
+        <label for="rsvpLocation">Joining from</label>
+        <input type="text" id="rsvpLocation" placeholder="e.g. Lagos, Nigeria">
+      </div>
+    </div>
+    <div>
+      <label for="rsvpMessage">A memory or message (optional)</label>
+      <textarea id="rsvpMessage" placeholder="Share a memory or word for the family"></textarea>
+    </div>
+    <button type="submit" id="rsvpSubmit">I'll Be There</button>
+    <div class="status" id="rsvpStatus"></div>
+  </form>
+  <div class="count" id="rsvpCount"></div>
+</div>
+
+<div class="buttons"><a class="btn" href="#top">Back to top</a></div>
+</div></section>
 <section class="closing"><div><blockquote>“Well done, good and faithful servant.”</blockquote><cite>Matthew 25:21</cite><div class="name">Pastor Emmanuel Olatoye</div><div class="forever">Forever loved. Forever remembered.</div></div></section>
 </main><footer>#GoTeamOlatoyes · Hosted with love by the Olatoye Family</footer>
+<script>
+(function(){
+  var SUPABASE_URL = "https://kxrhzijqyotyrzhpiflv.supabase.co";
+  var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4cmh6aWpxeW90eXJ6aHBpZmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NjQ1NTUsImV4cCI6MjA5NzU0MDU1NX0.VIZ0Bxxu84AjgN9PuLJusUbmPu1CWGg4VJSvkVhFZ94";
+
+  function genId(){
+    return 'rsvp_' + Math.random().toString(36).slice(2,10) + Date.now().toString(36).slice(-4);
+  }
+
+  var form = document.getElementById('rsvpForm');
+  var status = document.getElementById('rsvpStatus');
+  var submitBtn = document.getElementById('rsvpSubmit');
+  var countEl = document.getElementById('rsvpCount');
+
+  function refreshCount(){
+    fetch(SUPABASE_URL + '/rest/v1/memorial_rsvps?select=guests', {
+      headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY }
+    }).then(function(res){ return res.ok ? res.json() : []; })
+      .then(function(rows){
+        var total = rows.reduce(function(sum, r){ return sum + (r.guests || 1); }, 0);
+        if(total > 0){
+          countEl.textContent = total + (total === 1 ? ' person has' : ' people have') + " said they're joining so far.";
+        }
+      }).catch(function(){});
+  }
+
+  if(form){
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var name = document.getElementById('rsvpName').value.trim();
+      var guests = parseInt(document.getElementById('rsvpGuests').value, 10) || 1;
+      var location = document.getElementById('rsvpLocation').value.trim();
+      var message = document.getElementById('rsvpMessage').value.trim();
+      if(!name){ status.textContent = 'Please add your name.'; return; }
+
+      submitBtn.disabled = true;
+      status.textContent = 'Sending...';
+
+      fetch(SUPABASE_URL + '/rest/v1/memorial_rsvps', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: SUPABASE_KEY,
+          Authorization: 'Bearer ' + SUPABASE_KEY,
+          Prefer: 'return=minimal'
+        },
+        body: JSON.stringify([{ id: genId(), name: name, guests: guests, location: location, message: message }])
+      }).then(function(res){
+        if(res.ok){
+          status.textContent = "Thank you, " + name.split(' ')[0] + " \u2014 we'll see you there.";
+          form.reset();
+          document.getElementById('rsvpGuests').value = 1;
+          refreshCount();
+        } else {
+          status.textContent = 'Something went wrong \u2014 please try again.';
+          submitBtn.disabled = false;
+        }
+      }).catch(function(){
+        status.textContent = 'Something went wrong \u2014 please try again.';
+        submitBtn.disabled = false;
+      });
+    });
+    refreshCount();
+  }
+
+  var icsBtn = document.getElementById('addToCal');
+  if(icsBtn){
+    icsBtn.addEventListener('click', function(){
+      var ics = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//GoTeamOlatoyes//Memorial//EN',
+        'BEGIN:VEVENT',
+        'UID:olatoye-memorial-2026@goteamolatoyes',
+        'DTSTAMP:20260902T000000Z',
+        'DTSTART:20260910T180000Z',
+        'DTEND:20260910T193000Z',
+        'SUMMARY:Memorial & Thanksgiving Service for Pastor Emmanuel Olatoye',
+        'DESCRIPTION:Join online to celebrate and give thanks for Daddy\'s life. It Pays to Serve Jesus.',
+        'END:VEVENT',
+        'END:VCALENDAR'
+      ].join('\r\n');
+      var blob = new Blob([ics], { type: 'text/calendar' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'Pastor-Emmanuel-Olatoye-Memorial.ics';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+  }
+})();
+</script>
 </body></html>
