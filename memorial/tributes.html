@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tributes — Pastor Emmanuel Olatoye</title>
+<meta name="description" content="Words of love and thanksgiving for Pastor Emmanuel Olatoye, shared by family and friends.">
+<style>
+:root{--gold:#e9b65c;--pale:#f7e4b8;--cream:#fff9ee}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: Georgia, 'Times New Roman', serif;
+  color:var(--cream);
+  overflow:hidden;
+  background:#100913;
+}
+.stage{
+  position:relative;
+  width:100vw;
+  height:100vh;
+  height:100svh;
+  overflow:hidden;
+}
+.bg{
+  position:absolute; top:-2%; left:-2%; right:-2%; bottom:-2%;
+  background: url('assets/hero.png') 50% 30% / cover no-repeat;
+  filter: saturate(.85) brightness(.55);
+  animation: drift 40s ease-in-out infinite alternate;
+}
+@keyframes drift{ from{ transform:scale(1.04) translateY(0); } to{ transform:scale(1.12) translateY(-1.5%); } }
+.veil{
+  position:absolute; top:0; left:0; right:0; bottom:0;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(16,9,19,.35), rgba(10,5,12,.86) 68%),
+    linear-gradient(180deg, rgba(10,5,12,.55) 0%, rgba(10,5,12,.25) 30%, rgba(10,5,12,.25) 70%, rgba(10,5,12,.75) 100%);
+}
+.heading{
+  position:absolute; top:5.5vh; left:0; right:0; text-align:center; z-index:3;
+}
+.heading .eyebrow{
+  letter-spacing:.3em; text-transform:uppercase; font-size:clamp(.6rem,1.4vw,.8rem);
+  color:var(--gold); opacity:.9;
+}
+.heading h1{
+  font-weight:400; font-size:clamp(1.3rem,3vw,2rem); margin:10px 0 0; color:var(--pale);
+  letter-spacing:.02em;
+}
+.heading .sub{
+  margin-top:6px; font-style:italic; color:var(--gold); font-size:clamp(.8rem,1.8vw,1rem); opacity:.85;
+}
+
+.wall{
+  position:relative; z-index:2;
+  height:100%;
+  display:flex; align-items:center; justify-content:center;
+  padding: 0 8vw;
+}
+.card{
+  position:absolute;
+  max-width:900px;
+  text-align:center;
+  opacity:0;
+  transform: translateY(14px) scale(.985);
+  transition: opacity 1.8s ease, transform 1.8s ease;
+  pointer-events:none;
+}
+.card.active{
+  opacity:1;
+  transform: translateY(0) scale(1);
+}
+.card .quote-mark{
+  font-family: Georgia, serif;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  color: var(--gold);
+  opacity:.55;
+  line-height:1;
+  margin-bottom:6px;
+}
+.card .message{
+  font-style: italic;
+  font-size: clamp(1.15rem, 3.1vw, 2.05rem);
+  line-height: 1.55;
+  color: var(--cream);
+  text-shadow: 0 4px 30px rgba(0,0,0,.6);
+}
+.card .attribution{
+  margin-top: 28px;
+  letter-spacing:.15em;
+  text-transform: uppercase;
+  font-size: clamp(.7rem, 1.6vw, .88rem);
+  color: var(--gold);
+}
+.card .attribution .loc{
+  display:block; margin-top:6px; text-transform:none; letter-spacing:normal;
+  font-style: italic; color: var(--pale); opacity:.75; font-size:.85em;
+}
+
+.progress{
+  position:absolute; bottom:5vh; left:50%; transform:translateX(-50%);
+  z-index:3; display:flex; gap:8px; align-items:center;
+}
+.progress .dot{
+  width:6px; height:6px; border-radius:50%; background:rgba(233,182,92,.28);
+  transition: background .4s ease, width .4s ease;
+}
+.progress .dot.active{ background:var(--gold); width:20px; border-radius:4px; }
+
+.tagline{
+  position:absolute; bottom:9.5vh; left:0; right:0; text-align:center; z-index:3;
+  font-style:italic; color:var(--gold); opacity:.8; font-size:clamp(.75rem,1.7vw,.95rem);
+  letter-spacing:.03em;
+}
+
+.loading{
+  position:absolute; top:0; left:0; right:0; bottom:0; z-index:4; display:flex; align-items:center; justify-content:center;
+  color:var(--pale); font-style:italic; letter-spacing:.05em; font-size:1rem; opacity:.7;
+  transition: opacity 1s ease;
+}
+.loading.hide{ opacity:0; pointer-events:none; }
+
+@media (max-width:640px){
+  .wall{ padding:0 7vw; }
+  .heading{ top:4vh; }
+}
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="bg"></div>
+  <div class="veil"></div>
+
+  <div class="heading">
+    <div class="eyebrow">In Loving Memory &amp; Thanksgiving</div>
+    <h1>Pastor Emmanuel Olatoye</h1>
+    <div class="sub">Words from family &amp; friends</div>
+  </div>
+
+  <div class="wall" id="wall"></div>
+
+  <div class="tagline">&ldquo;It Pays to Serve Jesus&rdquo;</div>
+  <div class="progress" id="progress"></div>
+  <div class="loading" id="loading">Gathering words of love&hellip;</div>
+</div>
+
+<script>
+(function(){
+  var SUPABASE_URL = "https://kxrhzijqyotyrzhpiflv.supabase.co";
+  var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4cmh6aWpxeW90eXJ6aHBpZmx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NjQ1NTUsImV4cCI6MjA5NzU0MDU1NX0.VIZ0Bxxu84AjgN9PuLJusUbmPu1CWGg4VJSvkVhFZ94";
+
+  var wall = document.getElementById('wall');
+  var progressEl = document.getElementById('progress');
+  var loadingEl = document.getElementById('loading');
+
+  var messages = [];      // current rotation set
+  var knownIds = {};      // for merging new arrivals without disrupting rotation
+  var current = -1;
+  var rotateTimer = null;
+  var ROTATE_MS = 8000;
+  var POLL_MS = 45000;
+
+  function escapeHtml(s){
+    var d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function buildCard(item){
+    var card = document.createElement('div');
+    card.className = 'card';
+    var loc = item.location ? '<span class="loc">' + escapeHtml(item.location) + '</span>' : '';
+    card.innerHTML =
+      '<div class="quote-mark">&#8220;</div>' +
+      '<div class="message">' + escapeHtml(item.message) + '</div>' +
+      '<div class="attribution">' + escapeHtml(item.name || 'A friend') + loc + '</div>';
+    return card;
+  }
+
+  function rebuildDots(){
+    progressEl.innerHTML = '';
+    messages.forEach(function(_, i){
+      var dot = document.createElement('div');
+      dot.className = 'dot' + (i === current ? ' active' : '');
+      progressEl.appendChild(dot);
+    });
+  }
+
+  function showIndex(i){
+    var cards = wall.querySelectorAll('.card');
+    cards.forEach(function(c){ c.classList.remove('active'); });
+    if(cards[i]) cards[i].classList.add('active');
+    current = i;
+    var dots = progressEl.querySelectorAll('.dot');
+    dots.forEach(function(d, idx){ d.classList.toggle('active', idx === i); });
+  }
+
+  function renderAll(){
+    wall.innerHTML = '';
+    messages.forEach(function(item){
+      wall.appendChild(buildCard(item));
+    });
+    rebuildDots();
+    if(messages.length){
+      showIndex(0);
+    }
+  }
+
+  function next(){
+    if(messages.length < 2) return;
+    var i = (current + 1) % messages.length;
+    showIndex(i);
+  }
+
+  function resetRotation(){
+    clearInterval(rotateTimer);
+    if(messages.length > 1){
+      rotateTimer = setInterval(next, ROTATE_MS);
+    }
+  }
+
+  function fetchMessages(){
+    fetch(SUPABASE_URL + '/rest/v1/memorial_rsvps?select=name,location,message,created_at&order=created_at.desc', {
+      headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY }
+    })
+    .then(function(res){ return res.ok ? res.json() : []; })
+    .then(function(rows){
+      var withMessages = rows.filter(function(r){
+        return r.message && r.message.trim().length > 0;
+      });
+
+      // shuffle for variety on first load
+      if(messages.length === 0){
+        for (var i = withMessages.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var tmp = withMessages[i]; withMessages[i] = withMessages[j]; withMessages[j] = tmp;
+        }
+      }
+
+      var newIds = withMessages.map(function(r){ return r.name + '|' + r.created_at; });
+      var changed = newIds.length !== messages.length ||
+        newIds.some(function(id){ return !knownIds[id]; });
+
+      if(changed){
+        messages = withMessages;
+        knownIds = {};
+        newIds.forEach(function(id){ knownIds[id] = true; });
+        renderAll();
+        resetRotation();
+      }
+
+      loadingEl.classList.add('hide');
+    })
+    .catch(function(){
+      loadingEl.textContent = 'Unable to load tributes right now.';
+    });
+  }
+
+  fetchMessages();
+  setInterval(fetchMessages, POLL_MS);
+})();
+</script>
+
+</body>
+</html>
