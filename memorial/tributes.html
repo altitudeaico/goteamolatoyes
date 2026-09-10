@@ -39,42 +39,42 @@ body{
 }
 .bg{
   position:absolute; top:-2%; left:-2%; right:-2%; bottom:-2%;
-  background: url('assets/hero.png') 50% 30% / cover no-repeat;
-  filter: saturate(.85) brightness(.55);
+  background: url('assets/hero.png') 62% 32% / cover no-repeat;
+  filter: saturate(1) brightness(.82);
   animation: drift 40s ease-in-out infinite alternate;
 }
-@keyframes drift{ from{ transform:scale(1.04) translateY(0); } to{ transform:scale(1.12) translateY(-1.5%); } }
+@keyframes drift{ from{ transform:scale(1.04) translateY(0); } to{ transform:scale(1.1) translateY(-1.5%); } }
 .veil{
   position:absolute; top:0; left:0; right:0; bottom:0;
   background:
-    radial-gradient(circle at 50% 45%, rgba(16,9,19,.35), rgba(10,5,12,.86) 68%),
-    linear-gradient(180deg, rgba(10,5,12,.55) 0%, rgba(10,5,12,.25) 30%, rgba(10,5,12,.25) 70%, rgba(10,5,12,.75) 100%);
+    linear-gradient(90deg, rgba(14,8,17,.96) 0%, rgba(14,8,17,.88) 26%, rgba(14,8,17,.55) 42%, rgba(14,8,17,.15) 56%, transparent 68%),
+    linear-gradient(180deg, rgba(10,5,12,.35) 0%, transparent 18%, transparent 78%, rgba(10,5,12,.5) 100%);
 }
 .heading{
-  position:absolute; top:60px; left:0; right:0; text-align:center; z-index:3;
+  position:absolute; top:70px; left:110px; right:auto; text-align:left; z-index:3; max-width:640px;
 }
 .heading .eyebrow{
-  letter-spacing:.3em; text-transform:uppercase; font-size:22px;
+  letter-spacing:.3em; text-transform:uppercase; font-size:20px;
   color:var(--gold); opacity:.9;
 }
 .heading h1{
-  font-weight:400; font-size:44px; margin:12px 0 0; color:var(--pale);
+  font-weight:400; font-size:42px; margin:12px 0 0; color:var(--pale);
   letter-spacing:.02em;
 }
 .heading .sub{
-  margin-top:8px; font-style:italic; color:var(--gold); font-size:26px; opacity:.85;
+  margin-top:8px; font-style:italic; color:var(--gold); font-size:24px; opacity:.85;
 }
 
 .wall{
   position:relative; z-index:2;
   height:100%;
-  display:flex; align-items:center; justify-content:center;
-  padding: 0 220px;
+  display:flex; align-items:center; justify-content:flex-start;
+  padding: 0 0 0 110px;
 }
 .card{
   position:absolute;
-  max-width:1400px;
-  text-align:center;
+  max-width:640px;
+  text-align:left;
   opacity:0;
   transform: translateY(14px) scale(.985);
   transition: opacity 1.8s ease, transform 1.8s ease;
@@ -86,24 +86,24 @@ body{
 }
 .card .quote-mark{
   font-family: Georgia, serif;
-  font-size: 90px;
+  font-size: 80px;
   color: var(--gold);
   opacity:.55;
   line-height:1;
-  margin-bottom:8px;
+  margin-bottom:6px;
 }
 .card .message{
   font-style: italic;
-  font-size: 52px;
-  line-height: 1.55;
+  font-size: 42px;
+  line-height: 1.5;
   color: var(--cream);
-  text-shadow: 0 4px 30px rgba(0,0,0,.6);
+  text-shadow: 0 4px 30px rgba(0,0,0,.7);
 }
 .card .attribution{
-  margin-top: 36px;
+  margin-top: 32px;
   letter-spacing:.15em;
   text-transform: uppercase;
-  font-size: 24px;
+  font-size: 22px;
   color: var(--gold);
 }
 .card .attribution .loc{
@@ -112,7 +112,7 @@ body{
 }
 
 .progress{
-  position:absolute; bottom:54px; left:50%; transform:translateX(-50%);
+  position:absolute; bottom:64px; left:110px; transform:none;
   z-index:3; display:flex; gap:10px; align-items:center;
 }
 .progress .dot{
@@ -122,14 +122,15 @@ body{
 .progress .dot.active{ background:var(--gold); width:26px; border-radius:5px; }
 
 .tagline{
-  position:absolute; bottom:103px; left:0; right:0; text-align:center; z-index:3;
-  font-style:italic; color:var(--gold); opacity:.8; font-size:26px;
+  position:absolute; bottom:112px; left:110px; right:auto; text-align:left; z-index:3;
+  font-style:italic; color:var(--gold); opacity:.85; font-size:24px;
   letter-spacing:.03em;
 }
 
 .loading{
-  position:absolute; top:0; left:0; right:0; bottom:0; z-index:4; display:flex; align-items:center; justify-content:center;
-  color:var(--pale); font-style:italic; letter-spacing:.05em; font-size:28px; opacity:.7;
+  position:absolute; top:0; left:0; right:0; bottom:0; z-index:4; display:flex; align-items:center; justify-content:flex-start;
+  padding-left:110px;
+  color:var(--pale); font-style:italic; letter-spacing:.05em; font-size:26px; opacity:.7;
   transition: opacity 1s ease;
 }
 .loading.hide{ opacity:0; pointer-events:none; }
